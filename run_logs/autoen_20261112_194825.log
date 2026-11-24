@@ -1,0 +1,16 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261112_194829.csv
+       riff_logs/autoen_sets_20261112_194829.csv
+       riff_logs/autoen_cycles_20261112_194829.csv
+       riff_logs/autoen_thresholds_20261112_194829.csv
+[mqtt] belt connected to localhost:1883: Success
+[mqtt] arm connected to localhost:1883: Success
+settings changed from the web page: {'rpm': 6.7, 'arm_speed': 1.0, 'carry_speed': 1.0, 'arrive_timeout': 20.0}
+settings changed from the web page: {'rpm': 20.0, 'arm_speed': 1.5, 'carry_speed': 1.5, 'arrive_timeout': 25.0, 'max_fails': 8, 'sets': 1000, 'cycles_per_set': 1000}
+Set 1 (19:48:30-19:51:55): J1: temp max 33C, current avg 1 / peak 6 mA; J2: temp max 33C, current avg 2 / peak 52 mA; J3: temp max 34C, current avg 7 / peak 117 mA; J4: temp max 34C, current avg 5 / peak 20 mA; J5: temp max 34C, current avg 1 / peak 6 mA; J6: temp max 34C, current avg 4 / peak 6 mA; Belt: temp max 24C, current avg 43 / peak 290 mA; ARM TOTAL: servo volt min 12.1 V, summed current avg 20 / peak 195 mA
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+stopped: stopped by the operator  (unparsable RX lines: 0)

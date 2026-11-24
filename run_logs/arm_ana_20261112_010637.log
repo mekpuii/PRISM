@@ -1,0 +1,283 @@
+[arm-analyzer] up. broker localhost:1883, db arm_analyzer.db, thresholds built-in defaults (run --write-thresholds or --calibrate to make the file). Ctrl+C to stop.
+[arm-analyzer] connected to broker: Success
+[01:06:45] NO_DATA    -> CARRYING    (via home)
+[01:06:48] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:06:58] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:07:08] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:07:18] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:07:28] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:07:38] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:07:49] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:07:59] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:08:09] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:08:09] CARRYING   -> PICKING     (gripper holding)
+[01:08:19] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:08:21] PICKING    -> CARRYING    (via home)
+[01:08:21] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.51 s, limit 13)
+[01:08:25] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:08:25] CONDITION J6 current 13 mA in PLACING: WARN -> OK (held 0.58 s, limit 45.5)
+[01:08:27] PLACING    -> CARRYING    (to right_bin)
+[01:08:29] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:08:30] CARRYING   -> PICKING     (gripper holding)
+[01:08:35] PICKING    -> CARRYING    (via home)
+[01:08:35] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.57 s, limit 13)
+[01:08:38] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:08:38] CONDITION J6 current 13 mA in PLACING: WARN -> OK (held 0.6 s, limit 45.5)
+[01:08:39] state=PLACING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:08:40] PLACING    -> CARRYING    (to right_bin)
+[01:08:43] CARRYING   -> PICKING     (gripper holding)
+[01:08:49] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:08:49] PICKING    -> CARRYING    (via home)
+[01:08:49] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.59 s, limit 13)
+[01:08:52] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:08:52] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.63 s, limit 45.5)
+[01:08:54] PLACING    -> CARRYING    (to right_bin)
+[01:08:59] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:09:00] CARRYING   -> PICKING     (gripper holding)
+[01:09:05] PICKING    -> CARRYING    (via home)
+[01:09:05] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.5 s, limit 13)
+[01:09:07] CONDITION J6 current 0 mA in CARRYING: WARN -> OK (held 0.5 s, limit 13)
+[01:09:07] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:09:09] state=PLACING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:09:09] PLACING    -> CARRYING    (to right_bin)
+[01:09:13] CARRYING   -> PICKING     (gripper holding)
+[01:09:17] PICKING    -> CARRYING    (via home)
+[01:09:17] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.52 s, limit 13)
+[01:09:19] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=J6.current=WARN
+[01:09:20] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:09:20] CONDITION J6 current 13 mA in PLACING: WARN -> OK (held 0.6 s, limit 45.5)
+[01:09:22] PLACING    -> CARRYING    (to right_bin)
+[01:09:25] CARRYING   -> PICKING     (gripper holding)
+[01:09:29] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:09:29] PICKING    -> CARRYING    (via home)
+[01:09:29] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.52 s, limit 13)
+[01:09:32] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:09:32] CONDITION J6 current 6 mA in PLACING: WARN -> OK (held 0.51 s, limit 45.5)
+[01:09:34] PLACING    -> CARRYING    (to right_bin)
+[01:09:37] CARRYING   -> PICKING     (gripper holding)
+[01:09:39] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:09:41] PICKING    -> CARRYING    (via home)
+[01:09:41] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.52 s, limit 13)
+[01:09:44] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:09:45] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[01:09:46] PLACING    -> CARRYING    (to right_bin)
+[01:09:49] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:09:49] CARRYING   -> PICKING     (gripper holding)
+[01:09:54] PICKING    -> CARRYING    (via home)
+[01:09:54] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.55 s, limit 13)
+[01:09:57] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:09:57] CONDITION J6 current 13 mA in PLACING: WARN -> OK (held 0.51 s, limit 45.5)
+[01:09:59] state=PLACING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:09:58] PLACING    -> CARRYING    (to right_bin)
+[01:10:02] CARRYING   -> PICKING     (gripper holding)
+[01:10:06] PICKING    -> CARRYING    (via home)
+[01:10:06] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.52 s, limit 13)
+[01:10:09] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=J6.current=WARN
+[01:10:09] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:10:09] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[01:10:10] PLACING    -> CARRYING    (to right_bin)
+[01:10:14] CARRYING   -> PICKING     (gripper holding)
+[01:10:18] PICKING    -> CARRYING    (via home)
+[01:10:18] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.52 s, limit 13)
+[01:10:19] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=J6.current=WARN
+[01:10:20] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:10:21] CONDITION J6 current 13 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[01:10:22] PLACING    -> CARRYING    (to right_bin)
+[01:10:29] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:10:29] CARRYING   -> PICKING     (gripper holding)
+[01:10:35] PICKING    -> CARRYING    (via home)
+[01:10:35] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.51 s, limit 13)
+[01:10:39] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=J6.current=WARN
+[01:10:39] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:10:39] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.52 s, limit 45.5)
+[01:10:41] PLACING    -> CARRYING    (to right_bin)
+[01:10:44] CARRYING   -> PICKING     (gripper holding)
+[01:10:48] CONDITION J6 current 32 mA in PICKING: OK -> WARN (held 0.5 s, limit 32.5)
+[01:10:49] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=J6.current=WARN
+[01:10:49] PICKING    -> CARRYING    (via home)
+[01:10:49] CONDITION J6 current 32 mA in CARRYING: WARN -> ALARM (held 0.61 s, limit 26)
+[01:10:52] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:10:52] CONDITION J6 current 26 mA in PLACING: ALARM -> OK (held 0.51 s, limit 58.5)
+[01:10:54] PLACING    -> CARRYING    (to right_bin)
+[01:10:57] CARRYING   -> PICKING     (gripper holding)
+[01:10:59] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:11:05] PICKING    -> CARRYING    (via home)
+[01:11:05] CONDITION J6 current 13 mA in CARRYING: OK -> WARN (held 0.54 s, limit 13)
+[01:11:08] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:11:08] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.51 s, limit 45.5)
+[01:11:09] state=PLACING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:11:09] PLACING    -> CARRYING    (to right_bin)
+[01:11:13] CARRYING   -> PICKING     (gripper holding)
+[01:11:19] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:11:21] PICKING    -> CARRYING    (via home)
+[01:11:21] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.51 s, limit 13)
+[01:11:24] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:11:24] CONDITION J6 current 13 mA in PLACING: WARN -> OK (held 0.52 s, limit 45.5)
+[01:11:26] PLACING    -> CARRYING    (to right_bin)
+[01:11:29] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:11:29] CARRYING   -> PICKING     (gripper holding)
+[01:11:34] PICKING    -> CARRYING    (via home)
+[01:11:34] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.52 s, limit 13)
+[01:11:36] CONDITION J1 current 32 mA in CARRYING: OK -> WARN (held 0.51 s, limit 26)
+[01:11:36] CONDITION J1 current 0 mA in CARRYING: WARN -> OK (held 0.52 s, limit 26)
+[01:11:37] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:11:37] CONDITION J6 current 13 mA in PLACING: WARN -> OK (held 0.51 s, limit 45.5)
+[01:11:39] PLACING    -> CARRYING    (to right_bin)
+[01:11:39] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:11:42] CARRYING   -> PICKING     (gripper holding)
+[01:11:49] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:11:59] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:12:09] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:12:19] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:12:29] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:12:32] PICKING    -> CARRYING    (via home)
+[01:12:33] CARRYING   -> IDLE        (at home, gripper holding)
+[01:12:39] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:12:49] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:12:59] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:13:01] IDLE       -> CARRYING    (via home)
+[01:13:02] CARRYING   -> PICKING     (gripper holding)
+[01:13:09] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:13:19] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:13:26] PICKING    -> CARRYING    (via home)
+[01:13:28] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:13:29] state=PLACING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:13:31] PLACING    -> CARRYING    (to right_bin)
+[01:13:34] CARRYING   -> PICKING     (gripper holding)
+[01:13:39] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:13:39] PICKING    -> CARRYING    (via home)
+[01:13:40] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.7 s, limit 13)
+[01:13:43] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:13:43] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[01:13:45] PLACING    -> CARRYING    (to right_bin)
+[01:13:48] CARRYING   -> PICKING     (gripper holding)
+[01:13:49] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:13:53] PICKING    -> CARRYING    (passing home, gripper closed)
+[01:13:53] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.6 s, limit 13)
+[01:13:54] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.5 s, limit 26)
+[01:13:55] CONDITION J1 current 6 mA in CARRYING: WARN -> OK (held 0.52 s, limit 26)
+[01:13:58] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:13:58] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[01:13:59] state=PLACING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:14:00] PLACING    -> CARRYING    (to right_bin)
+[01:14:03] CARRYING   -> PICKING     (gripper holding)
+[01:14:07] PICKING    -> CARRYING    (via home)
+[01:14:07] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.5 s, limit 13)
+[01:14:09] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=J6.current=WARN
+[01:14:10] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:14:10] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.6 s, limit 45.5)
+[01:14:12] PLACING    -> CARRYING    (to right_bin)
+[01:14:15] CARRYING   -> PICKING     (gripper holding)
+[01:14:19] PICKING    -> CARRYING    (leaving pick pose)
+[01:14:19] CONDITION J6 current 13 mA in CARRYING: OK -> WARN (held 0.51 s, limit 13)
+[01:14:20] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=J6.current=WARN
+[01:14:22] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:14:22] CONDITION J6 current 6 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[01:14:24] PLACING    -> CARRYING    (to right_bin)
+[01:14:27] CARRYING   -> PICKING     (gripper holding)
+[01:14:30] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:14:31] PICKING    -> CARRYING    (via home)
+[01:14:31] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.6 s, limit 13)
+[01:14:34] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:14:34] CONDITION J6 current 6 mA in PLACING: WARN -> OK (held 0.59 s, limit 45.5)
+[01:14:36] PLACING    -> CARRYING    (to right_bin)
+[01:14:39] CARRYING   -> PICKING     (gripper holding)
+[01:14:40] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:14:43] PICKING    -> CARRYING    (via home)
+[01:14:43] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.51 s, limit 13)
+[01:14:46] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:14:46] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.56 s, limit 45.5)
+[01:14:48] PLACING    -> CARRYING    (to right_bin)
+[01:14:50] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:14:51] CARRYING   -> PICKING     (gripper holding)
+[01:14:55] PICKING    -> CARRYING    (via home)
+[01:14:55] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.51 s, limit 13)
+[01:14:57] CONDITION J6 current 0 mA in CARRYING: WARN -> OK (held 0.53 s, limit 13)
+[01:15:00] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:15:00] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:15:03] PLACING    -> CARRYING    (to right_bin)
+[01:15:06] CARRYING   -> PICKING     (gripper holding)
+[01:15:09] PICKING    -> CARRYING    (via home)
+[01:15:10] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:15:10] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.5 s, limit 13)
+[01:15:12] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:15:13] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[01:15:14] PLACING    -> CARRYING    (to right_bin)
+[01:15:17] CARRYING   -> PICKING     (gripper holding)
+[01:15:20] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:15:21] PICKING    -> CARRYING    (via home)
+[01:15:22] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.5 s, limit 13)
+[01:15:24] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:15:25] CONDITION J6 current 13 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[01:15:26] PLACING    -> CARRYING    (to right_bin)
+[01:15:29] CARRYING   -> PICKING     (gripper holding)
+[01:15:30] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:15:33] PICKING    -> CARRYING    (via home)
+[01:15:35] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.52 s, limit 26)
+[01:15:35] CONDITION J6 current 26 mA in CARRYING: OK -> ALARM (held 0.52 s, limit 26)
+[01:15:36] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:15:36] CONDITION J1 current 0 mA in PLACING: WARN -> OK (held 0.52 s, limit 19.5)
+[01:15:36] CONDITION J6 current 20 mA in PLACING: ALARM -> OK (held 0.58 s, limit 58.5)
+[01:15:38] PLACING    -> CARRYING    (to right_bin)
+[01:15:40] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:15:41] CARRYING   -> PICKING     (gripper holding)
+[01:15:45] PICKING    -> CARRYING    (via home)
+[01:15:46] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.52 s, limit 13)
+[01:15:48] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:15:48] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[01:15:50] state=PLACING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:15:50] PLACING    -> CARRYING    (to right_bin)
+[01:15:53] CARRYING   -> PICKING     (gripper holding)
+[01:15:57] PICKING    -> CARRYING    (via home)
+[01:15:57] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.51 s, limit 13)
+[01:16:00] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=J6.current=WARN
+[01:16:02] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:16:02] CONDITION J6 current 13 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[01:16:04] PLACING    -> CARRYING    (to right_bin)
+[01:16:07] CARRYING   -> PICKING     (gripper holding)
+[01:16:10] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:16:11] PICKING    -> CARRYING    (via home)
+[01:16:12] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.53 s, limit 13)
+[01:16:14] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:16:14] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.52 s, limit 45.5)
+[01:16:15] PLACING    -> CARRYING    (to right_bin)
+[01:16:19] CARRYING   -> PICKING     (gripper holding)
+[01:16:20] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:16:23] PICKING    -> NO_DATA     (no telemetry for 2.3 s)
+[01:16:23] CYCLE ABORTED 201.53 s -> right_bin  J1 current WARN; J6 current ALARM
+[01:16:25] NO_DATA    -> CARRYING    (via home)
+[01:16:25] CONDITION J6 current 32 mA in CARRYING: OK -> ALARM (held 0.57 s, limit 26)
+[01:16:26] CARRYING   -> NO_DATA     (no telemetry for 1.4 s)
+[01:16:27] NO_DATA    -> IDLE        (at home, gripper closed)
+[01:16:28] IDLE       -> CARRYING    (to right_bin)
+[01:16:27] CONDITION J6 current 0 mA in CARRYING: ALARM -> OK (held 1.08 s, limit 26)
+[01:16:30] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:16:31] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:16:32] PLACING    -> NO_DATA     (no telemetry for 1.6 s)
+[01:16:32] CYCLE ABORTED 4.01 s -> right_bin
+[01:16:35] NO_DATA    -> PLACING     (right_bin, gripper holding)
+[01:16:36] PLACING    -> CARRYING    (to right_bin)
+[01:16:39] CARRYING   -> PICKING     (gripper holding)
+[01:16:40] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:16:43] PICKING    -> CARRYING    (via home)
+[01:16:44] CONDITION J6 current 13 mA in CARRYING: OK -> WARN (held 0.6 s, limit 13)
+[01:16:46] CARRYING   -> PLACING     (right_bin, gripper closed)
+[01:16:46] CONDITION J6 current 6 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[01:16:48] PLACING    -> CARRYING    (to right_bin)
+[01:16:50] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:16:52] CARRYING   -> PICKING     (gripper holding)
+[01:17:00] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:17:10] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:17:14] PICKING    -> CARRYING    (via home)
+[01:17:15] CARRYING   -> IDLE        (at home, gripper holding)
+[01:17:18] IDLE       -> CARRYING    (via home)
+[01:17:19] CONDITION J4 current 52 mA in CARRYING: OK -> ALARM (held 0.51 s, limit 32.5)
+[01:17:20] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=J4.current=ALARM
+[01:17:20] CONDITION J4 current 6 mA in CARRYING: ALARM -> OK (held 0.5 s, limit 32.5)
+[01:17:24] CARRYING   -> IDLE        (at home, gripper holding)
+[01:17:24] CYCLE PARTIAL 5.32 s -> None  J4 current ALARM
+[01:17:30] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:17:40] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[01:17:50] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[01:18:00] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+                                                                                                                                                                                                                                                      

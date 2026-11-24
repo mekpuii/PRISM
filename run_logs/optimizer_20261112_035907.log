@@ -1,0 +1,177 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261112_035925.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 5] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 6] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 7] RUN    20 rpm / arm 1.5  action=verdict:1:nudge  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 8] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 9] RUN    20 rpm / arm 1.5  action=verdict:1:empty  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 10] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 11] RUN    20 rpm / arm 1.5  action=verdict:2:nudge  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 12] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 13] RUN    20 rpm / arm 1.5  action=verdict:2:empty  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 14] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 15] RUN    20 rpm / arm 1.5  action=verdict:3:nudge  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 16] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 17] RUN    20 rpm / arm 1.5  action=verdict:3:empty  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 18] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 19] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 2 during TRANSPORT: servo unknown, camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  feed 2 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed 3: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 3 during TRANSPORT: servo unknown, camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  cycle 1: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 20] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 21] IDLE   20 rpm / arm 1.5  action=verdict:4:nudge  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 22] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 23] IDLE   20 rpm / arm 1.5  action=verdict:4:empty  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 24] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 25] IDLE   20 rpm / arm 1.5  action=verdict:5:fed  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 26] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 27] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 28] RUN    20 rpm / arm 1.5  - a cube arrived
+[plan 29] MANUAL 20 rpm / arm 1.5  - autoen paused by someone else: hands off
+[plan 30] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 135.5, normal 98; 4.64 % too dark, 8.1 % burnt out): camera not used for decisions
+[plan 31] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[observe] lost the broker: all feeds will go stale
+[observe] connected to broker: Success
+[plan 32] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 103.5, normal 103; 0.08 % too dark, 8.14 % burnt out): camera not used for decisions
+[plan 33] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 103.5, normal 103; 0.08 % too dark, 8.14 % burnt out): camera not used for decisions
+[plan 34] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 103.5, normal 103; 0.08 % too dark, 8.14 % burnt out): camera not used for decisions
+[plan 35] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 36] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 104.4, normal 103; 0.01 % too dark, 8.85 % burnt out): camera not used for decisions
+[plan 37] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 38] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 105.2, normal 103; 0.01 % too dark, 9.64 % burnt out): camera not used for decisions
+[plan 39] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 40] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 111.5, normal 104; 0.0 % too dark, 12.12 % burnt out): camera not used for decisions
+[plan 41] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 42] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 112.0, normal 107; 0.0 % too dark, 13.57 % burnt out): camera not used for decisions
+[plan 43] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 44] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 111.7, normal 109; 0.0 % too dark, 9.0 % burnt out): camera not used for decisions
+[plan 45] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 46] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 112.2, normal 108; 0.0 % too dark, 10.59 % burnt out): camera not used for decisions
+[plan 47] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 48] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 112.0, normal 109; 0.0 % too dark, 10.12 % burnt out): camera not used for decisions
+[plan 49] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 50] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 112.3, normal 109; 0.0 % too dark, 10.61 % burnt out): camera not used for decisions
+[plan 51] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 52] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 112.3, normal 110; 0.0 % too dark, 8.53 % burnt out): camera not used for decisions
+[plan 53] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 54] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 112.8, normal 110; 0.0 % too dark, 10.64 % burnt out): camera not used for decisions
+[plan 55] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 56] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 111.7, normal 108; 0.0 % too dark, 9.21 % burnt out): camera not used for decisions
+[plan 57] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 58] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 113.9, normal 108; 0.0 % too dark, 11.93 % burnt out): camera not used for decisions
+[plan 59] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 60] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 113.6, normal 107; 0.0 % too dark, 11.39 % burnt out): camera not used for decisions
+[plan 61] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 62] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 114.9, normal 108; 0.0 % too dark, 13.13 % burnt out): camera not used for decisions
+[plan 63] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 64] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 115.5, normal 108; 0.0 % too dark, 12.99 % burnt out): camera not used for decisions
+[plan 65] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 66] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 114.5, normal 107; 0.0 % too dark, 12.94 % burnt out): camera not used for decisions
+[plan 67] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 68] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 116.6, normal 107; 0.0 % too dark, 14.64 % burnt out): camera not used for decisions
+[plan 69] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 70] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 113.9, normal 108; 0.0 % too dark, 12.05 % burnt out): camera not used for decisions
+[plan 71] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 72] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 114.0, normal 109; 0.0 % too dark, 11.9 % burnt out): camera not used for decisions
+[plan 73] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 74] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 113.6, normal 109; 0.0 % too dark, 11.14 % burnt out): camera not used for decisions
+[plan 75] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 76] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 113.4, normal 107; 0.0 % too dark, 12.35 % burnt out): camera not used for decisions
+[plan 77] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 78] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 114.5, normal 108; 0.0 % too dark, 12.62 % burnt out): camera not used for decisions
+[plan 79] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 80] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 114.5, normal 108; 0.0 % too dark, 12.46 % burnt out): camera not used for decisions
+[plan 81] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 82] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 116.6, normal 105; 0.0 % too dark, 14.19 % burnt out): camera not used for decisions
+[plan 83] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 84] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 116.9, normal 106; 0.0 % too dark, 14.49 % burnt out): camera not used for decisions
+[plan 85] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 86] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 115.1, normal 107; 0.0 % too dark, 13.11 % burnt out): camera not used for decisions
+[plan 87] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 88] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.4, normal 108; 0.0 % too dark, 16.14 % burnt out): camera not used for decisions
+[plan 89] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 90] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.6, normal 109; 0.0 % too dark, 15.78 % burnt out): camera not used for decisions
+[plan 91] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 92] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.7, normal 107; 0.0 % too dark, 15.09 % burnt out): camera not used for decisions
+[plan 93] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 94] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.1, normal 108; 0.0 % too dark, 14.68 % burnt out): camera not used for decisions
+[plan 95] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 96] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 118.8, normal 109; 0.0 % too dark, 15.55 % burnt out): camera not used for decisions
+[plan 97] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 98] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.3, normal 109; 0.0 % too dark, 13.98 % burnt out): camera not used for decisions
+[plan 99] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 100] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 115.2, normal 110; 0.0 % too dark, 12.84 % burnt out): camera not used for decisions
+[plan 101] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 102] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 115.7, normal 110; 0.0 % too dark, 13.31 % burnt out): camera not used for decisions
+[plan 103] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 104] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 118.5, normal 110; 0.0 % too dark, 16.58 % burnt out): camera not used for decisions
+[plan 105] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 106] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 118.4, normal 110; 0.0 % too dark, 14.92 % burnt out): camera not used for decisions
+[plan 107] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 108] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.9, normal 110; 0.0 % too dark, 14.92 % burnt out): camera not used for decisions
+[plan 109] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 110] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.8, normal 110; 0.0 % too dark, 16.07 % burnt out): camera not used for decisions
+[plan 111] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 112] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 118.4, normal 110; 0.0 % too dark, 16.79 % burnt out): camera not used for decisions
+[plan 113] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 114] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 115.2, normal 111; 0.0 % too dark, 11.99 % burnt out): camera not used for decisions
+[plan 115] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 116] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 120.2, normal 106; 0.0 % too dark, 21.58 % burnt out): camera not used for decisions
+[plan 117] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 118] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 115.5, normal 107; 0.0 % too dark, 15.98 % burnt out): camera not used for decisions
+[plan 119] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 120] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 119.5, normal 107; 0.0 % too dark, 21.4 % burnt out): camera not used for decisions
+[plan 121] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 122] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.7, normal 113; 0.0 % too dark, 8.32 % burnt out): camera not used for decisions
+[plan 123] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 124] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.6, normal 115; 0.0 % too dark, 8.05 % burnt out): camera not used for decisions
+[plan 125] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 126] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 118.3, normal 116; 0.0 % too dark, 9.64 % burnt out): camera not used for decisions
+[plan 127] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 128] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.6, normal 116; 0.0 % too dark, 8.93 % burnt out): camera not used for decisions
+[plan 129] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 130] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 118.0, normal 117; 0.0 % too dark, 9.25 % burnt out): camera not used for decisions
+[plan 131] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 132] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 118.4, normal 117; 0.0 % too dark, 8.99 % burnt out): camera not used for decisions
+[plan 133] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 134] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 118.0, normal 117; 0.0 % too dark, 8.2 % burnt out): camera not used for decisions
+[plan 135] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 136] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 116.6, normal 114; 0.0 % too dark, 8.46 % burnt out): camera not used for decisions
+[plan 137] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 138] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 115.0, normal 113; 0.0 % too dark, 8.18 % burnt out): camera not used for decisions
+[plan 139] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 140] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.1, normal 114; 0.0 % too dark, 11.41 % burnt out): camera not used for decisions
+[plan 141] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 142] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 116.0, normal 113; 0.0 % too dark, 9.03 % burnt out): camera not used for decisions
+[plan 143] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 144] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 115.2, normal 114; 0.0 % too dark, 8.36 % burnt out): camera not used for decisions
+[plan 145] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 146] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 121.5, normal 114; 0.0 % too dark, 20.42 % burnt out): camera not used for decisions
+[plan 147] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 148] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.1, normal 115; 0.0 % too dark, 9.03 % burnt out): camera not used for decisions
+[plan 149] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 150] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 116.8, normal 110; 0.0 % too dark, 8.73 % burnt out): camera not used for decisions
+[plan 151] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 152] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 119.2, normal 111; 0.0 % too dark, 15.64 % burnt out): camera not used for decisions
+[plan 153] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 154] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 124.2, normal 111; 0.0 % too dark, 20.72 % burnt out): camera not used for decisions
+[plan 155] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 156] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 128.5, normal 113; 0.0 % too dark, 21.29 % burnt out): camera not used for decisions
+[plan 157] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 158] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 125.2, normal 114; 0.0 % too dark, 19.83 % burnt out): camera not used for decisions
+[plan 159] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 160] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 117.7, normal 114; 0.0 % too dark, 13.26 % burnt out): camera not used for decisions
+[plan 161] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 162] MANUAL 20 rpm / arm 1.5  - light on the belt: glare (V 129.3, normal 113; 0.0 % too dark, 21.64 % burnt out): camera not used for decisions
+[plan 163] MANUAL 20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

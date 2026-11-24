@@ -1,0 +1,187 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261114_075328.jsonl
+[plan 1] OFF    22 rpm / arm 1.75  - autoen not reachable
+[plan 2] OFF    22 rpm / arm 1.75  - autoen ready
+[plan 3] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 4] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 5] OFF    22 rpm / arm 1.75  - autoen stopped
+[plan 6] OFF    22 rpm / arm 1.75  - autoen not reachable
+[plan 7] OFF    22 rpm / arm 1.75  - autoen ready
+[plan 8] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 9] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 10] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 11] RUN    22 rpm / arm 1.75  action=verdict:1:fed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 12] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 13] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 14] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 15] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 16] RUN    22 rpm / arm 1.75  action=verdict:2:fed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 17] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 18] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 19] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 20] RUN    22 rpm / arm 1.75  action=verdict:3:fed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 21] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 22] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 23] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 24] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 25] RUN    22 rpm / arm 1.75  action=verdict:4:fed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 26] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 27] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 28] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 29] RUN    22 rpm / arm 1.75  action=verdict:5:fed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 30] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 31] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 32] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 33] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 34] RUN    22 rpm / arm 1.75  action=verdict:6:fed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 35] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 36] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 37] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 38] RUN    22 rpm / arm 1.75  action=feed  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 39] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 40] RUN    22 rpm / arm 1.75  action=verdict:7:fed  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 41] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 42] RUN    22 rpm / arm 1.75  action=feed  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 43] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 44] RUN    22 rpm / arm 1.75  action=verdict:8:fed  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 45] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 46] RUN    22 rpm / arm 1.75  action=feed  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 47] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 48] RUN    22 rpm / arm 1.75  action=verdict:9:nudge  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 49] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 50] RUN    22 rpm / arm 1.75  action=verdict:9:fed  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 51] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 52] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 53] RUN    22 rpm / arm 1.75  action=feed  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 54] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 55] RUN    22 rpm / arm 1.75  action=verdict:10:fed  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 56] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 57] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 58] RUN    22 rpm / arm 1.75  action=feed  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 59] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 60] RUN    22 rpm / arm 1.75  action=verdict:11:fed  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 61] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 62] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 63] RUN    22 rpm / arm 1.75  action=feed  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 64] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 65] RUN    22 rpm / arm 1.75  action=verdict:12:fed  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 66] RUN    22 rpm / arm 1.75  - slip: cubes move at 53% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 67] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 68] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 69] RUN    22 rpm / arm 1.75  action=feed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 70] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 71] RUN    22 rpm / arm 1.75  action=verdict:13:fed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 72] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 73] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.35 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.6 s per pick
+[plan 74] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.6 -> 1.35 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.6 s per pick
+[plan 75] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.35 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.6 s per pick
+[plan 76] RUN    22 rpm / arm 1.75  action=verdict:14:fed  - experiment: late 1.6 -> 1.35 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.6 s per pick
+[plan 77] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.35 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.6 s per pick
+[plan 78] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.6 -> 1.35 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.6 s per pick
+[plan 79] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.35 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.6 s per pick
+[plan 80] RUN    22 rpm / arm 1.75  action=verdict:15:fed  - experiment: late 1.6 -> 1.35 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.6 s per pick
+[plan 81] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.35 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.6 s per pick
+[plan 82] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.35 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.6 s per pick
+[plan 83] OFF    22 rpm / arm 1.75  - autoen stopped
+[plan 84] OFF    22 rpm / arm 1.75  - autoen not reachable
+[actuate] autoen restarted (cycle 11 -> 0): cycle hand-over starts again
+[plan 85] OFF    22 rpm / arm 1.75  - autoen ready
+[plan 86] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 87] RUN    22 rpm / arm 1.75  action=feed  - autoen preparing
+[plan 88] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 89] RUN    22 rpm / arm 1.75  action=verdict:1:fed  - autoen preparing
+[plan 90] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 91] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 92] RUN    22 rpm / arm 1.75  action=feed  - autoen preparing
+[plan 93] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 94] RUN    22 rpm / arm 1.75  action=verdict:2:fed  - autoen preparing
+[plan 95] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 96] RUN    22 rpm / arm 1.75  action=feed  - autoen preparing
+[plan 97] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 98] RUN    22 rpm / arm 1.75  action=verdict:3:fed  - autoen preparing
+[plan 99] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 100] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 101] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 102] RUN    22 rpm / arm 1.75  action=feed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 103] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 104] RUN    22 rpm / arm 1.75  action=verdict:4:fed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 105] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 106] RUN    22 rpm / arm 1.75  action=feed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 107] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 108] RUN    22 rpm / arm 1.75  action=verdict:5:fed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 109] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 110] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 111] RUN    22 rpm / arm 1.75  action=feed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 112] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 113] RUN    22 rpm / arm 1.75  action=verdict:6:fed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 114] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 115] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 116] RUN    22 rpm / arm 1.75  action=feed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 117] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 118] RUN    22 rpm / arm 1.75  action=verdict:7:fed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 119] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 120] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 121] RUN    22 rpm / arm 1.75  action=feed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 122] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 123] RUN    22 rpm / arm 1.75  action=verdict:8:fed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 124] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 125] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 126] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 127] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 128] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 129] RUN    22 rpm / arm 1.75  action=verdict:9:fed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 130] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 131] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 132] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 133] RUN    22 rpm / arm 1.75  action=verdict:10:fed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 134] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 135] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 136] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 137] RUN    22 rpm / arm 1.75  action=verdict:11:fed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 138] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 139] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 140] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 141] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 142] RUN    22 rpm / arm 1.75  action=verdict:12:fed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 143] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 144] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 145] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 146] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 147] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 148] RUN    22 rpm / arm 1.75  action=verdict:13:fed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 149] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 150] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 151] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 152] RUN    22 rpm / arm 1.75  action=verdict:14:fed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 153] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 154] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 155] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 156] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 157] RUN    22 rpm / arm 1.75  action=verdict:15:fed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 158] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 159] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 160] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 161] RUN    22 rpm / arm 1.75  action=verdict:16:fed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 162] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 163] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 164] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 165] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 166] RUN    22 rpm / arm 1.75  action=verdict:17:fed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 167] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 168] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 169] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 170] RUN    22 rpm / arm 1.75  action=verdict:18:fed  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 171] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.35 gave 14.7 s per pick vs 13.6 s - not tried again for 50 picks
+[plan 172] RUN    22 rpm / arm 1.75  - experiment: gap_mm 60.0 -> 80.0 (mm of free belt between two cubes) for 6 picks; to beat: 11.7 s per pick
+[plan 173] RUN    22 rpm / arm 1.75  - experiment: gap_mm 60.0 -> 80.0 (mm of free belt between two cubes) for 6 picks; to beat: 11.7 s per pick
+[plan 174] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 175] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 176] RUN    22 rpm / arm 1.75  action=verdict:19:fed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 177] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 178] OFF    22 rpm / arm 1.75  - autoen stopped
+[plan 179] OFF    22 rpm / arm 1.75  - autoen not reachable
+[actuate] autoen restarted (cycle 17 -> 0): cycle hand-over starts again
+[plan 180] OFF    22 rpm / arm 1.75  - autoen ready
+[plan 181] OFF    22 rpm / arm 1.75  - autoen not reachable
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

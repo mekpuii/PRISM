@@ -1,0 +1,547 @@
+=================================================================
+DELTA - Raspberry Pi 4 Object Perception + Spacing + Demand Collection
+=================================================================
+Mode: HSV color detection + USB camera (no depth) + Kalman
+Colours (priority order): white, orange
+Belt axis: u   direction: +1
+Camera streams: 854x480 at 6 FPS
+Demand window: 180 seconds
+Data sample interval: 10 seconds
+History file: delta_demand_history.csv
+Summary file: delta_3min_summary.csv
+Press ESC or Q to exit.
+=================================================================
+[camera] using /dev/v4l/by-id/usb-QCM_Astro_HD_Camera-video-index0
+
+Starting USB camera /dev/v4l/by-id/usb-QCM_Astro_HD_Camera-video-index0 at 1280x720 -> 854x480, 6 FPS (camera 15 FPS, MJPG)...
+Camera warm-up: 1/3
+Camera warm-up: 2/3
+Camera warm-up: 3/3
+[spacing] USB camera has no depth; gaps will be in pixels only
+[belt] learning the empty belt (reflections are ignored); belt brightness at calibration V=62
+[DATA] Window 1 |   10.2s | +0 {} (total 0)
+[DATA] Window 1 |   20.3s | +0 {} (total 0)
+[DATA] Window 1 |   30.5s | +0 {} (total 0)
+[DATA] Window 1 |   40.7s | +0 {} (total 0)
+[DATA] Window 1 |   50.7s | +0 {} (total 0)
+[DATA] Window 1 |   60.8s | +0 {} (total 0)
+[DATA] Window 1 |   70.8s | +0 {} (total 0)
+[DATA] Window 1 |   81.0s | +0 {} (total 0)
+[DATA] Window 1 |   91.1s | +0 {} (total 0)
+[DATA] Window 1 |  101.1s | +0 {} (total 0)
+[calibration] working area changed from the dashboard: 4 corners [[49, 230], [819, 230], [819, 295], [49, 295]]
+[calibration] reloaded from the dashboard: white [[[0, 0, 144], [179, 43, 226]]], orange [[[2, 156, 180], [10, 255, 255]]]; belt V=62
+[belt] 3 cube(s) were standing on the belt while it was learned: kept as cubes
+[DATA] Window 1 |  111.1s | +0 {} (total 0)
+[DATA] Window 1 |  121.3s | +3 {'white': 1, 'orange': 2} (total 3)
+[DATA] Window 1 |  131.3s | +0 {} (total 3)
+[DATA] Window 1 |  141.5s | +0 {} (total 3)
+[DATA] Window 1 |  151.6s | +0 {} (total 3)
+[DATA] Window 1 |  161.6s | +0 {} (total 3)
+[DATA] Window 1 |  171.8s | +0 {} (total 3)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #1 COMPLETE
+Objects : 3   by colour: {'white': 1, 'orange': 2}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 2 |   10.2s | +0 {} (total 0)
+[DATA] Window 2 |   20.3s | +0 {} (total 0)
+[DATA] Window 2 |   30.5s | +0 {} (total 0)
+[DATA] Window 2 |   40.7s | +0 {} (total 0)
+[DATA] Window 2 |   50.7s | +0 {} (total 0)
+[DATA] Window 2 |   60.8s | +0 {} (total 0)
+[DATA] Window 2 |   71.0s | +0 {} (total 0)
+[DATA] Window 2 |   81.0s | +0 {} (total 0)
+[DATA] Window 2 |   91.0s | +0 {} (total 0)
+[DATA] Window 2 |  101.2s | +0 {} (total 0)
+[belt] light changed (86% of the belt different at once): learning the empty belt again
+[DATA] Window 2 |  111.2s | +1 {'white': 1} (total 1)
+[DATA] Window 2 |  121.2s | +0 {} (total 1)
+[DATA] Window 2 |  131.3s | +0 {} (total 1)
+[DATA] Window 2 |  141.3s | +0 {} (total 1)
+[DATA] Window 2 |  151.5s | +0 {} (total 1)
+[DATA] Window 2 |  161.7s | +0 {} (total 1)
+[DATA] Window 2 |  171.7s | +0 {} (total 1)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #2 COMPLETE
+Objects : 1   by colour: {'white': 1}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 3 |   10.0s | +0 {} (total 0)
+[DATA] Window 3 |   20.2s | +0 {} (total 0)
+[DATA] Window 3 |   30.3s | +0 {} (total 0)
+[DATA] Window 3 |   40.5s | +0 {} (total 0)
+[DATA] Window 3 |   50.5s | +0 {} (total 0)
+[DATA] Window 3 |   60.7s | +0 {} (total 0)
+[DATA] Window 3 |   70.8s | +0 {} (total 0)
+[DATA] Window 3 |   80.8s | +0 {} (total 0)
+[DATA] Window 3 |   91.0s | +0 {} (total 0)
+[DATA] Window 3 |  101.0s | +0 {} (total 0)
+[DATA] Window 3 |  111.2s | +0 {} (total 0)
+[DATA] Window 3 |  121.3s | +0 {} (total 0)
+[DATA] Window 3 |  131.3s | +0 {} (total 0)
+[DATA] Window 3 |  141.3s | +0 {} (total 0)
+[DATA] Window 3 |  151.5s | +0 {} (total 0)
+[DATA] Window 3 |  161.7s | +0 {} (total 0)
+[DATA] Window 3 |  171.8s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #3 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 4 |   10.2s | +0 {} (total 0)
+[DATA] Window 4 |   20.3s | +0 {} (total 0)
+[DATA] Window 4 |   30.3s | +0 {} (total 0)
+[DATA] Window 4 |   40.5s | +0 {} (total 0)
+[DATA] Window 4 |   50.7s | +0 {} (total 0)
+[DATA] Window 4 |   60.7s | +0 {} (total 0)
+[DATA] Window 4 |   70.7s | +0 {} (total 0)
+[DATA] Window 4 |   80.8s | +0 {} (total 0)
+[DATA] Window 4 |   91.0s | +0 {} (total 0)
+[DATA] Window 4 |  101.2s | +0 {} (total 0)
+[DATA] Window 4 |  111.2s | +0 {} (total 0)
+[DATA] Window 4 |  121.3s | +0 {} (total 0)
+[DATA] Window 4 |  131.5s | +0 {} (total 0)
+[DATA] Window 4 |  141.5s | +0 {} (total 0)
+[DATA] Window 4 |  151.7s | +0 {} (total 0)
+[DATA] Window 4 |  161.8s | +0 {} (total 0)
+[DATA] Window 4 |  171.8s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #4 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 5 |   10.0s | +0 {} (total 0)
+[DATA] Window 5 |   20.0s | +0 {} (total 0)
+[DATA] Window 5 |   30.2s | +0 {} (total 0)
+[DATA] Window 5 |   40.2s | +0 {} (total 0)
+[DATA] Window 5 |   50.3s | +0 {} (total 0)
+[DATA] Window 5 |   60.5s | +0 {} (total 0)
+[DATA] Window 5 |   70.7s | +0 {} (total 0)
+[DATA] Window 5 |   80.7s | +0 {} (total 0)
+[DATA] Window 5 |   90.8s | +0 {} (total 0)
+[DATA] Window 5 |  100.8s | +0 {} (total 0)
+[DATA] Window 5 |  111.0s | +0 {} (total 0)
+[DATA] Window 5 |  121.2s | +0 {} (total 0)
+[DATA] Window 5 |  131.3s | +0 {} (total 0)
+[DATA] Window 5 |  141.3s | +0 {} (total 0)
+[DATA] Window 5 |  151.5s | +0 {} (total 0)
+[DATA] Window 5 |  161.7s | +0 {} (total 0)
+[DATA] Window 5 |  171.7s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #5 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 6 |   10.0s | +0 {} (total 0)
+[DATA] Window 6 |   20.0s | +0 {} (total 0)
+[DATA] Window 6 |   30.2s | +0 {} (total 0)
+[DATA] Window 6 |   40.3s | +0 {} (total 0)
+[DATA] Window 6 |   50.3s | +0 {} (total 0)
+[DATA] Window 6 |   60.5s | +0 {} (total 0)
+[DATA] Window 6 |   70.7s | +0 {} (total 0)
+[DATA] Window 6 |   80.7s | +1 {'orange': 1} (total 1)
+[DATA] Window 6 |   90.8s | +1 {'orange': 1} (total 2)
+[DATA] Window 6 |  100.8s | +0 {} (total 2)
+[DATA] Window 6 |  111.0s | +0 {} (total 2)
+[DATA] Window 6 |  121.2s | +0 {} (total 2)
+[DATA] Window 6 |  131.3s | +0 {} (total 2)
+[DATA] Window 6 |  141.3s | +0 {} (total 2)
+[DATA] Window 6 |  151.5s | +0 {} (total 2)
+[DATA] Window 6 |  161.5s | +0 {} (total 2)
+[DATA] Window 6 |  171.7s | +0 {} (total 2)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #6 COMPLETE
+Objects : 2   by colour: {'orange': 2}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 7 |   10.2s | +0 {} (total 0)
+[DATA] Window 7 |   20.3s | +0 {} (total 0)
+[DATA] Window 7 |   30.5s | +1 {'orange': 1} (total 1)
+[DATA] Window 7 |   40.5s | +1 {'orange': 1} (total 2)
+[DATA] Window 7 |   50.7s | +1 {'orange': 1} (total 3)
+[DATA] Window 7 |   60.8s | +1 {'orange': 1} (total 4)
+[DATA] Window 7 |   71.0s | +0 {} (total 4)
+[DATA] Window 7 |   81.0s | +1 {'orange': 1} (total 5)
+[DATA] Window 7 |   91.2s | +1 {'orange': 1} (total 6)
+[DATA] Window 7 |  101.2s | +1 {'orange': 1} (total 7)
+[DATA] Window 7 |  111.2s | +1 {'orange': 1} (total 8)
+[DATA] Window 7 |  121.3s | +0 {} (total 8)
+[DATA] Window 7 |  131.3s | +0 {} (total 8)
+[belt] light changed (43% of the belt different at once): learning the empty belt again
+[DATA] Window 7 |  141.3s | +0 {} (total 8)
+[DATA] Window 7 |  151.5s | +0 {} (total 8)
+[DATA] Window 7 |  161.5s | +0 {} (total 8)
+[DATA] Window 7 |  171.7s | +0 {} (total 8)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #7 COMPLETE
+Objects : 8   by colour: {'orange': 8}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[belt] light changed (100% of the belt different at once): learning the empty belt again
+[belt] 1 cube(s) were standing on the belt while it was learned: kept as cubes
+[DATA] Window 8 |   10.2s | +0 {} (total 0)
+[DATA] Window 8 |   20.2s | +0 {} (total 0)
+[DATA] Window 8 |   30.3s | +0 {} (total 0)
+[DATA] Window 8 |   40.5s | +1 {'orange': 1} (total 1)
+[DATA] Window 8 |   50.5s | +0 {} (total 1)
+[DATA] Window 8 |   60.7s | +0 {} (total 1)
+[DATA] Window 8 |   70.8s | +0 {} (total 1)
+[DATA] Window 8 |   80.8s | +0 {} (total 1)
+[DATA] Window 8 |   91.0s | +0 {} (total 1)
+[DATA] Window 8 |  101.0s | +0 {} (total 1)
+[DATA] Window 8 |  111.0s | +0 {} (total 1)
+[DATA] Window 8 |  121.2s | +0 {} (total 1)
+[DATA] Window 8 |  131.3s | +0 {} (total 1)
+[DATA] Window 8 |  141.3s | +0 {} (total 1)
+[DATA] Window 8 |  151.5s | +0 {} (total 1)
+[DATA] Window 8 |  161.5s | +0 {} (total 1)
+[DATA] Window 8 |  171.5s | +0 {} (total 1)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #8 COMPLETE
+Objects : 1   by colour: {'orange': 1}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 9 |   10.0s | +0 {} (total 0)
+[DATA] Window 9 |   20.0s | +0 {} (total 0)
+[DATA] Window 9 |   30.0s | +0 {} (total 0)
+[DATA] Window 9 |   40.0s | +0 {} (total 0)
+[DATA] Window 9 |   50.2s | +0 {} (total 0)
+[DATA] Window 9 |   60.3s | +0 {} (total 0)
+[DATA] Window 9 |   70.5s | +0 {} (total 0)
+[DATA] Window 9 |   80.5s | +0 {} (total 0)
+[DATA] Window 9 |   90.7s | +0 {} (total 0)
+[DATA] Window 9 |  100.8s | +0 {} (total 0)
+[DATA] Window 9 |  110.8s | +0 {} (total 0)
+[DATA] Window 9 |  121.0s | +0 {} (total 0)
+[DATA] Window 9 |  131.2s | +0 {} (total 0)
+[DATA] Window 9 |  141.2s | +0 {} (total 0)
+[DATA] Window 9 |  151.2s | +0 {} (total 0)
+[DATA] Window 9 |  161.3s | +0 {} (total 0)
+[DATA] Window 9 |  171.3s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #9 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 10 |   10.2s | +0 {} (total 0)
+[DATA] Window 10 |   20.2s | +0 {} (total 0)
+[DATA] Window 10 |   30.3s | +1 {'white': 1} (total 1)
+[DATA] Window 10 |   40.5s | +1 {'white': 1} (total 2)
+[DATA] Window 10 |   50.5s | +1 {'white': 1} (total 3)
+[DATA] Window 10 |   60.5s | +0 {} (total 3)
+[DATA] Window 10 |   70.7s | +0 {} (total 3)
+[DATA] Window 10 |   80.7s | +0 {} (total 3)
+[DATA] Window 10 |   90.7s | +0 {} (total 3)
+[DATA] Window 10 |  100.8s | +0 {} (total 3)
+[DATA] Window 10 |  110.8s | +0 {} (total 3)
+[DATA] Window 10 |  121.0s | +0 {} (total 3)
+[DATA] Window 10 |  131.0s | +0 {} (total 3)
+[DATA] Window 10 |  141.2s | +0 {} (total 3)
+[DATA] Window 10 |  151.3s | +0 {} (total 3)
+[DATA] Window 10 |  161.5s | +0 {} (total 3)
+[DATA] Window 10 |  171.7s | +0 {} (total 3)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #10 COMPLETE
+Objects : 3   by colour: {'white': 3}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 11 |   10.2s | +0 {} (total 0)
+[DATA] Window 11 |   20.2s | +0 {} (total 0)
+[DATA] Window 11 |   30.2s | +0 {} (total 0)
+[DATA] Window 11 |   40.3s | +0 {} (total 0)
+[DATA] Window 11 |   50.3s | +0 {} (total 0)
+[DATA] Window 11 |   60.5s | +0 {} (total 0)
+[DATA] Window 11 |   70.7s | +0 {} (total 0)
+[DATA] Window 11 |   80.7s | +0 {} (total 0)
+[DATA] Window 11 |   90.8s | +0 {} (total 0)
+[belt] light changed (64% of the belt different at once): learning the empty belt again
+[DATA] Window 11 |  100.8s | +0 {} (total 0)
+[DATA] Window 11 |  111.0s | +0 {} (total 0)
+[DATA] Window 11 |  121.2s | +0 {} (total 0)
+[DATA] Window 11 |  131.3s | +0 {} (total 0)
+[DATA] Window 11 |  141.3s | +0 {} (total 0)
+[DATA] Window 11 |  151.5s | +0 {} (total 0)
+[DATA] Window 11 |  161.7s | +0 {} (total 0)
+[DATA] Window 11 |  171.7s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #11 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 12 |   10.2s | +0 {} (total 0)
+[DATA] Window 12 |   20.2s | +0 {} (total 0)
+[DATA] Window 12 |   30.3s | +0 {} (total 0)
+[DATA] Window 12 |   40.5s | +0 {} (total 0)
+[DATA] Window 12 |   50.5s | +0 {} (total 0)
+[DATA] Window 12 |   60.7s | +0 {} (total 0)
+[DATA] Window 12 |   70.8s | +0 {} (total 0)
+[belt] light changed (37% of the belt different at once): learning the empty belt again
+[DATA] Window 12 |   80.8s | +0 {} (total 0)
+[belt] light changed (58% of the belt different at once): learning the empty belt again
+[DATA] Window 12 |   91.0s | +0 {} (total 0)
+[DATA] Window 12 |  101.0s | +0 {} (total 0)
+[DATA] Window 12 |  111.2s | +0 {} (total 0)
+[DATA] Window 12 |  121.3s | +0 {} (total 0)
+[DATA] Window 12 |  131.3s | +0 {} (total 0)
+[DATA] Window 12 |  141.5s | +0 {} (total 0)
+[DATA] Window 12 |  151.7s | +0 {} (total 0)
+[DATA] Window 12 |  161.7s | +0 {} (total 0)
+[DATA] Window 12 |  171.8s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #12 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 13 |   10.2s | +0 {} (total 0)
+[DATA] Window 13 |   20.3s | +0 {} (total 0)
+[DATA] Window 13 |   30.3s | +0 {} (total 0)
+[DATA] Window 13 |   40.5s | +0 {} (total 0)
+[belt] light changed (38% of the belt different at once): learning the empty belt again
+[DATA] Window 13 |   50.5s | +0 {} (total 0)
+[DATA] Window 13 |   60.7s | +0 {} (total 0)
+[DATA] Window 13 |   70.8s | +0 {} (total 0)
+[DATA] Window 13 |   80.8s | +0 {} (total 0)
+[DATA] Window 13 |   91.0s | +0 {} (total 0)
+[DATA] Window 13 |  101.2s | +0 {} (total 0)
+[DATA] Window 13 |  111.3s | +0 {} (total 0)
+[DATA] Window 13 |  121.3s | +0 {} (total 0)
+[DATA] Window 13 |  131.5s | +0 {} (total 0)
+[DATA] Window 13 |  141.5s | +0 {} (total 0)
+[belt] light changed (92% of the belt different at once): learning the empty belt again
+[DATA] Window 13 |  151.7s | +0 {} (total 0)
+[DATA] Window 13 |  161.8s | +0 {} (total 0)
+[DATA] Window 13 |  171.8s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #13 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 14 |   10.2s | +0 {} (total 0)
+[DATA] Window 14 |   20.2s | +0 {} (total 0)
+[DATA] Window 14 |   30.2s | +0 {} (total 0)
+[DATA] Window 14 |   40.3s | +0 {} (total 0)
+[DATA] Window 14 |   50.3s | +0 {} (total 0)
+[DATA] Window 14 |   60.4s | +0 {} (total 0)
+[belt] light changed (89% of the belt different at once): learning the empty belt again
+[belt] light changed (93% of the belt different at once): learning the empty belt again
+[DATA] Window 14 |   70.5s | +0 {} (total 0)
+[DATA] Window 14 |   80.7s | +0 {} (total 0)
+[belt] light changed (100% of the belt different at once): learning the empty belt again
+[belt] 1 cube(s) were standing on the belt while it was learned: kept as cubes
+[DATA] Window 14 |   90.8s | +0 {} (total 0)
+[belt] light changed (100% of the belt different at once): learning the empty belt again
+[belt] light changed (38% of the belt different at once): learning the empty belt again
+[DATA] Window 14 |  100.8s | +0 {} (total 0)
+[DATA] Window 14 |  110.9s | +0 {} (total 0)
+[DATA] Window 14 |  120.9s | +0 {} (total 0)
+[DATA] Window 14 |  131.1s | +0 {} (total 0)
+[DATA] Window 14 |  141.1s | +0 {} (total 0)
+[DATA] Window 14 |  151.3s | +0 {} (total 0)
+[DATA] Window 14 |  161.3s | +0 {} (total 0)
+[DATA] Window 14 |  171.3s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #14 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 15 |   10.1s | +0 {} (total 0)
+[DATA] Window 15 |   20.3s | +0 {} (total 0)
+[DATA] Window 15 |   30.5s | +0 {} (total 0)
+[DATA] Window 15 |   40.5s | +0 {} (total 0)
+[DATA] Window 15 |   50.5s | +0 {} (total 0)
+[DATA] Window 15 |   60.8s | +0 {} (total 0)
+[DATA] Window 15 |   70.9s | +0 {} (total 0)
+[DATA] Window 15 |   80.9s | +0 {} (total 0)
+[DATA] Window 15 |   91.0s | +0 {} (total 0)
+[DATA] Window 15 |  101.0s | +0 {} (total 0)
+[DATA] Window 15 |  111.2s | +0 {} (total 0)
+[DATA] Window 15 |  121.4s | +0 {} (total 0)
+[DATA] Window 15 |  131.5s | +1 {'white': 1} (total 1)
+[DATA] Window 15 |  141.6s | +0 {} (total 1)
+[DATA] Window 15 |  151.8s | +0 {} (total 1)
+[DATA] Window 15 |  162.0s | +0 {} (total 1)
+[DATA] Window 15 |  172.0s | +0 {} (total 1)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #15 COMPLETE
+Objects : 1   by colour: {'white': 1}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 16 |   10.2s | +0 {} (total 0)
+[DATA] Window 16 |   20.3s | +0 {} (total 0)
+[DATA] Window 16 |   30.3s | +0 {} (total 0)
+[DATA] Window 16 |   40.5s | +0 {} (total 0)
+[DATA] Window 16 |   50.6s | +0 {} (total 0)
+[DATA] Window 16 |   60.7s | +0 {} (total 0)
+[DATA] Window 16 |   70.8s | +0 {} (total 0)
+[belt] light changed (61% of the belt different at once): learning the empty belt again
+[belt] 1 cube(s) were standing on the belt while it was learned: kept as cubes
+[belt] light changed (86% of the belt different at once): learning the empty belt again
+[belt] light changed (70% of the belt different at once): learning the empty belt again
+[DATA] Window 16 |   80.9s | +0 {} (total 0)
+[belt] light changed (49% of the belt different at once): learning the empty belt again
+[DATA] Window 16 |   91.0s | +0 {} (total 0)
+[DATA] Window 16 |  101.1s | +1 {'white': 1} (total 1)
+[DATA] Window 16 |  111.1s | +0 {} (total 1)
+[DATA] Window 16 |  121.2s | +0 {} (total 1)
+[DATA] Window 16 |  131.2s | +0 {} (total 1)
+[DATA] Window 16 |  141.2s | +0 {} (total 1)
+[DATA] Window 16 |  151.4s | +0 {} (total 1)
+[DATA] Window 16 |  161.5s | +0 {} (total 1)
+[DATA] Window 16 |  171.8s | +0 {} (total 1)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #16 COMPLETE
+Objects : 1   by colour: {'white': 1}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 17 |   10.2s | +0 {} (total 0)
+[DATA] Window 17 |   20.3s | +0 {} (total 0)
+[DATA] Window 17 |   30.3s | +0 {} (total 0)
+[DATA] Window 17 |   40.6s | +0 {} (total 0)
+[DATA] Window 17 |   50.6s | +1 {'white': 1} (total 1)
+[DATA] Window 17 |   60.7s | +0 {} (total 1)
+[DATA] Window 17 |   70.7s | +0 {} (total 1)
+[DATA] Window 17 |   80.7s | +1 {'white': 1} (total 2)
+[DATA] Window 17 |   90.7s | +1 {'white': 1} (total 3)
+[DATA] Window 17 |  100.9s | +1 {'white': 1} (total 4)
+[DATA] Window 17 |  110.9s | +0 {} (total 4)
+[DATA] Window 17 |  121.0s | +0 {} (total 4)
+[DATA] Window 17 |  131.1s | +0 {} (total 4)
+[DATA] Window 17 |  141.2s | +0 {} (total 4)
+[DATA] Window 17 |  151.4s | +0 {} (total 4)
+[DATA] Window 17 |  161.5s | +1 {'white': 1} (total 5)
+[DATA] Window 17 |  171.6s | +0 {} (total 5)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #17 COMPLETE
+Objects : 5   by colour: {'white': 5}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 18 |   10.2s | +0 {} (total 0)
+[DATA] Window 18 |   20.3s | +0 {} (total 0)
+[DATA] Window 18 |   30.4s | +0 {} (total 0)
+[DATA] Window 18 |   40.5s | +0 {} (total 0)
+[DATA] Window 18 |   50.7s | +0 {} (total 0)
+[DATA] Window 18 |   61.0s | +0 {} (total 0)
+[DATA] Window 18 |   71.1s | +0 {} (total 0)
+[DATA] Window 18 |   81.4s | +0 {} (total 0)
+[DATA] Window 18 |   91.4s | +0 {} (total 0)
+[DATA] Window 18 |  101.5s | +0 {} (total 0)
+[DATA] Window 18 |  111.7s | +0 {} (total 0)
+[DATA] Window 18 |  121.7s | +0 {} (total 0)
+[DATA] Window 18 |  131.7s | +0 {} (total 0)
+[DATA] Window 18 |  141.9s | +0 {} (total 0)
+[DATA] Window 18 |  152.1s | +0 {} (total 0)
+[DATA] Window 18 |  162.1s | +0 {} (total 0)
+[DATA] Window 18 |  172.2s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #18 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 19 |   10.2s | +0 {} (total 0)
+[DATA] Window 19 |   20.2s | +0 {} (total 0)
+[DATA] Window 19 |   30.3s | +0 {} (total 0)
+[DATA] Window 19 |   40.5s | +0 {} (total 0)
+[DATA] Window 19 |   50.5s | +0 {} (total 0)
+[DATA] Window 19 |   60.7s | +0 {} (total 0)
+[DATA] Window 19 |   70.8s | +0 {} (total 0)
+[DATA] Window 19 |   80.8s | +0 {} (total 0)
+[DATA] Window 19 |   91.0s | +0 {} (total 0)
+[DATA] Window 19 |  101.2s | +1 {'white': 1} (total 1)
+[DATA] Window 19 |  111.2s | +0 {} (total 1)
+[DATA] Window 19 |  121.3s | +0 {} (total 1)
+[DATA] Window 19 |  131.3s | +0 {} (total 1)
+[DATA] Window 19 |  141.5s | +0 {} (total 1)
+[DATA] Window 19 |  151.7s | +0 {} (total 1)
+[DATA] Window 19 |  161.7s | +0 {} (total 1)
+[belt] light changed (100% of the belt different at once): learning the empty belt again
+[belt] light changed (38% of the belt different at once): learning the empty belt again
+[belt] light changed (59% of the belt different at once): learning the empty belt again
+[belt] light changed (93% of the belt different at once): learning the empty belt again
+[DATA] Window 19 |  171.8s | +0 {} (total 1)
+[belt] light changed (92% of the belt different at once): learning the empty belt again
+[belt] light changed (43% of the belt different at once): learning the empty belt again
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #19 COMPLETE
+Objects : 1   by colour: {'white': 1}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 20 |   10.2s | +0 {} (total 0)
+[DATA] Window 20 |   20.2s | +0 {} (total 0)
+[DATA] Window 20 |   30.2s | +0 {} (total 0)
+[DATA] Window 20 |   40.3s | +0 {} (total 0)
+[DATA] Window 20 |   50.3s | +0 {} (total 0)
+[DATA] Window 20 |   60.5s | +0 {} (total 0)
+[DATA] Window 20 |   70.7s | +0 {} (total 0)
+[DATA] Window 20 |   80.7s | +0 {} (total 0)
+[DATA] Window 20 |   90.8s | +0 {} (total 0)
+[DATA] Window 20 |  100.8s | +0 {} (total 0)
+[DATA] Window 20 |  110.8s | +0 {} (total 0)
+[DATA] Window 20 |  120.8s | +0 {} (total 0)
+[DATA] Window 20 |  130.8s | +0 {} (total 0)
+[DATA] Window 20 |  141.0s | +0 {} (total 0)
+[DATA] Window 20 |  151.2s | +0 {} (total 0)
+[DATA] Window 20 |  161.2s | +0 {} (total 0)
+[DATA] Window 20 |  171.3s | +0 {} (total 0)
+[belt] light changed (94% of the belt different at once): learning the empty belt again
+[belt] light changed (67% of the belt different at once): learning the empty belt again
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #20 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[belt] light changed (99% of the belt different at once): learning the empty belt again
+[DATA] Window 21 |   10.2s | +0 {} (total 0)
+[DATA] Window 21 |   20.2s | +0 {} (total 0)
+[DATA] Window 21 |   30.3s | +0 {} (total 0)
+[belt] light changed (82% of the belt different at once): learning the empty belt again
+[DATA] Window 21 |   40.5s | +0 {} (total 0)
+[belt] light changed (73% of the belt different at once): learning the empty belt again
+[DATA] Window 21 |   50.5s | +0 {} (total 0)
+
+Frame timeout/error: camera stopped delivering frames (unplugged?)
+No new frames arrived within the configured timeout.
+
+Stopping camera...
+[ WARN:4@3665.475] global cap_v4l.cpp:804 requestBuffers VIDEOIO(V4L2:/dev/v4l/by-id/usb-QCM_Astro_HD_Camera-video-index0): failed VIDIOC_REQBUFS: errno=19 (No such device)
+Done.

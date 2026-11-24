@@ -1,0 +1,344 @@
+{
+ "run_id": "cal_20261024_211057",
+ "kind": "cal",
+ "start": "2026-10-24T21:10:57",
+ "end": "2026-10-24T21:15:28",
+ "status": "finished",
+ "rpm_units": "output_rpm_cpr11880",
+ "operator_note": "",
+ "cube_set": "none (empty belt)",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6",
+  "mtime": "2026-10-24T21:03:59"
+ },
+ "experiment_sha256": "ec0a8ef556d504dcd305e3a2aa80971fa616813d7387cceed67742280fe9358c",
+ "config_snapshots": [],
+ "tasks": [
+  {
+   "id": 1,
+   "status": "done",
+   "kind": "belt_run",
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "rpm": 5.0,
+   "t_start": 1792851115.1121953,
+   "t_end": 1792851145.169559,
+   "arrived": false,
+   "error": null,
+   "stats": {
+    "belt_rpm": {
+     "n": 251,
+     "mean": 4.992,
+     "std": 0.063
+    },
+    "belt_mA": {
+     "n": 251,
+     "mean": 28.219,
+     "std": 2.432
+    },
+    "belt_W": {
+     "n": 251,
+     "mean": 0.344,
+     "std": 0.03
+    },
+    "arm_mA": {
+     "n": 130,
+     "mean": 8.95,
+     "std": 4.435
+    },
+    "arm_W": {
+     "n": 130,
+     "mean": 0.109,
+     "std": 0.054
+    }
+   }
+  },
+  {
+   "id": 2,
+   "status": "done",
+   "kind": "belt_run",
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "rpm": 8.0,
+   "t_start": 1792851150.1867864,
+   "t_end": 1792851180.2348518,
+   "arrived": false,
+   "error": null,
+   "stats": {
+    "belt_rpm": {
+     "n": 252,
+     "mean": 7.996,
+     "std": 0.058
+    },
+    "belt_mA": {
+     "n": 252,
+     "mean": 41.373,
+     "std": 2.021
+    },
+    "belt_W": {
+     "n": 252,
+     "mean": 0.505,
+     "std": 0.025
+    },
+    "arm_mA": {
+     "n": 130,
+     "mean": 9.7,
+     "std": 5.715
+    },
+    "arm_W": {
+     "n": 130,
+     "mean": 0.118,
+     "std": 0.07
+    }
+   }
+  },
+  {
+   "id": 3,
+   "status": "done",
+   "kind": "belt_run",
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "rpm": 11.1,
+   "t_start": 1792851182.540754,
+   "t_end": 1792851212.6188467,
+   "arrived": false,
+   "error": null,
+   "stats": {
+    "belt_rpm": {
+     "n": 249,
+     "mean": 11.101,
+     "std": 0.063
+    },
+    "belt_mA": {
+     "n": 249,
+     "mean": 57.193,
+     "std": 2.41
+    },
+    "belt_W": {
+     "n": 249,
+     "mean": 0.697,
+     "std": 0.029
+    },
+    "arm_mA": {
+     "n": 133,
+     "mean": 9.286,
+     "std": 4.387
+    },
+    "arm_W": {
+     "n": 133,
+     "mean": 0.113,
+     "std": 0.053
+    }
+   }
+  },
+  {
+   "id": 4,
+   "status": "done",
+   "kind": "belt_run",
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "rpm": 15.0,
+   "t_start": 1792851215.2253654,
+   "t_end": 1792851245.2872093,
+   "arrived": false,
+   "error": null,
+   "stats": {
+    "belt_rpm": {
+     "n": 250,
+     "mean": 15.001,
+     "std": 0.078
+    },
+    "belt_mA": {
+     "n": 250,
+     "mean": 79.496,
+     "std": 3.192
+    },
+    "belt_W": {
+     "n": 250,
+     "mean": 0.969,
+     "std": 0.039
+    },
+    "arm_mA": {
+     "n": 130,
+     "mean": 8.95,
+     "std": 5.364
+    },
+    "arm_W": {
+     "n": 130,
+     "mean": 0.109,
+     "std": 0.065
+    }
+   }
+  },
+  {
+   "id": 5,
+   "status": "done",
+   "kind": "belt_run",
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "rpm": 20.0,
+   "t_start": 1792851249.1970813,
+   "t_end": 1792851279.2596316,
+   "arrived": false,
+   "error": null,
+   "stats": {
+    "belt_rpm": {
+     "n": 258,
+     "mean": 19.999,
+     "std": 0.099
+    },
+    "belt_mA": {
+     "n": 258,
+     "mean": 109.202,
+     "std": 4.199
+    },
+    "belt_W": {
+     "n": 258,
+     "mean": 1.331,
+     "std": 0.051
+    },
+    "arm_mA": {
+     "n": 131,
+     "mean": 8.634,
+     "std": 4.283
+    },
+    "arm_W": {
+     "n": 131,
+     "mean": 0.105,
+     "std": 0.052
+    }
+   }
+  },
+  {
+   "id": 6,
+   "status": "done",
+   "kind": "belt_run",
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "rpm": 25.0,
+   "t_start": 1792851297.7993264,
+   "t_end": 1792851327.830195,
+   "arrived": false,
+   "error": null,
+   "stats": {
+    "belt_rpm": {
+     "n": 259,
+     "mean": 25.003,
+     "std": 0.103
+    },
+    "belt_mA": {
+     "n": 259,
+     "mean": 141.463,
+     "std": 5.405
+    },
+    "belt_W": {
+     "n": 259,
+     "mean": 1.724,
+     "std": 0.066
+    },
+    "arm_mA": {
+     "n": 135,
+     "mean": 9.148,
+     "std": 4.133
+    },
+    "arm_W": {
+     "n": 135,
+     "mean": 0.111,
+     "std": 0.05
+    }
+   }
+  }
+ ],
+ "blocks": [],
+ "rpms": [
+  5.0,
+  8.0,
+  11.1,
+  15.0,
+  20.0,
+  25.0
+ ],
+ "seconds": 30.0,
+ "belt_ref_file": "/home/mekkhram/Desktop/PRISM/orchestrator/cal/belt_ref.json",
+ "belt_ref_after": {
+  "5": {
+   "rpm_set": 5.0,
+   "rpm_meas_mean": 4.992,
+   "rpm_meas_std": 0.063,
+   "n": 251,
+   "belt_mA_mean": 28.219,
+   "belt_W_mean": 0.344,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:12:25",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  "8": {
+   "rpm_set": 8.0,
+   "rpm_meas_mean": 7.996,
+   "rpm_meas_std": 0.058,
+   "n": 252,
+   "belt_mA_mean": 41.373,
+   "belt_W_mean": 0.505,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:13:00",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  "11.1": {
+   "rpm_set": 11.1,
+   "rpm_meas_mean": 11.101,
+   "rpm_meas_std": 0.063,
+   "n": 249,
+   "belt_mA_mean": 57.193,
+   "belt_W_mean": 0.697,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:13:32",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  "15": {
+   "rpm_set": 15.0,
+   "rpm_meas_mean": 15.001,
+   "rpm_meas_std": 0.078,
+   "n": 250,
+   "belt_mA_mean": 79.496,
+   "belt_W_mean": 0.969,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:14:05",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  "20": {
+   "rpm_set": 20.0,
+   "rpm_meas_mean": 19.999,
+   "rpm_meas_std": 0.099,
+   "n": 258,
+   "belt_mA_mean": 109.202,
+   "belt_W_mean": 1.331,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:14:39",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  "25": {
+   "rpm_set": 25.0,
+   "rpm_meas_mean": 25.003,
+   "rpm_meas_std": 0.103,
+   "n": 259,
+   "belt_mA_mean": 141.463,
+   "belt_W_mean": 1.724,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:15:27",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  }
+ }
+}

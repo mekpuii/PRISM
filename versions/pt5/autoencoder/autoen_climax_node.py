@@ -1,0 +1,1387 @@
+#!/usr/bin/env python3
+"""
+autoen_node.py -- PRISM cell node: ARM + CONVEYOR + FEEDER in one program, with a web dashboard that asks for the
+parameters and then runs the real pick cycle. (Pi 4 + Arduino Mega 2560.)
+
+Built on riff-real.py (the cycle, the dashboard, the CSV recording are unchanged) and on arm_node.py (the MQTT side:
+the same topics, so the Logger, the Health monitor and the Analyzers see this node exactly like the old arm node).
+
+   Browser --HTTP--> autoen_node.py --USB serial--> Mega --> STS3215 x6 / belt motor / feeder servo / IR
+                          |
+                          +--MQTT--> Mosquitto --> Logger, Health monitor, Analyzer nodes
+
+ONE cycle (riff-real, unchanged):  FEED > TRANSPORT (belt to the IR, arm to Standby) > GRIP > CARRY Home > drop >
+RELEASE > HOME > CLEAR.   A "set" = --cycles-per-set cycles, the run = --sets sets.  Put the blocks in the feeder yourself.
+
+HOW YOU USE IT
+  python3 autoen_node.py                  opens http://127.0.0.1:8781 and WAITS: nothing moves.
+  On the page: set every parameter, tick "arm area is clear", press Start.  Stop = belt coasts, arm holds.
+  Command-line options are only the starting values of the page.  (--auto-start skips the page.)
+  From another PC:  ssh -L 8781:127.0.0.1:8781 pi@<pi>   then open http://127.0.0.1:8781 on that PC.
+  (The page can MOVE THE ROBOT and has no password: it listens on 127.0.0.1 only unless you pass --web-host.)
+
+MQTT PUBLISHED  (broker = MQTT_HOST env var or --mqtt-host; --no-mqtt runs without a broker)
+  arm/telemetry   10 Hz QoS0   {"ts","joints":{"1":{"pos","speed","cur","temp"},..."6":{...}}}    raw units like arm_node:
+                               pos = ticks, speed = ticks/s, cur = counts (x6.5 = mA), temp = degC (glitch-filtered).
+                               Only when all six joints are fresh. A garbled current reading is replaced by the last good one.
+  arm/state       retained     10 Hz {"ts","mode":"auto|hold|lock","speed_scale","pose","phase","cycle","status","drop"}
+  arm/status      retained + Last Will                 arm/ir  retained, on change {"raw","detected"}
+  arm/gripper     QoS1         {"state":"CLOSING|CLOSED|ERROR","pos","reason"}  on every gripper event
+  belt/telemetry  on every Mega sample   {"ts","temp","current","velocity","position","voltage","pwm","ir","fault"}
+                               current mA, velocity rpm, position rev: this is what belt_analyzer_node.py subscribes to
+  belt/event      QoS1         {"ts","name","args"}  ARRIVED / FEED_DONE / FAULT ... (the feeder shows up here)
+  belt/status     retained + Last Will
+  autoen/state    retained 1 Hz   run status, phase, set, cycle, drifts, MQTT counters
+  autoen/cycle    QoS1         one message per finished cycle {"n","set","result","secs","drop","notes"}
+
+FILES (--log-dir, default riff_logs/): autoen_raw_<time>.csv, autoen_sets_<time>.csv, autoen_cycles_<time>.csv,
+  autoen_thresholds_<time>.csv, autoen_tx_<time>.log   -- same columns as riff-real, so the same tools read them.
+
+NOT included (on purpose): the keyboard jog of arm_node.py. Both programs cannot open the Mega at once, and a human
+pressing keys during an automatic cycle would fight it. Use arm_node.py when you want to jog the arm by hand.
+Not a safety-rated e-stop. Keep clear of the arm.
+
+Known limits of the data (be aware when you set thresholds)
+  * The Mega <-> servo link garbles a few % of replies.  Temperature jumps of more than 6 C are held back until a
+    second reading confirms them; how many were rejected is counted in autoen_sets (temp_glitches).
+  * Belt current/power are magnitudes.  With the encoder sign wrong, the belt speed loop runs at full PWM and "rpm"
+    will look negative - that is part of the behaviour and is logged as is.
+"""
+import argparse
+import csv
+import glob
+import json
+import math
+import os
+import queue
+import statistics
+import threading
+import time
+import webbrowser
+from collections import Counter
+from datetime import datetime
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+import serial
+
+try:
+    import paho.mqtt.client as mqtt          # pip install paho-mqtt   (--no-mqtt runs without it)
+except ImportError:
+    mqtt = None
+
+# ====================================================================== constants (same numbers the project uses)
+DEVICES = ["J1", "J2", "J3", "J4", "J5", "J6", "Belt", "Arm"]      # Arm = derived: sum of the six servo currents, lowest servo voltage (no INA on the arm supply)
+METRICS = ["temp", "current", "velocity", "position", "voltage"]
+UNITS = {"voltage": "V", "temp": "C", "current": "mA", "velocity": "deg/s (belt: rpm)", "position": "deg (belt: rev)"}
+STEPS_PER_REV = 4096.0            # STS3215 position steps per revolution
+MA_PER_COUNT = 6.5                # STS3215 current register unit
+MIN_WRITE_GAP_S = 0.010           # the Mega needs >= 10 ms between two lines
+KEEPALIVE_S = 0.2                 # watchdogs: arm 350 ms, belt 500 ms -> heartbeat every 0.2 s
+POSE_TOL_TICKS = 40               # a joint counts as "arrived" inside this window
+GRIP_TOL_TICKS = 25               # same idea for the gripper
+BASE_SPEED = 360                  # raw ticks/s at arm-speed 1.0
+GRIPPER_SPEED = 1200
+GRIPPER_MIN, GRIPPER_MAX = 1768, 3116     # the Mega clamps to these anyway
+MAX_VALID_MA = 6000.0             # STS3215 stalls at ~3 A; anything above is a corrupted reading
+STALE_S = 3.0                     # a reading older than this is shown as "no data"
+TEMP_JUMP_C = 6.0                 # hold back temperature jumps larger than this until confirmed
+STS_MAX_TICKS_S = 3200             # STS3215 hardware maximum (ticks/s)
+CARRY_CAP_TICKS_S = STS_MAX_TICKS_S   # no extra cap while carrying (was 700); lower Carry speed on the page if the block slips
+BELT_FIELDS = 17                  # values after "X,T"
+TELEMETRY_TIMEOUT_S = 1.5         # a servo reading older than this is not "fresh" (arm/telemetry is not published)
+
+# The four poses (raw ticks, joints 1-6), the same numbers as STATES in arm_node.py. riff-real calls them by the names of
+# its old d-pad file: up = standby above the block, right = home, left = left bin, down = right bin.
+# --poses FILE replaces them with a so101_dpad_poses.json.
+DEFAULT_POSES = {
+    "up":    {"1": 2103, "2": 1662, "3": 2357, "4": 3009, "5": 1239, "6": 2844},    # standby
+    "right": {"1": 2069, "2": 1478, "3": 2172, "4": 3190, "5": 1230, "6": 2105},    # home
+    "down":  {"1": 3079, "2": 1932, "3": 1847, "4": 3116, "5": 2081, "6": 2111},    # right bin
+    "left":  {"1": 1039, "2": 1774, "3": 2071, "4": 3196, "5": 303,  "6": 2108},    # left bin
+}
+
+
+class CycleError(Exception):
+    """A cycle that did not complete; .code is the result written to the cycles file."""
+    def __init__(self, code, text):
+        super().__init__(text)
+        self.code = code
+
+
+# ====================================================================== serial link (minimal, standalone)
+def find_serial_port():
+    """Mega shows up as ttyACM* (genuine) or ttyUSB* (CH340 clone); the number can change on replug."""
+    for pattern in ("/dev/prism-mega", "/dev/serial/by-id/*", "/dev/ttyACM*", "/dev/ttyUSB*"):
+        found = sorted(glob.glob(pattern))
+        if found:
+            return found[0]
+    raise SystemExit("No Mega found: nothing in /dev/serial/by-id, /dev/ttyACM* or /dev/ttyUSB*. Is the USB cable plugged in?")
+
+
+class Link:
+    """Talks to the Mega: reads T / TT / X,T / X,E lines, sends commands, keeps the watchdogs fed."""
+
+    def __init__(self, port, baud=115200, ser=None):
+        self.ser = ser or serial.Serial(port, baud, timeout=0.1)
+        self.boot_seen, self.boot_lines = False, []
+        end = time.monotonic() + 12.0
+        # opening the port resets the Mega: wait for its banner before writing anything
+        while time.monotonic() < end and not self.boot_seen:
+            raw = self.ser.readline()
+            if raw:
+                text = raw.decode("ascii", errors="ignore").strip()
+                self.boot_lines.append(text)
+                self.boot_seen = "BOOT_DONE" in text or text.startswith("H,SO101")
+        time.sleep(0.2)
+        self.ser.reset_input_buffer()
+
+        self.wlock, self.last_write = threading.Lock(), 0.0
+        self.txlog, self.txlock = None, threading.Lock()      # set by main(): file with every command sent + odd replies
+        self.bad_rx = 0                                       # received lines that could not be parsed
+        self.slock = threading.Lock()                       # protects the parsed state below
+        self.servo = {i: {"pos": None, "speed": 0, "cur": 0, "t": 0.0, "temp": None, "volt": None, "tv": 0.0}
+                      for i in range(1, 7)}
+        self.belt, self.belt_t = None, 0.0
+        self.firmware_ready = None
+        self.replies, self.events = queue.Queue(), queue.Queue()
+        self.gevents = queue.Queue()                        # gripper crawl results: (state, pos)
+        self.gpub = queue.Queue(maxsize=500)                # copies for MQTT (bounded: nobody may be listening)
+        self.epub = queue.Queue(maxsize=500)
+        self.running = True
+        threading.Thread(target=self._rx_loop, daemon=True).start()
+        threading.Thread(target=self._hb_loop, daemon=True).start()
+
+    # ---------------------------------------------------------------- writing
+    def note(self, text):
+        """Write one line (with a time stamp) to the TX log, if it is open."""
+        if self.txlog:
+            with self.txlock:
+                self.txlog.write(f"{datetime.now().strftime('%H:%M:%S.%f')[:-3]} {text}\n")
+
+    def write(self, line, hb=False):
+        with self.wlock:                                    # one writer at a time, paced
+            wait = self.last_write + MIN_WRITE_GAP_S - time.monotonic()
+            if wait > 0:
+                time.sleep(wait)
+            self.ser.write((line + "\n").encode("ascii"))
+            self.last_write = time.monotonic()
+            if not hb:                                      # heartbeats would drown everything else
+                self.note("TX " + line)
+
+    def _hb_loop(self):
+        while self.running:
+            try:
+                self.write("X,HB", hb=True)                  # belt watchdog (silent)
+                for sid in range(1, 7):
+                    self.write(f"J,{sid},0", hb=True)         # arm watchdog, harmless at rate 0
+            except Exception:                               # noqa: BLE001 - port closed
+                break
+            time.sleep(KEEPALIVE_S)
+
+    def belt_cmd(self, cmd, timeout=1.0):
+        """Send 'X,<cmd>' and return 'OK' or raise. ERR,unknown_cmd means the line was garbled in transit: ask again."""
+        for _ in range(4):
+            while not self.replies.empty():                 # drop stale replies
+                self.replies.get_nowait()
+            self.write("X," + cmd)
+            try:
+                r = self.replies.get(timeout=timeout)
+            except queue.Empty:
+                raise TimeoutError(f"no reply to X,{cmd}")
+            if r != "ERR,unknown_cmd":
+                break
+            time.sleep(0.1)
+        if r not in ("OK", "PONG"):
+            raise RuntimeError(f"X,{cmd} -> {r}")
+
+    # ---------------------------------------------------------------- reading
+    def _rx_loop(self):
+        while self.running:
+            try:
+                raw = self.ser.readline()
+            except Exception:                               # noqa: BLE001 - port closed
+                break
+            if raw:
+                line = raw.decode("ascii", errors="ignore").strip()
+                if line:
+                    self._parse(line)
+
+    def _parse(self, line):
+        p = line.split(",")
+        try:
+            if p[0] == "T" and len(p) == 5:                 # T,id,pos,speed,current
+                sid, pos = int(p[1]), int(p[2])
+                with self.slock:
+                    if sid in self.servo:
+                        s = self.servo[sid]
+                        s.update(pos=pos if 0 <= pos <= 4095 else None, speed=int(p[3]), cur=int(p[4]),
+                                 t=time.monotonic())
+            elif p[0] == "TT" and len(p) == 4:              # TT,id,temp_C,volt_x10  (slow, one servo at a time)
+                sid = int(p[1])
+                with self.slock:
+                    if sid in self.servo:
+                        s = self.servo[sid]
+                        s["temp"] = int(p[2]) if int(p[2]) > 0 else None
+                        s["volt"] = int(p[3]) / 10.0 if int(p[3]) > 0 else None
+                        s["tv"] = time.monotonic()
+            elif p[0] == "G" and len(p) >= 3:                # G,<CLOSING|CLOSED|ERROR>,<pos>
+                gpos = int(p[2]) if p[2].lstrip("-").isdigit() else None
+                self.gevents.put((p[1], gpos))
+                self._offer(self.gpub, {"state": p[1], "pos": gpos, "reason": ",".join(p[3:]) if len(p) > 3 else None})
+            elif p[0] == "R" and len(p) >= 2:
+                self.firmware_ready = p[1] == "1"
+            elif p[0] == "X" and len(p) >= 2:
+                if p[1] == "T" and len(p) - 2 in (BELT_FIELDS, BELT_FIELDS + 1):   # +1 = feeder IR (new firmware)
+                    f = p[2:]
+                    d = {"ms": int(f[0]), "enc": int(f[1]), "rpm": float(f[2]), "pwm": int(f[3]), "mode": int(f[4]),
+                         "ma": float(f[5]), "mv": float(f[6]), "arm_ma": float(f[8]), "arm_mv": float(f[9]),
+                         "temp": float(f[11]), "ir": f[12] == "1",
+                         "fault": int(f[14]), "feed": int(f[16])}
+                    with self.slock:
+                        self.belt, self.belt_t = d, time.monotonic()
+                elif p[1] == "E" and len(p) >= 4:
+                    self.events.put((p[2], p[4:]))          # name, args
+                    self._offer(self.epub, {"name": p[2], "args": p[3:]})
+                elif p[1] in ("OK", "ERR", "PONG"):
+                    self.replies.put(",".join(p[1:]))
+        except ValueError:
+            self.bad_rx += 1                                # garbled line: drop it, but keep a record
+            self.note("RX? " + line[:80])
+
+    @staticmethod
+    def _offer(q, item):
+        try:
+            q.put_nowait(item)
+        except queue.Full:                                  # nobody drains it (MQTT off): drop, never block the reader
+            pass
+
+    def servo_pos(self, sid, max_age=1.5):
+        with self.slock:
+            s = self.servo[sid]
+            return s["pos"] if s["pos"] is not None and time.monotonic() - s["t"] <= max_age else None
+
+    def servo_speed(self, sid):
+        with self.slock:
+            return self.servo[sid]["speed"]
+
+    def wait_ready(self, timeout=20.0):
+        end, why = time.monotonic() + timeout, "nothing received yet"
+        while time.monotonic() < end:
+            miss = [i for i in range(1, 7) if self.servo_pos(i, 1.5) is None]
+            if self.firmware_ready is not True:
+                why = f"no 'R,1' from the arm firmware (state {self.firmware_ready})"
+            elif miss:
+                why = f"no fresh position for servo(s) {miss}"
+            else:
+                try:
+                    self.belt_cmd("PING")
+                    return
+                except (TimeoutError, RuntimeError) as e:
+                    why = f"belt module did not answer PING ({e})"
+            time.sleep(0.2)
+        raise TimeoutError(f"Mega not ready after {timeout:.0f}s: {why}. boot banner seen: {self.boot_seen}")
+
+    def close(self):
+        try:
+            self.belt_cmd("STOP")                           # never leave the belt running
+        except Exception:                                   # noqa: BLE001
+            pass
+        self.running = False
+        try:
+            self.ser.close()
+        except Exception:                                   # noqa: BLE001
+            pass
+
+
+# ====================================================================== readings of every device
+class Reader:
+    """Turns the link's raw state into (temp, current, velocity, position) per device, with a temperature glitch filter."""
+
+    def __init__(self, link, cpr):
+        self.link, self.cpr = link, cpr
+        self.tstate = {d: {"good": None, "cand": None, "cand_tv": 0.0} for d in DEVICES}
+        self.glitches = {d: 0 for d in DEVICES}
+        self.bad_current = {d: 0 for d in DEVICES}       # garbled current readings dropped
+        self.rlock = threading.Lock()                    # the sampler and the MQTT publisher both call read()
+
+    def _temp(self, dev, t, stamp):
+        st = self.tstate[dev]
+        if t is None or not (0 < t < 125):
+            return st["good"]
+        if st["good"] is None or abs(t - st["good"]) <= TEMP_JUMP_C:
+            st["good"], st["cand"] = t, None
+        elif st["cand"] is not None and abs(t - st["cand"]) <= 2 and stamp != st["cand_tv"]:
+            st["good"], st["cand"] = t, None                # a newer reading confirms the jump: it is real
+        else:
+            if st["cand"] is None or stamp != st["cand_tv"]:
+                self.glitches[dev] += 1                     # count each held-back outlier once
+            st["cand"], st["cand_tv"] = t, stamp
+        return st["good"]
+
+    def read(self):
+        """-> {device: {metric: value or None}}"""
+        with self.rlock:
+            return self._read()
+
+    def _read(self):
+        out, now = {}, time.monotonic()
+        with self.link.slock:
+            servos = {i: dict(s) for i, s in self.link.servo.items()}
+            belt, belt_t = (dict(self.link.belt) if self.link.belt else None), self.link.belt_t
+        for i in range(1, 7):
+            s, dev = servos[i], f"J{i}"
+            if s["pos"] is None or now - s["t"] > STALE_S:
+                out[dev] = {m: None for m in METRICS}
+                continue
+            fresh_t = s["temp"] if now - s["tv"] < 15.0 else None
+            raw_cur = s["cur"] & 0x7FFF                                       # bit 15 = direction: keep magnitude
+            ma = raw_cur * MA_PER_COUNT
+            if ma > MAX_VALID_MA:                                             # 0x7FFF etc. = garbled reply, not a real current
+                ma, self.bad_current[dev] = None, self.bad_current[dev] + 1
+            out[dev] = {"temp": self._temp(dev, fresh_t, s["tv"]),
+                        "current": ma,
+                        "velocity": s["speed"] * 360.0 / STEPS_PER_REV,
+                        "position": s["pos"] * 360.0 / STEPS_PER_REV,
+                        "voltage": s["volt"] if now - s["tv"] < 15.0 else None}      # TT line: servo supply seen by that servo
+        if belt is None or now - belt_t > 2.0:
+            out["Belt"] = {m: None for m in METRICS}
+        else:
+            t = belt["temp"]
+            out["Belt"] = {"temp": self._temp("Belt", None if math.isnan(t) else t, belt["ms"]),
+                           "current": abs(belt["ma"]), "velocity": belt["rpm"], "position": belt["enc"] / self.cpr,
+                           "voltage": belt["mv"] / 1000.0}
+
+        cur = [out[f"J{i}"]["current"] for i in range(1, 7)]
+        volt = [out[f"J{i}"]["voltage"] for i in range(1, 7) if out[f"J{i}"]["voltage"] is not None]
+        out["Arm"] = {"temp": None, "velocity": None, "position": None,
+                      "current": sum(cur) if all(c is not None for c in cur) else None,     # total arm current
+                      "voltage": min(volt) if volt else None}                              # weakest supply seen by a servo
+        return out
+
+
+# ====================================================================== statistics helpers
+def pct(sorted_vals, q):
+    """Percentile q (0..100) of an already sorted list (nearest-rank)."""
+    return sorted_vals[min(len(sorted_vals) - 1, max(0, int(math.ceil(q / 100.0 * len(sorted_vals))) - 1))]
+
+
+def stats(vals):
+    """min / mean / std / p50 / p95 / p99 / max of a list, rounded; None if empty."""
+    if not vals:
+        return None
+    v = sorted(vals)
+    mean = statistics.fmean(v)
+    sd = statistics.pstdev(v) if len(v) > 1 else 0.0
+    r = lambda x: round(x, 2)
+    return {"n": len(v), "min": r(v[0]), "mean": r(mean), "std": r(sd), "p50": r(pct(v, 50)), "p95": r(pct(v, 95)),
+            "p99": r(pct(v, 99)), "max": r(v[-1]), "mean_plus_3sd": r(mean + 3 * sd)}
+
+
+# ====================================================================== MQTT (same topics as arm_node.py)
+class Mqtt:
+    """Two broker connections, so each has its own Last Will: 'arm' (arm/status) and 'belt' (belt/status).
+    Publishing never blocks the control loop and never raises: a missing broker only means no messages."""
+
+    def __init__(self, host, port):
+        self.host, self.port = host, port
+        self.sent = Counter()
+        self.up = {"arm": False, "belt": False}
+        self.c = {"arm": self._client("autoen_arm", "arm", "arm/status"),
+                  "belt": self._client("autoen_belt", "belt", "belt/status")}
+
+    def _client(self, cid, key, status_topic):
+        c = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=cid)
+        c.will_set(status_topic, json.dumps({"online": False}), qos=1, retain=True)    # sent by the broker if we die
+
+        def on_connect(client, userdata, flags, reason_code, properties):
+            self.up[key] = True
+            print(f"[mqtt] {key} connected to {self.host}:{self.port}: {reason_code}", flush=True)
+            client.publish(status_topic, json.dumps({"online": True, "ts": time.time()}), qos=1, retain=True)
+
+        def on_disconnect(client, userdata, flags, reason_code, properties):
+            self.up[key] = False
+            print(f"[mqtt] {key} lost the broker", flush=True)
+
+        def on_fail(client, userdata):                      # connect_async retries forever and silently: say so
+            print(f"[mqtt] cannot reach the broker at {self.host}:{self.port} - retrying", flush=True)
+
+        c.on_connect, c.on_disconnect, c.on_connect_fail = on_connect, on_disconnect, on_fail
+        c.connect_async(self.host, self.port, keepalive=10)
+        c.loop_start()
+        return c
+
+    def pub(self, key, topic, payload, qos=0, retain=False):
+        try:
+            self.c[key].publish(topic, json.dumps(payload), qos=qos, retain=retain)
+            self.sent[topic] += 1
+        except Exception:                                   # noqa: BLE001 - control must never depend on the broker
+            pass
+
+    def cycle(self, entry):
+        self.pub("arm", "autoen/cycle", {"ts": time.time(), **entry}, qos=1)
+
+    def info(self):
+        return {"host": self.host, "port": self.port, "arm_up": self.up["arm"], "belt_up": self.up["belt"],
+                "sent": sum(self.sent.values())}
+
+    def close(self):
+        for key, topic in (("arm", "arm/status"), ("belt", "belt/status")):
+            try:        # wait_for_publish raises if the broker was never reachable; shutdown must still finish
+                self.c[key].publish(topic, json.dumps({"online": False, "ts": time.time()}),
+                                    qos=1, retain=True).wait_for_publish(1.0)
+            except Exception:                               # noqa: BLE001
+                pass
+            self.c[key].loop_stop()
+            self.c[key].disconnect()
+
+
+class Publisher(threading.Thread):
+    """Reads the link and publishes. Runs all the time (also while the page waits for Start), so the dashboard and the
+    other nodes see live data before and after a run. Only reads shared state; it never writes to the Mega."""
+
+    def __init__(self, study, mq, hz):
+        super().__init__(daemon=True)
+        self.study, self.mq, self.hz = study, mq, hz
+        self.stop_evt = threading.Event()
+        self.last_cur = {}                                  # servo -> last plausible current (counts)
+        self.last_belt_ms, self.last_ir = None, None
+
+    def run(self):
+        link, last_state = self.study.link, 0.0
+        while not self.stop_evt.is_set():
+            t0 = time.monotonic()
+            try:
+                self.step(link, t0)
+                if t0 - last_state >= 1.0:
+                    last_state = t0
+                    self.state()
+            except Exception as e:                          # noqa: BLE001 - one bad message must not kill the publisher
+                print("[mqtt] publisher error:", e, flush=True)
+            self.stop_evt.wait(max(0.0, 1.0 / self.hz - (time.monotonic() - t0)))
+
+    def step(self, link, now):
+        with link.slock:
+            servos = {i: dict(v) for i, v in link.servo.items()}
+            belt, belt_t = (dict(link.belt) if link.belt else None), link.belt_t
+        vals = self.study.reader.read()                     # glitch-filtered temperatures (and the Belt temp)
+        # ---- arm/telemetry: only when all six joints are fresh (never publish stale numbers as live)
+        if all(v["pos"] is not None and now - v["t"] <= TELEMETRY_TIMEOUT_S for v in servos.values()):
+            joints = {}
+            for i, v in servos.items():
+                cur = v["cur"] & 0x7FFF                     # bit 15 = direction: keep the magnitude, like riff-real
+                if cur * MA_PER_COUNT > MAX_VALID_MA:       # 0x7FFF etc. = a garbled reply: keep the last good value
+                    cur = self.last_cur.get(i, 0)
+                else:
+                    self.last_cur[i] = cur
+                j = {"pos": v["pos"], "speed": v["speed"], "cur": cur}
+                t = vals[f"J{i}"]["temp"]
+                if t is not None:
+                    j["temp"] = t
+                joints[str(i)] = j
+            self.mq.pub("arm", "arm/telemetry", {"ts": time.time(), "joints": joints})
+        self.arm_state()
+        # ---- belt/telemetry: once per NEW Mega sample (repeating one would corrupt the speed slope the analyzer measures)
+        if belt is not None and now - belt_t <= 2.0 and belt["ms"] != self.last_belt_ms:
+            self.last_belt_ms = belt["ms"]
+            bv = vals["Belt"]
+            self.mq.pub("belt", "belt/telemetry", {
+                "ts": time.time(), "temp": bv["temp"], "current": bv["current"], "velocity": bv["velocity"],
+                "position": bv["position"], "voltage": bv["voltage"], "pwm": belt["pwm"], "mode": belt["mode"],
+                "ir": belt["ir"], "fault": belt["fault"]})
+            if belt["ir"] != self.last_ir:                  # arm/ir keeps arm_node's meaning: LOW (raw 0) = detected
+                self.last_ir = belt["ir"]
+                self.mq.pub("arm", "arm/ir", {"ts": time.time(), "raw": 0 if belt["ir"] else 1,
+                                              "detected": bool(belt["ir"])}, qos=1, retain=True)
+        # ---- events from the Mega
+        while True:
+            try:
+                ev = link.gpub.get_nowait()
+            except queue.Empty:
+                break
+            self.mq.pub("arm", "arm/gripper", {"ts": time.time(), **ev}, qos=1)
+        while True:
+            try:
+                ev = link.epub.get_nowait()
+            except queue.Empty:
+                break
+            self.mq.pub("belt", "belt/event", {"ts": time.time(), **ev}, qos=1)
+
+    def arm_state(self):
+        """arm/state at the telemetry rate (10 Hz): health_monitor expects arm_node's rate and goes STALE at 1 s."""
+        st = self.study
+        mode = ("lock" if st.status in ("starting", "error") else
+                "auto" if st.status in ("preparing", "running", "paused") else "hold")
+        self.mq.pub("arm", "arm/state", {"ts": time.time(), "mode": mode, "speed_scale": st.args.arm_speed,
+                                         "pose": st.phase, "phase": st.phase, "cycle": st.cycle_total,
+                                         "status": st.status, "drop": st.cycle_info.get("drop", "")}, retain=True)
+
+    def state(self):
+        st = self.study
+        self.mq.pub("arm", "autoen/state", {"ts": time.time(), "status": st.status, "phase": st.phase,
+                                            "drop": st.cycle_info.get("drop", ""),
+                                            "set": st.set_no, "sets": st.args.sets, "cycle_in_set": st.cycle_in_set,
+                                            "cycles_per_set": st.args.cycles_per_set, "cycle_total": st.cycle_total,
+                                            "drifts": st.total_excursions, "bad_rx": st.link.bad_rx,
+                                            "message": st.message}, retain=True)
+
+
+# ====================================================================== the study run
+class Study:
+    def __init__(self, link, args, poses, stamp, mq=None):
+        self.link, self.args, self.poses, self.mq = link, args, poses, mq
+        self.reader = Reader(link, args.cpr)
+        self.hold = {}                                      # joints 1-5 -> ticks of the pose the arm should be holding now
+        self.exc_open = {}                                  # joint -> True while a drift away from the hold pose is open
+        self.exc_last = {}                                  # joint -> time of the last corrective P
+        self.cycle_notes = []                               # events of the cycle in progress (drift, settled ...)
+        self.total_excursions = 0
+        self.stop_evt = threading.Event()
+        self.start_evt = threading.Event()
+        self.pause_evt = threading.Event()                  # set = hold the loop between cycles
+        self.phase_times, self._phase_t0 = {}, time.monotonic()
+        self.cycle_info = {"drop": "", "travel": ""}
+        self.applied = {}                                   # belt settings last sent to the Mega
+        self.lock = threading.Lock()
+        self._phase = "IDLE"
+        self.set_no, self.cycle_in_set, self.cycle_total = 1, 0, 0
+        self.status, self.message = "starting", ""
+        self.live = {d: {m: None for m in METRICS} for d in DEVICES}
+        self.all_vals = {d: {m: [] for m in METRICS} for d in DEVICES}      # every sample, for thresholds
+        self.set_vals = {d: {m: [] for m in METRICS} for d in DEVICES}      # samples of the current set
+        self.set_glitch0 = dict(self.reader.glitches)
+        self.set_summaries = []                                              # one text line per finished set
+        self.cycle_log = []
+        self.t0 = time.monotonic()
+        os.makedirs(args.log_dir, exist_ok=True)
+        self.p_raw = os.path.join(args.log_dir, f"autoen_raw_{stamp}.csv")
+        self.p_sets = os.path.join(args.log_dir, f"autoen_sets_{stamp}.csv")
+        self.p_cyc = os.path.join(args.log_dir, f"autoen_cycles_{stamp}.csv")
+        self.p_thr = os.path.join(args.log_dir, f"autoen_thresholds_{stamp}.csv")
+        head = ["time", "set", "cycle_in_set", "cycle_total", "phase"]
+        for d in DEVICES:
+            head += [f"{d}_{m}" for m in METRICS]
+        self.raw_f = open(self.p_raw, "w", newline="", encoding="utf-8")
+        self.raw_w = csv.writer(self.raw_f)
+        self.raw_w.writerow(head)
+        with open(self.p_sets, "w", newline="", encoding="utf-8") as f:
+            csv.writer(f).writerow(["set", "start", "end", "device", "metric", "n", "min", "avg", "max", "temp_glitches"])
+        with open(self.p_cyc, "w", newline="", encoding="utf-8") as f:
+            csv.writer(f).writerow(["set", "cycle_in_set", "cycle_total", "start", "seconds", "result", "drop", "travel_counts",
+                                    "feed_s", "transport_s", "grip_s", "carry_s", "notes"])
+        self.set_start = datetime.now().strftime("%H:%M:%S")
+
+    @property
+    def phase(self):
+        return self._phase
+
+    @phase.setter
+    def phase(self, value):
+        """Every phase change is also written to the TX log, so commands can be lined up with the arm's motion."""
+        if value != self._phase:
+            self.link.note(f"## cycle {self.cycle_total} phase {value}")
+            now = time.monotonic()
+            self.phase_times[self._phase] = self.phase_times.get(self._phase, 0.0) + now - self._phase_t0
+            self._phase_t0 = now
+        self._phase = value
+
+    # ---------------------------------------------------------------- sampler (own thread)
+    def sampler(self):
+        while not self.stop_evt.is_set() or self.status == "stopping":
+            t = time.monotonic()
+            period = 1.0 / self.args.hz
+            try:
+                self._sample()
+            except Exception:                               # noqa: BLE001 - one bad sample must not stop logging
+                pass
+            if self.status in ("finished", "stopped", "error"):
+                break
+            time.sleep(max(0.0, period - (time.monotonic() - t)))
+
+    def _sample(self):
+        vals = self.reader.read()
+        with self.lock:
+            self.live = vals                                # the page always shows live values ...
+            if self.status not in ("preparing", "running"):
+                return                                      # ... but only an active run is recorded and counted
+            row = [datetime.now().isoformat(timespec="milliseconds"), self.set_no, self.cycle_in_set,
+                   self.cycle_total, self.phase]
+            for d in DEVICES:
+                for m in METRICS:
+                    v = vals[d][m]
+                    row.append("" if v is None else round(v, 3))
+                    if v is not None:
+                        self.all_vals[d][m].append(v)
+                        self.set_vals[d][m].append(v)
+            self.raw_w.writerow(row)
+
+    # ---------------------------------------------------------------- arm helpers
+    def drive(self, targets, speed, timeout, label, belt_stop_at=None):
+        """Command {joint: ticks}; wait until all are within tolerance. Re-sends targets that have not arrived
+        (the link drops a few % of lines). belt_stop_at: monotonic time at which to brake the belt meanwhile."""
+        for sid, ticks in targets.items():
+            self.link.write(f"P,{sid},{ticks},{speed},{self.args.acc}")
+        end, last_resend, blind = time.monotonic() + timeout, time.monotonic(), None
+        still = {}                                          # joint -> since when it sits still, short of the tolerance
+        settled = {}                                        # joint -> error (ticks) accepted as "arrived"
+        while True:
+            if self.stop_evt.is_set():
+                raise InterruptedError("stopped")
+            if list(targets) == [6]:
+                self.hold_tick()                            # the gripper moves: keep J1-5 where they are
+            if belt_stop_at is not None and time.monotonic() >= belt_stop_at:
+                self.link.belt_cmd("BRAKE")
+                belt_stop_at = None
+            pos = {sid: self.link.servo_pos(sid) for sid in targets}
+            if any(p is None for p in pos.values()):
+                blind = blind or time.monotonic()
+                if time.monotonic() - blind > 2.0:
+                    raise RuntimeError("servo feedback lost")
+            else:
+                blind = None
+                tol = self.args.grip_tol if list(targets) == [6] else self.args.pose_tol
+                now = time.monotonic()
+                for sid in targets:                         # a joint that stops just short of the window (load, friction)
+                    err = abs(pos[sid] - targets[sid])
+                    if err > tol and self.args.settle_tol and err <= self.args.settle_tol \
+                            and abs(self.link.servo_speed(sid)) <= 3:
+                        still.setdefault(sid, now)
+                        if now - still[sid] >= 1.5:
+                            settled[sid] = pos[sid] - targets[sid]
+                    else:
+                        still.pop(sid, None)
+                        settled.pop(sid, None)
+                if all(abs(pos[s] - targets[s]) <= tol or s in settled for s in targets) and belt_stop_at is None:
+                    if settled:
+                        self.cycle_notes.append(f"settled {label}: " + ", ".join(f"J{k} {v:+d}t" for k, v in settled.items()))
+                    break
+            if time.monotonic() - last_resend >= 1.0:
+                last_resend = time.monotonic()
+                for sid, ticks in targets.items():
+                    if pos[sid] is None or abs(pos[sid] - ticks) > self.args.pose_tol:
+                        self.link.write(f"P,{sid},{ticks},{speed},{self.args.acc}")
+            if time.monotonic() > end:
+                raise TimeoutError(f"arm did not finish '{label}' within {timeout:.0f}s "
+                                   f"(error ticks: { {s: (None if pos[s] is None else pos[s] - targets[s]) for s in targets} })")
+            time.sleep(0.02)
+        if list(targets) != [6]:
+            for sid in targets:
+                self.link.write(f"H,{sid}")                # hold where we stopped, like the dashboard does
+            self.hold = {sid: (pos[sid] if sid in settled else targets[sid]) for sid in targets}   # pose to keep
+            self.exc_open.clear()
+
+    def pose(self, name, joints=range(1, 6)):
+        return {sid: int(self.poses[name][str(sid)]) for sid in joints}
+
+    def check_belt(self):
+        b = self.link.belt
+        if b and b["fault"] != 0:
+            raise RuntimeError(f"belt fault code {b['fault']} (1 watchdog, 2 overtemp, 3 temp-sensor, 4 stall)")
+
+    def gripper(self, target, label):
+        target = max(GRIPPER_MIN, min(GRIPPER_MAX, int(target)))
+        self.drive({6: target}, self.args.gripper_speed, 12.0, label)
+
+    def hold_tick(self):
+        """Supervisor, called while the arm should stand still (gripper moving, feeder pushing, belt running, dwell).
+        If a joint has drifted more than --hold-tol ticks from the pose it should hold (the arm sagging under gravity
+        after a power dip, for instance), log it and send ONE corrective P - at most once a second per joint."""
+        tol = self.args.hold_tol
+        if not tol or not self.hold:
+            return
+        now = time.monotonic()
+        for sid, target in self.hold.items():
+            pos = self.link.servo_pos(sid)
+            if pos is None:
+                continue
+            err = pos - target
+            if abs(err) <= tol:
+                self.exc_open.pop(sid, None)
+                continue
+            if not self.exc_open.get(sid):                  # a new drift: count it once
+                self.exc_open[sid] = True
+                self.total_excursions += 1
+                msg = f"DRIFT J{sid} {err:+d}t in phase {self.phase}"
+                self.cycle_notes.append(msg)
+                self.link.note("## " + msg)
+            if now - self.exc_last.get(sid, 0) >= 1.0:
+                self.exc_last[sid] = now
+                self.link.write(f"P,{sid},{target},{max(90, min(STS_MAX_TICKS_S, int(round(BASE_SPEED * self.args.arm_speed))))},{self.args.acc}")
+
+    def dwell(self, seconds):
+        """Pause (interruptible by Stop) - the arm holds where it is, supervised."""
+        end = time.monotonic() + seconds
+        while time.monotonic() < end:
+            if self.stop_evt.is_set():
+                raise InterruptedError("stopped")
+            self.hold_tick()
+            time.sleep(0.05)
+
+    # ---------------------------------------------------------------- one cycle
+    def apply_belt_settings(self, force=False):
+        """Send the belt/feeder settings to the Mega when they changed (or at the start)."""
+        a = self.args
+        want = {"CPR": f"CPR,{a.cpr:g}", "TEMPMAX": f"TEMPMAX,{a.temp_max:g}", "OFFSET": f"OFFSET,{a.offset}",
+                "FEEDCFG": f"FEEDCFG,{a.feeder_home},{a.feeder_push},{a.feeder_push_ms},{a.feeder_return_ms}",
+                "PID": f"PID,{a.kp:g},{a.ki:g},{a.kd:g}"}               # belt speed loop (firmware default 0.5 / 1.5 / 0)
+        for key, cmd in want.items():
+            if force or self.applied.get(key) != cmd:
+                self.link.belt_cmd(cmd)
+                self.applied[key] = cmd
+        if force:
+            self.link.belt_cmd("ZERO")
+
+    def close_gripper(self):
+        """Close on the block with the Mega's stall-crawl (C,6). G,CLOSED = block held, G,ERROR = nothing gripped."""
+        a = self.args
+        while not self.link.gevents.empty():
+            self.link.gevents.get_nowait()
+        self.link.write("C,6")
+        end = time.monotonic() + a.grip_timeout
+        while time.monotonic() < end:
+            if self.stop_evt.is_set():
+                raise InterruptedError("stopped")
+            self.hold_tick()
+            try:
+                state, pos = self.link.gevents.get(timeout=0.1)
+            except queue.Empty:
+                continue
+            if state == "CLOSED":
+                return pos
+            if state == "ERROR":
+                raise CycleError("GRIP_FAILED", f"gripper close not confirmed at {pos} ticks - nothing carried away")
+        raise CycleError("GRIP_FAILED", f"no gripper stall confirmation within {a.grip_timeout:g} s")
+
+    def one_cycle(self):
+        a = self.args
+        self.phase_times, self._phase_t0 = {}, time.monotonic()
+        self.cycle_info = {"drop": "", "travel": ""}
+        speed = max(90, min(STS_MAX_TICKS_S, int(round(BASE_SPEED * a.arm_speed))))                       # free moves
+        cspeed = min(CARRY_CAP_TICKS_S, max(90, min(STS_MAX_TICKS_S, int(round(BASE_SPEED * a.carry_speed)))))   # with the block
+        self.apply_belt_settings()
+        # ---- 1. FEED: one block onto the belt
+        self.phase = "FEED"
+        while not self.link.events.empty():
+            self.link.events.get_nowait()
+        self.link.belt_cmd("FEED")
+        end = time.monotonic() + a.feed_timeout
+        while time.monotonic() < end:                       # wait for FEED_DONE (or a FAULT)
+            self.hold_tick()                                # the feeder is pushing: watch the arm
+            try:
+                name, args = self.link.events.get(timeout=0.2)
+            except queue.Empty:
+                continue
+            if name == "FAULT":
+                raise CycleError("FAULT_" + str(args[0] if args else "?"), "belt FAULT during FEED")
+            if name == "FEED_DONE":
+                break
+        else:
+            raise CycleError("TIMEOUT_FEED", f"no FEED_DONE within {a.feed_timeout:g} s")
+        # ---- 2. TRANSPORT: arm to Standby (own thread) while the belt runs until the IR sees the block
+        self.phase = "TRANSPORT"
+        err = []
+
+        def standby():
+            try:
+                self.drive(self.pose("up"), speed, a.move_timeout, "up (standby)")
+            except BaseException as e:                      # noqa: BLE001 - re-raised below
+                err.append(e)
+        th = threading.Thread(target=standby, daemon=True)
+        th.start()
+        tel = self.link.belt
+        enc0 = tel["enc"] if tel else 0
+        while not self.link.events.empty():
+            self.link.events.get_nowait()
+        arrived = None
+        try:
+            self.link.belt_cmd(f"CONV,{a.rpm:.2f}")         # run until the IR; the Mega brakes and sends ARRIVED
+            end = time.monotonic() + a.arrive_timeout
+            while time.monotonic() < end:
+                if self.stop_evt.is_set():
+                    raise InterruptedError("stopped")
+                if not th.is_alive():
+                    self.hold_tick()                        # arm waiting at Standby: supervised
+                try:
+                    name, args = self.link.events.get(timeout=0.1)
+                except queue.Empty:
+                    continue
+                if name == "FAULT":
+                    raise CycleError("FAULT_" + str(args[0] if args else "?"), "belt FAULT during TRANSPORT")
+                if name == "ARRIVED":
+                    arrived = args
+                    break
+            if arrived is None:
+                try:
+                    self.link.belt_cmd("BRAKE")
+                except Exception:                           # noqa: BLE001
+                    pass
+                raise CycleError("TIMEOUT_TRANSPORT", f"block did not reach the IR within {a.arrive_timeout:g} s")
+        finally:
+            th.join(a.standby_timeout)
+        if th.is_alive():
+            raise CycleError("TIMEOUT_STANDBY", "arm did not reach Standby in time")
+        if err:
+            raise err[0]
+        if arrived and arrived[0].lstrip("-").isdigit():
+            self.cycle_info["travel"] = int(arrived[0]) - enc0
+        self.check_belt()
+        self.dwell(a.dwell_standby)
+        # ---- 3. GRIP the block (belt stays braked)
+        self.phase = "GRIP"
+        try:
+            self.close_gripper()
+        except CycleError:
+            self.phase = "RECOVER"                          # nothing gripped: open and go Home, then log the failure
+            try:
+                self.gripper(a.open_pos, "open after failed grip")
+                self.drive(self.pose("right"), speed, a.move_timeout, "home after failed grip")
+            except Exception:                               # noqa: BLE001
+                pass
+            raise
+        self.dwell(a.dwell_grip)
+        # ---- 4. CARRY: Home first, then the drop pose (alternating)
+        self.phase = "CARRY_HOME"
+        self.drive(self.pose("right"), cspeed, a.move_timeout, "home with block")
+        if a.drop_mode == "alternate":
+            first_is_left = a.first_drop == "left"
+            drop = "left" if (self.cycle_total % 2 == 1) == first_is_left else "down"
+        else:
+            drop = a.drop_mode
+        self.cycle_info["drop"] = drop
+        self.phase = "CARRY_" + drop.upper()
+        self.drive(self.pose(drop), cspeed, a.move_timeout, f"drop pose '{drop}'")
+        self.dwell(a.dwell_drop)
+        # ---- 5. RELEASE
+        self.phase = "RELEASE"
+        self.gripper(a.open_pos, f"open at '{drop}'")
+        # ---- 6. HOME
+        self.phase = "HOME"
+        self.drive(self.pose("right"), speed, a.move_timeout, "home")
+        self.dwell(a.dwell_home)
+        # ---- 7. CLEAR: the block must be gone from the IR before the next feed
+        self.phase = "CLEAR"
+        end = time.monotonic() + a.clear_timeout
+        while time.monotonic() < end:
+            self.hold_tick()
+            b = self.link.belt
+            if b is not None and not b["ir"]:
+                self.phase = "IDLE"
+                return
+            time.sleep(0.05)
+        self.phase = "IDLE"
+        raise CycleError("BLOCK_STILL_AT_IR", "pick may have failed")
+
+    def wait_if_paused(self):
+        """Pause button: hold between cycles (arm supervised) until Resume or Stop."""
+        if not self.pause_evt.is_set():
+            return
+        prev, self.status = self.status, "paused"
+        while self.pause_evt.is_set():
+            if self.stop_evt.is_set():
+                raise InterruptedError("stopped")
+            self.hold_tick()
+            time.sleep(0.1)
+        self.status = prev
+
+    # ---------------------------------------------------------------- finished-set bookkeeping
+    def finish_set(self):
+        end_t = datetime.now().strftime("%H:%M:%S")
+        with self.lock:
+            rows, line = [], []
+            for d in DEVICES:
+                for m in METRICS:
+                    v = self.set_vals[d][m]
+                    g = self.reader.glitches[d] - self.set_glitch0[d] if m == "temp" else ""
+                    rows.append([self.set_no, self.set_start, end_t, d, m, len(v),
+                                 round(min(v), 2) if v else "", round(statistics.fmean(v), 2) if v else "",
+                                 round(max(v), 2) if v else "", g])
+                hot = self.set_vals[d]["temp"]
+                cur = self.set_vals[d]["current"]
+                if d == "Arm" and self.set_vals[d]["voltage"] and cur:
+                    vv = self.set_vals[d]["voltage"]
+                    line.append(f"ARM TOTAL: servo volt min {min(vv):.1f} V, summed current avg {statistics.fmean(cur):.0f} / peak {max(cur):.0f} mA")
+                elif hot and cur:
+                    line.append(f"{d}: temp max {max(hot):.0f}C, current avg {statistics.fmean(cur):.0f} / peak {max(cur):.0f} mA")
+            self.set_summaries.append(f"Set {self.set_no} ({self.set_start}-{end_t}): " + "; ".join(line))
+            self.set_vals = {d: {m: [] for m in METRICS} for d in DEVICES}
+            self.set_glitch0 = dict(self.reader.glitches)
+            self.set_start = datetime.now().strftime("%H:%M:%S")
+        with open(self.p_sets, "a", newline="", encoding="utf-8") as f:
+            csv.writer(f).writerows(rows)
+        self.write_thresholds()
+        print(self.set_summaries[-1])
+
+    def write_thresholds(self):
+        with self.lock:
+            snap = {d: {m: list(self.all_vals[d][m]) for m in METRICS} for d in DEVICES}
+        with open(self.p_thr, "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["device", "metric", "unit", "n", "min", "mean", "std", "p50", "p95", "p99", "max", "mean_plus_3sd"])
+            for d in DEVICES:
+                for m in METRICS:
+                    s = stats(snap[d][m])
+                    if s:
+                        w.writerow([d, m, UNITS[m], s["n"], s["min"], s["mean"], s["std"], s["p50"], s["p95"], s["p99"],
+                                    s["max"], s["mean_plus_3sd"]])
+
+    # ---------------------------------------------------------------- main loop
+    def run(self):
+        a = self.args
+        sampler = threading.Thread(target=self.sampler, daemon=True)
+        sampler.start()
+        fails = 0
+        self.status = "ready"                               # nothing moves until Start is pressed on the web page
+        while not self.start_evt.is_set() and not self.stop_evt.is_set():
+            time.sleep(0.1)
+        if self.stop_evt.is_set() and not self.start_evt.is_set():
+            self.status, self.message = "stopped", "quit before start - nothing moved"
+            self.raw_f.close()
+            return
+        try:
+            self.status, self.phase = "preparing", "PREPARE"
+            self.apply_belt_settings(force=True)            # CPR, TEMPMAX, OFFSET, feeder angles, encoder zero
+            speed = max(90, min(STS_MAX_TICKS_S, int(round(BASE_SPEED * a.arm_speed))))
+            self.gripper(self.args.open_pos, "open at start")
+            self.drive(self.pose("right"), speed, self.args.move_timeout, "home at start")
+            self.status = "running"
+            s = 0
+            while s < a.sets:                               # a.sets can be changed from the web page while running
+                s += 1
+                self.set_no = s
+                cps = a.cycles_per_set                      # a change of cycles/set applies from the next set
+                for c in range(1, cps + 1):
+                    if self.stop_evt.is_set():
+                        raise InterruptedError("stopped")
+                    self.cycle_in_set, self.cycle_total = c, self.cycle_total + 1
+                    t_start, iso = time.monotonic(), datetime.now().isoformat(timespec="seconds")
+                    result, notes = "OK", ""
+                    try:
+                        self.one_cycle()
+                        fails = 0
+                    except InterruptedError:
+                        raise
+                    except Exception as e:                  # noqa: BLE001 - log it, clear the belt fault, carry on
+                        result, notes = getattr(e, "code", type(e).__name__), str(e)
+                        fails += 1
+                        try:
+                            self.link.belt_cmd("STOP")      # brake/coast + clear a latched fault
+                        except Exception:                   # noqa: BLE001
+                            pass
+                        if result == "FAULT_2":             # belt over-temperature: do not go on
+                            raise RuntimeError("belt over-temperature fault - stopping")
+                    if self.cycle_notes:
+                        notes = (notes + " | " if notes else "") + "; ".join(self.cycle_notes)
+                    self.cycle_notes = []
+                    secs = round(time.monotonic() - t_start, 1)
+                    with open(self.p_cyc, "a", newline="", encoding="utf-8") as f:
+                        now_t = time.monotonic()
+                        self.phase_times[self._phase] = self.phase_times.get(self._phase, 0.0) + now_t - self._phase_t0
+                        self._phase_t0 = now_t
+                        pt = self.phase_times
+                        csv.writer(f).writerow([s, c, self.cycle_total, iso, secs, result, self.cycle_info["drop"],
+                                                self.cycle_info["travel"], round(pt.get("FEED", 0), 1),
+                                                round(pt.get("TRANSPORT", 0), 1), round(pt.get("GRIP", 0), 1),
+                                                round(sum(v for k, v in pt.items() if k.startswith("CARRY")), 1), notes])
+                    self.cycle_log.append({"n": self.cycle_total, "set": s, "result": result, "secs": secs, "notes": notes})
+                    if self.mq:
+                        self.mq.cycle({"n": self.cycle_total, "set": s, "cycle_in_set": c, "result": result,
+                                       "secs": secs, "drop": self.cycle_info["drop"], "notes": notes})
+                    print(f"set {s}/{a.sets} cycle {c}/{cps}  {result} {secs}s {notes}")
+                    if fails >= a.max_fails:
+                        raise RuntimeError(f"{a.max_fails} failed cycles in a row - stopping")
+                    self.dwell(a.gap)
+                    self.wait_if_paused()
+                self.cycle_in_set = cps
+                self.finish_set()
+            self.status, self.message = "finished", f"{s} sets done"
+        except InterruptedError:
+            self.status, self.message = "stopped", "stopped by the operator"
+        except Exception as e:                              # noqa: BLE001
+            self.status, self.message = "error", f"{type(e).__name__}: {e}"
+            print("STOPPED:", self.message)
+        finally:
+            self.phase = "IDLE"
+            try:
+                self.link.belt_cmd("STOP")                  # belt coasts, fault cleared
+            except Exception:                               # noqa: BLE001
+                pass
+            for sid in range(1, 6):
+                self.link.write(f"H,{sid}")                 # arm holds where it is
+            time.sleep(0.5)
+            if self.status != "finished" and any(self.set_vals[d]["temp"] for d in DEVICES if d != "Arm"):
+                self.finish_set()                           # keep the unfinished set (partial) as well
+            self.write_thresholds()
+            self.raw_f.flush()
+            self.raw_f.close()
+            sampler.join(timeout=2)
+
+    # ---------------------------------------------------------------- live settings (from the web page)
+    LIMITS = {"sets": (1, 1000, int), "cycles_per_set": (1, 1000, int), "arm_speed": (0.2, 8.8, float),
+              "carry_speed": (0.2, 8.8, float), "rpm": (5.0, 333.0, float), "offset": (0, 5000, int),
+              "gap": (0.0, 60.0, float), "hz": (1.0, 20.0, float), "gripper_speed": (100, 3200, int), "acc": (0, 254, int),
+              "open_pos": (1800, 3100, int), "dwell_standby": (0.0, 30.0, float), "dwell_grip": (0.0, 30.0, float),
+              "dwell_drop": (0.0, 30.0, float), "dwell_home": (0.0, 30.0, float),
+              "pose_tol": (10, 100, int), "grip_tol": (5, 100, int), "move_timeout": (5.0, 120.0, float),
+              "feed_timeout": (1.0, 30.0, float), "arrive_timeout": (5.0, 120.0, float),
+              "clear_timeout": (0.5, 20.0, float), "standby_timeout": (10.0, 120.0, float),
+              "grip_timeout": (3.0, 30.0, float), "max_fails": (1, 20, int),
+              "hold_tol": (0, 300, int), "settle_tol": (0, 300, int), "temp_max": (0.0, 100.0, float),
+              "feeder_home": (0, 180, int), "feeder_push": (0, 180, int),
+              "feeder_push_ms": (50, 2000, int), "feeder_return_ms": (50, 2000, int),
+              "kp": (0.0, 20.0, float), "ki": (0.0, 50.0, float), "kd": (0.0, 5.0, float)}
+    CHOICES = {"drop_mode": ("alternate", "left", "down"), "first_drop": ("left", "down")}
+
+    def set_config(self, new):
+        """Validate and apply settings. settings act from the next cycle, cycles_per_set from the next set."""
+        clean = {}
+        for k, v in new.items():
+            if k in self.CHOICES:
+                if v not in self.CHOICES[k]:
+                    raise ValueError(f"{k} must be one of {self.CHOICES[k]}")
+                clean[k] = v
+                continue
+            if k not in self.LIMITS:
+                raise ValueError(f"unknown setting {k}")
+            lo, hi, typ = self.LIMITS[k]
+            v = typ(v)
+            if not (lo <= v <= hi):
+                raise ValueError(f"{k} must be {lo}..{hi}")
+            clean[k] = v
+        if "sets" in clean and self.status == "running" and clean["sets"] < self.set_no:
+            raise ValueError(f"sets must be at least the current set ({self.set_no})")
+        for k, v in clean.items():
+            setattr(self.args, k, v)
+        print("settings changed from the web page:", clean)
+        return clean
+
+    def config(self):
+        return {k: getattr(self.args, k) for k in list(self.LIMITS) + list(self.CHOICES)}
+
+    # ---------------------------------------------------------------- for the web page
+    def snapshot(self):
+        with self.lock:
+            live = {d: dict(v) for d, v in self.live.items()}
+        return {"status": self.status, "message": self.message, "phase": self.phase, "set": self.set_no,
+                "sets": self.args.sets, "cycle_in_set": self.cycle_in_set, "cycles_per_set": self.args.cycles_per_set,
+                "cycle_total": self.cycle_total, "elapsed": round(time.monotonic() - self.t0), "live": live,
+                "units": UNITS, "devices": DEVICES, "metrics": METRICS, "set_summaries": self.set_summaries[-20:],
+                "config": self.config(), "drifts": self.total_excursions, "paused": self.pause_evt.is_set(), "cycles": self.cycle_log[-12:], "files": [self.p_raw, self.p_sets, self.p_cyc, self.p_thr],
+                "mqtt": self.mq.info() if self.mq else None}
+
+
+PAGE = r"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>autoen_node</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#14181f;--mut:#5d6675;--line:#dfe3ea;--acc:#0b6bcb;--bad:#c42b2b}
+@media (prefers-color-scheme:dark){:root{--bg:#10141a;--card:#181e27;--ink:#e8ecf2;--mut:#98a2b3;--line:#2a3340;--acc:#5aa9ff;--bad:#ff6b6b}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,Segoe UI,sans-serif}
+main{max-width:980px;margin:0 auto;padding:16px}h1{font-size:20px;margin:0 0 10px}h2{font-size:15px;margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;overflow-x:auto}
+.mut{color:var(--mut)}table{border-collapse:collapse;width:100%}th,td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}th{font-size:12px;color:var(--mut)}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0}.bar>i{display:block;height:100%;background:var(--acc)}
+button{font:inherit;font-weight:600;border:0;border-radius:8px;padding:8px 16px;background:var(--bad);color:#fff;cursor:pointer}
+li{margin:3px 0}</style></head><body><main>
+<h1>autoen_node <span class="mut" id="st"></span> <button id="stop">&#9632; Stop</button> <button id="pause" style="background:#8a6d00">&#10074;&#10074; Pause</button></h1>
+<div class="card"><div id="prog"></div><div class="bar"><i id="bar" style="width:0"></i></div><div class="mut" id="msg"></div><div class="mut" id="mq"></div></div>
+<div class="card"><h2>Settings <span class="mut" id="cfghint"></span></h2>
+<form id="cfg" style="display:flex;flex-wrap:wrap;gap:10px;align-items:end">
+<label>Sets<br><input name="sets" type="number" min="1" max="1000" step="1" style="width:70px"></label>
+<label>Cycles / set<br><input name="cycles_per_set" type="number" min="1" max="1000" step="1" style="width:80px"></label>
+<label>Arm speed (0.2-8.8, x360 t/s; 8.8 = 3200 max)<br><input name="arm_speed" type="number" min="0.2" max="8.8" step="0.1" style="width:90px"></label>
+<label>Carry speed (0.2-8.8, x360 t/s)<br><input name="carry_speed" type="number" min="0.2" max="8.8" step="0.1" style="width:90px"></label>
+<label>Belt RPM (to IR, 12V 1:30: rated 250, no-load 333)<br><input name="rpm" type="number" min="5" max="333" step="5" style="width:80px"></label>
+<label>Offset after IR (counts)<br><input name="offset" type="number" min="0" max="5000" step="10" style="width:90px"></label>
+<label>Drop order<br><select name="drop_mode"><option>alternate</option><option>left</option><option>down</option></select></label>
+<label>First drop<br><select name="first_drop"><option>left</option><option>down</option></select></label>
+<label>Gap s<br><input name="gap" type="number" min="0" max="60" step="0.5" style="width:70px"></label>
+<label>Samples/s<br><input name="hz" type="number" min="1" max="20" step="1" style="width:70px"></label>
+<label>Servo ACC (0-254, x100 t/s2; needs ACC firmware)<br><input name="acc" type="number" min="0" max="254" step="1" style="width:80px"></label>
+<label>Gripper speed<br><input name="gripper_speed" type="number" min="100" max="3200" step="50" style="width:90px"></label>
+<label>Gripper open pos<br><input name="open_pos" type="number" min="1800" max="3100" step="10" style="width:90px"></label>
+<label>Dwell standby s<br><input name="dwell_standby" type="number" min="0" max="30" step="0.5" style="width:80px"></label>
+<label>Dwell after grip s<br><input name="dwell_grip" type="number" min="0" max="30" step="0.5" style="width:80px"></label>
+<label>Dwell at drop s<br><input name="dwell_drop" type="number" min="0" max="30" step="0.5" style="width:80px"></label>
+<label>Dwell home s<br><input name="dwell_home" type="number" min="0" max="30" step="0.5" style="width:80px"></label>
+<label>Feed timeout s<br><input name="feed_timeout" type="number" min="1" max="30" step="1" style="width:80px"></label>
+<label>Arrive (IR) timeout s<br><input name="arrive_timeout" type="number" min="5" max="120" step="5" style="width:80px"></label>
+<label>Grip timeout s<br><input name="grip_timeout" type="number" min="3" max="30" step="1" style="width:80px"></label>
+<label>Clear-IR timeout s<br><input name="clear_timeout" type="number" min="0.5" max="20" step="0.5" style="width:80px"></label>
+<label>Standby timeout s<br><input name="standby_timeout" type="number" min="10" max="120" step="5" style="width:80px"></label>
+<label>Move timeout s<br><input name="move_timeout" type="number" min="5" max="120" step="5" style="width:80px"></label>
+<label>Pose tol (ticks)<br><input name="pose_tol" type="number" min="10" max="100" step="5" style="width:80px"></label>
+<label>Grip tol (ticks)<br><input name="grip_tol" type="number" min="5" max="100" step="5" style="width:80px"></label>
+<label>Drift tol (ticks, 0=off)<br><input name="hold_tol" type="number" min="0" max="300" step="10" style="width:90px"></label>
+<label>Settle tol (ticks, 0=off)<br><input name="settle_tol" type="number" min="0" max="300" step="10" style="width:90px"></label>
+<label>Stop after N fails<br><input name="max_fails" type="number" min="1" max="20" step="1" style="width:80px"></label>
+<label>Belt temp max C<br><input name="temp_max" type="number" min="0" max="100" step="5" style="width:80px"></label>
+<label>Belt PID Kp<br><input name="kp" type="number" min="0" max="20" step="0.1" style="width:80px"></label>
+<label>Belt PID Ki<br><input name="ki" type="number" min="0" max="50" step="0.1" style="width:80px"></label>
+<label>Belt PID Kd<br><input name="kd" type="number" min="0" max="5" step="0.05" style="width:80px"></label>
+<label>Feeder home angle<br><input name="feeder_home" type="number" min="0" max="180" step="5" style="width:80px"></label>
+<label>Feeder push angle<br><input name="feeder_push" type="number" min="0" max="180" step="5" style="width:80px"></label>
+<label>Feeder push ms<br><input name="feeder_push_ms" type="number" min="50" max="2000" step="50" style="width:80px"></label>
+<label>Feeder return ms<br><input name="feeder_return_ms" type="number" min="50" max="2000" step="50" style="width:80px"></label>
+<button type="submit" style="background:var(--acc)">Apply</button><span id="cfgmsg" class="mut"></span></form>
+<div id="startrow" style="margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+<label><input type="checkbox" id="clear"> Arm area is clear and the E-stop is within reach</label>
+<button id="start" style="background:#1a8a3c">&#9654; Start run</button></div></div>
+<div class="card"><table id="live"></table></div>
+<div class="card"><h2>Finished sets</h2><ul id="sets" class="mut"></ul></div>
+<div class="card"><h2>Last cycles</h2><table id="cyc"></table><div class="mut" id="files" style="margin-top:6px"></div></div>
+<script>
+const $=id=>document.getElementById(id),f=(v,d)=>v===null||v===undefined?'-':(+v).toFixed(d);
+$('stop').onclick=()=>fetch('/api/stop',{method:'POST'});
+$('pause').onclick=()=>fetch('/api/pause',{method:'POST'});
+let cfgFilled=false;
+const form=()=>{const o={};new FormData($('cfg')).forEach((v,k)=>{if(v!=='')o[k]=['drop_mode','first_drop'].includes(k)?v:+v});return o};
+$('cfg').onsubmit=async e=>{e.preventDefault();
+ const r=await fetch('/api/config',{method:'POST',body:JSON.stringify(form())});const j=await r.json();
+ $('cfgmsg').textContent=r.ok?' applied':' '+(j.error||'error');};
+$('start').onclick=async()=>{
+ const r=await fetch('/api/start',{method:'POST',body:JSON.stringify({clear:$('clear').checked,config:form()})});const j=await r.json();
+ $('cfgmsg').textContent=r.ok?' started':' '+(j.error||'error');};
+async function tick(){try{const s=await (await fetch('/api/state')).json();
+ $('st').textContent=s.status+' / '+s.phase;
+ $('startrow').style.display=s.status==='ready'?'flex':'none';
+ $('pause').style.display=s.status==='ready'?'none':'inline-block';
+ $('pause').innerHTML=s.paused?'&#9654; Resume':'&#10074;&#10074; Pause after this cycle';
+ $('stop').innerHTML=s.status==='ready'?'&#9632; Quit':'&#9632; Stop';
+ $('cfghint').textContent=s.status==='ready'?'(set everything, tick the box, press Start)':'(all apply from the next cycle; cycles per set from the next set; samples/s at once)';
+ if(!cfgFilled&&s.config){cfgFilled=true;for(const k in s.config){const i=document.querySelector('[name='+k+']');if(i)i.value=s.config[k];}}
+ const done=(s.set-1)*s.cycles_per_set+s.cycle_in_set,tot=s.sets*s.cycles_per_set;
+ $('prog').innerHTML='<b>Set '+s.set+' / '+s.sets+'</b> &middot; drifts corrected '+s.drifts+' &middot; cycle '+s.cycle_in_set+' / '+s.cycles_per_set+' &middot; total '+s.cycle_total+' / '+tot+' &middot; '+Math.floor(s.elapsed/60)+' min';
+ $('bar').style.width=Math.min(100,100*s.cycle_total/tot)+'%';$('msg').textContent=s.message;$('mq').textContent=s.mqtt?('MQTT '+s.mqtt.host+':'+s.mqtt.port+' | arm '+(s.mqtt.arm_up?'connected':'NOT connected')+' | belt '+(s.mqtt.belt_up?'connected':'NOT connected')+' | published '+s.mqtt.sent):'MQTT off';
+ let h='<tr><th>device</th><th>temp C</th><th>current mA</th><th>velocity</th><th>position</th><th>volt V</th></tr>';
+ s.devices.forEach(d=>{const x=s.live[d],b=d==='Belt';if(d==='Arm'){}h+='<tr><td>'+(d==='Belt'?'Belt motor':d==='Arm'?'Arm total (sum I, min V)':'Joint '+d.slice(1))+'</td><td>'+f(x.temp,1)+'</td><td>'+f(x.current,0)+'</td><td>'+f(x.velocity,1)+(b?' rpm':' deg/s')+'</td><td>'+f(x.position,b?2:1)+(b?' rev':' deg')+'</td><td>'+f(x.voltage,2)+'</td></tr>';});
+ $('live').innerHTML=h;
+ $('sets').innerHTML=s.set_summaries.slice().reverse().map(x=>'<li>'+x+'</li>').join('')||'<li>none yet</li>';
+ $('cyc').innerHTML='<tr><th>#</th><th>set</th><th>result</th><th>sec</th><th>notes</th></tr>'+s.cycles.slice().reverse().map(c=>'<tr><td>'+c.n+'</td><td>'+c.set+'</td><td>'+c.result+'</td><td>'+c.secs+'</td><td style="text-align:left">'+(c.notes||'')+'</td></tr>').join('');
+ $('files').textContent='files: '+s.files.join('  |  ');}catch(e){}}
+setInterval(tick,1000);tick();
+</script></main></body></html>"""
+
+
+def serve(study, port, host="127.0.0.1"):
+    """Tiny web page (127.0.0.1 only unless --web-host): live values, progress, parameters, Start / Stop."""
+    loopback = host in ("127.0.0.1", "localhost")
+
+    class H(BaseHTTPRequestHandler):
+        def log_message(self, *a):
+            pass
+
+        def _allowed(self, post):
+            """The page can move the robot, so a web page open in another tab must not be able to press Start:
+            on loopback the Host header must be 127.0.0.1/localhost (blocks DNS rebinding), and a POST that carries
+            an Origin must come from this very page (blocks cross-site requests)."""
+            h = self.headers.get("Host", "")
+            if loopback and h.split(":")[0] not in ("127.0.0.1", "localhost"):
+                return False
+            org = self.headers.get("Origin")
+            return not (post and org and org.split("://", 1)[-1] != h)
+
+        def _send(self, body, ctype):
+            data = body.encode() if isinstance(body, str) else json.dumps(body).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(data)
+
+        def do_GET(self):
+            if not self._allowed(False):
+                self.send_error(403, "bad Host header")
+                return
+            if self.path.startswith("/api/state"):
+                self._send(study.snapshot(), "application/json")
+            else:
+                self._send(PAGE, "text/html; charset=utf-8")
+
+        def do_POST(self):
+            if not self._allowed(True):
+                self.send_error(403, "cross-site request refused")
+                return
+            if self.path.startswith("/api/stop"):
+                study.stop_evt.set()
+            elif self.path.startswith("/api/pause"):
+                if study.pause_evt.is_set():
+                    study.pause_evt.clear()
+                else:
+                    study.pause_evt.set()
+            elif self.path.startswith("/api/start"):
+                try:
+                    n = int(self.headers.get("Content-Length", 0))
+                    body = json.loads(self.rfile.read(n) or b"{}")
+                    if study.status != "ready":
+                        raise ValueError(f"cannot start: status is {study.status}")
+                    if body.get("clear") is not True:
+                        raise ValueError("tick 'arm area is clear' first")
+                    study.set_config(body.get("config", {}))
+                    study.start_evt.set()
+                except (ValueError, TypeError, json.JSONDecodeError) as e:
+                    data = json.dumps({"error": str(e)}).encode()
+                    self.send_response(400)
+                    self.send_header("Content-Type", "application/json")
+                    self.send_header("Content-Length", str(len(data)))
+                    self.end_headers()
+                    self.wfile.write(data)
+                    return
+                self._send({"started": True}, "application/json")
+                return
+            elif self.path.startswith("/api/config"):
+                try:
+                    n = int(self.headers.get("Content-Length", 0))
+                    applied = study.set_config(json.loads(self.rfile.read(n) or b"{}"))
+                except (ValueError, TypeError, json.JSONDecodeError) as e:
+                    data = json.dumps({"error": str(e)}).encode()
+                    self.send_response(400)
+                    self.send_header("Content-Type", "application/json")
+                    self.send_header("Content-Length", str(len(data)))
+                    self.end_headers()
+                    self.wfile.write(data)
+                    return
+                self._send({"applied": applied}, "application/json")
+                return
+            self._send({}, "application/json")
+
+    srv = ThreadingHTTPServer((host, port), H)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    return srv
+
+
+# ====================================================================== entry point
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="autoen_node: arm + conveyor + feeder real pick cycle with a parameter dashboard, recording and MQTT")
+    ap.add_argument("--port", default=os.environ.get("ARM_SERIAL_PORT") or ("COM6" if os.name == "nt" else None),
+                    help="Mega serial port (env ARM_SERIAL_PORT); default = auto-detect")
+    ap.add_argument("--poses", default=None, help="optional poses file (so101_dpad_poses.json: up/right/left/down); default = the built-in poses of arm_node.py")
+    ap.add_argument("--mqtt-host", default=os.environ.get("MQTT_HOST", "localhost"), help="broker (env MQTT_HOST)")
+    ap.add_argument("--mqtt-port", type=int, default=1883)
+    ap.add_argument("--mqtt-hz", type=float, default=10.0, help="arm/telemetry rate")
+    ap.add_argument("--no-mqtt", action="store_true", help="run without a broker (the recording and the page still work)")
+    ap.add_argument("--web-host", default="127.0.0.1", help="address of the page; 0.0.0.0 exposes a page that can MOVE THE ROBOT to your network")
+    ap.add_argument("--sets", type=int, default=2)
+    ap.add_argument("--cycles-per-set", type=int, default=6, help="default 2 sets x 6 = one magazine of 12 blocks")
+    ap.add_argument("--rpm", type=float, default=60.0, help="belt speed to the IR, output-shaft rpm")
+    ap.add_argument("--arm-speed", type=float, default=1.0, help="1.0 = the project's normal pose speed")
+    ap.add_argument("--gap", type=float, default=1.0, help="pause between cycles, s")
+    ap.add_argument("--hz", type=float, default=5.0, help="samples per second")
+    ap.add_argument("--drop-mode", choices=["alternate", "left", "down"], default="alternate")
+    ap.add_argument("--first-drop", choices=["left", "down"], default="left", help="side of the first drop when alternating")
+    ap.add_argument("--carry-speed", type=float, default=1.0, help="speed factor after the grip (Home and drop legs)")
+    ap.add_argument("--gripper-speed", type=int, default=GRIPPER_SPEED)
+    ap.add_argument("--acc", type=int, default=8, help="servo acceleration 0-254 (x100 ticks/s2), sent as the 4th field of P; 8 = the firmware default; only the ACC firmware reads it")
+    ap.add_argument("--open-pos", type=int, default=None, help="gripper open ticks (default: J6 of pose 'up')")
+    for nm in ("standby", "grip", "drop", "home"):
+        ap.add_argument(f"--dwell-{nm}", type=float, default=0.0, help=f"pause after arriving at / doing: {nm}, s")
+    ap.add_argument("--pose-tol", type=int, default=POSE_TOL_TICKS)
+    ap.add_argument("--grip-tol", type=int, default=GRIP_TOL_TICKS)
+    ap.add_argument("--move-timeout", type=float, default=40.0, help="seconds allowed per arm move")
+    ap.add_argument("--feed-timeout", type=float, default=5.0, help="seconds to wait for FEED_DONE")
+    ap.add_argument("--arrive-timeout", type=float, default=20.0, help="seconds for a block to reach the IR")
+    ap.add_argument("--clear-timeout", type=float, default=3.0, help="seconds for the block to leave the IR after the pick")
+    ap.add_argument("--standby-timeout", type=float, default=45.0)
+    ap.add_argument("--grip-timeout", type=float, default=12.0, help="seconds to wait for G,CLOSED / G,ERROR")
+    ap.add_argument("--offset", type=int, default=0, help="extra encoder counts the belt travels after the IR triggers")
+    ap.add_argument("--temp-max", type=float, default=60.0, help="belt motor over-temperature trip, C (0 = off)")
+    ap.add_argument("--kp", type=float, default=0.5, help="belt speed PID (firmware default)")
+    ap.add_argument("--ki", type=float, default=1.5)
+    ap.add_argument("--kd", type=float, default=0.0)
+    ap.add_argument("--feeder-home", type=int, default=170)
+    ap.add_argument("--feeder-push", type=int, default=0)
+    ap.add_argument("--feeder-push-ms", type=int, default=400)
+    ap.add_argument("--feeder-return-ms", type=int, default=400)
+    ap.add_argument("--max-fails", type=int, default=3, help="stop after this many failed cycles in a row")
+    ap.add_argument("--hold-tol", type=int, default=60,
+                    help="while the arm should stand still, a joint further than this (ticks) from its pose is logged and pulled back; 0 = off")
+    ap.add_argument("--settle-tol", type=int, default=100,
+                    help="a joint that stops this close (ticks) outside the pose window for 1.5 s counts as arrived; 0 = off")
+    ap.add_argument("--cpr", type=float, default=1320.0, help="belt encoder counts per output revolution (for position)")
+    ap.add_argument("--web-port", type=int, default=8781, help="0 = no web page")
+    ap.add_argument("--log-dir", default="riff_logs")
+    ap.add_argument("--auto-start", action="store_true",
+                    help="start the run immediately (default: open the web page and wait for the Start button)")
+    ap.add_argument("--yes", action="store_true", help="with --auto-start: skip the 'arm area is clear' question")
+    args = ap.parse_args(argv)
+
+    # ---- sanity checks before anything moves
+    if not (1 <= args.sets <= 1000 and 1 <= args.cycles_per_set <= 1000):
+        raise SystemExit("sets and cycles-per-set must be 1..1000")
+    if not (0.2 <= args.arm_speed <= 8.8 and 5 <= args.rpm <= 333):
+        raise SystemExit("check --arm-speed 0.2..8.8, --rpm 5..333")
+    if args.poses:
+        with open(args.poses, "r", encoding="utf-8") as f:
+            poses = json.load(f)
+    else:
+        poses = json.loads(json.dumps(DEFAULT_POSES))
+    for need in ("up", "right", "left", "down"):
+        if need not in poses or any(str(i) not in poses[need] for i in range(1, 7)):
+            raise SystemExit(f"the poses must contain pose '{need}' with joints 1..6")
+    if not args.no_mqtt and mqtt is None:
+        raise SystemExit("paho-mqtt is not installed:  pip install paho-mqtt   (or run with --no-mqtt)")
+    if not (1.0 <= args.mqtt_hz <= 20.0):
+        raise SystemExit("--mqtt-hz must be 1..20")
+    if args.open_pos is None:
+        args.open_pos = int(poses["up"]["6"])
+    if args.web_port == 0 and not args.auto_start:
+        raise SystemExit("with --web-port 0 there is no Start button: add --auto-start")
+    if args.auto_start and not args.yes:
+        print(f"This will move the arm and run the conveyor with REAL blocks: {args.sets} sets x {args.cycles_per_set} cycles "
+              f"= {args.sets * args.cycles_per_set} cycles (~{args.sets * args.cycles_per_set * 20 // 60} min).")
+        if input("Is the arm area clear and the E-stop within reach?  type YES: ").strip() != "YES":
+            raise SystemExit("not started")
+
+    # ---- connect
+    if args.port is None:
+        args.port = find_serial_port()
+    print(f"Mega port: {args.port}")
+    try:
+        link = Link(args.port)
+    except serial.SerialException as e:
+        raise SystemExit(f"cannot open {args.port}: {e}\nClose every other program that uses it "
+                         "(Arduino Serial Monitor, the other dashboard) and try again.")
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    print(f"boot banner seen: {link.boot_seen}")
+    try:
+        link.wait_ready()
+    except TimeoutError as e:
+        link.close()
+        raise SystemExit(str(e))
+
+    mq = None if args.no_mqtt else Mqtt(args.mqtt_host, args.mqtt_port)
+    study = Study(link, args, poses, stamp, mq)
+    publisher = Publisher(study, mq, args.mqtt_hz) if mq else None
+    if publisher:
+        publisher.start()
+    link.txlog = open(os.path.join(args.log_dir, f"autoen_tx_{stamp}.log"), "w", encoding="utf-8", buffering=1)
+    srv = serve(study, args.web_port, args.web_host) if args.web_port else None
+    if srv:
+        print(f"live page: http://{'127.0.0.1' if args.web_host == '0.0.0.0' else args.web_host}:{args.web_port}  - set the parameters there and press Start")
+        try:
+            webbrowser.open(f"http://127.0.0.1:{args.web_port}")
+        except Exception:                                   # noqa: BLE001 - no browser is not an error
+            pass
+    if args.auto_start:
+        study.start_evt.set()
+    print(f"files: {study.p_raw}\n       {study.p_sets}\n       {study.p_cyc}\n       {study.p_thr}")
+    try:
+        study.run()
+    except KeyboardInterrupt:
+        study.stop_evt.set()
+        print("Ctrl+C: stopping (belt coasts, arm holds)")
+    finally:
+        if srv:
+            srv.shutdown()
+        if publisher:
+            publisher.stop_evt.set()
+        link.close()
+        if mq:
+            mq.close()
+    if link.txlog:
+        link.note(f"## end, unparsable RX lines: {link.bad_rx}")
+        link.txlog.close()
+    print(f"{study.status}: {study.message}  (unparsable RX lines: {link.bad_rx})")
+    return 0 if study.status == "finished" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

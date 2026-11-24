@@ -1,0 +1,401 @@
+# test_experiment.py - run: python3 test_experiment.py      (orch-env; no robot, no broker, no serial port)
+# Unit tests for the plan / classification / belt-check logic, plus whole sessions against a FAKE autoen web API
+# (a small HTTP server that behaves like auto_en_new.py with pause_before_set=1: pause before every set, /api/task).
+# Files go to a fresh /tmp/prism_exp_test_* folder that is left in place (nothing is deleted).
+import json
+import os
+import tempfile
+import threading
+import time
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+import experiment as E
+from record_run import Recorder
+
+TMP = tempfile.mkdtemp(prefix="prism_exp_test_")
+
+
+# ---------------------------------------------------------------------- fake autoen
+class FakeAutoen:
+    """status ready -> start -> paused at set boundary; resume runs cycles_per_set scripted cycles, then pauses again."""
+
+    def __init__(self, results=None, belt_rpm=lambda rpm: rpm, clamp=None, error_after=None):
+        self.results = list(results or [])                  # (result, notes) per cycle, popped in order; default OK
+        self.belt_rpm, self.clamp, self.error_after = belt_rpm, clamp, error_after
+        self.posts = []
+        self.lock = threading.Lock()
+        self.st = {"status": "ready", "message": "", "phase": "IDLE", "set": 1, "cycle_total": 0, "cycle_in_set": 0,
+                   "paused": False, "set_boundary": False, "task": None, "cycles": [],
+                   "config": {"rpm": 60.0, "arm_speed": 1.0, "carry_speed": 1.0, "cycles_per_set": 100, "sets": 1,
+                              "pause_before_set": 0, "enable_b": 0, "enable_c": 0, "arrive_timeout": 20.0}}
+        self.sets_run = 0
+        srv = ThreadingHTTPServer(("127.0.0.1", 0), self.handler())
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        self.srv, self.url = srv, f"http://127.0.0.1:{srv.server_address[1]}"
+
+    def handler(self):
+        fake = self
+
+        class H(BaseHTTPRequestHandler):
+            def log_message(self, *a):
+                pass
+
+            def reply(self, code, body):
+                data = json.dumps(body).encode()
+                self.send_response(code)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+
+            def do_GET(self):
+                with fake.lock:
+                    self.reply(200, json.loads(json.dumps(fake.st)))
+
+            def do_POST(self):
+                body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
+                fake.posts.append((self.path, body))
+                try:
+                    self.reply(200, fake.post(self.path, body))
+                except ValueError as e:
+                    self.reply(400, {"error": str(e)})
+        return H
+
+    def set_config(self, cfg):
+        for k, v in cfg.items():
+            if k not in self.st["config"]:
+                raise ValueError(f"unknown setting {k}")
+            if self.clamp and k in self.clamp:
+                v = min(v, self.clamp[k])                  # simulates a setting that does not stick
+            self.st["config"][k] = v
+        return cfg
+
+    def post(self, path, body):
+        with self.lock:
+            st = self.st
+            if path == "/api/start":
+                if st["status"] != "ready":
+                    raise ValueError("cannot start")
+                self.set_config(body.get("config", {}))
+                st.update(status="paused", paused=True, set_boundary=True)
+                return {"started": True}
+            if path == "/api/config":
+                return {"applied": self.set_config(body)}
+            if path == "/api/stop":
+                st.update(status="stopped", paused=False, set_boundary=False, message="stopped by the operator")
+                return {}
+            if path == "/api/task":
+                if st["status"] != "paused":
+                    raise ValueError("tasks only run while paused")
+                tid = (st["task"] or {"id": 0})["id"] + 1
+                meas = self.belt_rpm(body.get("rpm", 0)) if body["kind"] == "belt_run" else 0.0
+                st["task"] = {"id": tid, "status": "done", **body, "arrived": False, "error": None, "t_end": time.time(),
+                              "settle_s": body.get("settle_s", 3.0),
+                              "stats": {"belt_rpm": {"n": 50, "mean": meas, "std": 0.3}, "belt_mA": {"n": 50, "mean": 120.0},
+                                        "belt_W": {"n": 50, "mean": 1.4}, "arm_mA": {"n": 20, "mean": 60.0},
+                                        "arm_W": {"n": 20, "mean": 0.7}}}
+                return {"task": st["task"]}
+            if path == "/api/pause":
+                if st["paused"]:
+                    st.update(paused=False, set_boundary=False, status="running")
+                    threading.Thread(target=self.run_set, daemon=True).start()
+                else:
+                    st["paused"] = True
+                return {}
+        raise ValueError("unknown path")
+
+    def run_set(self):
+        self.sets_run += 1
+        with self.lock:
+            cps = self.st["config"]["cycles_per_set"]
+            self.st["cycle_in_set"] = 0
+        for c in range(1, cps + 1):
+            time.sleep(0.02)
+            with self.lock:
+                st = self.st
+                if self.error_after and self.sets_run == self.error_after[0] and c > self.error_after[1]:
+                    st.update(status="error", message="RuntimeError: 3 failed cycles in a row - stopping")
+                    return
+                res, notes = self.results.pop(0) if self.results else ("OK", "")
+                st["cycle_total"] += 1
+                st["cycle_in_set"] = c
+                st["cycles"] = (st["cycles"] + [{"n": st["cycle_total"], "set": st["set"], "result": res, "secs": 20.0,
+                                                 "notes": notes}])[-12:]
+        with self.lock:
+            self.st.update(set=self.st["set"] + 1, status="paused", paused=True, set_boundary=True)
+
+
+def write_plan(plan, name="plan.json"):
+    p = os.path.join(TMP, f"{time.monotonic_ns()}_{name}")
+    with open(p, "w") as f:
+        json.dump(plan, f)
+    return p
+
+
+def make_ref(rpms, path=None):
+    path = path or os.path.join(TMP, f"belt_ref_{time.monotonic_ns()}.json")
+    ref = E.BeltRef(path)
+    for r in rpms:
+        ref.update(r, {"stats": {"belt_rpm": {"n": 100, "mean": float(r), "std": 0.2}, "belt_mA": {"mean": 100.0},
+                                 "belt_W": {"mean": 1.2}}, "seconds": 30, "settle_s": 3, "t_end": time.time()}, "test", "x")
+    ref.save()
+    return path
+
+
+def args_for(fake, plan_path, ref_path, *extra):
+    runs = os.path.join(TMP, "runs")
+    return E.build_parser().parse_args(["run", "--plan", plan_path, "--api", fake.url, "--runs-dir", runs, "--belt-ref",
+                                        ref_path, "--no-record", "--belt-check-s", "1", *extra])
+
+
+def answers(*seq, default=""):
+    it = iter(seq)
+    return lambda prompt: next(it, default)
+
+
+PLAN = {"name": "t grid", "seed": 3, "repeats": 2, "order": "rounds",
+        "defaults": {"n_cycles": 3, "carry_speed": 1.0, "set": {"arrive_timeout": 40}},
+        "configs": [{"rpm": 100, "arm_speed": 0.7}, {"rpm": 60, "arm_speed": 2.0, "carry_speed": 1.5}]}
+
+
+# ---------------------------------------------------------------------- plan
+def test_expand_rounds_is_balanced_and_seeded():
+    a, b = E.expand_plan(PLAN), E.expand_plan(PLAN)
+    assert [x["config_id"] for x in a] == [x["config_id"] for x in b], "same seed must give the same order"
+    assert len(a) == 4 and [x["block"] for x in a] == [1, 2, 3, 4]
+    for r in (1, 2):                                       # every round runs every config exactly once
+        assert sorted(x["config_id"] for x in a if x["repeat"] == r) == [1, 2]
+    assert a[0]["set"] == {"arrive_timeout": 40} and a[0]["n_cycles"] == 3
+
+
+def test_expand_shuffle_and_as_listed():
+    big = {**PLAN, "repeats": 4, "configs": [{"rpm": r, "arm_speed": 1.0} for r in (20, 60, 100, 200)]}
+    listed = E.expand_plan({**big, "order": "as_listed"})
+    assert [x["config_id"] for x in listed] == [1, 2, 3, 4] * 4
+    s1 = E.expand_plan({**big, "order": "shuffle", "seed": 1})
+    s2 = E.expand_plan({**big, "order": "shuffle", "seed": 2})
+    assert sorted(x["config_id"] for x in s1) == sorted(x["config_id"] for x in listed)
+    assert [x["config_id"] for x in s1] != [x["config_id"] for x in s2], "different seeds should differ"
+
+
+def test_plan_validation():
+    bad = [({**PLAN, "configs": [{"rpm": 100, "arm_speed": 1.0, "carry_speed": 1.0}], "defaults": {}}, "missing n_cycles"),
+           ({**PLAN, "configs": [{"rpm": 400, "arm_speed": 1.0}]}, "rpm 400"),
+           ({**PLAN, "configs": [{"rpm": 100, "arm_speed": 9.0}]}, "arm 9"),
+           ({**PLAN, "configs": [{"rpm": 100, "arm_speed": 1.0, "set": {"enable_b": 1}}]}, "reserved enable_b"),
+           ({**PLAN, "configs": [{"rpm": 100, "arm_speed": 1.0, "n_cycles": 2.5}]}, "fractional n"),
+           ({**PLAN, "order": "random"}, "bad order"),
+           ({**PLAN, "configs": []}, "no configs")]
+    for plan, why in bad:
+        try:
+            E.expand_plan(plan)
+        except E.PlanError:
+            continue
+        raise AssertionError(f"plan should be rejected: {why}")
+
+
+# ---------------------------------------------------------------------- classification
+def test_classify_known_codes():
+    cases = {"OK": "OK", "GRIP_MISS": "GRIP_MISS", "GRIP_FAILED": "GRIP_MISS", "NO_BLOCK_AT_IR": "GRIP_MISS",
+             "BLOCK_STILL_AT_IR": "GRIP_MISS", "GRIP_SUSPECT": "DROP_CARRY", "TIMEOUT_TRANSPORT": "TIMEOUT_TRANSPORT",
+             "TIMEOUT_FEED": "TIMEOUT_OTHER", "TIMEOUT_STANDBY": "TIMEOUT_OTHER", "FAULT_1": "EXCEPTION"}
+    for raw, cls in cases.items():
+        assert E.classify(raw, "x")["class"] == cls, raw
+    assert E.classify("GRIP_SUSPECT", "")["drop_suspected"] is True
+
+
+def test_no_bare_exception_ever_becomes_a_result():
+    for raw in ("TimeoutError", "RuntimeError", "ValueError", "KeyError", "", None, "SomethingNew", "OSError"):
+        c = E.classify(raw, "no reply to X,FEED")
+        assert c["class"] in E.RESULT_CLASSES and c["class"] not in ("TimeoutError", "RuntimeError"), raw
+    c = E.classify("TimeoutError", "no reply to X,FEED")    # the two real ones from 2026-10-23/24
+    assert c["class"] == "EXCEPTION" and c["raw_result"] == "TimeoutError" and "no reply to X,FEED" in c["raw_text"]
+    c = E.classify("TimeoutError", "arm did not finish 'home' within 40s (error ticks: ...)")
+    assert c["class"] == "TIMEOUT_OTHER"
+
+
+# ---------------------------------------------------------------------- belt check / reference
+def task_with(mean, n=50, status="done", arrived=False):
+    return {"status": status, "arrived": arrived, "error": None, "stats": {"belt_rpm": {"n": n, "mean": mean}}}
+
+
+def test_belt_check():
+    ref = {"rpm_meas_mean": 100.0}
+    assert E.belt_check(task_with(110.0), ref)["ok"]
+    assert E.belt_check(task_with(86.0), ref)["ok"]
+    assert not E.belt_check(task_with(116.0), ref)["ok"]
+    assert not E.belt_check(task_with(80.0), ref)["ok"]
+    assert not E.belt_check(task_with(100.0, arrived=True), ref)["ok"], "a block on the belt invalidates the check"
+    assert not E.belt_check(task_with(100.0, n=3), ref)["ok"]
+    assert not E.belt_check(task_with(100.0, status="error"), ref)["ok"]
+    assert not E.belt_check(None, ref)["ok"]
+    assert not E.belt_check(task_with(100.0), None)["ok"]
+    assert E.belt_check(task_with(100.0), None, allow_missing_ref=True)["ok"]
+    assert abs(E.belt_check(task_with(90.0), ref)["dev"] + 0.10) < 1e-9
+
+
+def test_belt_ref_roundtrip():
+    p = make_ref([20, 100])
+    ref = E.BeltRef(p)
+    assert ref.get(100)["rpm_meas_mean"] == 100.0 and ref.get(100.0) is ref.get(100) and ref.get(60) is None
+    ref.update(100, {"stats": {"belt_rpm": {"n": 9, "mean": 97.0, "std": 1}, "belt_mA": {"mean": 1}, "belt_W": {"mean": 1}},
+                     "seconds": 30, "settle_s": 3}, "again", "y")
+    ref.save()
+    again = E.BeltRef(p)
+    assert again.get(100)["rpm_meas_mean"] == 97.0 and len(again.data["history"]) == 3
+
+
+def test_recorder_event_lines_and_no_overwrite():
+    p = os.path.join(TMP, f"rec_{time.monotonic_ns()}.jsonl")
+    r = Recorder(p, {"run_id": "t"}, mode="x")              # never connected: only our own lines
+    r.write_event("exp/cycle", {"class": "OK"})
+    r.stop()
+    lines = [json.loads(x) for x in open(p)]
+    assert lines[0] == {"header": {"run_id": "t"}} and lines[1]["topic"] == "exp/cycle" and "rt" in lines[1]
+    try:
+        Recorder(p, {}, mode="x")
+    except FileExistsError:
+        return
+    raise AssertionError("mode x must refuse an existing file")
+
+
+# ---------------------------------------------------------------------- whole sessions against the fake API
+def load_meta(args):
+    runs = args.runs_dir
+    newest = max((os.path.join(runs, f) for f in os.listdir(runs) if f.endswith(".meta.json")), key=os.path.getmtime)
+    return json.load(open(newest))
+
+
+def test_session_happy_path():
+    results = [("OK", ""), ("TimeoutError", "no reply to X,FEED"), ("GRIP_SUSPECT", "J6 moved 3 deg")] + [("OK", "")] * 9
+    fake = FakeAutoen(results)
+    args = args_for(fake, write_plan(PLAN), make_ref([60, 100]))
+    # start, then per block: Enter, bins
+    rc = E.cmd_run(args, E.Api(fake.url), ask=answers("", "", "2", "", "3", "", "", "", ""), recorder_factory=E.NullRecorder,
+                   poll=0.05)
+    meta = load_meta(args)
+    assert rc == 0 and meta["status"] == "finished", meta.get("error")
+    assert [b["status"] for b in meta["blocks"]] == ["complete"] * 4
+    assert fake.sets_run == 4, "exactly one autoen set per block"
+    cyc = [c for b in meta["blocks"] for c in b["cycles"]]
+    assert len(cyc) == 12 and all(c["class"] in E.RESULT_CLASSES for c in cyc)
+    assert cyc[1]["class"] == "EXCEPTION" and cyc[1]["raw_result"] == "TimeoutError"
+    assert cyc[2]["class"] == "DROP_CARRY"
+    assert meta["blocks"][0]["drop_check"] == {"expected_in_bins": 2, "bin_count": 2, "missing": 0}
+    assert len(meta["config_snapshots"]) == 4 and not any(s["mismatch"] for s in meta["config_snapshots"])
+    for b, s in zip(meta["blocks"], meta["config_snapshots"]):      # each block ran with its own config, read back
+        assert s["readback"]["rpm"] == b["rpm"] and s["readback"]["cycles_per_set"] == b["n_cycles"]
+        assert s["readback"]["arrive_timeout"] == 40
+    assert meta["autoen"]["sha256"] and meta["plan_sha256"] and meta["seed"] == 3
+    started = [b for p, b in fake.posts if p == "/api/start"]
+    assert started[0]["config"]["pause_before_set"] == 1 and started[0]["clear"] is True
+
+
+def test_belt_check_failure_aborts_only_that_block():
+    fake = FakeAutoen(belt_rpm=lambda rpm: rpm * 0.7 if rpm == 100 else rpm)      # belt slips 30% at 100 rpm
+    args = args_for(fake, write_plan(PLAN), make_ref([60, 100]))
+    E.cmd_run(args, E.Api(fake.url), ask=answers(), recorder_factory=E.NullRecorder, poll=0.05)
+    meta = load_meta(args)
+    for b in meta["blocks"]:
+        if b["rpm"] == 100:
+            assert b["status"] == "aborted_belt_check" and b["counts"]["ABORTED"] == 3 and not b["belt_check"]["ok"]
+        else:
+            assert b["status"] == "complete" and b["counts"]["OK"] == 3
+    assert fake.sets_run == 2, "aborted blocks must not run any cycle"
+
+
+def test_missing_belt_ref_aborts_unless_allowed():
+    fake = FakeAutoen()
+    args = args_for(fake, write_plan(PLAN), make_ref([60]))
+    E.cmd_run(args, E.Api(fake.url), ask=answers(), recorder_factory=E.NullRecorder, poll=0.05)
+    assert {b["status"] for b in load_meta(args)["blocks"] if b["rpm"] == 100} == {"aborted_belt_check"}
+    fake = FakeAutoen()
+    args = args_for(fake, write_plan(PLAN), make_ref([60]), "--allow-missing-ref")
+    E.cmd_run(args, E.Api(fake.url), ask=answers(), recorder_factory=E.NullRecorder, poll=0.05)
+    assert {b["status"] for b in load_meta(args)["blocks"]} == {"complete"}
+
+
+def test_run_ending_mid_block_fills_aborted():
+    fake = FakeAutoen(error_after=(2, 1))                  # 2nd set: autoen stops (max_fails) after 1 cycle
+    args = args_for(fake, write_plan(PLAN), make_ref([60, 100]))
+    rc = E.cmd_run(args, E.Api(fake.url), ask=answers(), recorder_factory=E.NullRecorder, poll=0.05)
+    meta = load_meta(args)
+    st = [b["status"] for b in meta["blocks"]]
+    assert rc == 1 and st == ["complete", "partial", "not_run", "not_run"], st
+    b2 = meta["blocks"][1]
+    assert b2["counts"]["OK"] == 1 and b2["counts"]["ABORTED"] == 2 and "error" in b2["reason"]
+    assert all(c["class"] == "ABORTED" for c in meta["blocks"][3]["cycles"]) and len(meta["blocks"][3]["cycles"]) == 3
+
+
+def test_operator_skip_and_quit():
+    fake = FakeAutoen()
+    args = args_for(fake, write_plan(PLAN), make_ref([60, 100]))
+    E.cmd_run(args, E.Api(fake.url), ask=answers("", "s", "", "", "q"), recorder_factory=E.NullRecorder, poll=0.05)
+    st = [b["status"] for b in load_meta(args)["blocks"]]
+    assert st == ["skipped", "complete", "skipped", "not_run"], st
+    assert fake.sets_run == 1
+
+
+def test_config_that_does_not_stick_aborts_block():
+    fake = FakeAutoen(clamp={"arm_speed": 1.0})            # autoen keeps 1.0 whatever we send
+    args = args_for(fake, write_plan(PLAN), make_ref([60, 100]))
+    E.cmd_run(args, E.Api(fake.url), ask=answers(), recorder_factory=E.NullRecorder, poll=0.05)
+    for b in load_meta(args)["blocks"]:
+        assert b["status"] == ("aborted_config" if b["arm_speed"] > 1.0 else "complete"), b["status"]
+
+
+def test_dry_run_sends_nothing_and_writes_nothing():
+    fake = FakeAutoen()
+    runs = os.path.join(TMP, f"dry_{time.monotonic_ns()}")
+    base = ["run", "--plan", write_plan(PLAN), "--api", fake.url, "--runs-dir", runs, "--no-record", "--dry-run"]
+    ok = E.cmd_run(E.build_parser().parse_args(base + ["--belt-ref", make_ref([60, 100])]), E.Api(fake.url))
+    bad = E.cmd_run(E.build_parser().parse_args(base + ["--belt-ref", make_ref([60])]), E.Api(fake.url))
+    assert ok == 0 and bad == 1
+    assert fake.posts == [], f"dry run must not POST: {fake.posts}"
+    assert not os.path.exists(runs), "dry run must not create session files"
+    calib = E.build_parser().parse_args(["calibrate", "--rpms", "20,100", "--api", fake.url, "--runs-dir", runs,
+                                         "--no-record", "--dry-run", "--belt-ref", os.path.join(TMP, "none.json")])
+    assert E.cmd_calibrate(calib, E.Api(fake.url)) == 0 and fake.posts == []
+
+
+def test_calibrate_fills_belt_ref():
+    fake = FakeAutoen(belt_rpm=lambda rpm: rpm * 0.98)
+    ref = os.path.join(TMP, f"ref_{time.monotonic_ns()}.json")
+    args = E.build_parser().parse_args(["calibrate", "--rpms", "20,100", "--seconds", "2", "--api", fake.url, "--runs-dir",
+                                        os.path.join(TMP, "runs"), "--no-record", "--belt-ref", ref])
+    assert E.cmd_calibrate(args, E.Api(fake.url), ask=answers(), recorder_factory=E.NullRecorder) == 0
+    r = E.BeltRef(ref)
+    assert abs(r.get(20)["rpm_meas_mean"] - 19.6) < 1e-9 and abs(r.get(100)["rpm_meas_mean"] - 98.0) < 1e-9
+    tasks = [b for p, b in fake.posts if p == "/api/task"]
+    assert [t["rpm"] for t in tasks] == [20.0, 100.0] and all(t["kind"] == "belt_run" for t in tasks)
+
+
+def test_baseline_pose():
+    fake = FakeAutoen()
+    args = E.build_parser().parse_args(["baseline", "--kind", "pose", "--pose", "up", "--seconds", "5", "--api", fake.url,
+                                        "--runs-dir", os.path.join(TMP, "runs"), "--no-record"])
+    assert E.cmd_baseline(args, E.Api(fake.url), ask=answers(), recorder_factory=E.NullRecorder) == 0
+    assert [b for p, b in fake.posts if p == "/api/task"] == [{"kind": "hold_pose", "seconds": 5.0, "settle_s": 3.0,
+                                                                "pose": "up"}]
+    assert load_meta(args)["result"]["stats"]["arm_W"]["mean"] == 0.7
+
+
+def test_refuses_old_autoen_and_busy_autoen():
+    fake = FakeAutoen()
+    del fake.st["config"]["pause_before_set"]
+    args = args_for(fake, write_plan(PLAN), make_ref([60, 100]))
+    assert E.cmd_run(args, E.Api(fake.url), ask=answers(), recorder_factory=E.NullRecorder, poll=0.05) == 1
+    assert "pause_before_set" in load_meta(args)["error"] and fake.posts == []
+    fake = FakeAutoen()
+    fake.st["status"] = "running"
+    args = args_for(fake, write_plan(PLAN), make_ref([60, 100]))
+    assert E.cmd_run(args, E.Api(fake.url), ask=answers(), recorder_factory=E.NullRecorder, poll=0.05) == 1
+    assert fake.posts == []
+
+
+if __name__ == "__main__":
+    for name, fn in list(globals().items()):
+        if name.startswith("test_") and callable(fn):
+            fn()
+            print(f"{name}: OK")
+    print(f"\nall experiment tests passed  (files in {TMP})")

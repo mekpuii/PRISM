@@ -1,0 +1,113 @@
+/* PRISM dashboard core: router, live stream (SSE), shared helpers, status strip, event drawer.
+   Pages register themselves with PRISM.page(route, {mount, update, unmount}) in p_*.js.
+   Data flow: dashboard_node.py -> /api/stream (10 Hz JSON snapshot) -> PRISM.live -> page.update(live). */
+(function () {
+  const P = window.PRISM = { live: null, pages: {}, cur: null, info: {}, lastLiveAt: 0 };
+
+  // ---------- helpers ----------
+  P.$ = (sel, root) => (root || document).querySelector(sel);
+  P.$$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+  P.h = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstChild; };
+  P.f = (v, d) => v == null || Number.isNaN(+v) ? '-' : (+v).toFixed(d == null ? 1 : d);
+  P.esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  P.hms = t => new Date(t * 1000).toTimeString().slice(0, 8);
+  P.dur = s => { s = Math.max(0, Math.round(s)); return s >= 3600 ? Math.floor(s / 3600) + 'h ' + Math.floor(s % 3600 / 60) + 'm' : s >= 60 ? Math.floor(s / 60) + 'm ' + (s % 60) + 's' : s + 's'; };
+  P.api = async (path, opt) => {
+    const r = await fetch(path, opt); let j = {}; try { j = await r.json(); } catch (e) { /* not json */ }
+    if (!r.ok) { const e = new Error(j.error || ('HTTP ' + r.status)); e.status = r.status; e.body = j; throw e; }
+    return j;
+  };
+  P.post = (path, body) => P.api(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) });
+  P.na = (title, text) => `<div class="na"><b>${P.esc(title)}</b>${P.esc(text || '')}</div>`;
+  P.lvlClass = l => 'lvl-' + (l || 'OK');
+  P.nodeClass = s => s === 'OK' ? 'ok' : s === 'STALE' ? 'warn' : s === 'OFFLINE' ? 'bad' : '';
+  P.setMsg = (el, text, ok) => { el.textContent = text; el.className = 'msg ' + (ok ? 'ok' : 'bad'); clearTimeout(el._t); el._t = setTimeout(() => { el.textContent = ''; }, 6000); };
+
+  // ---------- page registry + router ----------
+  P.page = (route, def) => { P.pages[route] = def; };
+  P.liveImg = img => {
+    if (!img) return;
+    const go = () => { if (document.body.contains(img)) img.src = '/api/camera.mjpg?t=' + Date.now(); };
+    img.onerror = () => setTimeout(go, 3000);
+    go();
+  };
+  const SUBS = {
+    control: [['run', 'Run'], ['camera', 'Camera'], ['calib', 'Calibrate']],
+    analysis: [['arm', 'Arm'], ['belt', 'Conveyor']]
+  };
+  function route() {
+    let r = location.hash.replace(/^#/, '') || '/overview';
+    if (r === '/control') r = '/control/run';
+    if (r === '/analysis') r = '/analysis/arm';
+    const def = P.pages[r] || P.pages['/overview'];
+    if (!P.pages[r]) r = '/overview';
+    if (P.cur && P.cur.def.unmount) { try { P.cur.def.unmount(); } catch (e) { console.error(e); } }
+    const view = P.$('#view'); view.innerHTML = '';
+    const top = r.split('/')[1];
+    P.$$('#nav .tab').forEach(t => t.classList.toggle('on', t.dataset.top === top));
+    const sb = P.$('#subbar'); sb.innerHTML = '';
+    (SUBS[top] || []).forEach(([k, label]) => { const a = document.createElement('a'); a.href = `#/${top}/${k}`; a.textContent = label; if (r === `/${top}/${k}`) a.className = 'on'; sb.appendChild(a); });
+    document.title = 'PRISM · ' + (def.title || r);
+    P.cur = { route: r, def };
+    try { def.mount(view); } catch (e) { console.error(e); view.innerHTML = P.na('This page failed to load', e.message); }
+    if (P.live && def.update) { try { def.update(P.live); } catch (e) { console.error(e); } }
+  }
+
+  // ---------- live stream ----------
+  function connect() {
+    const es = new EventSource('/api/stream');
+    es.onmessage = ev => {
+      let L; try { L = JSON.parse(ev.data); } catch (e) { return; }
+      P.live = L; P.lastLiveAt = performance.now();
+      paintStrip(L);
+      if (P.cur && P.cur.def.update) { try { P.cur.def.update(L); } catch (e) { console.error(e); } }
+    };
+    es.onerror = () => { banner('The dashboard backend (dashboard_node.py) is not answering. Retrying…', true); };
+    es.onopen = () => { if (P.$('#banner').className === 'bad') banner(P.info.read_only ? 'Read-only mode: Start / Stop and threshold edits are disabled.' : ''); };
+  }
+  function banner(text, bad) { const b = P.$('#banner'); b.hidden = !text; b.textContent = text || ''; b.className = bad ? 'bad' : ''; }
+  P.banner = banner;
+
+  function setPill(id, text, cls, title) { const e = P.$(id); e.textContent = text; e.className = 'pill ' + (cls || ''); if (title) e.title = title; }
+  function paintStrip(L) {
+    setPill('#p-mqtt', L.mqtt ? 'MQTT ok' : 'MQTT down', L.mqtt ? 'ok' : 'bad');
+    const ns = Object.entries(L.nodes || {}).filter(([, v]) => !v.optional || v.status !== 'NOT AVAILABLE');
+    const worst = ns.some(([, v]) => v.status === 'OFFLINE') ? 'OFFLINE' : ns.some(([, v]) => v.status === 'STALE' || v.status === 'NO DATA') ? 'STALE' : 'OK';
+    const bad = ns.filter(([, v]) => v.status !== 'OK').map(([k, v]) => k + ': ' + v.status);
+    setPill('#p-health', 'nodes ' + worst, P.nodeClass(worst), bad.join('\n') || 'every node reports');
+    const ae = L.autoen && L.autoen.d;
+    if (ae && L.autoen.age < 5) setPill('#p-run', `${ae.status} · ${ae.phase}`, ae.status === 'running' ? 'ok' : ae.status === 'error' ? 'bad' : 'info');
+    else setPill('#p-run', 'autoen: no data', '');
+    P.$('#clock').textContent = new Date().toTimeString().slice(0, 8);
+  }
+
+  // ---------- event drawer ----------
+  let evSince = 0; const evAll = [];
+  async function pollEvents() {
+    try {
+      const j = await P.api('/api/events?since=' + evSince);
+      j.events.forEach(e => { evAll.push(e); evSince = Math.max(evSince, e.id); });
+      if (evAll.length > 600) evAll.splice(0, evAll.length - 600);
+      if (j.events.length) paintEvents();
+    } catch (e) { /* backend down: the banner says so */ }
+  }
+  function paintEvents() {
+    const last = evAll[evAll.length - 1];
+    P.$('#evcount').textContent = `(${evAll.length})`;
+    if (last) P.$('#evlast').textContent = `${P.hms(last.t)}  ${last.src}: ${last.text}`;
+    const lst = P.$('#evlist');
+    if (!lst.hidden) lst.innerHTML = evAll.slice(-200).reverse().map(e => `<div class="ev ${e.level}"><span class="t">${P.hms(e.t)}</span><span class="s">${P.esc(e.src)}</span><span class="x">${P.esc(e.text)}</span></div>`).join('');
+    P.events = evAll;
+  }
+  P.events = evAll;
+
+  // ---------- boot ----------
+  P.boot = async function () {
+    try { P.info = await P.api('/api/info'); } catch (e) { /* retried by the stream */ }
+    P.$('#evtoggle').onclick = () => { const l = P.$('#evlist'); l.hidden = !l.hidden; paintEvents(); };
+    window.addEventListener('hashchange', route);
+    route(); connect(); pollEvents(); setInterval(pollEvents, 2000);
+    setInterval(() => { P.$('#clock').textContent = new Date().toTimeString().slice(0, 8); }, 1000);
+    if (P.info.read_only) banner('Read-only mode: Start / Stop and threshold edits are disabled.');
+  };
+})();

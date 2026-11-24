@@ -1,0 +1,3 @@
+[logger] logger_camera: topics camera -> camera.db; broker localhost:1883. Ctrl+C to stop.
+[logger] connected to broker: Success
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows

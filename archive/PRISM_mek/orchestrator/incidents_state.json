@@ -1,0 +1,29 @@
+{
+ "stats": {
+  "grip|retry": [
+   2,
+   1
+  ],
+  "grip|gentle": [
+   1,
+   0
+  ],
+  "new:RuntimeError|retry": [
+   2,
+   0
+  ],
+  "new:TimeoutError|retry": [
+   1,
+   0
+  ],
+  "new:SerialException|retry": [
+   1,
+   0
+  ],
+  "grip_suspect|retry": [
+   1,
+   1
+  ]
+ },
+ "saved": "2026-11-13T16:37:07"
+}

@@ -1,0 +1,28 @@
+=================================================================
+DELTA - Raspberry Pi 4 Object Perception + Spacing + Demand Collection
+=================================================================
+Mode: HSV color detection + USB camera (no depth) + Kalman
+Colours (priority order): white, orange
+Belt axis: u   direction: +1
+Camera streams: 640x480 at 6 FPS
+Demand window: 180 seconds
+Data sample interval: 10 seconds
+History file: delta_demand_history.csv
+Summary file: delta_3min_summary.csv
+Press ESC or Q to exit.
+=================================================================
+
+ERROR: the USB camera did not deliver frames.
+Details: USB camera not found (/dev/v4l/by-id/*H264_USB_Camera*-video-index0). Is it plugged in? Or set VISION_CAMERA=/dev/videoN.
+
+Check that the camera is plugged in and that no other program (ffplay, VLC, another vision node) has it open, then try again.
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/vision/vision_usb.py", line 1910, in main
+    pipeline = start_camera()
+               ^^^^^^^^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/vision/vision_usb.py", line 1755, in start_camera
+    device = find_camera_device()
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/vision/vision_usb.py", line 1658, in find_camera_device
+    raise RuntimeError(
+RuntimeError: USB camera not found (/dev/v4l/by-id/*H264_USB_Camera*-video-index0). Is it plugged in? Or set VISION_CAMERA=/dev/videoN.

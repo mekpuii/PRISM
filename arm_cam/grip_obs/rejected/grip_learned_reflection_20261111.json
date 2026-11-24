@@ -1,0 +1,64 @@
+{
+ "events": [
+  {
+   "u": 155.5106658935547,
+   "v": 269.70025634765625,
+   "long_px": 196.41897583007812,
+   "short_px": 107.04296875,
+   "angle_img": 96.64527911166645,
+   "gray": 230.0,
+   "tone": "white",
+   "eq_px": 145.00093203730125,
+   "time": "20261111_232809",
+   "still_before": true,
+   "lift_after_s": 0.15,
+   "cam_to_block_top_mm": 221.0820271952001,
+   "tip_depth_into_block_mm": -170.9060557793895
+  }
+ ],
+ "summary": {
+  "count": 1,
+  "u": {
+   "median": 155.5106658935547,
+   "std": 0.0
+  },
+  "v": {
+   "median": 269.70025634765625,
+   "std": 0.0
+  },
+  "long_px": {
+   "median": 196.41897583007812,
+   "std": 0.0
+  },
+  "short_px": {
+   "median": 107.04296875,
+   "std": 0.0
+  },
+  "angle_img": {
+   "mean": 96.64527911166644,
+   "std": 0.0
+  },
+  "cam_to_block_top_mm": {
+   "median": 221.0820271952001,
+   "std": 0.0
+  },
+  "cam_above_belt_mm": {
+   "median": 241.0820271952001,
+   "std": 0.0
+  },
+  "focal": {
+   "f_px": 925.4087657219375,
+   "offset_mm": 0.0
+  },
+  "tip_depth_into_block_mm": {
+   "median": -170.9060557793895,
+   "std": 0.0
+  },
+  "tip_above_belt_mm": {
+   "median": 190.9060557793895,
+   "std": 0.0
+  },
+  "cam_to_tip_mm": 50.17597141581061
+ },
+ "note": "ท่าบล็อกในภาพกล้องข้อมือ ณ จังหวะที่ jaw ปิด (เรียนจากการดูระบบอื่นหยิบ) — u,v = จุดกลางบล็อก (px), long/short = ขนาด (px), angle_img = มุมแกนยาวในภาพ, cam_to_block_top_mm = ระยะหน้าเลนส์ถึงผิวบนบล็อก (ต้องมี cam_focal.json จาก calib_focal.py), cam_above_belt_mm = + ความสูงบล็อก (ถ้ากล้องมองลงตรงๆ)"
+}

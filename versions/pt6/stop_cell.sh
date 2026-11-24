@@ -1,0 +1,158 @@
+#!/usr/bin/env bash
+# stop_cell.sh - stop the PRISM cell: autoen run -> optimizer -> autoen -> (vision + helpers with --all).
+#
+#   ./stop_cell.sh          stop the run, the optimizer, autoen AND the camera (vision); the dashboard and helpers keep running
+#   ./stop_cell.sh --all    also stop health, the loggers, the analyzers and the dashboard
+#
+# The arm holds where it is (autoen's own Stop); the belt coasts.
+# autoen is ALWAYS gone afterwards (2026-11-13): Ctrl+C, then SIGTERM, then SIGKILL; any copy of it, in any folder, on any port.
+set -u
+API="http://127.0.0.1:8781"
+
+opt_pids() {     # every main.py running in PRISM/orchestrator, however it was started
+  local pid
+  for pid in $(pgrep -f "main.py"); do
+    [ "$(readlink "/proc/$pid/cwd" 2>/dev/null)" = "$HOME/Desktop/PRISM/orchestrator" ] && echo "$pid"
+  done
+}
+
+
+# every running copy of autoen (any folder, any version of the file): a python process whose script is one of these
+autoen_pids() {
+  python3 - "$$" <<'PY'
+import os, sys
+me = int(sys.argv[1])
+NAMES = ("auto_en_new.py", "autoen_node.py", "autoen_climax_node.py")
+for pid in os.listdir("/proc"):
+    if not pid.isdigit() or int(pid) == me:
+        continue
+    try:
+        argv = open(f"/proc/{pid}/cmdline", "rb").read().split(b"\0")
+    except OSError:
+        continue
+    if argv and b"python" in os.path.basename(argv[0]) and any(a.endswith(tuple(n.encode() for n in NAMES)) for a in argv[1:4]):
+        print(pid)
+PY
+}
+
+# the process that listens on autoen's port (8781), if any
+port_pid() {
+  ss -ltnp 'sport = :8781' 2>/dev/null | grep -o 'pid=[0-9]*' | head -1 | cut -d= -f2
+}
+
+kill_autoen() {   # Ctrl+C (10 s) -> SIGTERM (5 s) -> SIGKILL (2 s) -> look again
+  local pids sig secs i
+  pids=$(autoen_pids)
+  if [ -z "$pids" ] && [ -z "$(port_pid)" ]; then
+    echo "autoen: not running"
+    return
+  fi
+  for sig in INT TERM KILL; do
+    pids="$(autoen_pids) $(port_pid)"
+    [ -z "${pids// /}" ] && break
+    kill -$sig $pids 2>/dev/null
+    case $sig in INT) secs=20 ;; TERM) secs=10 ;; *) secs=4 ;; esac
+    for i in $(seq 1 $secs); do
+      [ -z "$(autoen_pids)$(port_pid)" ] && break
+      sleep 0.5
+    done
+    [ -z "$(autoen_pids)$(port_pid)" ] && { [ "$sig" = INT ] && echo "autoen: stopped" || echo "autoen: stopped by SIG$sig (it did not leave on Ctrl+C)"; break; }
+  done
+  sleep 3                                   # did anything start it again (a keeper, a second terminal)?
+  pids="$(autoen_pids) $(port_pid)"
+  if [ -n "${pids// /}" ]; then
+    echo "autoen: it came back ($pids) - killing it again"
+    kill -KILL $pids 2>/dev/null
+    sleep 1
+  fi
+  [ -z "$(autoen_pids)$(port_pid)" ] && echo "autoen: GONE (no process, port 8781 free)" || echo "autoen: STILL THERE - run: kill -9 \$(ss -ltnp 'sport = :8781' | grep -o 'pid=[0-9]*' | cut -d= -f2)"
+}
+
+
+# every running copy of the camera program (vision_usb.py / vision_live_tracks.py), any folder
+vision_pids() {
+  python3 - "$$" <<'PY'
+import os, sys
+me = int(sys.argv[1])
+NAMES = (b"vision_usb.py", b"vision_live_tracks.py")
+for pid in os.listdir("/proc"):
+    if not pid.isdigit() or int(pid) == me:
+        continue
+    try:
+        argv = open(f"/proc/{pid}/cmdline", "rb").read().split(b"\0")
+    except OSError:
+        continue
+    if argv and b"python" in os.path.basename(argv[0]) and any(a.endswith(NAMES) for a in argv[1:4]):
+        print(pid)
+PY
+}
+
+kill_vision() {   # the camera: Ctrl+C (8 s) -> SIGTERM (4 s) -> SIGKILL; then the camera device must be free
+  local pids sig secs i
+  if [ -z "$(vision_pids)" ]; then
+    echo "camera (vision): not running"
+    return
+  fi
+  for sig in INT TERM KILL; do
+    pids=$(vision_pids)
+    [ -z "$pids" ] && break
+    kill -$sig $pids 2>/dev/null
+    case $sig in INT) secs=16 ;; TERM) secs=8 ;; *) secs=4 ;; esac
+    for i in $(seq 1 $secs); do
+      [ -z "$(vision_pids)" ] && break
+      sleep 0.5
+    done
+    [ -z "$(vision_pids)" ] && { [ "$sig" = INT ] && echo "camera (vision): stopped" || echo "camera (vision): stopped by SIG$sig (it did not leave on Ctrl+C)"; break; }
+  done
+  sleep 1
+  pids=$(vision_pids)
+  [ -n "$pids" ] && { kill -KILL $pids 2>/dev/null; sleep 1; }
+  if [ -n "$(vision_pids)" ]; then
+    echo "camera (vision): STILL THERE - run: kill -9 $(vision_pids | tr '\n' ' ')"
+  elif command -v fuser >/dev/null && fuser /dev/video* >/dev/null 2>&1; then
+    echo "camera (vision): the program is gone, but something else still holds the camera: $(fuser /dev/video* 2>&1 | tr -s ' ' | head -c 120)"
+  else
+    echo "camera (vision): GONE (the camera is free)"
+  fi
+}
+
+stop_prog() {   # Ctrl+C (SIGINT) so each program closes its files cleanly; wait up to 10 s
+  local pat="$1" name="$2"
+  if ! pgrep -f "$pat" >/dev/null; then
+    echo "$name: not running"
+    return
+  fi
+  pkill -INT -f "$pat"
+  for _ in $(seq 1 20); do
+    pgrep -f "$pat" >/dev/null || { echo "$name: stopped"; return; }
+    sleep 0.5
+  done
+  echo "$name: still running after 10 s - stop it by hand (Ctrl+C in its window, or: pkill -f '$pat')"
+}
+
+if curl -s -m 2 -X POST "$API/api/stop" >/dev/null; then
+  echo "autoen run: Stop sent (arm holds, belt coasts)"
+  sleep 2
+fi
+pids=$(opt_pids)
+if [ -z "$pids" ]; then
+  echo "optimizer: not running"
+else
+  kill -INT $pids
+  for _ in $(seq 1 20); do
+    [ -z "$(opt_pids)" ] && break
+    sleep 0.5
+  done
+  [ -z "$(opt_pids)" ] && echo "optimizer: stopped" || echo "optimizer: still running - Ctrl+C in its window"
+fi
+kill_autoen
+kill_vision
+if [ "${1:-}" = "--all" ]; then
+  # the passive helpers of start_cell.sh step 0 (dashboard first: it reads the others' databases)
+  stop_prog "dashboard_node\.py" "dashboard"
+  stop_prog "arms_ana\.py" "arm analyzer"
+  stop_prog "conv_ana\.py" "belt analyzer"
+  stop_prog "logger\.py.*--topics arm( |$)" "logger arm"
+  stop_prog "logger\.py.*--topics camera( |$)" "logger camera"
+  stop_prog "health\.py" "health"
+fi

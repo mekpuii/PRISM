@@ -1,0 +1,22 @@
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261110_162737.jsonl
+[observe] connected to broker: Success
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] OFF    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - autoen running
+[plan 5] RUN    20 rpm / arm 1.5  - autoen running
+[plan 6] RUN    20 rpm / arm 1.5  - autoen running
+[plan 7] IDLE   20 rpm / arm 1.5  action=idle  - 2 transport timeouts in a row (camera off): feeder empty, or check the belt
+[plan 8] IDLE   20 rpm / arm 1.5  - 2 transport timeouts in a row (camera off): feeder empty, or check the belt
+[plan 9] RUN    20 rpm / arm 1.5  action=resume  - feeder IR: cubes loaded
+[plan 10] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 11] MANUAL 20 rpm / arm 1.5  - autoen paused by someone else: hands off
+[plan 12] RUN    20 rpm / arm 1.5  - autoen running
+[plan 13] RECOVER 20 rpm / arm 1.5  action=pause  - cycle 6 SerialException: auto response 'retry' (try 1/1, learned success 50%) (new incident: remembered)
+[plan 14] RECOVER 20 rpm / arm 1.5  - cycle 6 SerialException: auto response 'retry' (try 1/1, learned success 50%) (new incident: remembered)
+[plan 15] RUN    20 rpm / arm 1.5  action=resume  - auto response 'retry': running again
+[plan 16] RUN    20 rpm / arm 1.5  - auto response 'retry': running again
+[plan 17] ALERT  20 rpm / arm 1.5  action=pause  - cycle 7 SerialException: check before resuming (write failed: [Errno 5] Input/output error) - SerialException: tried retry, still failing
+[plan 18] ALERT  20 rpm / arm 1.5  - cycle 7 SerialException: check before resuming (write failed: [Errno 5] Input/output error) - SerialException: tried retry, still failing
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

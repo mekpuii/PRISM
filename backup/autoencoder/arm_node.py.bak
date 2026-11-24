@@ -1,0 +1,514 @@
+r"""
+ARM NODE (Raspberry Pi side) - SO-101 / 6x STS3215 via Arduino Mega 2560.
+ 
+Keyboard -> Raspberry Pi (this script) --USB serial--> Mega (complete_ik sketch)
+                  |                                         \--> URT-2 --> STS3215 bus
+                  \--MQTT--> Mosquitto broker --> Logger (arm.db)
+ 
+KEYS
+  1 2 3 4        go to stored STATE: 1=home  2=work  3=ref  4=your recorded pose
+                 (press the same number again = cancel, arm holds where it is)
+  P              record the CURRENT arm pose into state 4 (arm must be stationary)
+  W A S D Z X    jog ONE joint each, independently, while held:
+                   W=1 shoulder_pan   A=2 shoulder_lift   S=3 elbow_flex
+                   D=4 wrist_flex     Z=5 wrist_roll      X=6 gripper
+                 hold SHIFT with the key to move that joint the OTHER way
+  5 6 7 8        speed 25 / 50 / 75 / 100 %   (= and - : fine adjust)
+  Q              STOP: all joints hold their measured position (also cancels IR gripper close)
+  SPACE          same as Q
+  ESC            quit
+ 
+Serial protocol (matches the Mega sketch):
+  Pi -> Mega : J,<id>,<rate>   P,<id>,<pos>,<speed>   H,<id>
+  Mega -> Pi : H,SO101_MEGA_V1   R,<0|1>   S,<id>,<mode>,<pos>   T,<id>,<pos>,<speed>,<current>
+               IR,<raw>,<detected>        G,<CLOSING|CLOSED|ERROR>,<pos>[,<reason>]
+ 
+MQTT topics published:
+  arm/telemetry (10 Hz, QoS0)   arm/state (retained)   arm/status (retained + Last Will)
+  arm/ir (retained, on change)  arm/gripper (QoS1, on every gripper event)
+ 
+Install:  sudo apt install python3-evdev python3-serial   (or pip install evdev pyserial paho-mqtt)
+Perms:    sudo usermod -aG input,dialout $USER   (then log out/in)
+Run:      MQTT_HOST=localhost python3 arm_node.py
+NOT a safety-rated e-stop. Keep clear of the arm.
+"""
+ 
+import json
+import os
+import selectors
+import sys
+import threading
+import time
+from pathlib import Path
+ 
+import serial
+from serial import SerialException
+from evdev import InputDevice, ecodes, list_devices
+import paho.mqtt.client as mqtt        # pip install paho-mqtt
+ 
+# ----------------------------------------------------------------------------
+# CONFIG
+# ----------------------------------------------------------------------------
+SERIAL_PORT = "/dev/ttyACM0"   # Mega USB port; check with `ls /dev/ttyACM*`
+SERIAL_BAUD = 115200           # must match Serial.begin() in the sketch
+LOOP_HZ = 100                  # command rate (about 74% of the 115200 baud link)
+TELEMETRY_TIMEOUT_S = 1.5      # feedback older than this = not fresh
+ 
+MQTT_HOST = os.environ.get("MQTT_HOST", "localhost")
+MQTT_PORT = 1883
+MQTT_PUBLISH_HZ = 10           # broker rate; NOT the 100 Hz control loop
+ 
+SERVO_IDS = range(1, 7)
+JOINT_NAMES = ("shoulder_pan", "shoulder_lift", "elbow_flex",
+               "wrist_flex", "wrist_roll", "gripper")
+ 
+JOINT_MAX_COMMAND = 360        # jog rate at 100% speed (-1000..1000 units)
+JOINT_COMMAND_ACCEL = 2600.0   # command units/s, slew limit for ramp up/down
+POSE_MOVE_BASE_SPEED = 360     # ticks/s at 100% for state moves (Mega minimum is 90)
+POSE_TOLERANCE_TICKS = 5       # "arrived" when every joint is within this
+SPEED_STEP, SPEED_MIN, SPEED_MAX = 0.25, 0.25, 2.50
+ 
+# Mirror of SAFE_MIN/SAFE_MAX in the Mega sketch (servo id -> raw ticks).
+# The Mega is the one that really enforces them; the Pi copy only lets us reject a
+# bad stored pose up front instead of silently sending a clamped one.
+SAFE_MIN = {1: 784,  2: 868,  3: 996,  4: 813,  5: 298,  6: 1768}
+SAFE_MAX = {1: 3404, 2: 3151, 3: 3056, 4: 3201, 5: 3859, 6: 3116}
+ 
+# ----------------------------------------------------------------------------
+# STATES  (servo id -> raw ticks). 1-3 are fixed; 4 is recorded with the P key.
+# ----------------------------------------------------------------------------
+STATES = {
+    "home": {1: 2049, 2: 1004, 3: 3041, 4: 2079, 5: 1157, 6: 2023},
+    "work": {1: 2073, 2: 1661, 3: 2376, 4: 3067, 5: 1192, 6: 2988},
+    "ref":  {1: 2168, 2: 1624, 3: 2177, 4: 3178, 5: 1140, 6: 1911},
+}
+STATE_KEYS = {"KEY_1": "home", "KEY_2": "work", "KEY_3": "ref", "KEY_4": "state4"}
+KEY_RECORD = "KEY_P"
+STATE4_FILE = Path(__file__).with_name("arm_state4.json")
+ 
+# ----------------------------------------------------------------------------
+# KEY MAP  (evdev gives true key-down / key-up, so "held" really means held)
+# ----------------------------------------------------------------------------
+JOINT_KEYS = {                 # one key per joint; Shift reverses the direction
+    "KEY_W": 1,                # shoulder_pan
+    "KEY_A": 2,                # shoulder_lift
+    "KEY_S": 3,                # elbow_flex
+    "KEY_D": 4,                # wrist_flex
+    "KEY_Z": 5,                # wrist_roll
+    "KEY_X": 6,                # gripper
+}
+SHIFT_KEYS = ("KEY_LEFTSHIFT", "KEY_RIGHTSHIFT")
+SPEED_PRESETS = {"KEY_5": 0.25, "KEY_6": 0.50, "KEY_7": 0.75, "KEY_8": 1.00}
+KEY_SPEED_UP, KEY_SPEED_DOWN = "KEY_EQUAL", "KEY_MINUS"
+KEY_STOP = ("KEY_Q", "KEY_SPACE")
+KEY_QUIT = "KEY_ESC"
+ 
+ 
+def wanted_directions(held):
+    """Map held keys -> {servo id: -1, 0, +1}. Pure function, easy to test."""
+    sign = -1 if any(k in held for k in SHIFT_KEYS) else 1
+    want = {s: 0 for s in SERVO_IDS}
+    for key, sid in JOINT_KEYS.items():
+        if key in held:
+            want[sid] = sign
+    return want
+ 
+ 
+def pose_in_limits(pose):
+    """True when every joint of a stored pose is inside the Mega's safe range."""
+    return all(SAFE_MIN[s] <= pose[s] <= SAFE_MAX[s] for s in SERVO_IDS)
+ 
+ 
+# ----------------------------------------------------------------------------
+# KEYBOARD (evdev) - background thread keeps `held` set + list of key-down edges
+# ----------------------------------------------------------------------------
+class Keyboard:
+    def __init__(self):
+        self.held = set()          # key names currently physically down
+        self.edges = []            # key names pressed since the last poll
+        self._lock = threading.Lock()
+        self._devs = self._find_keyboards()
+        if not self._devs:
+            raise SystemExit("No keyboard found. Is it plugged into the Pi and are you in the 'input' group?")
+        threading.Thread(target=self._run, daemon=True).start()
+ 
+    @staticmethod
+    def _find_keyboards():
+        devs = []
+        for path in list_devices():
+            d = InputDevice(path)
+            keys = d.capabilities().get(ecodes.EV_KEY, [])
+            # A real keyboard exposes letters + space; filters out power buttons, mice, etc.
+            if ecodes.KEY_Q in keys and ecodes.KEY_SPACE in keys:
+                devs.append(d)
+        return devs
+ 
+    def _run(self):
+        sel = selectors.DefaultSelector()
+        for d in self._devs:
+            sel.register(d, selectors.EVENT_READ)
+        while True:
+            for key, _ in sel.select():
+                try:
+                    for ev in key.fileobj.read():
+                        if ev.type != ecodes.EV_KEY:
+                            continue
+                        name = ecodes.KEY.get(ev.code)
+                        if isinstance(name, list):      # some codes have aliases
+                            name = name[0]
+                        with self._lock:
+                            if ev.value == 1:            # key down
+                                self.held.add(name)
+                                self.edges.append(name)
+                            elif ev.value == 0:          # key up
+                                self.held.discard(name)
+                            # value 2 = auto-repeat -> ignored on purpose
+                except OSError:                           # keyboard unplugged
+                    with self._lock:
+                        self.held.clear()                 # fail safe: nothing held
+                    sel.unregister(key.fileobj)
+ 
+    def poll(self):
+        """Return (copy of held keys, list of new key-down edges)."""
+        with self._lock:
+            held, edges = set(self.held), self.edges
+            self.edges = []
+        return held, edges
+ 
+ 
+# ----------------------------------------------------------------------------
+# MEGA LINK - background reader parses telemetry; main thread writes commands
+# ----------------------------------------------------------------------------
+class MegaLink:
+    def __init__(self, port, baud):
+        self.ser = serial.Serial(port, baud, timeout=0, write_timeout=0.2)
+        time.sleep(2.0)                       # opening USB resets the Mega; wait for boot
+        self.lock = threading.Lock()
+        self.telemetry = {sid: {"pos": None, "speed": None, "cur": None, "t": 0.0}
+                          for sid in SERVO_IDS}
+        self.firmware_ready = None            # None = unknown, True/False from R,x
+        self.last_hello = 0.0
+        self.ir = None                        # (raw_level, detected) from the IR sensor
+        self.gripper_events = []              # queue of G,... events for the main loop
+        self.gripper_state = None             # last G state: CLOSING / CLOSED / ERROR
+        self._buf = bytearray()
+        self._run = True
+        threading.Thread(target=self._reader, daemon=True).start()
+ 
+    def _reader(self):
+        while self._run:
+            try:
+                data = self.ser.read(max(1, self.ser.in_waiting))
+            except (SerialException, OSError):
+                time.sleep(0.1)
+                continue
+            if not data:
+                time.sleep(0.001)
+                continue
+            self._buf.extend(data)
+            while b"\n" in self._buf:                      # only complete lines
+                i = self._buf.index(b"\n")
+                line = bytes(self._buf[:i]).decode("ascii", "ignore").strip()
+                del self._buf[:i + 1]
+                self._parse(line)
+ 
+    def _parse(self, line):
+        p = line.split(",")
+        now = time.monotonic()
+        try:
+            with self.lock:
+                if p[0] == "H" and len(p) >= 2 and p[1] == "SO101_MEGA_V1":
+                    self.last_hello = now
+                elif p[0] == "R" and len(p) >= 2:
+                    self.firmware_ready = (int(p[1]) == 1)
+                elif p[0] == "T" and len(p) == 5:
+                    sid, pos = int(p[1]), int(p[2])
+                    if sid in self.telemetry:
+                        self.telemetry[sid] = {
+                            "pos": pos if 0 <= pos <= 4095 else None,
+                            "speed": int(p[3]), "cur": int(p[4]), "t": now}
+                elif p[0] == "IR" and len(p) == 3:
+                    self.ir = (int(p[1]), int(p[2]))
+                elif p[0] == "G" and len(p) >= 3:
+                    # G,<state>,<pos>[,<reason>]  (reason text may itself contain commas)
+                    ev = {"state": p[1], "pos": int(p[2]),
+                          "reason": ",".join(p[3:]) if len(p) > 3 else None}
+                    self.gripper_state = ev["state"]
+                    self.gripper_events.append(ev)
+        except ValueError:
+            pass                                           # corrupted line: drop it
+ 
+    # --- state queries -------------------------------------------------------
+    def snapshot(self):
+        with self.lock:
+            return {sid: dict(v) for sid, v in self.telemetry.items()}, self.firmware_ready, self.last_hello
+ 
+    def take_extras(self):
+        """Return (ir, gripper_state, new gripper events) and clear the event queue."""
+        with self.lock:
+            events, self.gripper_events = self.gripper_events, []
+            return self.ir, self.gripper_state, events
+ 
+    def feedback_fresh(self):
+        snap, _, _ = self.snapshot()
+        now = time.monotonic()
+        return all(v["pos"] is not None and now - v["t"] <= TELEMETRY_TIMEOUT_S
+                   for v in snap.values())
+ 
+    # --- commands (one write() per batch = less syscall overhead) -----------
+    def send_rates(self, rates):
+        self.ser.write("".join(f"J,{s},{int(rates[s])}\n" for s in SERVO_IDS).encode())
+ 
+    def send_positions(self, pose, speed):
+        self.ser.write("".join(f"P,{s},{int(pose[s])},{int(speed)}\n" for s in SERVO_IDS).encode())
+ 
+    def send_hold(self):
+        self.ser.write("".join(f"H,{s}\n" for s in SERVO_IDS).encode())
+ 
+    def send_gripper_position(self, pos, speed=200):
+        # Any P to servo 6 makes the Mega abort an IR gripper crawl (stopGripperCrawl).
+        self.ser.write(f"P,6,{int(pos)},{int(speed)}\n".encode())
+ 
+    def close(self):
+        self._run = False
+        try:
+            self.send_hold()
+            self.ser.flush()
+            time.sleep(0.05)
+            self.ser.close()
+        except Exception:
+            pass
+ 
+ 
+# ----------------------------------------------------------------------------
+# MQTT BRIDGE - publishes arm data to the broker. Control never waits on it.
+# ----------------------------------------------------------------------------
+class MqttBridge:
+    def __init__(self, host, port):
+        self.c = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id="arm_node")
+        # Last Will: if this node dies WITHOUT disconnecting cleanly, the broker
+        # publishes this for us, so other nodes learn we are gone.
+        self.c.will_set("arm/status", json.dumps({"online": False}), qos=1, retain=True)
+        self.c.on_connect = self._on_connect
+        # connect_async + loop_start: connecting/reconnecting happen in a background
+        # thread, so a missing broker can never freeze the control loop.
+        self.c.connect_async(host, port, keepalive=10)
+        self.c.loop_start()
+ 
+    def _on_connect(self, client, userdata, flags, reason_code, properties):
+        client.publish("arm/status", json.dumps({"online": True, "ts": time.time()}), qos=1, retain=True)
+ 
+    def publish_telemetry(self, snap):
+        # ONE message with all six joints (6x fewer messages than one per joint).
+        payload = {"ts": time.time(),
+                   "joints": {str(s): {"pos": v["pos"], "speed": v["speed"], "cur": v["cur"]}
+                              for s, v in snap.items()}}
+        self.c.publish("arm/telemetry", json.dumps(payload), qos=0)
+ 
+    def publish_state(self, mode, speed_scale, pose):
+        payload = {"ts": time.time(), "mode": mode, "speed_scale": speed_scale, "pose": pose}
+        self.c.publish("arm/state", json.dumps(payload), qos=0, retain=True)
+ 
+    def publish_ir(self, raw, detected):
+        self.c.publish("arm/ir", json.dumps({"ts": time.time(), "raw": raw, "detected": bool(detected)}),
+                       qos=1, retain=True)
+ 
+    def publish_gripper(self, ev):
+        # QoS 1: a CLOSED / ERROR event is rare and worth keeping, unlike telemetry.
+        self.c.publish("arm/gripper", json.dumps({"ts": time.time(), **ev}), qos=1)
+ 
+    def close(self):
+        try:
+            # wait_for_publish raises if the broker was never reachable; that must not
+            # crash the shutdown path (it would skip loop_stop/disconnect).
+            self.c.publish("arm/status", json.dumps({"online": False, "ts": time.time()}),
+                           qos=1, retain=True).wait_for_publish(1.0)
+        except Exception:
+            pass
+        self.c.loop_stop()
+        self.c.disconnect()
+ 
+ 
+# ----------------------------------------------------------------------------
+# STATE 4 STORAGE (the only user-recorded pose)
+# ----------------------------------------------------------------------------
+def load_state4():
+    try:
+        raw = json.loads(STATE4_FILE.read_text())
+        pose = {int(s): int(v) for s, v in raw.items()}
+        return pose if set(pose) == set(SERVO_IDS) and pose_in_limits(pose) else None
+    except (OSError, ValueError, AttributeError):
+        return None
+ 
+def save_state4(pose):
+    STATE4_FILE.write_text(json.dumps({str(s): v for s, v in pose.items()}, indent=2))
+ 
+ 
+# ----------------------------------------------------------------------------
+# MAIN CONTROL LOOP
+# ----------------------------------------------------------------------------
+def main():
+    # Reject a bad fixed state before touching hardware (typo protection).
+    for name, pose in STATES.items():
+        if not pose_in_limits(pose):
+            raise SystemExit(f"State '{name}' is outside the Mega SAFE_MIN/SAFE_MAX range.")
+ 
+    try:
+        link = MegaLink(SERIAL_PORT, SERIAL_BAUD)
+    except SerialException as exc:
+        raise SystemExit(f"Cannot open {SERIAL_PORT}: {exc}")
+    kb = Keyboard()
+    state4 = load_state4()
+    if state4:
+        STATES["state4"] = state4
+    bridge = MqttBridge(MQTT_HOST, MQTT_PORT)
+    last_pub = 0.0
+    last_ir = None                               # publish IR only when it changes
+ 
+    speed_scale = 1.0
+    filtered = {s: 0.0 for s in SERVO_IDS}      # slew-limited command per servo
+    pose_target, pose_name = None, None          # active state move (None = jogging)
+    message = "ready"
+    last_tick = time.monotonic()
+    last_print = 0.0
+    period = 1.0 / LOOP_HZ
+ 
+    print("ARM NODE up. States 1-4 | P record state 4 | W A S D Z X = joints 1-6 (Shift = reverse) | 5/6/7/8 = 25/50/75/100% | Q stop | ESC quit")
+    try:
+        while True:
+            t0 = time.monotonic()
+            dt = min(0.1, t0 - last_tick)
+            last_tick = t0
+ 
+            held, edges = kb.poll()
+            snap, fw_ready, last_hello = link.snapshot()
+            fresh = link.feedback_fresh()
+            link_ok = (t0 - last_hello) < 3.0
+            can_move = link_ok and fw_ready is True and fresh
+            ir, grip_state, grip_events = link.take_extras()
+ 
+            # ---- one-shot keys (key-down edges) --------------------------------
+            for k in edges:
+                if k == KEY_QUIT:
+                    return
+                elif k in KEY_STOP:
+                    pose_target, pose_name = None, None
+                    filtered = {s: 0.0 for s in SERVO_IDS}
+                    link.send_hold()
+                    # If the IR gripper auto-close is crawling, the hold alone does not
+                    # end it; a P to servo 6 does.
+                    if grip_state == "CLOSING" and snap[6]["pos"] is not None:
+                        link.send_gripper_position(snap[6]["pos"])
+                    message = "STOP: holding measured position"
+                elif k in SPEED_PRESETS:
+                    speed_scale = SPEED_PRESETS[k]       # jog ramps to it; state move uses it next tick
+                    message = f"speed preset {speed_scale:.0%}"
+                elif k == KEY_SPEED_UP:
+                    speed_scale = min(SPEED_MAX, speed_scale + SPEED_STEP)
+                elif k == KEY_SPEED_DOWN:
+                    speed_scale = max(SPEED_MIN, speed_scale - SPEED_STEP)
+                elif k in STATE_KEYS:
+                    name = STATE_KEYS[k]
+                    pose = STATES.get(name)
+                    if pose is None:
+                        message = "state 4 not recorded yet (move the arm, press P)"
+                    elif not can_move:
+                        message = "can't move: no fresh feedback from the Mega"
+                    elif pose_name == name:              # same key again = cancel
+                        pose_target, pose_name = None, None
+                        link.send_hold()
+                        message = f"{name} cancelled, holding"
+                    else:
+                        pose_target, pose_name = pose, name
+                        filtered = {s: 0.0 for s in SERVO_IDS}
+                        message = f"moving to {name}"
+                elif k == KEY_RECORD:
+                    if not can_move or pose_target is not None or any(filtered[s] for s in SERVO_IDS):
+                        message = "can't record: need fresh feedback and a stationary arm"
+                    else:
+                        new = {s: snap[s]["pos"] for s in SERVO_IDS}
+                        if pose_in_limits(new):
+                            STATES["state4"] = new
+                            save_state4(new)
+                            message = "recorded current pose as state 4"
+                        else:
+                            message = "not recorded: pose outside safe range"
+ 
+            # ---- build this tick's command -------------------------------------
+            if not can_move:
+                # Any precondition lost -> zero everything, abort state move.
+                pose_target, pose_name = None, None
+                filtered = {s: 0.0 for s in SERVO_IDS}
+                link.send_rates({s: 0 for s in SERVO_IDS})   # also refreshes the Mega watchdog
+            else:
+                wants = wanted_directions(held)
+                # Any joint key takes over from an active state move.
+                if pose_target is not None and any(wants.values()):
+                    pose_target, pose_name = None, None
+                    link.send_hold()
+                    message = "manual override"
+ 
+                if pose_target is not None:
+                    # Re-send P each tick: the repeat refreshes the Mega's 500 ms position watchdog.
+                    link.send_positions(pose_target, POSE_MOVE_BASE_SPEED * speed_scale)
+                    if all(abs(snap[s]["pos"] - pose_target[s]) <= POSE_TOLERANCE_TICKS for s in SERVO_IDS):
+                        message = f"{pose_name} reached, holding (key again / Q to release)"
+                else:
+                    # Slew-limit each servo toward its target rate (ramp up AND down).
+                    max_step = JOINT_COMMAND_ACCEL * dt
+                    was_moving = any(abs(filtered[s]) >= 1.0 for s in SERVO_IDS)
+                    for s in SERVO_IDS:
+                        target = wants[s] * JOINT_MAX_COMMAND * speed_scale
+                        delta = max(-max_step, min(max_step, target - filtered[s]))
+                        filtered[s] += delta
+                    if not any(wants.values()) and was_moving and \
+                            not any(abs(filtered[s]) >= 1.0 for s in SERVO_IDS):
+                        link.send_hold()                    # latch measured pose on release
+                    link.send_rates({s: round(filtered[s]) for s in SERVO_IDS})
+ 
+            # ---- gripper / IR events from the Mega -> broker -------------------
+            for ev in grip_events:
+                bridge.publish_gripper(ev)
+                message = f"gripper {ev['state']} @ {ev['pos']}" + (f" ({ev['reason']})" if ev["reason"] else "")
+            if ir is not None and ir != last_ir:
+                last_ir = ir
+                bridge.publish_ir(*ir)
+ 
+            # ---- status line @5 Hz ---------------------------------------------
+            if t0 - last_print > 0.2:
+                last_print = t0
+                pos = " ".join(f"{snap[s]['pos'] if snap[s]['pos'] is not None else '----':>4}"
+                               for s in SERVO_IDS)
+                state = "OK " if can_move else "LOCK"
+                sys.stdout.write(f"\r[{state}] pos {pos} | spd {speed_scale:.0%} | {message:<55}")
+                sys.stdout.flush()
+ 
+            # ---- publish to broker @ MQTT_PUBLISH_HZ ---------------------------
+            if t0 - last_pub >= 1.0 / MQTT_PUBLISH_HZ:
+                last_pub = t0
+                if fresh:                                   # never publish stale numbers as live
+                    bridge.publish_telemetry(snap)
+                if not can_move:
+                    mode = "lock"
+                elif pose_target is not None:
+                    mode = "pose"
+                elif any(abs(filtered[s]) >= 1.0 for s in SERVO_IDS):
+                    mode = "jog"
+                else:
+                    mode = "hold"
+                bridge.publish_state(mode, speed_scale, pose_name)
+ 
+            # ---- hold loop rate ------------------------------------------------
+            sleep = period - (time.monotonic() - t0)
+            if sleep > 0:
+                time.sleep(sleep)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        print("\nShutting down: holding position.")
+        link.close()
+        bridge.close()
+ 
+ 
+if __name__ == "__main__":
+    main()

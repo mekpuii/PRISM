@@ -1,0 +1,16 @@
+{
+ "JOINT_ZERO": {
+  "shoulder_pan": 2049.0,
+  "shoulder_lift": 2011.0,
+  "elbow_flex": 2061.0,
+  "wrist_flex": 2071.0,
+  "wrist_roll": 145.0
+ },
+ "JOINT_DIR": {
+  "shoulder_pan": 1,
+  "shoulder_lift": 1,
+  "elbow_flex": 1,
+  "wrist_flex": 1,
+  "wrist_roll": 1
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "run_id": "base_20261024_201550",
+ "kind": "base",
+ "start": "2026-10-24T20:15:50",
+ "end": "2026-10-24T20:15:50",
+ "status": "error",
+ "operator_note": "",
+ "cube_set": "none",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "e0f1899cfa43748f5eb69e2e09a2e9f0c5da9a965b943cbc283e872cbbc90e09",
+  "mtime": "2026-10-24T18:43:38"
+ },
+ "experiment_sha256": "5e4ce00370914660710fdb817747df8b31e9d9ba4c8d56ee690c6e47e6979668",
+ "config_snapshots": [],
+ "tasks": [],
+ "blocks": [],
+ "baseline": {
+  "kind": "belt_run",
+  "seconds": 60.0,
+  "settle_s": 3.0,
+  "rpm": 100.0
+ },
+ "error": "operator quit before start"
+}

@@ -1,0 +1,14 @@
+orchestrator LIVE  objective=priority  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261027_193527.jsonl
+[plan 1] OFF    15 rpm / arm 1.5  - autoen not reachable
+[observe] connected to broker: Success
+[plan 2] OFF    15 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    15 rpm / arm 1.5  - autoen running
+[plan 4] RUN    15 rpm / arm 1.5  - autoen running
+[plan 5] IDLE   15 rpm / arm 1.5  action=idle  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 6] IDLE   15 rpm / arm 1.5  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 7] ALERT  15 rpm / arm 1.5  action=pause  - cycle 1 GRIP_MISS: check before resuming (gripper stopped at 218.7 deg, outside the block window 150-181.8 deg - no block caught | feature-A fast move timed out, finishing with the slow move to grip_pos; gripper stopped +476t short of grip_pos 2012: holding at 2478 (block wider than taught))
+[plan 8] ALERT  15 rpm / arm 1.5  - cycle 1 GRIP_MISS: check before resuming (gripper stopped at 218.7 deg, outside the block window 150-181.8 deg - no block caught | feature-A fast move timed out, finishing with the slow move to grip_pos; gripper stopped +476t short of grip_pos 2012: holding at 2478 (block wider than taught))
+[actuate] idle FAILED: task hold_pose did not finish: RuntimeError: servo feedback lost
+[plan 9] OFF    15 rpm / arm 1.5  - autoen stopped
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

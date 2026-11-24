@@ -1,0 +1,21 @@
+{
+  "name": "opt_grid_v1",
+  "seed": 20261025,
+  "order": "rounds",
+  "repeats": 2,
+  "defaults": {"n_cycles": 10, "set": {"arrive_timeout": 40}},
+  "configs": [
+    {"label": "r8_a1.0",    "rpm": 8,    "arm_speed": 1.0, "carry_speed": 1.0},
+    {"label": "r8_a1.5",    "rpm": 8,    "arm_speed": 1.5, "carry_speed": 1.5},
+    {"label": "r8_a2.0",    "rpm": 8,    "arm_speed": 2.0, "carry_speed": 2.0},
+    {"label": "r11.1_a1.0", "rpm": 11.1, "arm_speed": 1.0, "carry_speed": 1.0},
+    {"label": "r11.1_a1.5", "rpm": 11.1, "arm_speed": 1.5, "carry_speed": 1.5},
+    {"label": "r11.1_a2.0", "rpm": 11.1, "arm_speed": 2.0, "carry_speed": 2.0},
+    {"label": "r15_a1.0",   "rpm": 15,   "arm_speed": 1.0, "carry_speed": 1.0},
+    {"label": "r15_a1.5",   "rpm": 15,   "arm_speed": 1.5, "carry_speed": 1.5},
+    {"label": "r15_a2.0",   "rpm": 15,   "arm_speed": 2.0, "carry_speed": 2.0},
+    {"label": "r20_a1.0",   "rpm": 20,   "arm_speed": 1.0, "carry_speed": 1.0},
+    {"label": "r20_a1.5",   "rpm": 20,   "arm_speed": 1.5, "carry_speed": 1.5},
+    {"label": "r20_a2.0",   "rpm": 20,   "arm_speed": 2.0, "carry_speed": 2.0}
+  ]
+}

@@ -1,0 +1,13 @@
+[belt-analyzer] up. broker localhost:1883, db belt_analyzer.db, thresholds built-in defaults (run --write-thresholds to edit them). Ctrl+C to stop.
+[belt-analyzer] connected to broker: Success
+[01:17:31] NO_DATA  -> STOPPED   (not moving)
+[01:17:34] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[01:17:44] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[01:17:54] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[01:18:04] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[01:18:14] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[01:18:24] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[01:18:34] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+
+[belt-analyzer] stopping
+[belt-analyzer] lost the broker

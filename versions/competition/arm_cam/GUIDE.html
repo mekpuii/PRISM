@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>SO101 Pick Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* layout: คอลัมน์เดียวอ่านไล่ลง เหมือนใบงานแล็บ — แถบสารบัญติดด้านบน, แต่ละขั้นเป็นแผ่นงานมีช่องติ๊ก */
+:root{
+  --bg:#f3f5f8; --panel:#ffffff; --ink:#18212f; --muted:#5a6678; --line:#d5dbe5;
+  --accent:#2a5aa6; --accent-soft:#e3ecf9; --ok:#17794c; --ok-soft:#e1f3ea;
+  --warn:#9a5b00; --warn-soft:#fbefd9; --bad:#b3261e; --bad-soft:#fbe6e4; --code:#eef1f6;
+  --sans:"IBM Plex Sans Thai","Leelawadee UI","Noto Sans Thai",Tahoma,sans-serif;
+  --mono:"IBM Plex Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#10151d; --panel:#18202c; --ink:#e6ebf3; --muted:#9aa7ba; --line:#2c3748;
+  --accent:#7fb0f5; --accent-soft:#1d2c44; --ok:#5fd09a; --ok-soft:#15301f;
+  --warn:#f0b659; --warn-soft:#33270f; --bad:#ff8a80; --bad-soft:#3a1a18; --code:#0f141c; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#10151d; --panel:#18202c; --ink:#e6ebf3; --muted:#9aa7ba; --line:#2c3748;
+  --accent:#7fb0f5; --accent-soft:#1d2c44; --ok:#5fd09a; --ok-soft:#15301f;
+  --warn:#f0b659; --warn-soft:#33270f; --bad:#ff8a80; --bad-soft:#3a1a18; --code:#0f141c; color-scheme:dark }
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7}
+.wrap{max-width:920px;margin:0 auto;padding-block:28px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:22px}
+h1{font-size:1.9rem;line-height:1.25;margin:0;text-wrap:balance}
+h2{font-size:1.3rem;line-height:1.35;margin:0;text-wrap:balance}
+h3{font-size:1.02rem;margin:0}
+p{margin:0}
+.lead{color:var(--muted);max-width:68ch}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.note{border-left:4px solid var(--warn);background:var(--warn-soft);padding:12px 14px;border-radius:0 8px 8px 0}
+.note.bad{border-color:var(--bad);background:var(--bad-soft)}
+.note.ok{border-color:var(--ok);background:var(--ok-soft)}
+.note b{font-weight:600}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:8px;border-bottom:1px solid var(--line)}
+nav.toc .row{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+nav.toc a{flex:none;font-family:var(--mono);font-size:.8rem;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:3px 9px}
+nav.toc a.done{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+nav.toc a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.prog{font-size:.85rem;color:var(--muted);margin-top:4px}
+.step{scroll-margin-top:84px}
+.step .head{display:flex;gap:12px;align-items:flex-start}
+.num{flex:none;font-family:var(--mono);font-weight:500;background:var(--accent);color:var(--panel);border-radius:6px;min-width:2.3em;text-align:center;padding:2px 6px}
+.step .head label{margin-left:auto;flex:none;display:flex;gap:6px;align-items:center;font-size:.85rem;color:var(--muted);cursor:pointer}
+.step .head input{width:20px;height:20px;accent-color:var(--ok)}
+.why{color:var(--muted)}
+.cmd{display:flex;gap:8px;align-items:stretch;min-width:0}
+.cmd code{flex:1;min-width:0;overflow-x:auto;white-space:nowrap;font-family:var(--mono);font-size:.92rem;background:var(--code);border:1px solid var(--line);border-radius:6px;padding:8px 12px}
+.cmd button{flex:none;font:inherit;font-size:.82rem;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:0 12px;cursor:pointer}
+pre{margin:0;font-family:var(--mono);font-size:.8rem;line-height:1.55;background:var(--code);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto}
+code.i{font-family:var(--mono);font-size:.88em;background:var(--code);border-radius:4px;padding:1px 5px}
+ol,ul{margin:0;padding-left:1.35em;display:flex;flex-direction:column;gap:5px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.box{border:1px solid var(--line);border-radius:8px;padding:12px 14px;min-width:0;display:flex;flex-direction:column;gap:6px}
+.box.pass{border-color:var(--ok)} .box.fail{border-color:var(--bad)}
+.tag{font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.pass .tag{color:var(--ok)} .fail .tag{color:var(--bad)} .see .tag{color:var(--accent)}
+figure{margin:0;display:flex;flex-direction:column;gap:6px}
+figure .img{background:#ffffff;border:1px solid var(--line);border-radius:8px;overflow-x:auto}
+figure img{display:block;max-width:100%;height:auto;margin:0 auto}
+figure.wide img{max-width:none;width:1100px}
+figcaption{font-size:.88rem;color:var(--muted)}
+svg text{font-family:var(--sans)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.phase{font-family:var(--mono);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-top:10px}
+@media (prefers-reduced-motion: no-preference){ html{scroll-behavior:smooth} }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <div class="phase" style="margin:0">SO101 · STS3215 · OV9281 · Mega 2560</div>
+    <h1>คู่มือรัน: ให้แขน SO101 เห็นบล็อกแล้วหยิบเอง</h1>
+    <p class="lead">ทำตามลำดับจากบนลงล่าง ทุกขั้นบอกว่าพิมพ์อะไร จะเห็นอะไร ผ่านเมื่อไร และถ้าไม่ผ่านให้ทำอะไร ติ๊กช่อง “เสร็จ” เพื่อจำว่าทำถึงไหน (จำไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น)</p>
+    <div class="note"><b>สถานะโค้ด:</b> ผ่านการทดสอบแบบจำลองครบทุกสคริปต์ (แขนปลอม + กล้องปลอม) แต่ <b>ยังไม่เคยรันกับแขนและกล้องจริง</b> ขั้นที่ 1–2 คือจุดพิสูจน์ว่าสมมติฐานจาก CAD ถูก ถ้าสองขั้นนี้ไม่ผ่าน ให้หยุดแล้วส่งผลให้ Claude ดูก่อน อย่าฝืนไปต่อ</div>
+  </header>
+
+  <nav class="toc" aria-label="สารบัญขั้นตอน">
+    <div class="row" id="toc"></div>
+    <div class="prog" id="prog"></div>
+  </nav>
+
+  <section class="panel">
+    <h2>ภาพรวม: อะไรต่อกับอะไร และโปรแกรมทำงานอย่างไร</h2>
+    <figure>
+      <div class="img" style="background:var(--panel)">
+      <svg viewBox="0 0 860 250" width="860" role="img" aria-label="แผนภาพการต่อสาย" style="display:block;max-width:none">
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+        <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5">
+          <rect x="10" y="80" width="150" height="70" rx="8"/><rect x="240" y="80" width="140" height="70" rx="8"/>
+          <rect x="460" y="80" width="120" height="70" rx="8"/><rect x="660" y="80" width="190" height="70" rx="8"/>
+        </g>
+        <rect x="660" y="10" width="190" height="46" rx="8" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="1.5"/>
+        <rect x="460" y="190" width="120" height="46" rx="8" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="1.5"/>
+        <g fill="var(--ink)" font-size="14" text-anchor="middle">
+          <text x="85" y="110" font-weight="600">คอม (วันนี้)</text><text x="85" y="132" font-size="12">หรือ Raspberry Pi</text>
+          <text x="310" y="110" font-weight="600">Arduino Mega</text><text x="310" y="132" font-size="12">เฟิร์มแวร์ PRISM เดิม</text>
+          <text x="520" y="110" font-weight="600">URT-2</text><text x="520" y="132" font-size="12">บัส TTL</text>
+          <text x="755" y="110" font-weight="600">STS3215 × 6</text><text x="755" y="132" font-size="12">ID 1–6 ของแขน SO101</text>
+          <text x="755" y="38" font-weight="600">กล้อง OV9281 (บนข้อมือ)</text>
+          <text x="520" y="218" font-weight="600">ไฟ 12 V</text>
+        </g>
+        <g stroke="var(--muted)" stroke-width="2" fill="none" marker-end="url(#ah)">
+          <path d="M160 115H238"/><path d="M380 115H458"/><path d="M580 115H658"/><path d="M520 190V152"/>
+          <path d="M660 33H85V78"/>
+        </g>
+        <g fill="var(--muted)" font-size="12" text-anchor="middle">
+          <text x="200" y="106">USB COM6</text><text x="200" y="134">115200</text><text x="420" y="106">Serial2</text><text x="620" y="106">สาย 3 พิน</text>
+          <text x="370" y="26">USB (เสียบเข้าคอมโดยตรง)</text>
+        </g>
+      </svg></div>
+      <figcaption>สายเหมือนระบบ PRISM ทุกเส้น ไม่ต้องแก้เฟิร์มแวร์ ไม่ต้องคาลิเบรต LeRobot ใหม่ พอร์ต COM ของ Mega เปิดได้ทีละโปรแกรม: <b>ปิด autoen / dashboard ของ PRISM ก่อนทุกครั้ง</b></figcaption>
+    </figure>
+    <figure class="wide">
+      <div class="img"><img src="guide_img/sequence.png" alt="ลำดับการหยิบ 4 จังหวะ: ท่า scan, ลอยเหนือบล็อก, ลงหนีบ, ยกขึ้น"></div>
+      <figcaption>สิ่งที่โปรแกรมทำตอนหยิบ (เรนเดอร์จาก CAD ของ SO101): ① ไปท่า scan ให้กล้องมองโต๊ะ ② ลอยเหนือบล็อก jaw อ้า ③ ลงเป็นเส้นดิ่งแล้วหนีบจนติด ④ ยกขึ้นเส้นดิ่ง</figcaption>
+    </figure>
+  </section>
+
+  <section class="panel">
+    <h2>ก่อนเริ่ม: ของที่ต้องเตรียม และกฎความปลอดภัย</h2>
+    <div class="grid2">
+      <div class="box"><h3>เตรียมของ</h3><ul>
+        <li>ไม้ฉาก และไม้บรรทัด 30 cm (ใช้ขั้น 1–2)</li>
+        <li>บล็อก 40×30×20 mm อย่างน้อย 1 ก้อน</li>
+        <li>พื้นโต๊ะสี <b>ตัดกับบล็อก</b> (กล้องเป็นขาวดำ: บล็อกสว่างบนพื้นมืด หรือกลับกัน) ถ้าโต๊ะลาย ให้ปูกระดาษสีเดียว</li>
+        <li>แสงนิ่ง ไม่มีเงาแขนพาดบล็อก</li>
+        <li>ฐานแขนยึดแน่นกับโต๊ะ (ขยับแม้นิดเดียว ต้องสอบเทียบขั้น 6 ใหม่)</li>
+      </ul></div>
+      <div class="box"><h3>กฎความปลอดภัย</h3><ul>
+        <li><b>Ctrl+C หยุดได้ทุกเมื่อ</b> แขนจะค้างที่ตำแหน่งนั้น ไม่ล้ม</li>
+        <li>เมื่อสคริปต์บอก “แขนจะอ่อน” = ปล่อยแรงมอเตอร์ <b>ต้องประคองแขนก่อนกด Enter</b></li>
+        <li>ตอนแขนเคลื่อนเอง มือออกนอกรัศมี 30 cm</li>
+        <li>ถ้าแขนอยู่ท่า rest ของ PRISM ให้รัน <code class="i">python wake_from_rest.py</code> ก่อน</li>
+        <li>เลิกใช้: แขนไม่กลับท่า rest เอง ใช้ rest ของ PRISM หรือประคองก่อนปิดไฟ</li>
+      </ul></div>
+    </div>
+    <p>เปิด terminal ที่โฟลเดอร์โปรเจกต์ก่อนทุกครั้ง (ใช้ Python ตัวเดิมที่รันมาตลอด):</p>
+    <div class="cmd"><code>cd C:\Users\acer\Desktop\so101_pick_v2\so101_pick</code><button type="button">คัดลอก</button></div>
+  </section>
+
+  <div class="phase">ช่วง A — ตรวจระบบและสอบเทียบแขน (ไม่ใช้กล้อง)</div>
+
+  <section class="panel step" id="s0" data-n="0" data-t="ตรวจระบบ">
+    <div class="head"><span class="num">0</span><h2>ตรวจระบบทั้งหมด</h2><label><input type="checkbox" id="c0">เสร็จ</label></div>
+    <p class="why">อ่านอย่างเดียว ไม่ขยับแขน บอกว่าอะไรพร้อมและขาดขั้นไหน รันซ้ำได้ทุกเมื่อที่สงสัย</p>
+    <div class="cmd"><code>python doctor.py</code><button type="button">คัดลอก</button></div>
+    <div class="grid2">
+      <div class="box see"><span class="tag">จะเห็น (ครั้งแรก)</span><pre>[ok]   numpy ..., opencv ...
+[ok]   pyserial 3.5
+[FAIL] JOINT_ZERO ยังไม่ได้วัด -> calib_zero.py
+[FAIL] SCAN_POSE ยังไม่ได้วัด -> teach_scan.py
+[FAIL] TABLE_PLANE ยังไม่ได้วัด -> calib_touch.py
+[ok]   กล้อง index 0: 1280x720, ...
+[ok]   แขน: ต่อได้ ทุกข้ออยู่ในช่วง</pre></div>
+      <div class="box pass"><span class="tag">ผ่านเมื่อ</span><p>บรรทัด <b>กล้อง</b> และ <b>แขน</b> เป็น [ok] ส่วน [FAIL] ของการสอบเทียบเป็นเรื่องปกติในครั้งแรก จะหายไปเมื่อทำขั้น 1, 4, 6</p></div>
+      <div class="box fail"><span class="tag">ถ้าไม่ผ่าน</span><ul>
+        <li><b>ไม่มี pyserial:</b> <code class="i">pip install pyserial</code></li>
+        <li><b>แขน: Mega ไม่พร้อม:</b> ปิดโปรแกรม PRISM, เช็ก COM6 ใน <code class="i">config.py</code>, ไฟ 12 V</li>
+        <li><b>แขนนอกช่วง:</b> <code class="i">python wake_from_rest.py</code></li>
+        <li><b>กล้องเปิดไม่ได้:</b> ข้ามไปก่อนด้วย <code class="i">python doctor.py --no-cam</code> แล้วแก้ในขั้น 3</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section class="panel step" id="s1" data-n="1" data-t="ท่า L">
+    <div class="head"><span class="num">1</span><h2>สอบเทียบศูนย์ของข้อต่อด้วย “ท่า L”</h2><label><input type="checkbox" id="c1">เสร็จ</label></div>
+    <p class="why">โปรแกรมคิดเป็นมุม แต่มอเตอร์รับเป็น tick ขั้นนี้บอกโปรแกรมว่า tick เท่าไรคือท่าอ้างอิงของ CAD และข้อไหนหมุนทางไหน <b>วัดผิด 1° ปลายแขนเพี้ยนราว 5 mm</b> ใช้ไม้ฉากจริงจัง</p>
+    <figure>
+      <div class="img"><img src="guide_img/lpose.png" alt="ท่า L มองจากด้านข้างและด้านบน พร้อมตำแหน่งวางไม้ฉาก"></div>
+      <figcaption><b>ท่า L:</b> สันหลังของท่อนบนตั้งฉากกับโต๊ะ (ทาบไม้ฉาก) · ท่อนล่างกับ gripper เป็นเส้นเดียวขนานโต๊ะ (วัดความสูงหัว–ท้ายให้เท่ากัน) · jaw ตัวที่ขยับได้อยู่ด้านบน · ทั้งแขนชี้ตรงไปข้างหน้า</figcaption>
+    </figure>
+    <div class="cmd"><code>python calib_zero.py</code><button type="button">คัดลอก</button></div>
+    <ol>
+      <li>ประคองแขน แล้วกด Enter (แขนจะอ่อนทุกข้อ)</li>
+      <li>จัดแขนเป็นท่า L ตามรูป ถือให้นิ่ง กด Enter โปรแกรมพิมพ์ tick ของ 5 ข้อ</li>
+      <li>โปรแกรมถามทีละข้อ: ขยับ <b>ข้อเดียว</b> ไปตามทิศในรูปด้านล่างประมาณ 30° กด Enter แล้วคืนกลับท่า L กด Enter</li>
+      <li>ตอบ <code class="i">y</code> เพื่อบันทึกลง <code class="i">calib.json</code></li>
+    </ol>
+    <figure class="wide">
+      <div class="img"><img src="guide_img/directions.png" alt="ทิศบวกของข้อต่อทั้ง 5: เงาสีแดงคือหลังขยับ 30 องศา"></div>
+      <figcaption>ทิศที่ต้องขยับในข้อ 3 (สีน้ำเงิน/ส้ม = ท่า L, เงาแดง = หลังขยับ): ① หมุนฐานไปทางขวา ② โน้มท่อนบนไปข้างหน้า ③ กดปลายท่อนล่างลง ④ กดปลาย gripper ลง ⑤ ยืนหันหน้าเข้าหาปลาย jaw แล้วบิดให้ด้านบนของ gripper ไปทางขวามือคุณ</figcaption>
+    </figure>
+    <div class="grid2">
+      <div class="box see"><span class="tag">จะเห็น</span><pre>   shoulder_pan   tick=  2044  (ห่างจาก 2048 = -0.4°, มือแกว่ง 1 tick)
+   shoulder_lift  tick=  20xx  (ห่างจาก 2048 = ...)
+   ...
+   shoulder_pan: หมุนฐานไปทาง 'ขวา' ...
+      DIR = +1  (เปลี่ยน +3xx tick ≈ 3x°)
+ผล:
+  JOINT_ZERO = {...}
+  JOINT_DIR  = {...}</pre></div>
+      <div class="box pass"><span class="tag">ผ่านเมื่อ</span><ul>
+        <li>ทุกข้อ “ห่างจาก 2048” ไม่เกินราว ±8°</li>
+        <li>มือแกว่งไม่เกิน 3–4 tick</li>
+        <li>ทุกข้อขึ้น <code class="i">DIR = +1</code> (ค่าที่คาดจาก CAD)</li>
+      </ul></div>
+      <div class="box fail"><span class="tag">ถ้าไม่ผ่าน</span><ul>
+        <li><b>ข้อไหนห่างเกิน 8° หรือ DIR = −1:</b> ทำข้อนั้นซ้ำอีกรอบให้แน่ใจ ถ้ายังเหมือนเดิม <b>ไม่ใช่ความผิดคุณ</b> บันทึกไปได้ แล้วส่งผลทั้งหมดให้ Claude ดูก่อนทำขั้น 2</li>
+        <li><b>“เปลี่ยนแค่ … tick”:</b> ขยับน้อยไป ทำใหม่</li>
+        <li><b>ไม่มีค่าตำแหน่งสด:</b> สาย/ไฟหลุดชั่วคราว รันใหม่</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section class="panel step" id="s2" data-n="2" data-t="ตรวจ FK">
+    <div class="head"><span class="num">2</span><h2>ตรวจว่าโปรแกรมรู้ตำแหน่งปลายแขนจริง</h2><label><input type="checkbox" id="c2">เสร็จ</label></div>
+    <p class="why">ขั้นพิสูจน์: ถ้าตัวเลขที่โปรแกรมคิดตรงกับไม้บรรทัด แปลว่าเรขาคณิตจาก CAD และขั้น 1 ถูก</p>
+    <div class="cmd"><code>python read_joints.py</code><button type="button">คัดลอก</button></div>
+    <ol>
+      <li>ใช้ไม้บรรทัดทำจุดบนโต๊ะ 2 จุด วัดจาก <b>แกนหมุนของฐาน</b> (ศูนย์กลางมอเตอร์ตัวล่างสุด): จุด A ตรงไปข้างหน้า 200 mm, จุด B ข้างหน้า 150 mm และไปทางซ้าย 100 mm</li>
+      <li>ประคองแขน กด Enter (ข้อ 1–5 อ่อน)</li>
+      <li>เอา <b>มุมด้านในของปลาย jaw ตัวที่ไม่ขยับ</b> แตะจุด A โดยให้นิ้วชี้ลงดิ่ง แล้วอ่านค่าบนจอ ทำซ้ำกับจุด B</li>
+      <li>กด Ctrl+C เพื่อออก (แรงมอเตอร์กลับมาค้างท่านั้น)</li>
+    </ol>
+    <div class="grid2">
+      <div class="box see"><span class="tag">จะเห็น (บรรทัดเดียว อัปเดตสด)</span><pre>shoulder=2044 ... | ปลาย jaw x= 200.3 y=  -1.2 z=   2.1 ก้ม= -88°</pre></div>
+      <div class="box pass"><span class="tag">ผ่านเมื่อ</span><ul><li>จุด A: x≈200, y≈0 · จุด B: x≈150, y≈+100 (คลาดไม่เกิน ±5 mm)</li><li>z ใกล้ 0 (±8 mm) เมื่อแตะโต๊ะ</li></ul></div>
+      <div class="box fail"><span class="tag">ถ้าไม่ผ่าน</span><ul>
+        <li><b>y กลับเครื่องหมาย / x ผิดเป็นสิบ mm:</b> ทิศหรือศูนย์ของข้อผิด หยุด แล้วส่งตัวเลขให้ Claude</li>
+        <li><b>คลาด 5–10 mm ทิศเดียวกัน:</b> ทำขั้น 1 ใหม่ให้ท่า L ตั้งฉากกว่าเดิม</li>
+        <li><b>z ผิดเท่าๆ กันทุกจุด:</b> ฐานแขนสูงกว่าโต๊ะ ไม่เป็นไร ขั้น 6 จะแก้ให้เอง</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <div class="phase">ช่วง B — กล้อง</div>
+
+  <section class="panel step" id="s3" data-n="3" data-t="หากล้อง">
+    <div class="head"><span class="num">3</span><h2>หา index ของกล้อง OV9281</h2><label><input type="checkbox" id="c3">เสร็จ</label></div>
+    <p class="why">คอมมีกล้องหลายตัว (เว็บแคมในตัว, D415) ต้องบอกโปรแกรมว่าตัวไหนคือ OV9281</p>
+    <div class="cmd"><code>python test_camera.py --scan</code><button type="button">คัดลอก</button></div>
+    <ol>
+      <li>ดูรายการ index ที่เปิดได้ แล้วลองทีละตัว: <code class="i">python test_camera.py --index 1</code> (เปลี่ยนเลข) จนเห็นภาพ <b>ขาวดำ</b> จากกล้องบนข้อมือ</li>
+      <li>เปิด <code class="i">config.py</code> แก้บรรทัด <code class="i">CAM_INDEX = 0</code> เป็นเลขนั้น แล้วบันทึกไฟล์</li>
+      <li>ถ้าภาพเบลอที่ระยะมองโต๊ะ ให้หมุนเลนส์ปรับโฟกัสตอนนี้ (ทำก่อนขั้น 6 เท่านั้น)</li>
+    </ol>
+    <div class="grid2">
+      <div class="box pass"><span class="tag">ผ่านเมื่อ</span><p>เห็นภาพสดขาวดำ 1280×720 จากกล้องข้อมือ ไม่กระตุก และ <code class="i">python doctor.py</code> ขึ้น [ok] ที่บรรทัดกล้อง</p></div>
+      <div class="box fail"><span class="tag">ถ้าไม่ผ่าน</span><ul><li><b>สคริปต์ error ที่ฟังก์ชันของ cv2:</b> ส่งข้อความ error ให้ Claude (เครื่องคุณใช้ OpenCV 5)</li><li><b>ภาพมืด/สว่างจ้า:</b> แก้ <code class="i">CAM_EXPOSURE_VAL</code> ใน config.py (ค่าลบมากขึ้น = มืดลง) หรือปรับไฟ</li></ul></div>
+    </div>
+  </section>
+
+  <section class="panel step" id="s4" data-n="4" data-t="ท่า scan">
+    <div class="head"><span class="num">4</span><h2>สอน “ท่า scan” (ท่าที่กล้องมองโต๊ะ)</h2><label><input type="checkbox" id="c4">เสร็จ</label></div>
+    <p class="why">กล้องติดข้อมือ ภาพจึงเปลี่ยนตามท่าแขน การแปลง pixel→mm ใช้ได้กับท่านี้ท่าเดียว โปรแกรมจะกลับมาท่านี้ทุกครั้งก่อนถ่าย</p>
+    <div class="cmd"><code>python teach_scan.py</code><button type="button">คัดลอก</button></div>
+    <ol>
+      <li>โปรแกรมอ้า jaw ให้ก่อน จากนั้นประคองแขน กด Enter (ข้อ 1–5 อ่อน)</li>
+      <li>ดูหน้าต่างภาพสด จับแขนจัดท่าจนได้ตามรูปด้านล่าง</li>
+      <li>เมื่อข้อความบนภาพเป็นสีเขียว <code class="i">in range - press s to save</code> ให้กด <b>s</b> (คลิกที่หน้าต่างภาพก่อน)</li>
+    </ol>
+    <figure>
+      <div class="img" style="background:var(--panel)">
+      <svg viewBox="0 0 860 300" width="860" role="img" aria-label="ภาพจากกล้องที่ดีและไม่ดี" style="display:block;max-width:none">
+        <g font-size="13" fill="var(--ink)">
+          <rect x="20" y="40" width="380" height="214" fill="#2b2f36" stroke="var(--ok)" stroke-width="3"/>
+          <rect x="150" y="100" width="56" height="42" fill="#e9e9e9" transform="rotate(18 178 121)"/>
+          <path d="M120 254L160 196L185 254zM300 254L262 196L236 254z" fill="#b9772f"/>
+          <path d="M210 40V254M20 147H400" stroke="#e8d44d" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="20" y="28" font-weight="600" fill="var(--ok)">ดี: เห็นโซนวางบล็อกเต็มภาพ มองลงเกือบดิ่ง jaw อยู่ขอบล่าง</text>
+          <text x="20" y="278">บล็อกอยู่กลางภาพ คมชัด พื้นหลังสีเดียว</text>
+          <rect x="460" y="40" width="380" height="214" fill="#2b2f36" stroke="var(--bad)" stroke-width="3"/>
+          <path d="M540 254L620 110L660 254zM780 254L715 110L690 254z" fill="#b9772f"/>
+          <rect x="640" y="60" width="40" height="18" fill="#e9e9e9" transform="skewX(-25)"/>
+          <path d="M460 95H840" stroke="#777" stroke-width="2"/>
+          <text x="460" y="28" font-weight="600" fill="var(--bad)">ไม่ดี: มองเฉียงเห็นขอบโต๊ะ jaw บังกลางภาพ</text>
+          <text x="460" y="278">บล็อกเล็กและเบี้ยว ตำแหน่งที่ได้จะคลาดมาก</text>
+        </g>
+      </svg></div>
+      <figcaption>ท่าที่ดี: ยกข้อมือสูงประมาณ 15–25 cm เหนือโต๊ะ ก้มกล้องลงให้เกือบตั้งฉากกับโต๊ะ และเห็นพื้นที่หน้าแขนช่วง 10–23 cm จากฐาน</figcaption>
+    </figure>
+    <div class="grid2">
+      <div class="box pass"><span class="tag">ผ่านเมื่อ</span><p>ขึ้น <code class="i">บันทึก SCAN_POSE -> {...}</code> และมีไฟล์ <code class="i">scan_view.png</code> แขนค้างอยู่ท่านั้น</p></div>
+      <div class="box fail"><span class="tag">ถ้าไม่ผ่าน</span><ul><li><b>ขึ้น OUT OF RANGE สีแดง:</b> ข้อที่ระบุชิดขอบช่วงเกินไป ขยับออกมาเล็กน้อย</li><li><b>กด s แล้วไม่เกิดอะไร:</b> คลิกที่หน้าต่างภาพก่อน และสลับคีย์บอร์ดเป็นภาษาอังกฤษ</li></ul></div>
+    </div>
+    <div class="note"><b>เปลี่ยนท่า scan เมื่อไร ต้องทำขั้น 5 และ 6 ใหม่ทุกครั้ง</b></div>
+  </section>
+
+  <section class="panel step" id="s5" data-n="5" data-t="ROI">
+    <div class="head"><span class="num">5</span><h2>ตัด jaw ออกจากภาพ (ROI)</h2><label><input type="checkbox" id="c5">เสร็จ</label></div>
+    <p class="why">jaw โผล่ในภาพเสมอ ถ้าไม่ตัดออก ตัวตรวจจับอาจจับ jaw แทนบล็อก</p>
+    <div class="cmd"><code>python set_roi.py</code><button type="button">คัดลอก</button></div>
+    <ol>
+      <li>แขนไปท่า scan เอง วางบล็อก 1 ก้อนในโซนหยิบ</li>
+      <li><b>ลากเมาส์</b> วาดกรอบครอบพื้นที่โต๊ะ โดยไม่ให้กรอบโดน jaw</li>
+      <li>ถ้าไม่ขึ้นกรอบเขียวรอบบล็อก กด <b>b</b> สลับ “บล็อกสว่าง/มืดกว่าพื้น”</li>
+      <li>เลื่อนบล็อกไปหลายตำแหน่งในกรอบ ดูว่ายังขึ้น <code class="i">FOUND</code> ทุกที่ แล้วกด <b>s</b></li>
+    </ol>
+    <figure>
+      <div class="img" style="background:var(--panel)">
+      <svg viewBox="0 0 430 250" width="430" role="img" aria-label="ตัวอย่างการวาดกรอบ ROI" style="display:block;max-width:none;margin:0 auto">
+        <rect x="20" y="20" width="380" height="214" fill="#2b2f36"/>
+        <path d="M120 234L160 176L185 234zM300 234L262 176L236 234z" fill="#b9772f"/>
+        <rect x="150" y="80" width="56" height="42" fill="#e9e9e9" transform="rotate(18 178 101)"/>
+        <rect x="148" y="78" width="60" height="46" fill="none" stroke="#3fd07f" stroke-width="2.5" transform="rotate(18 178 101)"/>
+        <rect x="34" y="32" width="352" height="134" fill="none" stroke="#ff9d2e" stroke-width="2.5"/>
+        <text x="40" y="50" font-size="12" fill="#ff9d2e">กรอบ ROI (ลากเมาส์): อยู่เหนือ jaw</text>
+        <text x="215" y="118" font-size="12" fill="#3fd07f">กรอบเขียว = เจอบล็อก</text>
+      </svg></div>
+    </figure>
+    <div class="grid2">
+      <div class="box pass"><span class="tag">ผ่านเมื่อ</span><p>ขึ้น FOUND พร้อมกรอบเขียวพอดีบล็อกทุกตำแหน่งที่ลอง และไม่จับอย่างอื่นเมื่อเอาบล็อกออก</p></div>
+      <div class="box fail"><span class="tag">ถ้าไม่ผ่าน</span><ul><li><b>ไม่เจอเลย:</b> พื้นหลังไม่ตัดกับบล็อก ปูกระดาษสีตรงข้าม หรือแก้แสงสะท้อน</li><li><b>กรอบเขียวใหญ่กว่าบล็อก:</b> มีเงาหรือด้านข้างบล็อกสว่างติดมา ปรับไฟให้ส่องจากด้านบน</li></ul></div>
+    </div>
+  </section>
+
+  <section class="panel step" id="s6" data-n="6" data-t="แตะสอบเทียบ">
+    <div class="head"><span class="num">6</span><h2>สอบเทียบภาพกับแขน ด้วยการ “แตะบล็อก”</h2><label><input type="checkbox" id="c6">เสร็จ</label></div>
+    <p class="why">ขั้นที่สำคัญที่สุดต่อความแม่น แขนเป็นไม้บรรทัดเอง: กล้องจำว่าบล็อกอยู่ pixel ไหน แล้วคุณพาปลาย jaw ไปแตะเพื่อบอกว่าจุดนั้นคือพิกัดไหนของแขน ทำ 6 ตำแหน่ง</p>
+    <div class="cmd"><code>python calib_touch.py 6</code><button type="button">คัดลอก</button></div>
+    <figure>
+      <div class="img"><img src="guide_img/touch.png" alt="ตำแหน่งที่ต้องแตะ: มุมด้านในของปลาย jaw ตัวที่ไม่ขยับ แตะกลางหน้าบนของบล็อก"></div>
+      <figcaption><b>แตะตรงไหน:</b> ใช้ “มุมด้านในของปลาย jaw ตัวที่ไม่ขยับ” (jaw ที่เป็นชิ้นเดียวกับตัว gripper) แตะ “กลางหน้าบนของบล็อก” ถือ gripper ให้นิ้วชี้ลงดิ่ง ขีดกากบาทดินสอที่กลางหน้าบนบล็อกไว้ก่อนจะช่วยให้แตะตรง</figcaption>
+    </figure>
+    <figure>
+      <div class="img"><img src="guide_img/zone.png" alt="โซนที่หยิบได้มองจากด้านบน และตำแหน่งวางบล็อกแนะนำ 6 จุด"></div>
+      <figcaption>วางบล็อกตามเลข 1–6 (กระจายให้ทั่วโซนเขียว และหมุนบล็อกคนละมุม) พื้นเขียวคือบริเวณที่แขนหยิบแนวดิ่งได้ ประมาณ 10–23 cm หน้าแกนฐาน</figcaption>
+    </figure>
+    <p><b>วนแบบนี้ 6 รอบ:</b></p>
+    <ol>
+      <li>แขนกลับท่า scan เอง → วางบล็อกตำแหน่งใหม่ เอามือออก กด Enter</li>
+      <li>หน้าต่างภาพขึ้นกากบาทเขียวที่กลางบล็อก: ถูกแล้วกด <b>Enter</b> (คลิกหน้าต่างก่อน) · ถ้าผิด <b>คลิก</b>ที่กลางบล็อกเอง · <b>r</b> = ถ่ายใหม่</li>
+      <li>กลับมาที่ terminal: ประคองแขน กด Enter (แขนอ่อน)</li>
+      <li>พาปลาย jaw ไปแตะกลางหน้าบนบล็อกตามรูป ถือนิ่ง กด Enter</li>
+      <li>ดูค่าที่พิมพ์ ถ้าแตะพลาดพิมพ์ <code class="i">n</code> เพื่อทิ้งจุดนี้ ไม่งั้นกด Enter</li>
+      <li>ยกแขนขึ้นพ้นบล็อกราว 10 cm ถือไว้ กด Enter (แรงมอเตอร์กลับมา)</li>
+    </ol>
+    <div class="grid2">
+      <div class="box see"><span class="tag">จะเห็นตอนจบ</span><pre>ความคลาดรายจุด (mm): [0.6 1.1 0.4 0.9 1.3 0.7]
+RMS = 0.9 mm  (เป้า &lt; 2 mm ...)
+ระดับโต๊ะตามแขน: z = 2.1 + 0.0031*x + ... mm
+บันทึก homography.npy + TABLE_PLANE? พิมพ์ y:</pre></div>
+      <div class="box pass"><span class="tag">ผ่านเมื่อ</span><ul><li><b>RMS ต่ำกว่า 2 mm</b> และไม่มีจุดไหนเกิน 3 mm</li><li>ทุกจุด “นิ้วก้ม” อยู่ระหว่าง −80° ถึง −90°</li><li>ระดับโต๊ะ (เลขตัวแรก) ไม่เกิน ±25 mm</li></ul><p>แล้วตอบ <code class="i">y</code></p></div>
+      <div class="box fail"><span class="tag">ถ้าไม่ผ่าน</span><ul>
+        <li><b>มีจุดเดียวโดด:</b> ตอบ n แล้วรันใหม่ ระวังแตะให้ตรงกลาง</li>
+        <li><b>RMS 2–5 mm ทุกจุดพอๆ กัน:</b> ทำใหม่ด้วย 9 จุด <code class="i">python calib_touch.py 9</code> ถ้ายังสูง เลนส์อาจบิดเบี้ยวมาก ให้ทำ <code class="i">calib_intrinsics.py</code> แล้วทำขั้นนี้ซ้ำ</li>
+        <li><b>RMS เกิน 5 mm:</b> แขนไม่กลับท่า scan เดิม หรือฐานขยับ ส่งผลให้ Claude ดู</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <div class="phase">ช่วง C — หยิบจริง</div>
+
+  <section class="panel step" id="s7" data-n="7" data-t="ดูการตรวจจับ">
+    <div class="head"><span class="num">7</span><h2>ดูผลตรวจจับสด</h2><label><input type="checkbox" id="c7">เสร็จ</label></div>
+    <p class="why">เช็กว่ากล้องบอกตำแหน่งบล็อกเป็น mm ได้ถูก ก่อนให้แขนเชื่อ แขนต้องอยู่ท่า scan (หลังขั้น 6 แขนจะไม่อยู่ท่านี้ ให้รันขั้น 8 หนึ่งครั้งก่อน แล้วค่อยกลับมารันขั้นนี้)</p>
+    <div class="cmd"><code>python detect_block.py</code><button type="button">คัดลอก</button></div>
+    <div class="grid2">
+      <div class="box see"><span class="tag">จะเห็น</span><pre>x=182.4 mm  y=-36.1 mm  long_axis=24.8 deg</pre><p>วางบล็อกตรงจุด A ของขั้น 2 (ข้างหน้า 200 mm) ค่าควรอ่านได้ x≈200, y≈0 · กด ESC ที่หน้าต่างภาพเพื่อออก</p></div>
+      <div class="box pass"><span class="tag">ผ่านเมื่อ</span><p>กรอบเขียวครอบบล็อก ค่า x, y นิ่ง (แกว่งไม่เกิน 1 mm) และตรงกับไม้บรรทัด ±3 mm หมุนบล็อกแล้ว long_axis เปลี่ยนตาม</p></div>
+      <div class="box fail"><span class="tag">ถ้าไม่ผ่าน</span><ul><li><b>ไม่พิมพ์อะไรเลย ทั้งที่ขั้น 5 เจอ:</b> ขนาดที่วัดได้ไม่ใช่ 40×30 (เงา/ด้านข้างติดมา) เพิ่ม <code class="i">BLOCK_SIZE_TOL_MM</code> ใน config.py จาก 6 เป็น 10</li><li><b>ค่าคลาดจากไม้บรรทัดมาก:</b> ทำขั้น 6 ใหม่</li></ul></div>
+    </div>
+  </section>
+
+  <section class="panel step" id="s8" data-n="8" data-t="ซ้อมแห้ง">
+    <div class="head"><span class="num">8</span><h2>ซ้อมแห้ง: เห็นบล็อกแล้ววางแผน แต่ยังไม่ลงหยิบ</h2><label><input type="checkbox" id="c8">เสร็จ</label></div>
+    <p class="why">แขนไปท่า scan ถ่ายภาพ คำนวณทางลง แล้วหยุด ใช้ดูว่าแผนสมเหตุสมผลก่อนปล่อยให้ลงจริง</p>
+    <div class="cmd"><code>python pick_block.py --dry-run</code><button type="button">คัดลอก</button></div>
+    <div class="grid2">
+      <div class="box see"><span class="tag">จะเห็น</span><pre>บล็อกที่ x=182.4 y=-36.1 mm | แกนยาว=24.8° | jaw ปิดที่ 114.8° | ภาพแกว่ง 0.21 mm | โต๊ะ z=+2.4
+  hover: {'shoulder_pan': 2173, ...}
+  grasp: {'shoulder_pan': 2173, ...}</pre></div>
+      <div class="box pass"><span class="tag">ผ่านเมื่อ</span><p>พิมพ์ครบ 3 บรรทัด ตำแหน่ง x, y ตรงกับที่วางจริง จด x, y ไว้ใช้ขั้น 9</p></div>
+      <div class="box fail"><span class="tag">ถ้าไม่ผ่าน</span><ul><li><b>“หยิบไม่ได้ … เอื้อมไม่ถึง / เกินขอบเขตข้อต่อ”:</b> บล็อกอยู่นอกโซนเขียว เลื่อนเข้ามา</li><li><b>“ไม่เจอบล็อกในเฟรม”:</b> กลับไปขั้น 5 และ 7</li></ul></div>
+    </div>
+  </section>
+
+  <section class="panel step" id="s9" data-n="9" data-t="ชี้เป้า">
+    <div class="head"><span class="num">9</span><h2>ให้แขนไปลอยเหนือบล็อก (ยังไม่หนีบ)</h2><label><input type="checkbox" id="c9">เสร็จ</label></div>
+    <p class="why">พิสูจน์ด้วยตาว่าแขนไปถูกจุดจริง ก่อนลงไปถึงโต๊ะ ใส่ x, y ที่ได้จากขั้น 8 แทน 182 และ -36</p>
+    <div class="cmd"><code>python ik_test.py 182 -36 --z 40 --go</code><button type="button">คัดลอก</button></div>
+    <div class="grid2">
+      <div class="box pass"><span class="tag">ผ่านเมื่อ</span><p>jaw สองข้างคร่อมบล็อกอยู่เหนือบล็อกประมาณ 15 mm นิ้วชี้ลงดิ่ง และ <b>บล็อกอยู่ชิดด้าน jaw ตัวที่ไม่ขยับ โดยเว้นช่องราว 3 mm</b> (ไม่ได้อยู่กึ่งกลางระหว่าง jaw ที่อ้า เป็นความตั้งใจ)</p></div>
+      <div class="box fail"><span class="tag">ถ้าไม่ผ่าน</span><ul><li><b>เยื้องเกิน 3 mm:</b> ทำขั้น 6 ใหม่ให้ละเอียดขึ้น</li><li><b>jaw ตัวที่ไม่ขยับอยู่เหนือบล็อก (จะชน):</b> ถ้า jaw มีแผ่น TPU ให้เพิ่ม <code class="i">GRASP_CLEARANCE_MM</code> ใน config.py เป็น 5–6</li><li><b>สูง/ต่ำผิดสังเกต:</b> ส่งรูปให้ Claude</li></ul></div>
+    </div>
+  </section>
+
+  <section class="panel step" id="s10" data-n="10" data-t="หยิบจริง">
+    <div class="head"><span class="num">10</span><h2>หยิบจริงครั้งแรก</h2><label><input type="checkbox" id="c10">เสร็จ</label></div>
+    <p class="why">ครบวงจร: scan → เห็น → ลอย → ลงดิ่ง → หนีบจนติด → ยก → วางคืนที่เดิม โปรแกรมถามยืนยันก่อนลง</p>
+    <div class="cmd"><code>python pick_block.py</code><button type="button">คัดลอก</button></div>
+    <div class="note bad"><b>ครั้งแรก วางนิ้วไว้ที่ Ctrl+C</b> ถ้าเห็นปลาย jaw จะกระแทกโต๊ะหรือลงทับบล็อก ให้กดทันที แขนจะค้างตรงนั้น</div>
+    <div class="grid2">
+      <div class="box see"><span class="tag">จะเห็น</span><pre>แขนจะลงไปหยิบ — มือพ้นพื้นที่แล้ว? พิมพ์ y: y
+  หยิบได้ — gripper หยุดที่ 2xxx tick | ค่าคลาดที่จุดหนีบ (tick): {...}
+  วางคืนที่เดิมแล้ว</pre></div>
+      <div class="box pass"><span class="tag">ผ่านเมื่อ</span><p>บล็อกถูกยกขึ้นโดยไม่หลุด ไม่เอียง แล้ววางคืน ค่าคลาดที่จุดหนีบทุกข้อไม่เกิน ±5 tick</p></div>
+      <div class="box fail"><span class="tag">ถ้าไม่ผ่าน</span><ul>
+        <li><b>“หยิบพลาด: หนีบไม่ติด”:</b> jaw ไม่ได้ครอบบล็อก ย้อนดูขั้น 9</li>
+        <li><b>ปลาย jaw ชนโต๊ะ:</b> เพิ่ม <code class="i">Z_GRASP_MM</code> ใน config.py จาก 9 เป็น 12</li>
+        <li><b>หนีบแค่ขอบบนแล้วหลุด:</b> ลด <code class="i">Z_GRASP_MM</code> ทีละ 1 (ต่ำสุด 8)</li>
+        <li><b>ทางเลือกอื่น:</b> <code class="i">--keep</code> = ถือค้างไว้ดู · <code class="i">--save-debug</code> = เก็บภาพ debug.png</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section class="panel step" id="s11" data-n="11" data-t="ทดสอบซ้ำ">
+    <div class="head"><span class="num">11</span><h2>วัดความแม่นจริง: หยิบ–วางซ้ำ 20 รอบ</h2><label><input type="checkbox" id="c11">เสร็จ</label></div>
+    <p class="why">ตัวเลขจากขั้นนี้คือคำตอบจริงว่า “แม่นแค่ไหน” และใช้ตั้งตัวตรวจว่าหนีบได้บล็อกจริง ไม่ถามยืนยันระหว่างรอบ มืออยู่ห่างตลอด</p>
+    <div class="cmd"><code>python repeat_test.py 20</code><button type="button">คัดลอก</button></div>
+    <div class="grid2">
+      <div class="box see"><span class="tag">จะเห็นตอนจบ</span><pre>สำเร็จ 20/20 รอบ  (บันทึก repeat_log.csv)
+บล็อกเลื่อนต่อรอบ: เฉลี่ย 2.8 mm สูงสุด 3.6 mm | เลื่อนสะสม ...
+gripper หยุดที่ tick: กลาง 2xxx ช่วง ...  -> เสนอ GRIP_TICK_RANGE = [..., ...]</pre></div>
+      <div class="box pass"><span class="tag">ผ่านเมื่อ</span><ul><li>สำเร็จอย่างน้อย 19/20</li><li>บล็อกเลื่อนต่อรอบราว 3 mm เป็นเรื่องปกติ (jaw ดันบล็อกมาชิด jaw ตายตัว)</li><li>ตอบ <code class="i">y</code> บันทึก GRIP_TICK_RANGE</li></ul></div>
+      <div class="box fail"><span class="tag">ถ้าไม่ผ่าน</span><p>ส่งไฟล์ <code class="i">repeat_log.csv</code> ให้ Claude จะเห็นว่าพลาดที่ตำแหน่งไหนและเพราะอะไร</p></div>
+    </div>
+  </section>
+
+  <section class="panel step" id="s12" data-n="12" data-t="ท่าวาง">
+    <div class="head"><span class="num">12</span><h2>สอนท่าวาง (ถ้าต้องการให้วางที่อื่น)</h2><label><input type="checkbox" id="c12">เสร็จ</label></div>
+    <p class="why">จุดปล่อยบล็อก เช่น เหนือกล่อง สอนด้วยมือแบบเดียวกับ bin ของ PRISM แขนจะวิ่งเป็นเส้นตรงจากเหนือจุดหยิบมาท่านี้ จึงต้องสูงพอและไม่มีอะไรขวางทาง</p>
+    <div class="cmd"><code>python teach_place.py</code><button type="button">คัดลอก</button></div>
+    <ol><li>ประคองแขน กด Enter</li><li>จับแขนไปท่าที่จะปล่อย ให้ปลาย jaw สูงกว่าโต๊ะ/ขอบกล่องอย่างน้อย 6–8 cm ถือนิ่ง กด Enter</li><li>โปรแกรมบอกความสูงปลาย jaw ถ้าพอใจตอบ <code class="i">y</code></li></ol>
+    <p>ทดสอบ:</p>
+    <div class="cmd"><code>python pick_block.py --place</code><button type="button">คัดลอก</button></div>
+  </section>
+
+  <section class="panel step" id="s13" data-n="13" data-t="วนอัตโนมัติ">
+    <div class="head"><span class="num">13</span><h2>วนอัตโนมัติ: เห็นเมื่อไรหยิบเมื่อนั้น</h2><label><input type="checkbox" id="c13">เสร็จ</label></div>
+    <p class="why">โหมดใช้งานจริง ไม่ถามยืนยัน กลับท่า scan ทุกรอบ ถ้าไม่เห็นบล็อกจะรอแล้วดูใหม่ทุก 1 วินาที กด Ctrl+C เพื่อหยุด</p>
+    <div class="cmd"><code>python pick_block.py --loop --yes --place</code><button type="button">คัดลอก</button></div>
+    <div class="note ok"><b>ถึงตรงนี้ถือว่างานของคุณเสร็จ</b> ส่งต่อให้เพื่อนด้วยไฟล์ <code class="i">HANDOFF.md</code> (อธิบายไฟล์ที่ต้องคัดลอกไป Pi และวิธีเรียกจากโค้ด PRISM)</div>
+  </section>
+
+  <section class="panel">
+    <h2>อาการที่เจอบ่อย และต้องย้อนไปขั้นไหน</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>อาการ</th><th>สาเหตุที่เป็นไปได้</th><th>ทำอะไร</th></tr></thead>
+      <tbody>
+        <tr><td>หยิบเยื้องทิศเดียวกันทุกตำแหน่ง</td><td>แตะไม่ตรงกลางตอนสอบเทียบ หรือแขนไม่กลับท่า scan เดิม</td><td>ทำขั้น 6 ใหม่</td></tr>
+        <tr><td>ใกล้ฐานแม่น ไกลฐานเยื้อง (หรือกลับกัน)</td><td>ท่า L ไม่ตั้งฉาก</td><td>ทำขั้น 1 แล้วขั้น 6 ใหม่</td></tr>
+        <tr><td>เมื่อวานแม่น วันนี้เยื้อง</td><td>ฐานแขนหรือกล้องขยับ</td><td>ยึดให้แน่น ทำขั้น 6 ใหม่</td></tr>
+        <tr><td>แขนไม่ขยับ ขึ้น “torque อาจปิดอยู่”</td><td>มอเตอร์ถูกปล่อยแรงค้างไว้</td><td>ประคองแขน แล้วรัน <code class="i">python wake_from_rest.py</code> หรือขั้นเดิมซ้ำ</td></tr>
+        <tr><td>“ข้อต่อนอกขอบเขตอยู่แล้ว”</td><td>แขนอยู่ท่า rest ของ PRISM</td><td><code class="i">python wake_from_rest.py</code></td></tr>
+        <tr><td>“Mega ไม่พร้อมใน 20 วินาที”</td><td>พอร์ตถูกโปรแกรมอื่นใช้ / สายหลุด</td><td>ปิด PRISM, เช็ก COM6, เสียบ USB ใหม่</td></tr>
+        <tr><td>“ไม่มีค่าตำแหน่งสดของ …”</td><td>สายบัสหรือไฟ 12 V หลุดชั่วคราว</td><td>เช็กสายที่ข้อนั้น รันใหม่ ถ้าเกิดซ้ำที่ข้อเดิมให้เปลี่ยนสาย</td></tr>
+        <tr><td>ข้อมือหมุนผิดด้าน หนีบด้านยาวของบล็อก</td><td>กล้องอ่านมุมบล็อกผิดเพราะเงา</td><td>ดูขั้น 7 ว่า long_axis ตรงไหม ปรับแสง</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="panel">
+    <h2>สิ่งที่ตรวจแล้ว และสิ่งที่ยังไม่ได้ตรวจ</h2>
+    <div class="grid2">
+      <div class="box pass"><span class="tag">ตรวจแล้ว (แบบจำลอง)</span><ul>
+        <li>FK ตรงกับไฟล์ URDF ต้นฉบับ ต่างไม่เกิน 0.002 mm ที่ 300 ท่าสุ่ม</li>
+        <li>IK ถูกทั้ง 1,481 แผนสุ่มในโซนหยิบ ทางลงเบี่ยงจากเส้นดิ่งไม่เกิน 0.14 mm</li>
+        <li>ทุกสคริปต์ในคู่มือนี้รันจบกับแขนปลอม + กล้องปลอม รวมการสอบเทียบครบวงจร (RMS 0.18 mm ในแบบจำลอง)</li>
+        <li>ส่วนตรวจจับทำงานบน OpenCV 5.0.0</li>
+      </ul></div>
+      <div class="box fail"><span class="tag">ยังไม่ได้ตรวจ (ต้องใช้ของจริง)</span><ul>
+        <li>ทิศของข้อ 2–5 และศูนย์ที่ท่า L (ขั้น 1–2 จะบอก)</li>
+        <li>การเปิดกล้อง OV9281 และหน้าต่างภาพบนเครื่องคุณ</li>
+        <li>รูปร่าง jaw จริงเทียบ CAD (โดยเฉพาะถ้าติด TPU)</li>
+        <li>ความแม่นยำจริงเป็น mm (ขั้น 11 จะบอก)</li>
+      </ul></div>
+    </div>
+    <p class="lead">รอบตรวจทานล่าสุดเจอและแก้ไป 3 จุด: ข้อมืออาจพลิก 180° กลางทางลงในบางตำแหน่ง, การส่งคำสั่งซ้ำช้ากว่า watchdog ของเฟิร์มแวร์ (ทำให้แขนเดินๆ หยุดๆ), และ torque ของ gripper ที่ไม่ถูกเปิดก่อนสั่ง</p>
+  </section>
+</div>
+
+<script>
+// สารบัญ + ช่องติ๊ก (จำไว้ใน localStorage ของเบราว์เซอร์นี้; ถ้าใช้ไม่ได้ก็ยังอ่านคู่มือได้ปกติ)
+(function(){
+  var steps=[].slice.call(document.querySelectorAll('.step')), toc=document.getElementById('toc'), prog=document.getElementById('prog');
+  var KEY='so101-guide-done', done={};
+  try{ done=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ done={}; }
+  function paint(){
+    var n=0;
+    steps.forEach(function(s){ var k=s.dataset.n, a=toc.querySelector('[data-k="'+k+'"]'), on=!!done[k];
+      s.querySelector('input').checked=on; a.classList.toggle('done',on); if(on) n++; });
+    prog.textContent='เสร็จแล้ว '+n+' จาก '+steps.length+' ขั้น';
+  }
+  steps.forEach(function(s){
+    var a=document.createElement('a'); a.href='#'+s.id; a.dataset.k=s.dataset.n; a.textContent=s.dataset.n+' '+s.dataset.t; toc.appendChild(a);
+    s.querySelector('input').addEventListener('change',function(e){ done[s.dataset.n]=e.target.checked;
+      try{ localStorage.setItem(KEY,JSON.stringify(done)); }catch(err){} paint(); });
+  });
+  paint();
+  [].forEach.call(document.querySelectorAll('.cmd button'),function(b){
+    b.addEventListener('click',function(){ var code=b.previousElementSibling, t=code.textContent;
+      function sel(){ var r=document.createRange(); r.selectNodeContents(code); var g=getSelection(); g.removeAllRanges(); g.addRange(r); }
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ b.textContent='คัดลอกแล้ว'; setTimeout(function(){b.textContent='คัดลอก';},1500); },sel); } else sel();
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

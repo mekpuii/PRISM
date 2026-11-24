@@ -1,0 +1,2 @@
+{"label": "6fps 640x480 idle", "at": "2026-10-25T20:44:19", "seconds": 60.0, "pid": 132218, "fps_mean": 6.0, "fps_min": 5.7, "n_msgs": 113, "cpu_pct_mean": 37.9, "cpu_pct_max": 46.8, "rss_mb": 126.9, "temp_c_start": 42.355, "temp_c_end": 43.329, "temp_c_max": 44.303, "cpu_count": 4}
+{"label": "15fps 640x480 idle", "at": "2026-10-25T20:47:45", "seconds": 60.0, "pid": 133021, "fps_mean": 14.79, "fps_min": 11.6, "n_msgs": 113, "cpu_pct_mean": 86.7, "cpu_pct_max": 95.5, "rss_mb": 126.9, "temp_c_start": 52.095, "temp_c_end": 59.887, "temp_c_max": 59.887, "cpu_count": 4}

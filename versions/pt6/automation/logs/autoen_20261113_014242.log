@@ -1,0 +1,18 @@
+feeder preset fd1: back 170, ready 170 (1000 ms), push 10 (hold 800 ms) - pt4/pt5 feeder: back 170, push to 10 (2026-11-12 ~15:00)
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: /home/mekkhram/Desktop/PRISM/automation/riff_logs/autoen_raw_20261113_014246.csv
+       /home/mekkhram/Desktop/PRISM/automation/riff_logs/autoen_sets_20261113_014246.csv
+       /home/mekkhram/Desktop/PRISM/automation/riff_logs/autoen_cycles_20261113_014246.csv
+       /home/mekkhram/Desktop/PRISM/automation/riff_logs/autoen_thresholds_20261113_014246.csv
+settings changed from the web page: {'rpm': 37.0, 'arm_speed': 8.8, 'carry_speed': 8.8, 'arrive_timeout': 25.0, 'sets': 1, 'cycles_per_set': 100, 'pause_before_set': 0}
+set 1/1 cycle 1/100  OK 16.2s 
+set 1/1 cycle 2/100  OK 15.1s 
+set 1/1 cycle 3/100  TIMEOUT_TRANSPORT 27.2s block did not reach the IR within 25 s
+set 1/1 cycle 4/100  TIMEOUT_TRANSPORT 27.3s block did not reach the IR within 25 s
+set 1/1 cycle 5/100  TIMEOUT_TRANSPORT 27.3s block did not reach the IR within 25 s
+STOPPED: RuntimeError: 3 failed cycles in a row - stopping
+Set 1 (01:42:47-01:44:49): J1: temp max 35C, current avg 2 / peak 39 mA; J2: temp max 36C, current avg 3 / peak 91 mA; J3: temp max 34C, current avg 5 / peak 130 mA; J4: temp max 34C, current avg 1 / peak 20 mA; J5: temp max 38C, current avg 1 / peak 32 mA; J6: temp max 35C, current avg 2 / peak 39 mA; Belt: temp max 26C, current avg 168 / peak 351 mA; ARM TOTAL: servo volt min 11.3 V, summed current avg 13 / peak 202 mA
+error: RuntimeError: 3 failed cycles in a row - stopping  (unparsable RX lines: 0)

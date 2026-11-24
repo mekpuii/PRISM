@@ -1,0 +1,41 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261112_162049.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] RUN    20 rpm / arm 1.5  - autoen running
+[plan 3] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 4] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 5] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 6] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 7] RUN    20 rpm / arm 1.5  action=verdict:3:fed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 8] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 9] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 10] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 3 cubes on the belt - 366 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 11] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 366 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 12] RUN    20 rpm / arm 1.5  action=verdict:4:fed  - flow: I keep up to 3 cubes on the belt - 366 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 13] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 366 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 14] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 15] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 16] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 17] RUN    20 rpm / arm 1.5  action=verdict:5:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 18] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 19] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 20] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 21] RUN    20 rpm / arm 1.5  action=verdict:6:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 22] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 23] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 24] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 25] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 26] RUN    20 rpm / arm 1.5  action=verdict:7:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 27] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 28] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 29] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 30] RUN    20 rpm / arm 1.5  action=verdict:8:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 31] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 32] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 33] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 34] OFF    20 rpm / arm 1.5  - autoen stopped
+[plan 35] OFF    20 rpm / arm 1.5  - autoen not reachable
+[actuate] autoen restarted (cycle 6 -> 0): cycle hand-over starts again
+[plan 36] OFF    20 rpm / arm 1.5  - autoen ready
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

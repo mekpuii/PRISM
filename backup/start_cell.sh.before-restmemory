@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+# start_cell.sh - start the PRISM cell in the right order: vision -> autoen -> optimizer -> Start.
+#
+#   ./start_cell.sh              optimizer with --auto-resume (probes the feeder by itself when idle)
+#   ./start_cell.sh --no-auto    optimizer waits for:  mosquitto_pub -t orchestrator/cmd -m resume
+#   ./start_cell.sh --shadow     optimizer only logs what it would do (sends nothing to autoen)
+#   ./stop_cell.sh               stop everything again
+#
+# Programs that are already running are kept (not started twice). Their output goes to PRISM/run_logs/.
+# Nothing moves until you press Enter at the last question (Start = gripper opens, arm drives Home).
+set -u
+PRISM="$HOME/Desktop/PRISM"
+LOGS="$PRISM/run_logs"
+API="http://127.0.0.1:8781"
+STAMP=$(date +%Y%m%d_%H%M%S)
+OPT_ARGS="--auto-resume"
+for a in "$@"; do
+  case "$a" in
+    --no-auto) OPT_ARGS="" ;;
+    --shadow)  OPT_ARGS="--shadow" ;;
+    *) echo "unknown option: $a  (use --no-auto or --shadow)"; exit 2 ;;
+  esac
+done
+mkdir -p "$LOGS"
+
+running() { pgrep -f "$1" >/dev/null; }
+opt_pids() {     # every main.py running in PRISM/orchestrator, however it was started
+  local pid
+  for pid in $(pgrep -f "main.py"); do
+    [ "$(readlink "/proc/$pid/cwd" 2>/dev/null)" = "$HOME/Desktop/PRISM/orchestrator" ] && echo "$pid"
+  done
+}
+autoen_status() {
+  curl -s -m 2 "$API/api/state" | python3 -c 'import json,sys; print(json.load(sys.stdin)["status"])' 2>/dev/null
+}
+
+# ---- 0. arm safety: a fresh autoen drives straight Home on Start, which hits the frame from the cradle
+read -r -p "Is the arm resting on the cradle? [y/N] " ans
+if [[ "$ans" =~ ^[Yy] ]]; then
+  echo "Then start autoen by hand with --resting and wake it first (OPTIMIZER_ROADMAP.md, A1). Nothing started."
+  exit 1
+fi
+
+# ---- 1. vision (camera): white + orange cubes, cubes move toward smaller u
+if running "vision_live_tracks.py"; then
+  echo "vision:    already running"
+else
+  (cd "$PRISM/vision" && nohup "$HOME/prism-env/bin/python" vision_live_tracks.py --colors white,orange --belt-dir -1 \
+     > "$LOGS/vision_$STAMP.log" 2>&1 &)
+  echo "vision:    started   (log run_logs/vision_$STAMP.log)"
+fi
+
+# ---- 2. autoen (owns the Mega); wait until its web API answers
+if running "auto_en_new.py"; then
+  echo "autoen:    already running"
+else
+  (cd "$PRISM/autoencoder" && nohup "$HOME/autoen-env/bin/python" auto_en_new.py > "$LOGS/autoen_$STAMP.log" 2>&1 &)
+  echo -n "autoen:    starting "
+fi
+st=""
+for _ in $(seq 1 60); do
+  st=$(autoen_status)
+  [ -n "$st" ] && break
+  echo -n "."
+  sleep 1
+done
+echo
+if [ -z "$st" ]; then
+  echo "autoen did not answer on $API - look at run_logs/autoen_$STAMP.log"
+  exit 1
+fi
+echo "autoen:    $st"
+
+# ---- 3. optimizer: must be running BEFORE Start, or autoen runs on its own like the old automation
+if [ -n "$(opt_pids)" ]; then
+  echo "optimizer: already running ($(tr '\0' ' ' < "/proc/$(opt_pids | head -1)/cmdline"))"
+else
+  (cd "$PRISM/orchestrator" && nohup "$HOME/orch-env/bin/python" main.py $OPT_ARGS > "$LOGS/optimizer_$STAMP.log" 2>&1 &)
+  echo -n "optimizer: starting ($OPT_ARGS) "
+fi
+ok=""
+for _ in $(seq 1 20); do
+  last=$(ls -t "$PRISM"/orchestrator/logs/orch_*.jsonl 2>/dev/null | head -1)
+  if [ -n "$last" ] && grep '"kind": "plan"' "$last" | tail -1 | grep -q '"reason": "autoen' \
+     && ! grep '"kind": "plan"' "$last" | tail -1 | grep -q 'not reachable'; then
+    ok=1
+    break
+  fi
+  echo -n "."
+  sleep 1
+done
+echo
+if [ -z "$ok" ]; then
+  echo "the optimizer does not see autoen yet - look at run_logs/optimizer_$STAMP.log. Not pressing Start."
+  exit 1
+fi
+echo "optimizer: connected to autoen"
+
+# ---- 4. Start (the only step that moves the robot)
+if [ "$st" != "ready" ]; then
+  echo
+  echo "autoen is '$st', not 'ready': it is already started. Nothing more to do."
+  exit 0
+fi
+echo
+echo "Ready. Belt EMPTY, cubes in the feeder, arm area clear, E-stop within reach."
+read -r -p "Enter = Start (gripper opens, arm drives Home), q = quit: " ans
+if [[ "$ans" =~ ^[Qq] ]]; then
+  echo "Not started. Everything else keeps running (./stop_cell.sh to stop it)."
+  exit 0
+fi
+curl -s -m 5 -X POST "$API/api/start" -H 'Content-Type: application/json' -d '{"clear": true, "config": {
+  "rpm": 20, "arm_speed": 1.5, "carry_speed": 1.5, "arrive_timeout": 25,
+  "sets": 100, "cycles_per_set": 100, "pause_before_set": 0, "enable_b": 0, "enable_c": 0}}'
+echo
+echo "Started. Watch the optimizer:  tail -f $LOGS/optimizer_$STAMP.log"
+echo "Stop everything:               ./stop_cell.sh"

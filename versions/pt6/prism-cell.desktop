@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=PRISM cell
+Comment=Start vision, autoen and the optimizer (asks before the arm moves)
+Exec=lxterminal --title="PRISM cell" -e /home/mekkhram/Desktop/PRISM/autostart_cell.sh
+Terminal=false

@@ -1,0 +1,16 @@
+[arm-analyzer] up. broker localhost:1883, db arm_analyzer.db, thresholds built-in defaults (run --write-thresholds or --calibrate to make the file). Ctrl+C to stop.
+[arm-analyzer] connected to broker: Success
+[22:25:20] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:25:31] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:25:41] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:25:51] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:26:01] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:26:11] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:26:21] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:26:31] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:26:41] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:26:51] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:27:01] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+
+[arm-analyzer] stopping
+[arm-analyzer] lost the broker

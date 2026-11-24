@@ -1,0 +1,6 @@
+17:03:57.212 ## RX GAP 0.47s - the Mega sent nothing (its loop was blocked?)
+17:03:58.644 ## RX GAP 0.79s - the Mega sent nothing (its loop was blocked?)
+17:24:19.254 ## RX GAP 0.34s - the Mega sent nothing (its loop was blocked?)
+17:32:40.932 TX X,STOP
+17:32:41.932 ## no reply to X,STOP: sending it again
+17:32:41.933 TX X,STOP

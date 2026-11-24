@@ -1,0 +1,19 @@
+[belt-analyzer] up. broker localhost:1883, db belt_analyzer.db, thresholds built-in defaults (run --write-thresholds to edit them). Ctrl+C to stop.
+[belt-analyzer] connected to broker: Success
+[22:27:31] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:27:41] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:27:51] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:28:01] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:28:11] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:28:21] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:28:31] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:28:41] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:28:51] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:29:01] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:29:11] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:29:21] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:29:31] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[22:29:41] state=NO_DATA  broker=up  belt/telemetry=none yet  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+
+[belt-analyzer] stopping
+[belt-analyzer] lost the broker

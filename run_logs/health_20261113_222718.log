@@ -1,0 +1,32 @@
+[health] watching arm, camera, logger_arm, logger_camera via localhost:1883. Ctrl+C to stop.
+[health] connected to broker: Success
+[22:27:21] CAMERA        UNKNOWN -> OFFLINE   (camera/status says offline (last will or clean exit))
+[22:27:22] LOGGER_ARM    UNKNOWN -> OK
+[22:27:22] LOGGER_CAMERA UNKNOWN -> OK
+[22:27:28] CAMERA        OFFLINE -> UNKNOWN   (camera/demand: no message yet)
+[22:27:31] arm=UNKNOWN  camera=UNKNOWN  logger_arm=OK  logger_camera=OK
+[22:27:36] ARM           UNKNOWN -> OFFLINE   (arm/state: never seen)
+[22:27:36] CAMERA        UNKNOWN -> OFFLINE   (camera/demand: never seen)
+[22:27:38] CAMERA        OFFLINE -> RECOVERED
+[22:27:41] CAMERA        RECOVERED -> OK
+[22:27:41] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[22:27:51] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[22:28:00] CAMERA        OK -> STALE   (camera/perception silent 3.1 s)
+[22:28:01] CAMERA        STALE -> RECOVERED
+[22:28:01] arm=OFFLINE  camera=RECOVERED  logger_arm=OK  logger_camera=OK
+[22:28:04] CAMERA        RECOVERED -> OK
+[22:28:11] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[22:28:21] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[22:28:31] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[22:28:41] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[22:28:51] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[22:29:01] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[22:29:11] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[22:29:21] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[22:29:31] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[22:29:41] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[22:29:46] CAMERA        OK -> OFFLINE   (camera/status says offline (last will or clean exit))
+[22:29:51] arm=OFFLINE  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[22:29:52] LOGGER_ARM    OK -> OFFLINE   (logger/arm/status says offline (last will or clean exit))
+[22:29:54] LOGGER_CAMERA OK -> OFFLINE   (logger/camera/status says offline (last will or clean exit))
+[health] lost the broker: health is UNKNOWN until it is back

@@ -1,0 +1,138 @@
+[arm-analyzer] up. broker localhost:1883, db arm_analyzer.db, thresholds built-in defaults (run --write-thresholds or --calibrate to make the file). Ctrl+C to stop.
+[arm-analyzer] connected to broker: Success
+[19:11:57] NO_DATA    -> PICKING     (gripper holding)
+[19:12:01] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:12:11] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:12:21] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:12:31] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:12:41] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:12:51] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:13:01] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:13:04] PICKING    -> CARRYING    (via home)
+[19:13:05] CARRYING   -> IDLE        (at home, gripper holding)
+[19:13:06] IDLE       -> CARRYING    (via home)
+[19:13:06] CARRYING   -> PICKING     (gripper holding)
+[19:13:10] PICKING    -> CARRYING    (via home)
+[19:13:11] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:13:11] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.55 s, limit 13)
+[19:13:13] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:13:14] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.52 s, limit 45.5)
+[19:13:16] PLACING    -> CARRYING    (to right_bin)
+[19:13:17] CARRYING   -> IDLE        (at home, gripper holding)
+[19:13:17] CYCLE PARTIAL 11.97 s -> right_bin  J6 current WARN
+[19:13:19] IDLE       -> CARRYING    (via home)
+[19:13:20] CARRYING   -> PICKING     (gripper holding)
+[19:13:21] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:13:31] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:13:41] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:13:44] PICKING    -> CARRYING    (via home)
+[19:13:45] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.5 s, limit 13)
+[19:13:47] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:13:47] CONDITION J6 current 13 mA in PLACING: WARN -> OK (held 0.58 s, limit 45.5)
+[19:13:49] PLACING    -> CARRYING    (to right_bin)
+[19:13:51] CARRYING   -> IDLE        (at home, gripper holding)
+[19:13:51] CYCLE PARTIAL 31.39 s -> right_bin  J6 current WARN
+[19:13:51] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:13:52] IDLE       -> CARRYING    (via home)
+[19:13:53] CARRYING   -> PICKING     (gripper holding)
+[19:14:00] PICKING    -> CARRYING    (via home)
+[19:14:00] CONDITION J6 current 20 mA in CARRYING: OK -> WARN (held 0.5 s, limit 13)
+[19:14:01] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=J6.current=WARN
+[19:14:03] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:14:03] CONDITION J6 current 20 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[19:14:05] PLACING    -> CARRYING    (to right_bin)
+[19:14:07] CARRYING   -> IDLE        (at home, gripper holding)
+[19:14:07] CYCLE PARTIAL 14.38 s -> right_bin  J6 current WARN
+[19:14:11] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:14:21] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:14:31] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:14:41] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:14:51] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:15:01] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:15:11] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:15:21] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:15:31] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:15:37] IDLE       -> NO_DATA     (no telemetry for 1.0 s)
+[19:15:38] NO_DATA    -> IDLE        (at home, gripper holding)
+[19:15:41] state=IDLE  broker=up  arm/telemetry=0.2 s ago  cycles_ok=0  levels=all OK
+[19:15:52] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:16:02] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:16:12] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:16:22] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:16:32] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:16:42] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:16:52] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:17:02] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:17:12] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:17:22] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:17:32] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:17:42] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:17:52] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:18:02] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:18:12] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:18:22] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:18:32] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:18:42] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:18:52] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:19:02] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:19:12] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:19:22] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:19:32] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:19:42] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:19:52] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:20:02] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:20:12] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:20:22] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:20:32] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:20:42] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:20:52] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:21:02] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:21:12] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:21:22] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:21:32] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:21:42] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:21:52] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:22:03] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:22:13] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:22:23] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:22:33] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:22:43] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:22:53] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:23:03] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:23:13] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:23:23] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:23:33] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:23:43] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:23:53] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:24:03] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:24:13] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:24:23] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:24:33] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:24:43] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:24:53] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:25:03] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:25:13] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:25:23] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:25:33] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:25:43] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:25:53] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:26:03] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:26:13] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:26:23] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:26:33] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:26:43] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:26:53] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:27:03] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:27:13] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:27:23] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:27:33] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:27:43] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:27:53] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:28:03] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:28:13] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:28:23] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:28:33] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:28:44] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+
+[arm-analyzer] stopping
+[arm-analyzer] lost the broker

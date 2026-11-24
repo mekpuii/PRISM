@@ -1,0 +1,8 @@
+orchestrator LIVE  objective=priority  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261027_191930.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[observe] connected to broker: Success
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] OFF    20 rpm / arm 1.5  - autoen preparing
+[plan 4] OFF    20 rpm / arm 1.5  - autoen stopped
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

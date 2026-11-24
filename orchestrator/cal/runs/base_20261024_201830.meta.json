@@ -1,0 +1,103 @@
+{
+ "run_id": "base_20261024_201830",
+ "kind": "base",
+ "start": "2026-10-24T20:18:30",
+ "end": "2026-10-24T20:18:44",
+ "status": "finished",
+ "operator_note": "",
+ "cube_set": "none",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "e0f1899cfa43748f5eb69e2e09a2e9f0c5da9a965b943cbc283e872cbbc90e09",
+  "mtime": "2026-10-24T18:43:38"
+ },
+ "experiment_sha256": "5e4ce00370914660710fdb817747df8b31e9d9ba4c8d56ee690c6e47e6979668",
+ "config_snapshots": [],
+ "tasks": [
+  {
+   "id": 2,
+   "status": "error",
+   "kind": "belt_run",
+   "seconds": 60.0,
+   "settle_s": 3.0,
+   "rpm": 100.0,
+   "t_start": 1792847922.4726002,
+   "t_end": 1792847924.4794788,
+   "arrived": false,
+   "error": "TimeoutError: no reply to X,CONV,100.00",
+   "stats": {
+    "belt_rpm": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    },
+    "belt_mA": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    },
+    "belt_W": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    },
+    "arm_mA": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    },
+    "arm_W": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    }
+   }
+  }
+ ],
+ "blocks": [],
+ "baseline": {
+  "kind": "belt_run",
+  "seconds": 60.0,
+  "settle_s": 3.0,
+  "rpm": 100.0
+ },
+ "result": {
+  "id": 2,
+  "status": "error",
+  "kind": "belt_run",
+  "seconds": 60.0,
+  "settle_s": 3.0,
+  "rpm": 100.0,
+  "t_start": 1792847922.4726002,
+  "t_end": 1792847924.4794788,
+  "arrived": false,
+  "error": "TimeoutError: no reply to X,CONV,100.00",
+  "stats": {
+   "belt_rpm": {
+    "n": 0,
+    "mean": null,
+    "std": null
+   },
+   "belt_mA": {
+    "n": 0,
+    "mean": null,
+    "std": null
+   },
+   "belt_W": {
+    "n": 0,
+    "mean": null,
+    "std": null
+   },
+   "arm_mA": {
+    "n": 0,
+    "mean": null,
+    "std": null
+   },
+   "arm_W": {
+    "n": 0,
+    "mean": null,
+    "std": null
+   }
+  }
+ }
+}

@@ -1,0 +1,102 @@
+group,name,default,type,meaning
+autoen settings (command line / web page),--port,os.environ.get('ARM_SERIAL_PORT') or ('COM6' if os.name == 'nt' else None),,Mega serial port (env ARM_SERIAL_PORT); default = auto-detect
+autoen settings (command line / web page),--awake,,,"the arm is NOT on the cradle, whatever rest_state.json says (it was moved off by hand)"
+autoen settings (command line / web page),--rest-file,,,"f""where the arm's rest state is remembered (default {REST_FILE}; '' = no memory; always off with --port SIMULATED)"""
+autoen settings (command line / web page),--resting,,,"the arm is on the cradle (autoen was restarted while it rested): Start moves nothing and waits, paused, for the wake task (POST /api/task {""kind"": ""wake""}), then Resume"
+autoen settings (command line / web page),--pose-config,POSE_CONFIG,,extra poses + rest/wake sequences (default PRISM/config/poses.json; '' = no rest pose)
+autoen settings (command line / web page),--poses,,,optional poses file (so101_dpad_poses.json: up/right/left/down); default = the built-in poses of arm_node.py
+autoen settings (command line / web page),--grip-cal,"os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gripper_cal.json')",,gripper calibration from grip_calibrate.py: its open / fast-close / block-window values become the defaults (options given here still win). '' = ignore it
+autoen settings (command line / web page),--mqtt-host,"os.environ.get('MQTT_HOST', 'localhost')",,broker (env MQTT_HOST)
+autoen settings (command line / web page),--mqtt-port,1883,int,
+autoen settings (command line / web page),--mqtt-hz,10.0,float,arm/telemetry rate
+autoen settings (command line / web page),--no-mqtt,,,run without a broker (the recording and the page still work)
+autoen settings (command line / web page),--web-host,127.0.0.1,,address of the page; 0.0.0.0 exposes a page that can MOVE THE ROBOT to your network
+autoen settings (command line / web page),--sets,2,int,
+autoen settings (command line / web page),--cycles-per-set,6,int,default 2 sets x 6 = one magazine of 12 blocks
+autoen settings (command line / web page),--rpm,6.7,float,"belt speed to the IR, real output-shaft rpm (CPR 11880; the old '60' at CPR 1320 = 6.7)"
+autoen settings (command line / web page),--arm-speed,1.0,float,1.0 = the project's normal pose speed
+autoen settings (command line / web page),--gap,1.0,float,"pause between cycles, s"
+autoen settings (command line / web page),--hz,5.0,float,samples per second
+autoen settings (command line / web page),--drop-mode,alternate,,
+autoen settings (command line / web page),--first-drop,left,,side of the first drop when alternating
+autoen settings (command line / web page),--carry-speed,1.0,float,speed factor after the grip (Home and drop legs)
+autoen settings (command line / web page),--gripper-speed,GRIPPER_SPEED,int,
+autoen settings (command line / web page),--acc,8,int,"servo acceleration 0-254 (x100 ticks/s2), sent as the 4th field of P; 8 = the firmware default; only the ACC firmware reads it"
+autoen settings (command line / web page),--open-pos,,int,gripper open ticks (default: see --grip-open-pos-a / pose 'up')
+autoen settings (command line / web page),--enable-a,1,int,"feature A: fast pre-close P move + a lower default gripper-open position. 0 = exact original behaviour (open_pos from pose 'up', single-speed stall-crawl all the way)"
+autoen settings (command line / web page),--grip-open-pos-a,2445,int,"feature A: --open-pos default used when --open-pos is not given and --enable-a=1 (~215 deg, was ~249 deg from pose 'up'). UNVERIFIED on real blocks -- confirm the gripper still clears a block at this opening before trusting it"
+autoen settings (command line / web page),--grip-fast-to-pos,2276,int,"feature A: fast P-move target before the stall-crawl takes over, ticks (~200 deg). Must stay ABOVE the real block height (open_pos is in ticks too; smaller ticks = more closed) or the fast move has no stall protection and can hit the block hard. UNVERIFIED -- "
+autoen settings (command line / web page),--grip-pos,0,int,"close the gripper to exactly this J6 position (ticks, taught on a real block with grip_calibrate.py) and stop there, instead of the firmware stall-crawl that closes until the jaws cannot move (that crunched blocks). 0 = stall-crawl"
+autoen settings (command line / web page),--grip-pos-speed,400,int,ticks/s of the last move to --grip-pos
+autoen settings (command line / web page),--grip-fast-speed,1800,int,"feature A: speed of the fast pre-close P move, ticks/s (max 3200). ROUND 1 FINDING: a short one-shot P move is acceleration-bound, not speed-bound, so raising this alone does nothing -- see --grip-fast-acc"
+autoen settings (command line / web page),--grip-fast-acc,70,int,"feature A: servo acceleration (0-254, x100 ticks/s^2) for JUST the fast pre-close move; every other move still uses --acc. ROUND 1 measured the default --acc (8) making a 170-tick fast move take 0.86s (acceleration-bound: t=2*sqrt(distance/acc)); ROUND 2 confi"
+autoen settings (command line / web page),--grip-fast-timeout,2.0,float,feature A: seconds allowed for the fast pre-close move before giving up and letting the stall-crawl cover the remaining distance
+autoen settings (command line / web page),--enable-b,1,int,"feature B: overlap the next block's FEED+belt-travel with this block's CARRY/RELEASE/HOME instead of doing them fully serially (TRANSPORT is ~46%% of the baseline cycle, almost all of it the arm standing still). See one_cycle_pipelined()'s docstring for the fu"
+autoen settings (command line / web page),--enable-d,1,int,"feature D: send a configurable hold preload/torque-limit with C,6 instead of the firmware's fixed 150-tick, no-torque-cap default. 0 = exact original behaviour"
+autoen settings (command line / web page),--grip-hold-preload,150,int,"feature D: extra ticks the firmware squeezes past the measured contact point while carrying (firmware default: fixed at 150, so 150 here reproduces it). ROUND 1 FINDING: lowering this to 60 did NOT reduce J6's CARRY current (748-812 mA either way -- the STS321"
+autoen settings (command line / web page),--grip-hold-torque-limit,180,int,"feature D: STS3215 torque limit (0-1000 = 0-100%%) applied only while holding the block after G,CLOSED. 1000 = off/no cap. ROUND 1 ran with this off and lowered --grip-hold-preload instead, which did not reduce current. ROUND 2's writeWord() call was not retri"
+autoen settings (command line / web page),--enable-verify,1,int,"1 = a grip that stops outside the block window is GRIP_MISS (retried), a GRIP must start with a block at the IR, and a carry with a weak/slipping J6 is logged GRIP_SUSPECT instead of OK. 0 = old behaviour"
+autoen settings (command line / web page),--grip-contact-min-deg,178.0,float,"G,CLOSED position window that means 'a block is held' (clean grips measured 181.8-182.0 deg, air grips 165-172). Widen it if blocks vary; UNVERIFIED beyond the 6 clean grips of the 200956 run"
+autoen settings (command line / web page),--grip-contact-max-deg,186.0,float,"upper end of the block window, deg"
+autoen settings (command line / web page),--grip-carry-min-ma,0.0,float,"J6 current peak while carrying below this = GRIP_SUSPECT. 0 = off (default): it flagged almost every clean carry as soon as the hold torque limit went under ~150 (peaks were 6-13 mA at 50, 32 mA at 100, 110-150 mA at 180); the contact-angle window is the relia"
+autoen settings (command line / web page),--grip-slip-max-deg,2.0,float,J6 moving more than this while carrying = GRIP_SUSPECT (clean carries moved <= 0.26 deg)
+autoen settings (command line / web page),--enable-recover,1,int,"pipelined mode only: after a failed cycle open the gripper, go Home then Standby and bring a block to the IR (belt first, feeder only if the belt is empty) before the next cycle; a recovery that fails stops the run"
+autoen settings (command line / web page),--enable-f,1,int,"feature F (flow): the optimizer plans every feed (POST /api/feed), the belt brings blocks while the arm works, a pick never waits for a cycle end. Overrides B / C."
+autoen settings (command line / web page),--enable-c,0,int,"feature C, belt queue (needs --enable-b): after one unqueued cycle has measured the full belt travel time, a 2nd block is dropped on the moving belt --queue-split of the way through, so afterwards every CONV only moves the next block about HALF the belt (short"
+autoen settings (command line / web page),--pause-before-set,0,int,"1 = pause before every set (also the first) until Resume / experiment.py resumes it; while paused, POST /api/task can run a belt test or baseline. 0 = off (default, unchanged behaviour)"
+autoen settings (command line / web page),--queue-split,0.5,float,"where on the lead block's trip the 2nd block is dropped, as a fraction of the full travel time (0.5 = the two end up half a belt apart)"
+autoen settings (command line / web page),--arrival-guard,1,int,"1 = (pipeline) hold X,CONV back so the next block cannot reach the IR before the arm is parked at Standby (+ --arrival-margin-s); estimated from the last 3 cycles. 0 = start CONV at the gate as before"
+autoen settings (command line / web page),--arrival-margin-s,0.5,float,how long after the arm is parked the block may arrive at the earliest
+autoen settings (command line / web page),--ir-confirm-s,0.6,float,"how long GRIP waits for the IR telemetry to show the block (it streams ~10 Hz, so the reading right after ARRIVED can be stale) before it calls the IR empty (NO_BLOCK_AT_IR)"
+autoen settings (command line / web page),--recover-conv-s,7.0,float,seconds the recovery runs the belt looking for a block already on it before it feeds a new one (the full feed->IR run is ~5 s at 33 rpm)
+autoen settings (command line / web page),--pose-tol,POSE_TOL_TICKS,int,
+autoen settings (command line / web page),--grip-tol,GRIP_TOL_TICKS,int,
+autoen settings (command line / web page),--move-timeout,40.0,float,seconds allowed per arm move
+autoen settings (command line / web page),--feed-timeout,5.0,float,seconds to wait for FEED_DONE
+autoen settings (command line / web page),--arrive-timeout,20.0,float,seconds for a block to reach the IR
+autoen settings (command line / web page),--clear-timeout,3.0,float,seconds for the block to leave the IR after the pick
+autoen settings (command line / web page),--standby-timeout,45.0,float,
+autoen settings (command line / web page),--grip-timeout,12.0,float,"seconds to wait for G,CLOSED / G,ERROR"
+autoen settings (command line / web page),--offset,0,int,extra encoder counts the belt travels after the IR triggers
+autoen settings (command line / web page),--temp-max,60.0,float,"belt motor over-temperature trip, C (0 = off)"
+autoen settings (command line / web page),--belt-wdt-ms,,int,"belt watchdog timeout sent via X,WDT (0 = off, not recommended). Default: 500 (firmware default, unchanged) when --enable-b=0; 1500 when --enable-b=1 -- feature B measured FAULT_1 (watchdog) in 2/10 pipelined cycles at the firmware default even though the PC k"
+autoen settings (command line / web page),--kp,4.5,float,"belt speed PID, PWM per rpm of error. 9 x the firmware default 0.5 / 1.5 / 0, which was tuned with CPR 1320: at CPR 11880 the same belt speed reads 9x fewer rpm, so x9 gives the same PWM"
+autoen settings (command line / web page),--ki,13.5,float,
+autoen settings (command line / web page),--kd,0.0,float,
+autoen settings (command line / web page),--feeder-home,170,int,
+autoen settings (command line / web page),--feeder-push,10,int,
+autoen settings (command line / web page),--feeder-push-ms,800,int,
+autoen settings (command line / web page),--feeder-ready,170,int,ready angle the blade waits at before the push (= home: no visible first move)
+autoen settings (command line / web page),--feeder-ready-ms,1000,int,wait at the ready angle (0 = no ready stop)
+autoen settings (command line / web page),--feeder-ramp-ms,0,int,slow sweep ready -> push angle (0 = jump)
+autoen settings (command line / web page),--feeder-return-ms,300,int,
+autoen settings (command line / web page),--max-fails,3,int,stop after this many failed cycles in a row
+autoen settings (command line / web page),--hold-tol,60,int,"while the arm should stand still, a joint further than this (ticks) from its pose is logged and pulled back; 0 = off"
+autoen settings (command line / web page),--settle-tol,100,int,a joint that stops this close (ticks) outside the pose window for 1.5 s counts as arrived; 0 = off
+autoen settings (command line / web page),--cpr,11880.0,float,"belt encoder counts per output revolution: 11 PPR x 4 (quadrature) x 1:270 (JGB37-520, 37 rpm). Sent to the Mega as X,CPR at Start; it sets what every belt rpm means"
+autoen settings (command line / web page),--web-port,8781,int,0 = no web page
+autoen settings (command line / web page),--open-page,,,open this page in the browser at start (default: no - the PRISM dashboard :8080 is the page; this address stays on because the optimizer and the dashboard send their commands to it)
+autoen settings (command line / web page),--log-dir,riff_logs,,
+autoen settings (command line / web page),--auto-start,,,start the run immediately (default: open the web page and wait for the Start button)
+autoen settings (command line / web page),--yes,,,with --auto-start: skip the 'arm area is clear' question
+optimizer program options,--shadow,,,"compute and log plans, send nothing to autoen"
+optimizer program options,--objective,efficiency,,"efficiency (default) = safety always, then 1 good cubes per minute, 2 energy; priority = 1 safety, 2 energy, 3 speed; or throughput / energy / balanced"
+optimizer program options,--keep-budget,,,"leave autoen's sets / cycles per set as they were started (default: the optimizer owns the run and raises them, so it never 'finishes' in the middle of the work)"
+optimizer program options,--no-frontier,,,stay inside the tested grid (default: try one step at a time beyond what it has proven)
+optimizer program options,--lam,0.5,float,balanced: J per second of cycle time
+optimizer program options,--j-limit,,float,only configs with at most this many J per cube
+optimizer program options,--probe-s,,float,IDLE: resume to try a feed after this many seconds
+optimizer program options,--auto-resume,,,IDLE: probe the feeder when forecast.py expects a refill (history in forecast_state.json)
+optimizer program options,--no-sort,,,do not sort by colour (autoen keeps its own drop order)
+optimizer program options,--no-auto-recover,,,"every abnormal cycle -> ALERT, wait for a person (default: answer it itself, incidents.py)"
+optimizer program options,--no-stuck-alert,,,a cube still on the running belt is only logged (default: brake + ALERT)
+optimizer program options,--no-brake,,,IDLE: leave the belt coasting (the brake saves ~0.05 W)
+optimizer program options,--max-s,,float,stop after this many seconds (tests)
+vision program options,--colors,,,"comma-separated colours to detect, in priority order, e.g. white,red,blue (default: the 'enabled' list of vision_calibration.json, else white)"
+vision program options,--list-colors,,,print the available colours and exit
+vision program options,--belt-axis,,,"image axis along the belt (u = x, v = y). Default: from calibration, else u"
+vision program options,--belt-dir,,int,"+1 if that coordinate GROWS in the direction of travel, -1 if it shrinks"
+vision program options,--calibrate,,,"open the calibration window (ROI, count line, colours, belt direction) and exit"
+vision program options,--no-roi,,,run WITHOUT a conveyor ROI (old behaviour: the colours are counted anywhere in the frame)
+vision program options,--show,,,ALSO open the camera window on the Pi's desktop (default: none - the picture is on the dashboard; a window costs RAM and CPU for nothing)
+vision program options,--no-background,,,do NOT learn the empty belt (old behaviour: a reflection on the belt can count as white)

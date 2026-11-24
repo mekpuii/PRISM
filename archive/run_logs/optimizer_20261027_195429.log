@@ -1,0 +1,11 @@
+orchestrator LIVE  objective=priority  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261027_195435.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[observe] connected to broker: Success
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen running
+[plan 4] RUN    20 rpm / arm 1.5  - autoen running
+[plan 5] ALERT  20 rpm / arm 1.5  action=pause  - cycle 2 GRIP_MISS: check before resuming (gripper stopped at 218.6 deg, outside the block window 150-181.8 deg - no block caught | feature-A fast move timed out, finishing with the slow move to grip_pos; grip_pos move did not start (J6 still at 2487): resent; grip_pos move did not start (J6 still at 2487): resent; gripper stopped +475t short of grip_pos 2012: holding at 2477 (block wider than taught))
+[plan 6] ALERT  20 rpm / arm 1.5  - cycle 2 GRIP_MISS: check before resuming (gripper stopped at 218.6 deg, outside the block window 150-181.8 deg - no block caught | feature-A fast move timed out, finishing with the slow move to grip_pos; grip_pos move did not start (J6 still at 2487): resent; grip_pos move did not start (J6 still at 2487): resent; gripper stopped +475t short of grip_pos 2012: holding at 2477 (block wider than taught))
+[plan 7] OFF    20 rpm / arm 1.5  - autoen stopped
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

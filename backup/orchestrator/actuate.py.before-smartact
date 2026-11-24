@@ -1,0 +1,405 @@
+# actuate.py - Module 4 of the orchestrator (PRISM, Raspberry Pi 4).
+#
+# WHAT THIS MODULE DOES
+#   Carries out the Plan from optimize.py through autoen's HTTP API (the same API experiment.py uses):
+#     POST /api/config  {rpm, arm_speed, carry_speed, arrive_timeout}   only at a cycle boundary or while paused
+#     POST /api/pause   (a TOGGLE: always re-read the state right before, so it never flips the wrong way)
+#     POST /api/task    hold_pose home / belt_run (brake) / rest / wake   only while paused
+#   It also reads autoen's state (GET /api/state, 2 Hz) for optimize.py as an AutoenView, publishes the plan
+#   and a status line on MQTT for the dashboard/logger, and takes operator commands from orchestrator/cmd.
+#
+# RULES THIS FILE FOLLOWS
+#   1. It never opens the serial port. autoen owns the Mega.
+#   2. --shadow: plans are computed and logged, NOTHING is sent to autoen (GET only).
+#   3. HTTP never runs on the tick thread: a poller thread reads, one worker thread writes, one job at a time.
+#   4. Settings are sent only in RUN or IDLE (never MANUAL / ALERT / PARK / OFF: someone else is in charge).
+#   5. Every plan change, job and error goes to a JSONL log (orchestrator/logs/).
+#
+# MQTT
+#   orchestrator/plan    retained, on every plan change
+#   orchestrator/status  1 Hz: mode, settings, shadow, autoen status, last job / error
+#   orchestrator/cmd     IN: {"cmd": "resume" | "park" | "wake"}  (or the bare word)
+#       mosquitto_pub -t orchestrator/cmd -m resume
+
+import json
+import os
+import queue
+import threading
+import time
+import urllib.error
+import urllib.request
+from dataclasses import asdict, dataclass, field
+from datetime import datetime
+from typing import Optional
+
+import paho.mqtt.client as mqtt
+
+# ============================================================
+# CONFIGURATION
+# ============================================================
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+LOG_DIR = os.path.join(HERE, "logs")
+API_BASE = os.environ.get("AUTOEN_API", "http://127.0.0.1:8781")
+BROKER_HOST = os.environ.get("MQTT_HOST", "localhost")
+BROKER_PORT = 1883
+
+POLL_S = 0.5                    # autoen state read rate
+STATUS_S = 1.0                  # orchestrator/status rate
+CONFIG_RETRY_S = 2.0            # do not resend the same settings faster than this
+HOME_POSE = "right"             # autoen's name for home
+BRAKE_RPM = 0.5                 # the brake is a 1 s belt_run at the lowest rpm: autoen BRAKEs at the end of every belt_run
+T_PLAN, T_STATUS, T_CMD = "orchestrator/plan", "orchestrator/status", "orchestrator/cmd"
+COMMANDS = ("resume", "park", "wake")
+
+
+# ============================================================
+# STATE TYPE  (what optimize.py receives)
+# ============================================================
+
+@dataclass
+class AutoenView:
+    ok: bool                        # False = autoen did not answer the last poll
+    t: float                        # time.monotonic() of the poll
+    status: str = "unknown"         # ready / preparing / running / paused / finished / stopped / error
+    paused: bool = False            # a pause is REQUESTED (it lands at the next cycle boundary: status "paused")
+    rest_state: str = "awake"
+    phase: str = ""
+    cycle_total: int = 0
+    config: dict = field(default_factory=dict)
+    new_cycles: list = field(default_factory=list)   # cycles finished since the last view: {n, result, secs, notes}
+    task: Optional[dict] = None
+    message: str = ""
+    error: str = ""
+
+
+# ============================================================
+# AUTOEN HTTP API
+# ============================================================
+
+class ApiError(RuntimeError):
+    pass
+
+
+class AutoenApi:
+    """Same calls as cal/experiment.py's Api."""
+
+    def __init__(self, base=API_BASE, timeout=5.0):
+        self.base, self.timeout = base.rstrip("/"), timeout
+
+    def _req(self, path, body=None):
+        data = None if body is None else json.dumps(body).encode()
+        req = urllib.request.Request(self.base + path, data=data, method="GET" if body is None else "POST",
+                                     headers={"Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=self.timeout) as r:
+                return json.loads(r.read() or b"{}")
+        except urllib.error.HTTPError as e:
+            try:
+                msg = json.loads(e.read()).get("error", str(e))
+            except Exception:                               # noqa: BLE001
+                msg = str(e)
+            raise ApiError(f"{path}: {msg}")
+        except (urllib.error.URLError, OSError, ValueError) as e:
+            raise ApiError(f"autoen API not reachable at {self.base} ({e})")
+
+    def state(self):
+        return self._req("/api/state")
+
+    def post(self, path, body=None):
+        return self._req(path, body if body is not None else {})
+
+
+# ============================================================
+# MODULE
+# ============================================================
+
+class Actuate:
+    def __init__(self, shadow=False, api=None, idle_brake=True, mqtt_enabled=True, log_path=None):
+        self.shadow, self.idle_brake = shadow, idle_brake
+        self.api = api or AutoenApi()
+        self._stop = threading.Event()
+        self._lock = threading.Lock()
+        self._view = AutoenView(ok=False, t=0.0, error="no poll yet")
+        self._cycles = []                    # finished cycles not yet handed to optimize.py
+        self._last_n = None                  # highest cycle number the poller has seen (None = first poll)
+        self._jobs = queue.Queue()
+        self._busy = None                    # name of the job running now
+        self._cmds = queue.Queue()
+        self._last_plan = None
+        self._last_cfg_t, self._last_cfg = 0.0, None
+        self._last_drop_t, self._last_drop = 0.0, None
+        self.last_job, self.last_error = "", ""
+
+        os.makedirs(LOG_DIR, exist_ok=True)
+        self.log_path = log_path or os.path.join(LOG_DIR, f"orch_{datetime.now():%Y%m%d_%H%M%S}.jsonl")
+        self._log_f = open(self.log_path, "a", encoding="utf-8")
+        self.log("start", {"shadow": shadow, "api": self.api.base, "idle_brake": idle_brake})
+
+        self._mq = None
+        if mqtt_enabled:
+            self._mq = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id="orchestrator_actuate")
+            self._mq.on_connect = lambda c, u, f, rc, p: c.subscribe([(T_CMD, 1)])
+            self._mq.on_message = self._on_cmd
+            self._mq.connect_async(BROKER_HOST, BROKER_PORT, keepalive=10)
+            self._mq.loop_start()
+        self._threads = [threading.Thread(target=self._poll_loop, daemon=True, name="actuate-poll"),
+                         threading.Thread(target=self._work_loop, daemon=True, name="actuate-work")]
+        for th in self._threads:
+            th.start()
+        self._status_t = 0.0
+
+    # ----- logging -----
+
+    def log(self, kind, data):
+        rec = {"ts": round(time.time(), 3), "iso": datetime.now().isoformat(timespec="seconds"), "kind": kind, **data}
+        with self._lock:
+            self._log_f.write(json.dumps(rec, default=str) + "\n")
+            self._log_f.flush()
+
+    def _pub(self, topic, data, retain=False):
+        if self._mq is not None:
+            self._mq.publish(topic, json.dumps(data, default=str), qos=1 if retain else 0, retain=retain)
+
+    # ----- inputs for optimize.py -----
+
+    def view(self) -> AutoenView:
+        """Latest autoen state, with the cycles that finished since the last call (each handed over once)."""
+        with self._lock:
+            v = AutoenView(**{**asdict(self._view), "new_cycles": self._cycles})
+            self._cycles = []
+        return v
+
+    def commands(self):
+        out = []
+        while True:
+            try:
+                out.append(self._cmds.get_nowait())
+            except queue.Empty:
+                return out
+
+    def _on_cmd(self, client, userdata, msg):
+        try:
+            raw = msg.payload.decode().strip()
+            cmd = json.loads(raw).get("cmd") if raw.startswith("{") else raw
+        except (ValueError, AttributeError):
+            cmd = None
+        cmd = str(cmd or "").lower()
+        if cmd in COMMANDS:
+            self._cmds.put(cmd)
+        self.log("cmd", {"cmd": cmd, "accepted": cmd in COMMANDS})
+
+    # ----- poller thread -----
+
+    def _poll_loop(self):
+        while not self._stop.is_set():
+            t = time.monotonic()
+            try:
+                st = self.api.state()
+                v = AutoenView(ok=True, t=t, status=st.get("status", "?"), paused=bool(st.get("paused")),
+                               rest_state=st.get("rest_state") or "awake", phase=st.get("phase") or "",
+                               cycle_total=int(st.get("cycle_total") or 0), config=st.get("config") or {},
+                               task=st.get("task"), message=st.get("message") or "")
+                new = [c for c in st.get("cycles") or [] if self._last_n is not None and c.get("n", 0) > self._last_n]
+                ns = [c.get("n", 0) for c in st.get("cycles") or []]
+                with self._lock:
+                    if self._last_n is None or ns:
+                        self._last_n = max(ns + [self._last_n or 0])   # the first poll only marks history as seen
+                    self._cycles += new
+                    self._view = v
+            except ApiError as e:
+                with self._lock:
+                    self._view = AutoenView(ok=False, t=t, error=str(e))
+            self._stop.wait(max(0.0, POLL_S - (time.monotonic() - t)))
+
+    # ----- tick thread -----
+
+    def step(self, plan):
+        """Called every tick. Cheap: only queues jobs."""
+        if self._last_plan is None or plan.seq != self._last_plan.seq:
+            rec = {**asdict(plan), "shadow": self.shadow}
+            self.log("plan", rec)
+            self._pub(T_PLAN, rec, retain=True)
+            print(f"[plan {plan.seq}] {plan.mode:<6} {plan.rpm:g} rpm / arm {plan.arm_speed:g}"
+                  + (f"  action={plan.action}" if plan.action else "") + f"  - {plan.reason}", flush=True)
+        self._last_plan = plan
+        if plan.action:
+            self._jobs.put((plan.action, plan.settings()))
+        self._maybe_config(plan)
+        self._maybe_drop(plan)
+        now = time.monotonic()
+        if now - self._status_t >= STATUS_S:
+            self._status_t = now
+            v = self._view
+            self._pub(T_STATUS, {"ts": time.time(), "mode": plan.mode, "reason": plan.reason, **plan.settings(),
+                                 "score": plan.score, "shadow": self.shadow, "autoen": v.status if v.ok else "unreachable",
+                                 "busy": self._busy, "last_job": self.last_job, "last_error": self.last_error})
+
+    def _maybe_config(self, plan):
+        """Send new settings only at a cycle boundary (or while paused), only in RUN / IDLE, never twice in a row fast."""
+        v = self._view
+        if plan.mode not in ("RUN", "IDLE") or not plan.at_boundary or not v.ok or self._busy or not self._jobs.empty():
+            return
+        want = plan.settings()
+        diff = {k: x for k, x in want.items() if not _same(v.config.get(k), x)}
+        if not diff:
+            return
+        now = time.monotonic()
+        if diff == self._last_cfg and (self.shadow or now - self._last_cfg_t < CONFIG_RETRY_S):
+            return                                          # shadow: autoen never changes, so log each wish once
+        self._last_cfg, self._last_cfg_t = diff, now
+        self._jobs.put(("config", diff))
+
+    def _maybe_drop(self, plan):
+        """The bin for the cube in transport: sent at once (autoen reads drop_mode after the grip, for this cube)."""
+        v = self._view
+        if plan.drop is None or plan.mode != "RUN" or not v.ok or v.config.get("drop_mode") == plan.drop:
+            return
+        now = time.monotonic()
+        if plan.drop == self._last_drop and (self.shadow or now - self._last_drop_t < 1.0):
+            return
+        self._last_drop, self._last_drop_t = plan.drop, now
+        self._jobs.put(("config", {"drop_mode": plan.drop}))
+
+    # ----- worker thread -----
+
+    def _work_loop(self):
+        while not self._stop.is_set():
+            try:
+                name, arg = self._jobs.get(timeout=0.2)
+            except queue.Empty:
+                continue
+            self._busy = name
+            t0 = time.monotonic()
+            try:
+                if self.shadow:
+                    detail = "shadow: not sent"
+                else:
+                    detail = getattr(self, "_job_" + name)(arg)
+                self.last_job = f"{name} ok"
+                self.log("job", {"job": name, "arg": arg, "ok": True, "detail": detail,
+                                 "secs": round(time.monotonic() - t0, 2)})
+            except Exception as e:                          # noqa: BLE001 - a failed job is logged, never kills the loop
+                self.last_job, self.last_error = f"{name} failed", f"{name}: {e}"
+                self.log("job", {"job": name, "arg": arg, "ok": False, "error": str(e),
+                                 "secs": round(time.monotonic() - t0, 2)})
+                print(f"[actuate] {name} FAILED: {e}", flush=True)
+            finally:
+                self._busy = None
+
+    def _state(self):
+        return self.api.state()
+
+    def _wait(self, pred, timeout, what):
+        end = time.monotonic() + timeout
+        while True:
+            st = self._state()
+            if pred(st):
+                return st
+            if self._stop.is_set():
+                raise RuntimeError(f"stopping while waiting for {what}")
+            if time.monotonic() > end:
+                raise RuntimeError(f"timed out after {timeout:.0f} s waiting for {what} (status {st.get('status')})")
+            time.sleep(0.3)
+
+    def _ensure_paused(self, wait_s=None):
+        st = self._state()
+        if st.get("status") not in ("running", "paused"):
+            raise RuntimeError(f"autoen is {st.get('status')}: nothing to pause")
+        if not st.get("paused"):
+            self.api.post("/api/pause")                     # toggle: running -> pause requested
+        if wait_s:
+            return self._wait(lambda s: s.get("status") == "paused" or s.get("status") in ("stopped", "error", "finished"),
+                              wait_s, "autoen to reach the pause")
+        return st
+
+    def _task(self, body, timeout):
+        tid = self.api.post("/api/task", body)["task"]["id"]
+        st = self._wait(lambda s: ((s.get("task") or {}).get("id") == tid and s["task"]["status"] in ("done", "error"))
+                        or s.get("status") in ("stopped", "error", "finished"), timeout, f"task {body['kind']}")
+        task = st.get("task") or {}
+        if task.get("id") != tid or task.get("status") != "done":
+            raise RuntimeError(f"task {body['kind']} did not finish: {task.get('error') or st.get('status')}")
+        return task
+
+    def _brake(self):
+        if not self.idle_brake:
+            return None
+        self._task({"kind": "belt_run", "rpm": BRAKE_RPM, "seconds": 1.0, "settle_s": 0.0}, 30)
+        return "braked"
+
+    def _job_config(self, diff):
+        applied = self.api.post("/api/config", diff).get("applied", {})
+        got = self._state().get("config", {})
+        bad = {k: [v, got.get(k)] for k, v in diff.items() if not _same(v, got.get(k))}
+        if bad:
+            raise RuntimeError(f"settings not taken: {bad}")
+        return applied
+
+    def _job_pause(self, _):
+        self._ensure_paused()
+        return "pause requested"
+
+    def _job_abort(self, _):
+        self._ensure_paused()
+        try:
+            self.api.post("/api/abort_transport")
+        except ApiError as e:                               # too late (cycle already over) or an older autoen:
+            return f"pause requested, abort refused ({e})"  # the cycle ends at arrive_timeout as before
+        return "pause requested, transport aborted"
+
+    def _job_refeed(self, _):
+        try:
+            self.api.post("/api/abort_transport")           # no pause: autoen's next cycle feeds again
+        except ApiError as e:
+            return f"refeed refused ({e}): the cycle ends at arrive_timeout"
+        return "transport aborted, feeding again"
+
+    def _job_idle(self, settings):
+        st = self._ensure_paused(wait_s=float(settings.get("arrive_timeout") or 30) + 90)
+        if st.get("status") != "paused":
+            raise RuntimeError(f"autoen ended instead of pausing: {st.get('status')} {st.get('message')}")
+        self._task({"kind": "hold_pose", "pose": HOME_POSE, "seconds": 2.0, "settle_s": 0.0}, 60)
+        return "paused, home" + (", " + self._brake() if self.idle_brake else "")
+
+    def _job_resume(self, _):
+        st = self._state()
+        if st.get("rest_state", "awake") != "awake":
+            raise RuntimeError("the arm is resting: wake first")
+        if not st.get("paused"):
+            return "already running"
+        self.api.post("/api/pause")                         # toggle: paused -> running
+        return "resumed"
+
+    def _job_park(self, _):
+        self._ensure_paused(wait_s=120)
+        task = self._task({"kind": "rest", "seconds": 5.0, "settle_s": 0.0}, 180)
+        return f"resting (move {task.get('move_s')} s)"
+
+    def _job_wake(self, _):
+        task = self._task({"kind": "wake", "seconds": 5.0, "settle_s": 0.0}, 180)
+        out = f"awake at home (move {task.get('move_s')} s)"
+        return out + (", " + self._brake() if self.idle_brake else "")
+
+    # ----- shutdown -----
+
+    def busy(self):
+        return self._busy is not None or not self._jobs.empty()
+
+    def stop(self):
+        """Clean stop: leaves autoen exactly as it is (running or paused)."""
+        self._stop.set()
+        for th in self._threads:
+            th.join(timeout=3)
+        self.log("stop", {"last_job": self.last_job, "last_error": self.last_error})
+        if self._mq is not None:
+            self._mq.loop_stop()
+            self._mq.disconnect()
+        self._log_f.close()
+
+
+def _same(a, b):
+    try:
+        return abs(float(a) - float(b)) < 1e-6
+    except (TypeError, ValueError):
+        return a == b

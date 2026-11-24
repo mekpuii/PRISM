@@ -1,0 +1,198 @@
+{
+ "_doc": "cycles counted live by optimize.py on top of model.json",
+ "configs": [
+  {
+   "rpm": 8.0,
+   "arm_speed": 1.0,
+   "n": 1,
+   "ok": 0,
+   "j_sum": 0.0,
+   "j_n": 0,
+   "t_sum": 0.0,
+   "t_n": 0
+  },
+  {
+   "rpm": 15.0,
+   "arm_speed": 1.5,
+   "n": 8,
+   "ok": 6,
+   "j_sum": 46.4,
+   "j_n": 2,
+   "t_sum": 0.0,
+   "t_n": 0
+  },
+  {
+   "rpm": 15.0,
+   "arm_speed": 2.0,
+   "n": 1,
+   "ok": 0,
+   "j_sum": 0.0,
+   "j_n": 0,
+   "t_sum": 0.0,
+   "t_n": 0
+  },
+  {
+   "rpm": 20.0,
+   "arm_speed": 1.0,
+   "n": 10,
+   "ok": 7,
+   "j_sum": 62.4,
+   "j_n": 6,
+   "t_sum": 0.0,
+   "t_n": 0
+  },
+  {
+   "rpm": 20.0,
+   "arm_speed": 1.5,
+   "n": 457,
+   "ok": 423,
+   "j_sum": 6097.6,
+   "j_n": 343,
+   "t_sum": 3750.6,
+   "t_n": 253
+  },
+  {
+   "rpm": 22.0,
+   "arm_speed": 1.75,
+   "n": 32,
+   "ok": 32,
+   "j_sum": 522.5,
+   "j_n": 26,
+   "t_sum": 401.3,
+   "t_n": 27
+  },
+  {
+   "rpm": 22.0,
+   "arm_speed": 1.5,
+   "n": 11,
+   "ok": 11,
+   "j_sum": 234.8,
+   "j_n": 11,
+   "t_sum": 198.5,
+   "t_n": 11
+  }
+ ],
+ "frontier_bans": {},
+ "feeder": {
+  "moved": 406,
+  "by_phase": {
+   "TRANSPORT": [
+    64,
+    54
+   ],
+   "GRIP": [
+    201,
+    36
+   ],
+   "STANDBY": [
+    3,
+    1
+   ],
+   "IDLE": [
+    2,
+    0
+   ],
+   "RELEASE": [
+    0,
+    2
+   ],
+   "HOME": [
+    3,
+    0
+   ],
+   "CARRY_DOWN": [
+    1,
+    2
+   ],
+   "CARRY_LEFT": [
+    3,
+    0
+   ]
+  },
+  "push_ms": 800,
+  "push_fail_ms": 300
+ },
+ "tuner": {
+  "champ": {
+   "gap_mm": 60.0,
+   "late": 1.35
+  },
+  "tries": {
+   "gap_mm": {
+    "80.0": 3,
+    "60.0": 2,
+    "100.0": 3
+   },
+   "late": {
+    "1.25": 2,
+    "1.6": 2
+   }
+  },
+  "history": [
+   {
+    "knob": "gap_mm",
+    "value": 80.0,
+    "old": 60.0,
+    "mean": 11.87,
+    "base": 13.11,
+    "fails": 0,
+    "kept": true,
+    "pick": 30
+   },
+   {
+    "knob": "gap_mm",
+    "value": 60.0,
+    "old": 80.0,
+    "mean": 13.12,
+    "base": 14.54,
+    "fails": 0,
+    "kept": true,
+    "pick": 57
+   },
+   {
+    "knob": "late",
+    "value": 1.6,
+    "old": 1.35,
+    "mean": 11.07,
+    "base": 10.97,
+    "fails": 0,
+    "kept": false,
+    "pick": 107
+   },
+   {
+    "knob": "gap_mm",
+    "value": 80.0,
+    "old": 60.0,
+    "mean": 15.62,
+    "base": 17.04,
+    "fails": 0,
+    "kept": true,
+    "pick": 177
+   },
+   {
+    "knob": "gap_mm",
+    "value": 60.0,
+    "old": 80.0,
+    "mean": 12.92,
+    "base": 21.44,
+    "fails": 0,
+    "kept": true,
+    "pick": 193
+   }
+  ],
+  "picks": 224
+ },
+ "camera": {
+  "record": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0
+  ],
+  "saved": 1794570837
+ }
+}

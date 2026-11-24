@@ -1,0 +1,15 @@
+[dashboard] optimizer trace: 42 records from its last log
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/dashboard/dashboard_node.py", line 1018, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/dashboard/dashboard_node.py", line 995, in main
+    srv = ThreadingHTTPServer((a.host, a.port), make_handler(app))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/local/lib/python3.11/http/server.py", line 140, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/local/lib/python3.11/socketserver.py", line 472, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use

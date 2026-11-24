@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PRISM Dashboard</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<!-- ============ top bar: brand, page tabs, live status ============ -->
+<header id="top">
+  <div class="brand">PRISM<span>cell</span></div>
+  <nav id="nav">
+    <div class="tab" data-top="overview"><a href="#/overview" class="plain">Overview</a></div>
+    <div class="tab" data-top="control">Control
+      <div class="sub"><a href="#/control/run">Run</a><a href="#/control/camera">Camera</a><a href="#/control/twin">3D Twin</a></div></div>
+    <div class="tab" data-top="logger"><a href="#/logger" class="plain">Logger</a></div>
+    <div class="tab" data-top="health"><a href="#/health" class="plain">Health</a></div>
+    <div class="tab" data-top="analysis">Analysis
+      <div class="sub"><a href="#/analysis/arm">Arm</a><a href="#/analysis/belt">Conveyor</a></div></div>
+  </nav>
+  <div id="strip">
+    <span class="pill" id="p-mqtt" title="connection of this dashboard to the MQTT broker">MQTT</span>
+    <span class="pill" id="p-health" title="worst node status">nodes</span>
+    <span class="pill" id="p-run" title="autoen_node status / phase">idle</span>
+    <span class="clock" id="clock"></span>
+  </div>
+</header>
+
+<!-- ============ sub-tab row (filled by app.js for the pages that have sub pages) ============ -->
+<div id="subbar"></div>
+<div id="banner" hidden></div>
+<main id="view"></main>
+
+<!-- ============ event drawer ============ -->
+<footer id="evbar">
+  <div class="evhead" id="evtoggle">Events <span id="evcount"></span><span class="evlast" id="evlast"></span></div>
+  <div class="evlist" id="evlist" hidden></div>
+</footer>
+
+<script src="charts.js"></script>
+<script src="app.js"></script>
+<script src="p_overview.js"></script>
+<script src="p_control.js"></script>
+<script src="p_logger.js"></script>
+<script src="p_health.js"></script>
+<script src="p_analysis.js"></script>
+<script>PRISM.boot();</script>
+</body>
+</html>

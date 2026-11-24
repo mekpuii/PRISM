@@ -1,0 +1,9 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261113_183538.jsonl
+[plan 1] OFF    22 rpm / arm 1.75  - autoen ready
+[plan 2] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 3] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 4] OFF    22 rpm / arm 1.75  - autoen error
+[plan 5] OFF    22 rpm / arm 1.75  - autoen not reachable
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

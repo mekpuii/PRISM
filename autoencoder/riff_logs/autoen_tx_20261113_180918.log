@@ -1,0 +1,5 @@
+18:09:19.368 TX X,DIAG,1,1,1,0
+18:09:45.399 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+18:09:45.893 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+18:17:14.586 TX X,STOP
+18:17:16.767 ## end, unparsable RX lines: 0

@@ -1,0 +1,163 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261112_010648.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 5] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 6] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 7] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 8] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 9] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 10] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 11] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 12] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 131.5, normal 87; 0.79 % too dark, 8.11 % burnt out): camera not used for decisions
+[plan 13] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 14] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 15] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 16] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 17] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 18] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 19] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 20] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 21] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 22] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 117.1, normal 101; 0.86 % too dark, 11.79 % burnt out): camera not used for decisions
+[plan 23] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 24] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 25] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 26] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 27] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 28] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 117.9, normal 104; 1.29 % too dark, 8.12 % burnt out): camera not used for decisions
+[plan 29] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 30] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 31] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 32] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 127.6, normal 106; 1.5 % too dark, 8.33 % burnt out): camera not used for decisions
+[plan 33] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 34] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 35] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 36] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 37] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 38] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 39] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 40] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 41] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 42] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 43] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 44] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 124.8, normal 105; 0.67 % too dark, 14.23 % burnt out): camera not used for decisions
+[plan 45] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 46] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 47] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 48] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 49] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 129.6, normal 106; 0.03 % too dark, 19.31 % burnt out): camera not used for decisions
+[plan 50] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 51] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 52] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 53] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 110.5, normal 105; 0.39 % too dark, 14.98 % burnt out): camera not used for decisions
+[plan 54] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 55] RUN    20 rpm / arm 1.5  action=flow_drop_oldest  - feed 16: its block should have reached the IR after 8.3 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 56] RUN    20 rpm / arm 1.5  - feed 16: its block should have reached the IR after 8.3 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 57] RUN    20 rpm / arm 1.5  action=feed  - feed 16: its block should have reached the IR after 8.3 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 58] RUN    20 rpm / arm 1.5  - feed 16: its block should have reached the IR after 8.3 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 59] RUN    20 rpm / arm 1.5  action=flow_drop_oldest  - feed 17: its block should have reached the IR after 8.3 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 60] RUN    20 rpm / arm 1.5  - feed 17: its block should have reached the IR after 8.3 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 61] RUN    20 rpm / arm 1.5  action=feed  - feed 17: its block should have reached the IR after 8.3 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 62] RUN    20 rpm / arm 1.5  - feed 17: its block should have reached the IR after 8.3 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 63] RUN    20 rpm / arm 1.5  action=flow_drop_oldest  - feed 18: its block should have reached the IR after 8.3 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 64] RUN    20 rpm / arm 1.5  - feed 18: its block should have reached the IR after 8.3 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 65] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: the last 3 feeds brought nothing
+[story] FEEDER EMPTY
+    I tried / saw:  feed 16 pushed during GRIP: nothing came (given up (optimizer))
+    I tried / saw:  feed for cycle 16: 12 V dip 114 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 17 pushed during GRIP: nothing came (given up (optimizer))
+    I tried / saw:  feed for cycle 16: 12 V dip 142 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 18 pushed during TRANSPORT: nothing came (given up (optimizer))
+    so:             3 feeds in a row brought no block to the IR (feed 16 during GRIP, feed 17 during GRIP, feed 18 during TRANSPORT)  ->  the feeder has no cubes left (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 66] IDLE   20 rpm / arm 1.5  - feeder empty: the last 3 feeds brought nothing
+[plan 67] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 16: 12 V dip 142 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 18 pushed during TRANSPORT: nothing came (given up (optimizer))
+    I tried / saw:  feed 19 pushed during TRANSPORT: nothing came (no arrival after 17 s of belt)
+    I tried / saw:  feed for cycle 16: 12 V dip 65 mV (the servo moved), feeder IR empty
+    I tried / saw:  cycle 16: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 68] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 69] RUN    20 rpm / arm 1.5  action=resume  - probe: try one feed after 60 s idle
+[plan 70] RUN    20 rpm / arm 1.5  - probe: try one feed after 60 s idle
+[plan 71] RUN    20 rpm / arm 1.5  action=flow_drop_oldest  - feed 21: its block should have reached the IR after 8.3 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 72] RUN    20 rpm / arm 1.5  - feed 21: its block should have reached the IR after 8.3 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 73] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.1 s, so the next one is there when the gripper is
+[plan 74] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.1 s, so the next one is there when the gripper is
+[plan 75] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.1 s, so the next one is there when the gripper is
+[plan 76] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.1 s, so the next one is there when the gripper is
+[plan 77] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.1 s, so the next one is there when the gripper is
+[plan 78] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.1 s, so the next one is there when the gripper is
+[plan 79] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.1 s, so the next one is there when the gripper is
+[plan 80] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.1 s, so the next one is there when the gripper is
+[plan 81] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.1 s, so the next one is there when the gripper is
+[plan 82] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.1 s, so the next one is there when the gripper is
+[plan 83] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 120.4, normal 106; 0.1 % too dark, 8.97 % burnt out): camera not used for decisions
+[plan 84] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 85] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 86] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 87] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 120.7, normal 107; 0.19 % too dark, 8.63 % burnt out): camera not used for decisions
+[plan 88] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 89] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 90] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 91] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 92] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 93] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 128.9, normal 109; 0.05 % too dark, 11.37 % burnt out): camera not used for decisions
+[plan 94] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 95] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 96] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 97] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 121.0, normal 111; 0.16 % too dark, 9.69 % burnt out): camera not used for decisions
+[plan 98] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 99] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 100] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 101] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 102] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 103] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 104] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 105] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 124.7, normal 112; 0.0 % too dark, 12.64 % burnt out): camera not used for decisions
+[plan 106] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 107] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 108] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 109] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 110] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 111] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 112] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 113] RUN    20 rpm / arm 1.5  action=feed  - light on the belt ok again: camera back in use
+[plan 114] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 115] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 116] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 17.7 s vs 18.7 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 117] RUN    22 rpm / arm 1.75  action=feed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 17.7 s vs 18.7 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 118] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 17.7 s vs 18.7 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 119] RUN    22 rpm / arm 1.75  action=flow_drop_oldest  - feed 38: its block should have reached the IR after 7.5 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 120] RUN    22 rpm / arm 1.75  - feed 38: its block should have reached the IR after 7.5 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 121] RUN    22 rpm / arm 1.75  action=flow_drop_oldest  - feed 39: its block should have reached the IR after 7.5 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 122] RUN    22 rpm / arm 1.75  - feed 39: its block should have reached the IR after 7.5 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 123] RUN    22 rpm / arm 1.75  action=flow_drop_oldest  - feed 40: its block should have reached the IR after 7.5 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 124] RUN    22 rpm / arm 1.75  - feed 40: its block should have reached the IR after 7.5 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 125] IDLE   22 rpm / arm 1.75  action=idle  - feeder empty: the last 3 feeds brought nothing
+[story] FEEDER EMPTY
+    I tried / saw:  cycle 32: OK (11.6 s)
+    I tried / saw:  feed 38 pushed during GRIP: nothing came (given up (optimizer))
+    I tried / saw:  feed 39 pushed during GRIP: nothing came (given up (optimizer))
+    I tried / saw:  feed for cycle 33: 12 V dip 66 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 40 pushed during TRANSPORT: nothing came (given up (optimizer))
+    so:             3 feeds in a row brought no block to the IR (feed 38 during GRIP, feed 39 during GRIP, feed 40 during TRANSPORT)  ->  the feeder has no cubes left (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 126] IDLE   22 rpm / arm 1.75  - feeder empty: the last 3 feeds brought nothing
+[plan 127] IDLE   22 rpm / arm 1.75  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 38 pushed during GRIP: nothing came (given up (optimizer))
+    I tried / saw:  feed 39 pushed during GRIP: nothing came (given up (optimizer))
+    I tried / saw:  feed for cycle 33: 12 V dip 66 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 40 pushed during TRANSPORT: nothing came (given up (optimizer))
+    I tried / saw:  cycle 33: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 128] IDLE   22 rpm / arm 1.75  - feeder empty: no cube came after FEED (fed again, still nothing)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         

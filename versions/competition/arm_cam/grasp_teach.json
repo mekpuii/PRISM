@@ -1,0 +1,35 @@
+{
+ "u": 563.2002868652344,
+ "v": 277.84938049316406,
+ "eq_px": 207.3386496578504,
+ "angle_img": 2.8965487567995183,
+ "long_px": 241.25238800048828,
+ "short_px": 178.20211029052734,
+ "lift_mm": 46.623019555197615,
+ "pitch_deg": -74.53124999999997,
+ "grip_pitch_deg": -80.24414062500004,
+ "roll_deg_per_tick": 0.0,
+ "delta_joints": {
+  "shoulder_pan": 1.0,
+  "shoulder_lift": 23.0,
+  "elbow_flex": 200.0,
+  "wrist_flex": -158.0
+ },
+ "grip_joints": {
+  "shoulder_pan": 2050,
+  "shoulder_lift": 1655,
+  "elbow_flex": 2381,
+  "wrist_flex": 3020,
+  "wrist_roll": 1185
+ },
+ "pre_joints": {
+  "shoulder_pan": 2049,
+  "shoulder_lift": 1632,
+  "elbow_flex": 2181,
+  "wrist_flex": 3178,
+  "wrist_roll": 1185
+ },
+ "cam_to_block_mm": 159.91929172258196,
+ "time": "2026-11-12 15:14:39",
+ "note": "u,v/eq_px/angle_img/pitch_deg = บล็อกในภาพ+มุมก้มที่จุดก่อนหยิบ, delta_joints = ข้อต่อที่ต้องเปลี่ยนจากจุดก่อนหยิบถึงท่าหนีบ (ทำซ้ำตามที่สอน), lift_mm = ความสูงที่ต่างกัน"
+}

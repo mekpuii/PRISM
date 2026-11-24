@@ -1,0 +1,24 @@
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261110_161806.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[observe] connected to broker: Success
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] OFF    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - autoen running
+[plan 5] RUN    20 rpm / arm 1.5  - autoen running
+[plan 6] RUN    20 rpm / arm 1.5  - autoen running
+[plan 7] IDLE   20 rpm / arm 1.5  action=idle  - 2 transport timeouts in a row (camera off): feeder empty, or check the belt
+[plan 8] IDLE   20 rpm / arm 1.5  - 2 transport timeouts in a row (camera off): feeder empty, or check the belt
+[plan 9] RUN    20 rpm / arm 1.5  action=resume  - feeder IR: cubes loaded
+[plan 10] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 11] MANUAL 20 rpm / arm 1.5  - autoen paused by someone else: hands off
+[plan 12] RUN    20 rpm / arm 1.5  - autoen running
+[plan 13] IDLE   20 rpm / arm 1.5  action=idle  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 14] IDLE   20 rpm / arm 1.5  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 15] RECOVER 20 rpm / arm 1.5  action=pause  - cycle 4 GRIP_FAILED: auto response 'retry' (try 1/2, learned success 50%)
+[actuate] idle FAILED: autoen ended instead of pausing: error RuntimeError: 4 failed cycles in a row - stopping
+[plan 16] RECOVER 20 rpm / arm 1.5  - cycle 4 GRIP_FAILED: auto response 'retry' (try 1/2, learned success 50%)
+[actuate] pause FAILED: autoen is error: nothing to pause
+[plan 17] OFF    20 rpm / arm 1.5  - autoen error
+[plan 18] OFF    20 rpm / arm 1.5  - autoen not reachable
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

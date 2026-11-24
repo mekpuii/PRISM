@@ -1,0 +1,205 @@
+12:49:07.384 ## cycle 0 phase PREPARE
+12:49:07.399 TX X,CPR,11880
+12:49:07.458 TX X,TEMPMAX,60
+12:49:07.484 TX X,OFFSET,0
+12:49:07.494 TX X,FEEDCFG,180,0,300,300
+12:49:07.506 TX X,PID,4.5,13.5,0
+12:49:07.516 TX X,WDT,1500
+12:49:07.526 TX X,FEEDPRE,120,0,0
+12:49:07.537 TX X,ZERO
+12:49:07.549 TX X,VER
+12:49:07.560 TX H,6
+12:49:07.562 RX X,VER,Nov 11 2026 22:39:05,enc=1,ina=1,temp=1,hz=10000,home=180,ready=120/0,ramp=0,on=1111
+12:49:07.571 TX P,6,2492,1200,8
+12:49:07.581 TX P,1,2069,540,8
+12:49:07.591 TX P,2,1478,540,8
+12:49:07.604 TX P,3,2172,540,8
+12:49:07.614 TX P,4,3190,540,8
+12:49:07.624 TX P,5,1230,540,8
+12:49:08.626 TX P,2,1478,540,8
+12:49:08.638 TX P,3,2172,540,8
+12:49:08.648 TX P,4,3190,540,8
+12:49:09.637 TX P,3,2172,540,8
+12:49:09.648 TX P,4,3190,540,8
+12:49:10.654 TX P,4,3190,540,8
+12:49:11.687 TX P,4,3190,540,8
+12:49:11.979 TX H,1
+12:49:11.989 TX H,2
+12:49:11.999 TX H,3
+12:49:12.009 TX H,4
+12:49:12.019 TX H,5
+12:49:12.021 ## cycle 1 phase STANDBY
+12:49:12.034 TX H,6
+12:49:12.044 TX P,6,2492,1200,8
+12:49:12.054 TX P,1,2103,540,8
+12:49:12.065 TX P,2,1662,540,8
+12:49:12.075 TX P,3,2357,540,8
+12:49:12.090 TX P,4,3009,540,8
+12:49:12.100 TX P,5,1239,540,8
+12:49:12.861 TX H,1
+12:49:12.871 TX H,2
+12:49:12.881 TX H,3
+12:49:12.892 TX H,4
+12:49:12.902 TX H,5
+12:49:12.902 ## cycle 1 phase TRANSPORT
+12:49:16.012 TX X,FEED
+12:49:16.659 RX X,E,FEED_DONE,40357
+12:49:17.343 TX X,CONV,20.00
+12:49:28.094 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:28.098 RX X,E,ARRIVED,51683,39542
+12:49:28.146 ## flow feed 1 (TRANSPORT): delivered arrived, belt 10.8 s
+12:49:28.180 ## cycle 1 phase GRIP
+12:49:28.180 TX H,6
+12:49:28.190 TX P,6,2323,1800,70
+12:49:28.410 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:28.557 TX X,FEED
+12:49:28.820 ## RX GAP 0.41s - the Mega sent nothing (its loop was blocked?)
+12:49:28.821 RX X,ERR,unknown_cmd
+12:49:28.922 TX X,FEED
+12:49:29.132 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:29.206 TX P,6,2323,1800,70
+12:49:29.449 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:29.861 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:29.864 RX X,E,FEED_DONE,53433
+12:49:29.891 TX X,FEED
+12:49:30.172 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:30.219 TX P,6,2012,400,8
+12:49:30.491 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:31.004 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:31.006 RX X,E,FEED_DONE,54564
+12:49:31.320 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:31.550 ## flow feed 2: nudge the belt 1 s, the camera looks again
+12:49:31.635 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:31.946 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:32.290 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:32.610 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:33.132 ## flow feed 3: nudge the belt 1 s, the camera looks again
+12:49:33.183 ## flow feed 2 (GRIP): FAILED nothing came out (optimizer: servo / camera), belt 0.0 s
+12:49:33.258 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:33.880 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:34.226 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:34.537 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:34.608 ## flow feed 3 (GRIP): FAILED nothing came out (optimizer: servo / camera), belt 0.0 s
+12:49:35.060 TX X,FEED
+12:49:35.086 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:35.292 RX X,ERR,unknown_cmd
+12:49:35.393 TX X,FEED
+12:49:35.605 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:36.151 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:36.976 RX X,E,FEED_DONE,60474
+12:49:37.019 TX X,FEED
+12:49:37.835 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:38.019 ## flow feed 5 not sent: no reply to X,FEED
+12:49:38.180 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:38.502 ## RX GAP 0.32s - the Mega sent nothing (its loop was blocked?)
+12:49:39.038 ## flow feed 4: nudge the belt 1 s, the camera looks again
+12:49:39.148 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:39.460 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:39.773 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:40.115 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:40.434 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:40.566 ## flow feed 4 (GRIP): FAILED nothing came out (optimizer: servo / camera), belt 0.0 s
+12:49:40.742 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:41.089 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+12:49:41.399 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+12:49:42.087 TX P,6,2480,400,8
+12:49:42.088 ## cycle 1 phase RECOVER
+12:49:42.099 TX H,6
+12:49:42.110 TX P,6,2492,1200,8
+12:49:42.130 TX P,1,2069,540,8
+12:49:42.151 TX P,2,1478,540,8
+12:49:42.171 TX P,3,2172,540,8
+12:49:42.191 TX P,4,3190,540,8
+12:49:42.202 TX P,5,1230,540,8
+12:49:43.037 TX H,1
+12:49:43.048 TX H,2
+12:49:43.058 TX H,3
+12:49:43.068 TX H,4
+12:49:43.089 TX H,5
+12:49:43.099 TX X,STOP
+12:49:45.302 ## cycle 2 phase STANDBY
+12:49:45.302 TX H,6
+12:49:45.313 TX P,6,2492,1200,8
+12:49:45.323 TX P,1,2103,540,8
+12:49:45.333 TX P,2,1662,540,8
+12:49:45.343 TX P,3,2357,540,8
+12:49:45.353 TX P,4,3009,540,8
+12:49:45.363 TX P,5,1239,540,8
+12:49:46.062 TX H,1
+12:49:46.072 TX H,2
+12:49:46.083 TX H,3
+12:49:46.093 TX H,4
+12:49:46.103 TX H,5
+12:49:46.104 ## cycle 2 phase TRANSPORT
+12:49:49.613 TX X,FEED
+12:49:50.225 RX X,E,FEED_DONE,73590
+12:49:52.101 ## flow feed 6: nudge the belt 1 s, the camera looks again
+12:49:52.116 TX X,CONV,20.00
+12:49:53.162 TX X,BRAKE
+12:49:53.673 ## flow feed 6 (TRANSPORT): FAILED nothing came out (optimizer: servo / camera), belt 1.0 s
+12:49:54.134 TX X,FEED
+12:49:54.745 RX X,E,FEED_DONE,78065
+12:49:56.615 ## flow feed 7: nudge the belt 1 s, the camera looks again
+12:49:56.629 TX X,CONV,20.00
+12:49:57.666 TX X,BRAKE
+12:49:58.173 ## flow feed 7 (TRANSPORT): FAILED nothing came out (optimizer: servo / camera), belt 1.0 s
+12:49:58.634 TX X,FEED
+12:49:59.246 RX X,E,FEED_DONE,82521
+12:50:01.115 ## flow feed 8: nudge the belt 1 s, the camera looks again
+12:50:01.173 TX X,CONV,20.00
+12:50:02.146 TX X,BRAKE
+12:50:02.685 ## flow feed 8 (TRANSPORT): FAILED nothing came out (optimizer: servo / camera), belt 1.0 s
+12:50:02.761 TX X,STOP
+12:50:03.011 ## cycle 2 phase TASK_HOLD_POSE
+12:50:03.012 ## task 1 hold_pose {"seconds": 2.0, "pose": "right"}
+12:50:03.100 TX P,1,2069,540,8
+12:50:03.111 TX P,2,1478,540,8
+12:50:03.123 TX P,3,2172,540,8
+12:50:03.140 TX P,4,3190,540,8
+12:50:03.155 TX P,5,1230,540,8
+12:50:03.974 TX H,1
+12:50:03.986 TX H,2
+12:50:03.997 TX H,3
+12:50:04.007 TX H,4
+12:50:04.017 TX H,5
+12:50:04.591 ## DRIFT J1 -76t in phase TASK_HOLD_POSE
+12:50:04.592 TX P,1,2069,540,8
+12:50:05.628 TX P,1,2069,540,8
+12:50:06.042 ## cycle 2 phase IDLE
+12:50:06.044 ## task 1 done {"belt_rpm": {"n": 19, "mean": 0.0, "std": 0.0}, "belt_mA": {"n": 19, "mean": 3.421, "std": 0.494}, "belt_W": {"n": 19, "mean": 0.042, "std": 0.006}, "arm_mA": {"n": 9, "mean": 23.833, "std": 20.325}, "arm_W": {"n": 9, "mean": 0.288, "std": 0.246}}
+12:50:06.145 ## cycle 2 phase TASK_SHAKE
+12:50:06.145 ## task 2 shake {"seconds": 1.0}
+12:50:06.145 TX P,5,1380,1080,8
+12:50:06.746 TX H,5
+12:50:06.756 TX P,5,1080,1080,8
+12:50:07.759 TX P,5,1080,1080,8
+12:50:07.833 TX H,5
+12:50:07.846 TX P,5,1380,1080,8
+12:50:08.847 TX P,5,1380,1080,8
+12:50:08.972 TX H,5
+12:50:09.003 TX P,5,1080,1080,8
+12:50:10.019 TX P,5,1080,1080,8
+12:50:10.061 TX H,5
+12:50:10.071 TX P,5,1380,1080,8
+12:50:11.086 TX P,5,1380,1080,8
+12:50:11.208 TX H,5
+12:50:11.218 TX P,5,1080,1080,8
+12:50:12.256 TX H,5
+12:50:12.266 TX P,5,1230,1080,8
+12:50:12.986 TX H,5
+12:50:14.005 ## cycle 2 phase IDLE
+12:50:14.007 ## task 2 done {"belt_rpm": {"n": 11, "mean": 0.0, "std": 0.0}, "belt_mA": {"n": 11, "mean": 3.364, "std": 0.481}, "belt_W": {"n": 11, "mean": 0.041, "std": 0.006}, "arm_mA": {"n": 4, "mean": 8.125, "std": 5.39}, "arm_W": {"n": 4, "mean": 0.098, "std": 0.065}}
+12:50:14.312 ## cycle 2 phase TASK_BELT_RUN
+12:50:14.312 ## task 3 belt_run {"seconds": 1.0, "rpm": 0.5}
+12:50:14.312 TX X,CONV,0.50
+12:50:15.338 TX X,BRAKE
+12:50:15.441 ## cycle 2 phase IDLE
+12:50:15.448 ## task 3 done {"belt_rpm": {"n": 11, "mean": 0.0, "std": 0.0}, "belt_mA": {"n": 11, "mean": 0.818, "std": 1.527}, "belt_W": {"n": 11, "mean": 0.01, "std": 0.019}, "arm_mA": {"n": 4, "mean": 14.625, "std": 5.39}, "arm_W": {"n": 4, "mean": 0.177, "std": 0.065}}
+12:50:24.537 TX X,STOP
+12:50:24.575 TX H,1
+12:50:24.585 TX H,2
+12:50:24.597 TX H,3
+12:50:24.612 TX H,4
+12:50:24.625 TX H,5
+12:50:25.668 TX X,STOP
+12:50:27.684 ## end, unparsable RX lines: 0

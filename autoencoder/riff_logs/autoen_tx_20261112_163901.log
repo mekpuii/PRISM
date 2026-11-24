@@ -1,0 +1,89 @@
+16:39:20.717 ## cycle 0 phase PREPARE
+16:39:20.743 TX X,CPR,11880
+16:39:20.753 TX X,TEMPMAX,60
+16:39:20.764 TX X,OFFSET,0
+16:39:20.775 TX X,FEEDCFG,170,10,800,300
+16:39:20.787 TX X,PID,4.5,13.5,0
+16:39:20.798 TX X,WDT,1500
+16:39:20.808 TX X,FEEDPRE,170,1000,0
+16:39:20.915 TX X,ZERO
+16:39:20.926 TX X,VER
+16:39:20.937 TX H,6
+16:39:20.940 RX X,VER,Nov 11 2026 22:39:05,enc=1,ina=1,temp=1,hz=10000,home=170,ready=170/1000,ramp=0,on=1111
+16:39:20.949 TX P,6,2492,1200,8
+16:39:20.981 TX P,1,2069,360,8
+16:39:20.998 TX P,2,1478,360,8
+16:39:21.011 TX P,3,2172,360,8
+16:39:21.093 TX P,4,3190,360,8
+16:39:21.103 TX P,5,1230,360,8
+16:39:22.146 TX P,1,2069,360,8
+16:39:22.157 TX P,5,1230,360,8
+16:39:23.124 TX P,1,2069,360,8
+16:39:24.133 TX P,1,2069,360,8
+16:39:24.725 TX H,1
+16:39:24.735 TX H,2
+16:39:24.745 TX H,3
+16:39:24.756 TX H,4
+16:39:24.766 TX H,5
+16:39:24.767 ## cycle 1 phase STANDBY
+16:39:24.776 TX H,6
+16:39:24.837 TX P,6,2492,1200,8
+16:39:24.851 TX P,1,2103,540,8
+16:39:24.861 TX P,2,1662,540,8
+16:39:24.882 TX P,3,2357,540,8
+16:39:24.903 TX P,4,3009,540,8
+16:39:24.919 TX P,5,1239,540,8
+16:39:25.651 TX H,1
+16:39:25.661 TX H,2
+16:39:25.671 TX H,3
+16:39:25.682 TX H,4
+16:39:25.693 TX H,5
+16:39:25.693 ## cycle 1 phase TRANSPORT
+16:39:29.207 TX X,FEED
+16:39:31.334 RX X,E,FEED_DONE,31043
+16:39:33.152 ## flow feed 1: nudge the belt 1 s, the camera looks again
+16:39:33.173 TX X,CONV,20.00
+16:39:34.204 TX X,BRAKE
+16:39:34.676 ## flow feed 1 (TRANSPORT): FAILED nothing came out (optimizer: servo / camera), belt 1.0 s
+16:39:35.185 TX X,FEED
+16:39:37.309 RX X,E,FEED_DONE,36960
+16:39:39.258 ## flow feed 2: nudge the belt 1 s, the camera looks again
+16:39:39.283 TX X,CONV,20.00
+16:39:40.293 TX X,BRAKE
+16:39:40.761 ## flow feed 2 (TRANSPORT): FAILED nothing came out (optimizer: servo / camera), belt 1.0 s
+16:39:41.213 TX X,FEED
+16:39:43.384 RX X,E,FEED_DONE,42975
+16:39:45.265 ## flow feed 3: nudge the belt 1 s, the camera looks again
+16:39:45.265 TX X,CONV,20.00
+16:39:46.280 TX X,BRAKE
+16:39:46.747 ## flow feed 3 (TRANSPORT): FAILED nothing came out (optimizer: servo / camera), belt 1.0 s
+16:39:46.764 TX X,STOP
+16:39:46.847 TX X,STOP
+16:39:47.258 ## cycle 2 phase TASK_HOLD_POSE
+16:39:47.258 ## task 1 hold_pose {"seconds": 2.0, "pose": "right"}
+16:39:47.260 TX P,1,2069,540,8
+16:39:47.270 TX P,2,1478,540,8
+16:39:47.280 TX P,3,2172,540,8
+16:39:47.290 TX P,4,3190,540,8
+16:39:47.300 TX P,5,1230,540,8
+16:39:48.162 TX H,1
+16:39:48.173 TX H,2
+16:39:48.183 TX H,3
+16:39:48.193 TX H,4
+16:39:48.204 TX H,5
+16:39:50.230 ## cycle 2 phase IDLE
+16:39:50.232 ## task 1 done {"belt_rpm": {"n": 18, "mean": 0.0, "std": 0.0}, "belt_mA": {"n": 18, "mean": 3.611, "std": 0.487}, "belt_W": {"n": 18, "mean": 0.044, "std": 0.006}, "arm_mA": {"n": 9, "mean": 10.833, "std": 9.192}, "arm_W": {"n": 9, "mean": 0.131, "std": 0.111}}
+16:39:50.333 ## cycle 2 phase TASK_BELT_RUN
+16:39:50.334 ## task 2 belt_run {"seconds": 1.0, "rpm": 0.5}
+16:39:50.334 TX X,CONV,0.50
+16:39:51.364 TX X,BRAKE
+16:39:51.376 ## cycle 2 phase IDLE
+16:39:51.379 ## task 2 done {"belt_rpm": {"n": 11, "mean": 0.0, "std": 0.0}, "belt_mA": {"n": 11, "mean": 1.091, "std": 0.996}, "belt_W": {"n": 11, "mean": 0.013, "std": 0.012}, "arm_mA": {"n": 4, "mean": 4.875, "std": 5.39}, "arm_W": {"n": 4, "mean": 0.059, "std": 0.065}}
+16:40:11.683 TX X,STOP
+16:40:11.703 TX H,1
+16:40:11.721 TX H,2
+16:40:11.733 TX H,3
+16:40:11.749 TX H,4
+16:40:11.765 TX H,5
+16:40:12.774 TX X,STOP
+16:40:14.792 ## end, unparsable RX lines: 0

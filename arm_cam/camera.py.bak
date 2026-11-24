@@ -1,0 +1,56 @@
+"""camera.py — เปิดกล้อง OV9281 และอ่านภาพ gray (ใช้ร่วมกันทุกสคริปต์)"""
+import os
+import time
+import cv2
+import numpy as np
+import config as C
+
+# ---- โหลดค่า intrinsic ถ้ามี (ใช้แก้ distortion ของเลนส์) ----
+_K = _D = None
+if os.path.exists(C.INTRINSICS_FILE):
+    _d = np.load(C.INTRINSICS_FILE)
+    _K, _D = _d["K"], _d["D"]
+
+
+CAM_MEAN_WARN = 100                        # สว่างเฉลี่ยเกินนี้ -> เตือน
+
+
+def open_camera():
+    """เปิดกล้องด้วย MJPG, ล็อก exposure, ทิ้งเฟรมแรกๆ ที่ยังไม่นิ่ง"""
+    cap = cv2.VideoCapture(C.CAM_INDEX, C.CAM_BACKEND)
+    if not cap.isOpened():
+        raise RuntimeError(f"เปิดกล้อง index {C.CAM_INDEX} ไม่ได้ — ตรวจ CAM_INDEX ใน config.py")
+
+    # MJPG ประหยัด bandwidth USB 2.0 ทำให้ได้ 720p@60 ได้จริง
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, C.CAM_W)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, C.CAM_H)
+    cap.set(cv2.CAP_PROP_FPS, C.CAM_FPS)
+    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)        # ลดคิวภาพเก่า (ไม่งั้นได้ภาพหน่วง)
+
+    if C.CAM_MANUAL_EXPOSURE:                   # บาง driver ไม่รองรับ จะถูกเมินเฉยๆ (ดูหมายเหตุใน config.py)
+        cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, C.CAM_AUTO_EXPOSURE_MANUAL_VAL)
+        cap.set(cv2.CAP_PROP_EXPOSURE, C.CAM_EXPOSURE_VAL)
+
+    for _ in range(15):                         # warm-up
+        cap.read()
+        time.sleep(0.01)
+    ok, fr = cap.read()                         # เช็กความสว่าง: ถ้าสว่างกว่าที่ตั้งไว้มาก = driver ไม่ยอมล็อก exposure -> Otsu/ตรวจจับจะเพี้ยน
+    if ok:
+        mean = float(fr.mean())
+        if mean > CAM_MEAN_WARN:
+            print(f"[camera] เตือน: ภาพสว่างเฉลี่ย {mean:.0f}/255 (ปกติตอนตั้ง exposure {C.CAM_EXPOSURE_VAL} ~ 20-60) "
+                  "— exposure ไม่ถูกล็อก/แสงเปลี่ยน; ปิดโปรแกรมที่ใช้กล้องอยู่ แล้วเปิดใหม่ หรือลด CAM_EXPOSURE_VAL")
+    return cap
+
+
+def grab(cap):
+    """อ่าน 1 เฟรม -> ภาพ gray (undistort แล้วถ้ามี intrinsics) หรือ None ถ้าอ่านไม่ได้"""
+    cap.grab()                                  # ทิ้งเฟรมที่ค้างในบัฟเฟอร์ 1 เฟรมก่อน เพื่อให้ได้ภาพล่าสุด
+    ok, frame = cap.read()
+    if not ok:
+        return None
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) if frame.ndim == 3 else frame
+    if _K is not None:
+        gray = cv2.undistort(gray, _K, _D)
+    return gray

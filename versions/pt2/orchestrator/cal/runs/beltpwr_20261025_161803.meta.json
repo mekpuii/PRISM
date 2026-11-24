@@ -1,0 +1,38 @@
+{
+ "run_id": "beltpwr_20261025_161803",
+ "kind": "belt_power",
+ "start": "2026-10-25T16:18:03",
+ "end": "2026-10-25T16:18:17",
+ "status": "interrupted",
+ "rpm_units": "output_rpm_cpr11880",
+ "operator_note": "belt only, arm broken",
+ "cube_set": "none (empty belt)",
+ "power_formula": "W = |belt INA260 mA| x belt INA260 bus mV / 1e6 (belt motor supply), as autoen belt_run",
+ "plan": {
+  "path": "/home/mekkhram/Desktop/PRISM/orchestrator/cal/plans/belt_power_v1.json",
+  "sha256": "a6cf0b60b829a8a7fc32766268afb7ffd61603118c2d85cfa3cd11ad5bc04f7d",
+  "seconds": 70.0,
+  "settle_s": 10.0
+ },
+ "script_sha256": "7759f8c00aad18bfae58761b0ead4db33ab948d172c047df407b72833a019444",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "2331163618d6ef6c9d2fbe05b403008786a88c731c7b45608871148d7bde780c",
+  "used_for": "Link + belt defaults"
+ },
+ "belt_settings_sent": [
+  "CPR,11880",
+  "TEMPMAX,60",
+  "PID,4.5,13.5,0",
+  "WDT,500"
+ ],
+ "arm": "not used (autoen not running; servos not commanded)",
+ "steps": [],
+ "mega_boot_lines": [
+  "S,4,-1,-1",
+  "S,5,-1,-1",
+  "S,6,-1,-1",
+  "R,0",
+  "BOOT_DONE"
+ ]
+}

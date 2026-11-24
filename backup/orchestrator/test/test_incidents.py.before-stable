@@ -1,0 +1,137 @@
+# test_incidents.py - incidents answered by the cell itself (incidents.py + optimize.py RECOVER):
+# the IR saw the cube but the grip missed -> retry, then gentler, then ALERT; it learns which answer works;
+# never on its own after an arm timeout or over-temperature; a rate limit; a new incident gets one try.
+# No robot, no broker, no autoen.
+# Run (orch-env, from orchestrator/):  python3 test/test_incidents.py     Expected last line: "all incident tests passed"
+import os
+import sys
+import tempfile
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import incidents as I                                              # noqa: E402
+import optimize as O                                               # noqa: E402
+from test_opt import cyc, pred, view                               # noqa: E402
+from test_smart import settings, tele                              # noqa: E402
+
+
+def tick(opt, t, secs=0.5, cycles=(), **v):
+    """Step for `secs`; the cycles arrive on the first tick. autoen follows the plan: it pauses when asked
+    (status 'paused'), runs again on 'resume', and takes the settings (as actuate.py makes it)."""
+    plans = []
+    for i in range(max(1, int(secs / 0.25))):
+        t += 0.25
+        paused = opt.mode in ("RECOVER", "ALERT", "IDLE")
+        p = opt.step(tele(t), pred(t), view(t, phase="TRANSPORT", config=settings(opt), cycles=cycles if i == 0 else (),
+                                           paused=paused, status="paused" if paused else "running", **v))
+        plans.append(p)
+    return t, plans
+
+
+def new(responder=True, path=None):
+    return O.Optimize(responder=I.Responder(path=path) if responder else None)
+
+
+def main():
+    tmp = tempfile.mkdtemp(prefix="prism_incidents_")
+
+    # 1. The IR saw the cube but the grip missed: RECOVER (not ALERT), paused 2 s, running again, next cycle OK.
+    opt = new()
+    t, _ = tick(opt, 0.0, 3)
+    n0 = opt.target
+    t, plans = tick(opt, t, 0.5, cycles=[cyc(1, "GRIP_MISS")])
+    assert opt.mode == "RECOVER" and any(p.action == "pause" for p in plans) and "retry" in opt.reason, opt.reason
+    assert plans[-1].settings()["max_fails"] == I.MAX_FAILS_AUTOEN, "autoen would end the run before the episode ends"
+    t, plans = tick(opt, t, 3)
+    assert opt.mode == "RUN" and any(p.action == "resume" for p in plans) and opt.target == n0, (opt.mode, opt.reason)
+    t, _ = tick(opt, t, 0.5, cycles=[cyc(2)])
+    assert opt.responder.stats == {"grip|retry": [1, 1]}, opt.responder.stats
+    print("grip miss: IR saw it, the grip missed -> retry by itself -> OK, learned grip|retry 1/1   OK")
+
+    # 2. Two misses: retry, then gentle = the slowest safe setting for GENTLE_CYCLES cycles, then normal again.
+    opt = new()
+    t, _ = tick(opt, 0.0, 3)
+    fast = opt.target
+    t, _ = tick(opt, t, 0.5, cycles=[cyc(1, "GRIP_MISS")])
+    t, _ = tick(opt, t, 3)
+    t, _ = tick(opt, t, 0.5, cycles=[cyc(2, "GRIP_MISS")])
+    assert opt.mode == "RECOVER" and "gentle" in opt.reason, opt.reason
+    t, _ = tick(opt, t, 3)
+    slow = opt.target
+    assert opt.mode == "RUN" and slow != fast and slow[1] <= fast[1] and slow[0] <= fast[0], (slow, fast)
+    for n in range(3, 3 + I.GENTLE_CYCLES + 1):
+        t, _ = tick(opt, t, 0.5, cycles=[cyc(n)])
+    assert opt._gentle_left == 0 and opt.target != slow, (opt.target, slow)   # normal choice again (energy first)
+    assert opt.responder.stats == {"grip|retry": [1, 0], "grip|gentle": [1, 1]}, opt.responder.stats
+    print(f"gentle:    2nd miss -> {slow[0]:g} rpm / arm {slow[1]:g} for {I.GENTLE_CYCLES} cycles -> OK -> back to "
+          f"the normal choice {opt.target[0]:g}/{opt.target[1]:g}; learned retry 0/1, gentle 1/1   OK")
+
+    # 3. Nothing helps: retry, gentle, still failing -> ALERT, waits for a person (autoen did not end the run).
+    opt = new()
+    t, _ = tick(opt, 0.0, 3)
+    for n in (1, 2, 3):
+        t, _ = tick(opt, t, 0.5, cycles=[cyc(n, "GRIP_MISS")])
+        t, _ = tick(opt, t, 3)
+    assert opt.mode == "ALERT" and "still failing" in opt.reason, opt.reason
+    print(f"give up:   3 misses -> {opt.reason}   OK")
+
+    # 4. It learns: gentle worked 3 of 3, retry 0 of 3 -> gentle first next time.
+    r = I.Responder(path=os.path.join(tmp, "state.json"))
+    r.stats = {"grip|retry": [3, 0], "grip|gentle": [3, 3]}
+    r._save()
+    opt = new(path=os.path.join(tmp, "state.json"))
+    t, _ = tick(opt, 0.0, 3)
+    t, _ = tick(opt, t, 0.5, cycles=[cyc(1, "GRIP_MISS")])
+    assert opt.mode == "RECOVER" and "'gentle'" in opt.reason and "80%" in opt.reason, opt.reason
+    print("learning:  saved: retry 0/3, gentle 3/3 -> after a restart it tries gentle first (80 %)   OK")
+
+    # 5. Never on its own: the arm did not reach Standby (something in the way?), belt over-temperature.
+    for code in ("TIMEOUT_STANDBY", "FAULT_2"):
+        opt = new()
+        t, _ = tick(opt, 0.0, 3)
+        t, _ = tick(opt, t, 0.5, cycles=[cyc(1, code)])
+        assert opt.mode == "ALERT" and "never answered automatically" in opt.reason, opt.reason
+    opt = new()
+    t, _ = tick(opt, 0.0, 3)
+    t, _ = tick(opt, t, 0.5, cycles=[{**cyc(1, "GRIP_MISS"), "notes": "RECOVERY FAILED: arm"}])
+    assert opt.mode == "ALERT", opt.reason
+    print("safety:    arm timeout / belt over-temperature / failed recovery -> ALERT at once, no try   OK")
+
+    # 6. Rate limit: MAX_AUTO answers in 30 min, then ALERT. A belt watchdog fault is retried.
+    opt = new()
+    t, _ = tick(opt, 0.0, 3)
+    n = 0
+    for _ in range(I.MAX_AUTO):
+        n += 1
+        t, _ = tick(opt, t, 0.5, cycles=[cyc(n, "FAULT_1")])
+        assert opt.mode == "RECOVER", opt.reason
+        t, _ = tick(opt, t, 3)
+        n += 1
+        t, _ = tick(opt, t, 0.5, cycles=[cyc(n)])
+    t, _ = tick(opt, t, 0.5, cycles=[cyc(n + 1, "FAULT_1")])
+    assert opt.mode == "ALERT" and "automatic responses" in opt.reason, opt.reason
+    print(f"limit:     {I.MAX_AUTO} belt faults retried fine, the {I.MAX_AUTO + 1}th in 30 min -> ALERT   OK")
+
+    # 7. A new incident it never saw: one plain retry (remembered), the same again -> ALERT.
+    opt = new()
+    t, _ = tick(opt, 0.0, 3)
+    t, _ = tick(opt, t, 0.5, cycles=[cyc(1, "SerialException")])
+    assert opt.mode == "RECOVER" and "new incident" in opt.reason, opt.reason
+    t, _ = tick(opt, t, 3)
+    t, _ = tick(opt, t, 0.5, cycles=[cyc(2, "SerialException")])
+    assert opt.mode == "ALERT" and opt.responder.stats == {"new:SerialException|retry": [1, 0]}, opt.responder.stats
+    print("new:       an unknown incident -> one retry, remembered; again -> ALERT   OK")
+
+    # 8. Without the responder (--no-auto-recover): every abnormal cycle -> ALERT, as before.
+    opt = new(responder=False)
+    t, _ = tick(opt, 0.0, 3)
+    t, plans = tick(opt, t, 0.5, cycles=[cyc(1, "GRIP_MISS")])
+    assert opt.mode == "ALERT" and plans[-1].max_fails is None, opt.reason
+    print("off:       --no-auto-recover -> ALERT on every incident, autoen's max_fails untouched   OK")
+
+    print("\nall incident tests passed")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,359 @@
+group,name,value,comment in the code
+autoen constants,DEVICES,"[""J1"", ""J2"", ""J3"", ""J4"", ""J5"", ""J6"", ""Belt"", ""Arm""]","Arm = derived: sum of the six servo currents, lowest servo voltage (no INA on the arm supply)"
+autoen constants,METRICS,"[""temp"", ""current"", ""velocity"", ""position"", ""voltage""]",
+autoen constants,UNITS,"{""voltage"": ""V"", ""temp"": ""C"", ""current"": ""mA"", ""velocity"": ""deg/s (belt: rpm)"", ""position"": ""deg (belt: rev)""}",
+autoen constants,STEPS_PER_REV,4096.0,STS3215 position steps per revolution
+autoen constants,MA_PER_COUNT,6.5,STS3215 current register unit
+autoen constants,MIN_WRITE_GAP_S,0.01,the Mega needs >= 10 ms between two lines
+autoen constants,KEEPALIVE_S,0.2,"watchdogs: arm 350 ms, belt 500 ms -> heartbeat every 0.2 s"
+autoen constants,POSE_TOL_TICKS,40,"a joint counts as ""arrived"" inside this window"
+autoen constants,GRIP_TOL_TICKS,25,same idea for the gripper
+autoen constants,BASE_SPEED,360,raw ticks/s at arm-speed 1.0
+autoen constants,GRIPPER_SPEED,1200,
+autoen constants,MAX_VALID_MA,6000.0,STS3215 stalls at ~3 A; anything above is a corrupted reading
+autoen constants,STALE_S,3.0,"a reading older than this is shown as ""no data"""
+autoen constants,TEMP_JUMP_C,6.0,hold back temperature jumps larger than this until confirmed
+autoen constants,CURRENT_JUMP_MA,400.0,
+autoen constants,CURRENT_CONFIRM_MA,150.0,
+autoen constants,STS_MAX_TICKS_S,3200,STS3215 hardware maximum (ticks/s)
+autoen constants,BELT_FIELDS,17,"values after ""X,T"" (older firmware)"
+autoen constants,BELT_FIELDS_FEED_IR,18,... + the feeder IR on D36 (new firmware)
+autoen constants,MAG_STALE_S,2.0,"the other D36 firmware repeats ""M,<0|1>"" every 0.5 s; older = no signal"
+autoen constants,TELEMETRY_TIMEOUT_S,1.5,"a servo reading older than this is not ""fresh"" (arm/telemetry is not published)"
+autoen constants,DEFAULT_POSES,"{""up"": {""1"": 2103, ""2"": 1662, ""3"": 2357, ""4"": 3009, ""5"": 1239, ""6"": 2844}, ""right"": {""1"": 2069, ""2"": 1478, ""3"": 2172, ""4"": 3190, ""5"": 1230, ""6"": 2105}, ""down"": {""1"": 3079, ""2"": 1932, ""3"": 1847, ""4"": 3116, ""5"": 2081, ""6"": 2111}, ""left"": {""1"": 1039, ""2"": 1774, ""3"": 2071, ""4"": 3196, ""5"": 303, ""6"": 2108}}",
+autoen constants,RX_GAP_NOTE_S,0.3,the Mega streams telemetry all the time: silence longer than this = its loop() was blocked
+autoen constants,GRIP_POS_STILL_S,0.3,--grip-pos: J6 not moving this long short of grip_pos = it is on a wider block
+autoen constants,GRIP_POS_SHORT_SQUEEZE,10,"... then hold this many ticks past where it stopped (light grip, not a full-torque push)"
+autoen constants,GRIP_POS_NOT_STARTED,30,"... unless it got less than this far toward grip_pos: the move never began, resend it"
+autoen constants,CARRY_SETTLE_S,0.35,J6 samples this soon after a carry starts are ignored by the slip / hold-current check
+autoen constants,PAGE,"<!doctype html><html lang=""en""><head><meta charset=""utf-8""><meta name=""viewport"" content=""width=device-width,initial-scale=1"">
+<title>autoen_node</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#14181f;--mut:#5d6675;--line:#dfe3ea;--acc:#0b6bcb;--bad:#c42b2b}
+@media (prefers-color-scheme:dark){:root{--bg:#10141a;--card:#181e27;--ink:#e8ecf2;--mut:#98a2b3;--line:#2a3340;--acc:#5aa9ff;--bad:#ff6b6b}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,Segoe UI,sans-serif}
+main{max-width:980px;margin:0 auto;padding:16px}h1{font-size:20px;margin:0 0 10px}h2{font-size:15px;margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;overflow-x:auto}
+.mut{color:var(--mut)}table{border-collapse:collapse;width:100%}th,td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}th{font-size:12px;color:var(--mut)}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0}.bar>i{display:block;height:100%;background:var(--acc)}
+button{font:inherit;font-weight:600;border:0;border-radius:8px;padding:8px 16px;background:var(--bad);color:#fff;cursor:pointer}
+li{margin:3px 0}</style></head><body><main>
+<h1>autoen_node <span class=""mut"" id=""st""></span> <button id=""stop"">&#9632; Stop</button> <button id=""pause"" style=""background:#8a6d00"">&#10074;&#10074; Pause</button></h1>
+<div class=""card""><div id=""prog""></div><div class=""bar""><i id=""bar"" style=""width:0""></i></div><div class=""mut"" id=""msg""></div><div class=""mut"" id=""mq""></div></div>
+<div class=""card""><h2>Settings <span class=""mut"" id=""cfghint""></span></h2>
+<form id=""cfg"" style=""display:flex;flex-wrap:wrap;gap:10px;align-items:end"">
+<label>Sets<br><input name=""sets"" type=""number"" min=""1"" max=""1000"" step=""1"" style=""width:70px""></label>
+<label>Cycles / set<br><input name=""cycles_per_set"" type=""number"" min=""1"" max=""1000"" step=""1"" style=""width:80px""></label>
+<label>Arm speed (0.2-8.8, x360 t/s; 8.8 = 3200 max)<br><input name=""arm_speed"" type=""number"" min=""0.2"" max=""8.8"" step=""0.1"" style=""width:90px""></label>
+<label>Carry speed (0.2-8.8, x360 t/s)<br><input name=""carry_speed"" type=""number"" min=""0.2"" max=""8.8"" step=""0.1"" style=""width:90px""></label>
+<label>Belt RPM (to IR, output shaft, 12V 1:270: no-load 37)<br><input name=""rpm"" type=""number"" min=""0.5"" max=""37"" step=""0.1"" style=""width:80px""></label>
+<label>Offset after IR (counts)<br><input name=""offset"" type=""number"" min=""0"" max=""5000"" step=""10"" style=""width:90px""></label>
+<label>Drop order<br><select name=""drop_mode""><option>alternate</option><option>left</option><option>down</option></select></label>
+<label>First drop<br><select name=""first_drop""><option>left</option><option>down</option></select></label>
+<label>Gap s<br><input name=""gap"" type=""number"" min=""0"" max=""60"" step=""0.5"" style=""width:70px""></label>
+<label>Samples/s<br><input name=""hz"" type=""number"" min=""1"" max=""20"" step=""1"" style=""width:70px""></label>
+<label>Servo ACC (0-254, x100 t/s2; needs ACC firmware)<br><input name=""acc"" type=""number"" min=""0"" max=""254"" step=""1"" style=""width:80px""></label>
+<label>Gripper speed<br><input name=""gripper_speed"" type=""number"" min=""100"" max=""3200"" step=""50"" style=""width:90px""></label>
+<label>Gripper open pos<br><input name=""open_pos"" type=""number"" min=""1800"" max=""3100"" step=""10"" style=""width:90px""></label>
+<label>Feature B: pipeline FEED+belt (1/0, set before Start only)<br><input name=""enable_b"" type=""number"" min=""0"" max=""1"" step=""1"" style=""width:60px""></label>
+<label>Feature A: 2-stage close (1/0)<br><input name=""enable_a"" type=""number"" min=""0"" max=""1"" step=""1"" style=""width:60px""></label>
+<label>A: fast-close target ticks<br><input name=""grip_fast_to_pos"" type=""number"" min=""1800"" max=""3100"" step=""10"" style=""width:90px""></label>
+<label>Grip position ticks (0 = close until stall)<br><input name=""grip_pos"" type=""number"" min=""0"" max=""3100"" step=""1"" style=""width:90px""></label>
+<label>Grip position speed<br><input name=""grip_pos_speed"" type=""number"" min=""50"" max=""3200"" step=""50"" style=""width:80px""></label>
+<label>A: fast-close speed<br><input name=""grip_fast_speed"" type=""number"" min=""100"" max=""3200"" step=""50"" style=""width:90px""></label>
+<label>A: fast-close acc (0-254)<br><input name=""grip_fast_acc"" type=""number"" min=""0"" max=""254"" step=""1"" style=""width:70px""></label>
+<label>A: fast-close timeout s<br><input name=""grip_fast_timeout"" type=""number"" min=""0.5"" max=""10"" step=""0.5"" style=""width:80px""></label>
+<label>Feature D: hold preload/torque (1/0)<br><input name=""enable_d"" type=""number"" min=""0"" max=""1"" step=""1"" style=""width:60px""></label>
+<label>D: hold preload ticks<br><input name=""grip_hold_preload"" type=""number"" min=""0"" max=""300"" step=""10"" style=""width:80px""></label>
+<label>D: hold torque limit (0-1000)<br><input name=""grip_hold_torque_limit"" type=""number"" min=""0"" max=""1000"" step=""50"" style=""width:90px""></label>
+<label>Dwell standby s<br><input name=""dwell_standby"" type=""number"" min=""0"" max=""30"" step=""0.5"" style=""width:80px""></label>
+<label>Dwell after grip s<br><input name=""dwell_grip"" type=""number"" min=""0"" max=""30"" step=""0.5"" style=""width:80px""></label>
+<label>Dwell at drop s<br><input name=""dwell_drop"" type=""number"" min=""0"" max=""30"" step=""0.5"" style=""width:80px""></label>
+<label>Dwell home s<br><input name=""dwell_home"" type=""number"" min=""0"" max=""30"" step=""0.5"" style=""width:80px""></label>
+<label>Feed timeout s<br><input name=""feed_timeout"" type=""number"" min=""1"" max=""30"" step=""1"" style=""width:80px""></label>
+<label>Arrive (IR) timeout s<br><input name=""arrive_timeout"" type=""number"" min=""5"" max=""120"" step=""5"" style=""width:80px""></label>
+<label>Grip timeout s<br><input name=""grip_timeout"" type=""number"" min=""3"" max=""30"" step=""1"" style=""width:80px""></label>
+<label>Clear-IR timeout s<br><input name=""clear_timeout"" type=""number"" min=""0.5"" max=""20"" step=""0.5"" style=""width:80px""></label>
+<label>Standby timeout s<br><input name=""standby_timeout"" type=""number"" min=""10"" max=""120"" step=""5"" style=""width:80px""></label>
+<label>Move timeout s<br><input name=""move_timeout"" type=""number"" min=""5"" max=""120"" step=""5"" style=""width:80px""></label>
+<label>Pose tol (ticks)<br><input name=""pose_tol"" type=""number"" min=""10"" max=""100"" step=""5"" style=""width:80px""></label>
+<label>Grip tol (ticks)<br><input name=""grip_tol"" type=""number"" min=""5"" max=""100"" step=""5"" style=""width:80px""></label>
+<label>Drift tol (ticks, 0=off)<br><input name=""hold_tol"" type=""number"" min=""0"" max=""300"" step=""10"" style=""width:90px""></label>
+<label>Settle tol (ticks, 0=off)<br><input name=""settle_tol"" type=""number"" min=""0"" max=""300"" step=""10"" style=""width:90px""></label>
+<label>Stop after N fails<br><input name=""max_fails"" type=""number"" min=""1"" max=""20"" step=""1"" style=""width:80px""></label>
+<label>Belt temp max C<br><input name=""temp_max"" type=""number"" min=""0"" max=""100"" step=""5"" style=""width:80px""></label>
+<label>Belt watchdog ms (0=off)<br><input name=""belt_wdt_ms"" type=""number"" min=""0"" max=""10000"" step=""100"" style=""width:80px""></label>
+<label>Belt PID Kp<br><input name=""kp"" type=""number"" min=""0"" max=""20"" step=""0.1"" style=""width:80px""></label>
+<label>Belt PID Ki<br><input name=""ki"" type=""number"" min=""0"" max=""50"" step=""0.1"" style=""width:80px""></label>
+<label>Belt PID Kd<br><input name=""kd"" type=""number"" min=""0"" max=""5"" step=""0.05"" style=""width:80px""></label>
+<label>Feeder home angle<br><input name=""feeder_home"" type=""number"" min=""0"" max=""180"" step=""5"" style=""width:80px""></label>
+<label>Feeder push angle<br><input name=""feeder_push"" type=""number"" min=""0"" max=""180"" step=""5"" style=""width:80px""></label>
+<label>Feeder push ms<br><input name=""feeder_push_ms"" type=""number"" min=""50"" max=""2000"" step=""50"" style=""width:80px""></label>
+<label>Feeder return ms<br><input name=""feeder_return_ms"" type=""number"" min=""50"" max=""2000"" step=""50"" style=""width:80px""></label>
+<label>Feeder ready angle<br><input name=""feeder_ready"" type=""number"" min=""0"" max=""180"" step=""5"" style=""width:80px""></label>
+<label>Feeder ready wait ms (0 = off)<br><input name=""feeder_ready_ms"" type=""number"" min=""0"" max=""3000"" step=""100"" style=""width:80px""></label>
+<label>Feeder slow push ms (0 = jump)<br><input name=""feeder_ramp_ms"" type=""number"" min=""0"" max=""3000"" step=""100"" style=""width:80px""></label>
+<label>Verify grip (1/0)<br><input name=""enable_verify"" type=""number"" min=""0"" max=""1"" step=""1"" style=""width:60px""></label>
+<label>Block window min deg<br><input name=""grip_contact_min_deg"" type=""number"" min=""100"" max=""250"" step=""0.5"" style=""width:80px""></label>
+<label>Block window max deg<br><input name=""grip_contact_max_deg"" type=""number"" min=""100"" max=""250"" step=""0.5"" style=""width:80px""></label>
+<label>Carry current min mA (else GRIP_SUSPECT)<br><input name=""grip_carry_min_ma"" type=""number"" min=""0"" max=""1000"" step=""10"" style=""width:90px""></label>
+<label>Carry slip max deg (else GRIP_SUSPECT)<br><input name=""grip_slip_max_deg"" type=""number"" min=""0.1"" max=""90"" step=""0.5"" style=""width:90px""></label>
+<label>Recover after a failed cycle (1/0, pipeline)<br><input name=""enable_recover"" type=""number"" min=""0"" max=""1"" step=""1"" style=""width:60px""></label>
+<label>Recovery belt run s<br><input name=""recover_conv_s"" type=""number"" min=""1"" max=""30"" step=""1"" style=""width:80px""></label>
+<label>Flow: the optimizer plans every feed (1/0, set before Start only)<br><input name=""enable_f"" type=""number"" min=""0"" max=""1"" step=""1"" style=""width:60px""></label>
+<label>Feature C: belt queue (1/0, needs B, set before Start only)<br><input name=""enable_c"" type=""number"" min=""0"" max=""1"" step=""1"" style=""width:60px""></label>
+<label>Arrival guard (1/0): block may not arrive before the arm is parked<br><input name=""arrival_guard"" type=""number"" min=""0"" max=""1"" step=""1"" style=""width:60px""></label>
+<label>Arrival margin s<br><input name=""arrival_margin_s"" type=""number"" min=""0"" max=""5"" step=""0.1"" style=""width:80px""></label>
+<label>Queue feed point (fraction of full travel)<br><input name=""queue_split"" type=""number"" min=""0.2"" max=""0.8"" step=""0.05"" style=""width:80px""></label>
+<button type=""submit"" style=""background:var(--acc)"">Apply</button><span id=""cfgmsg"" class=""mut""></span></form>
+<div id=""startrow"" style=""margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"">
+<label><input type=""checkbox"" id=""clear""> Arm area is clear and the E-stop is within reach</label>
+<button id=""start"" style=""background:#1a8a3c"">&#9654; Start run</button></div></div>
+<div class=""card""><table id=""live""></table></div>
+<div class=""card""><h2>Finished sets</h2><ul id=""sets"" class=""mut""></ul></div>
+<div class=""card""><h2>Last cycles</h2><table id=""cyc""></table><div class=""mut"" id=""files"" style=""margin-top:6px""></div></div>
+<script>
+const $=id=>document.getElementById(id),f=(v,d)=>v===null||v===undefined?'-':(+v).toFixed(d);
+$('stop').onclick=()=>fetch('/api/stop',{method:'POST'});
+$('pause').onclick=()=>fetch('/api/pause',{method:'POST'});
+let cfgFilled=false;
+const form=()=>{const o={};new FormData($('cfg')).forEach((v,k)=>{if(v!=='')o[k]=['drop_mode','first_drop'].includes(k)?v:+v});return o};
+$('cfg').onsubmit=async e=>{e.preventDefault();
+ const r=await fetch('/api/config',{method:'POST',body:JSON.stringify(form())});const j=await r.json();
+ $('cfgmsg').textContent=r.ok?' applied':' '+(j.error||'error');};
+$('start').onclick=async()=>{
+ const r=await fetch('/api/start',{method:'POST',body:JSON.stringify({clear:$('clear').checked,config:form()})});const j=await r.json();
+ $('cfgmsg').textContent=r.ok?' started':' '+(j.error||'error');};
+async function tick(){try{const s=await (await fetch('/api/state')).json();
+ $('st').textContent=s.status+' / '+s.phase;
+ $('startrow').style.display=s.status==='ready'?'flex':'none';
+ $('pause').style.display=s.status==='ready'?'none':'inline-block';
+ $('pause').innerHTML=s.paused?'&#9654; Resume':'&#10074;&#10074; Pause after this cycle';
+ $('stop').innerHTML=s.status==='ready'?'&#9632; Quit':'&#9632; Stop';
+ $('cfghint').textContent=s.status==='ready'?'(set everything, tick the box, press Start)':'(all apply from the next cycle; cycles per set from the next set; samples/s at once)';
+ if(!cfgFilled&&s.config){cfgFilled=true;for(const k in s.config){const i=document.querySelector('[name='+k+']');if(i)i.value=s.config[k];}}
+ const done=(s.set-1)*s.cycles_per_set+s.cycle_in_set,tot=s.sets*s.cycles_per_set;
+ $('prog').innerHTML='<b>Set '+s.set+' / '+s.sets+'</b> &middot; drifts corrected '+s.drifts+' &middot; cycle '+s.cycle_in_set+' / '+s.cycles_per_set+' &middot; total '+s.cycle_total+' / '+tot+' &middot; '+Math.floor(s.elapsed/60)+' min';
+ $('bar').style.width=Math.min(100,100*s.cycle_total/tot)+'%';$('msg').textContent=s.message+(s.warnings&&s.warnings.length?'   WARNING: '+s.warnings.join(' | '):'');$('mq').textContent=s.mqtt?('MQTT '+s.mqtt.host+':'+s.mqtt.port+' | arm '+(s.mqtt.arm_up?'connected':'NOT connected')+' | belt '+(s.mqtt.belt_up?'connected':'NOT connected')+' | published '+s.mqtt.sent):'MQTT off';
+ let h='<tr><th>device</th><th>temp C</th><th>current mA</th><th>velocity</th><th>position</th><th>volt V</th></tr>';
+ s.devices.forEach(d=>{const x=s.live[d],b=d==='Belt';if(d==='Arm'){}h+='<tr><td>'+(d==='Belt'?'Belt motor':d==='Arm'?'Arm total (sum I, min V)':'Joint '+d.slice(1))+'</td><td>'+f(x.temp,1)+'</td><td>'+f(x.current,0)+'</td><td>'+f(x.velocity,1)+(b?' rpm':' deg/s')+'</td><td>'+f(x.position,b?2:1)+(b?' rev':' deg')+'</td><td>'+f(x.voltage,2)+'</td></tr>';});
+ $('live').innerHTML=h;
+ $('sets').innerHTML=s.set_summaries.slice().reverse().map(x=>'<li>'+x+'</li>').join('')||'<li>none yet</li>';
+ $('cyc').innerHTML='<tr><th>#</th><th>set</th><th>result</th><th>sec</th><th>notes</th></tr>'+s.cycles.slice().reverse().map(c=>'<tr><td>'+c.n+'</td><td>'+c.set+'</td><td>'+c.result+'</td><td>'+c.secs+'</td><td style=""text-align:left"">'+(c.notes||'')+'</td></tr>').join('');
+ $('files').textContent='files: '+s.files.join('  |  ');}catch(e){}}
+setInterval(tick,1000);tick();
+</script></main></body></html>",
+autoen constants,GRIP_CAL_KEYS,"[""open_pos"", ""grip_fast_to_pos"", ""grip_contact_min_deg"", ""grip_contact_max_deg"", ""grip_pos""]",
+optimizer constants,SAFE,"{""rpm"": 20.0, ""arm_speed"": 1.5}",best measured point; used when model.json is missing
+optimizer constants,RPM_RANGE,"[8.0, 20.0]",the tested grid: never leave it
+optimizer constants,ARM_RANGE,"[1.0, 2.0]",
+optimizer constants,P_LOW_FLOOR,0.8,a config needs a cautious success rate (Wilson lower bound) of at least this
+optimizer constants,ENERGY_BAND,0.05,"priority: settings within 5 % of the lowest J per good cube count as ""lowest"""
+optimizer constants,K_J,5.0,live J per cube is blended with the grid value as if the grid were 5 cycles
+optimizer constants,EXPLORE_EVERY,40,"good cycles between two short trials of another safe, low-energy setting"
+optimizer constants,EXPLORE_CYCLES,4,cycles one trial lasts
+optimizer constants,EXPLORE_MIN_N,15,only settings with fewer live energy samples than this are worth a trial
+optimizer constants,COOL_HYST_C,5.0,back to normal only this far below the limit
+optimizer constants,GENTLE,"{""rpm"": 15.0, ""arm_speed"": 1.5}",warm: no setting faster than this
+optimizer constants,SWITCH_MARGIN,0.03,a voluntary switch needs a 3 % better score ...
+optimizer constants,MIN_HOLD_CYCLES,3,... and this many finished cycles on the current config (no flip-flopping)
+optimizer constants,BOUNDARY_S,1.5,settings are sent only this soon after a cycle ended (autoen gap = 1 s) or while paused
+optimizer constants,FLOW_MAX,3,blocks in flight at most (belt 515 mm)
+optimizer constants,FLOW_WORK_PRIOR_S,5.0,belt seconds per pick before it is measured
+optimizer constants,FLOW_P_MIN,0.75,feed in a phase whose pushes deliver at least this often
+optimizer constants,FLOW_SPACING,0.12,the newest block must be this share of the ride off the feeder before the next
+optimizer constants,FLOW_LATE,1.35,a block this share past its ride is not coming
+optimizer constants,VERIFY_CAM_S,1.5,pt2: the camera looks this long (with >= VERIFY_CAM_FRAMES new frames) after a push
+optimizer constants,VERIFY_CAM_FRAMES,3,
+optimizer constants,VERIFY_SPACING,0.33,pt2: share of the ride the last block travels before the next push (without the camera;
+optimizer constants,EXIT_U_PRIOR,260.0,pt2: the feeder exit is the left edge of the picture: blocks appear at along_px below this
+optimizer constants,CUBE_MM_BELT,40.0,pt3: a cube along the belt (= scene.CUBE_MM)
+optimizer constants,FILL_GAP_MIN_MM,60.0,pt3: never less free space between two cubes (gripper fingers; the operator's to set)
+optimizer constants,FILL_MAX,6,pt3: never more cubes on the belt than this
+optimizer constants,FLOW_EMPTY_FAILS,3,feeds in a row that brought nothing: the feeder is empty -> IDLE
+optimizer constants,FLOW_EXPLORE,0.15,chance to try a phase with < 3 feeds (when not starving)
+optimizer constants,FLOW_STILL,"[""TRANSPORT"", ""RELEASE"", ""IDLE"", ""FEED"", ""PREPARE""]",the arm (nearly) still: prior 0.9
+optimizer constants,RAIL_OK_V,11.5,push only when the rail reads at least this now
+optimizer constants,RAIL_SAG_V,11.0,an arm phase whose rail fell below this (in its last RAIL_PHASE_N runs) is avoided
+optimizer constants,RAIL_PHASE_N,5,
+optimizer constants,FEED_MIN_GAP_S,2.0,at least this long between two push requests (12:49: two went out 0.4 s apart)
+optimizer constants,STUCK_EXIT_PROGRESS,0.15,the belt moved a confirmed block this share of the ride ...
+optimizer constants,STUCK_EXIT_PX,25.0,... and the camera saw it move less than this: stuck in the feeder mouth
+optimizer constants,STUCK_PROOF_PX,40.0,... while another cube moved at least this far (the belt really moved under the
+optimizer constants,STUCK_ALONE_PROGRESS,0.3,"camera) - or, with no other cube in view, the belt moved this share of the ride"
+optimizer constants,PUSH_SHORTEN_AFTER,8,this many good pushes in a row at a longer push: try 50 ms shorter
+optimizer constants,LATE_MIN_RIDES,3,measured rides at this belt speed before lateness is judged
+optimizer constants,NO_CUBE_S,3.0,TRANSPORT this long with a fresh camera and no moving cube = nothing fed
+optimizer constants,REFEEDS,1,feed again this many times before deciding the feeder is empty
+optimizer constants,SORT_BINS,"{""orange"": ""left"", ""white"": ""down""}","autoen drop poses: ""left"" = left bin, ""down"" = right bin"
+optimizer constants,UNKNOWN_BIN,down,"colour not seen (camera missed it): this bin, and it is counted as unknown"
+optimizer constants,FEED_IR_STABLE_S,2.0,the feeder IR must read the same this long before it counts
+optimizer constants,FEED_IR_PROVEN,3,"right calls before probes are skipped while it reads ""empty"""
+optimizer constants,FEED_DEAD_MV,15.0,a FEED with a smaller 12 V dip than this = the feeder servo did not move
+optimizer constants,FEED_MOVED_MV,30.0,a dip this large = a real push (measured 33-125 mV)
+optimizer constants,FEED_DEAD_REFEEDS,2,"feed again this often after dead pushes in a row, then ALERT"
+optimizer constants,FEED_ARM_PUSHES,5,"real pushes seen on this machine before a missing dip may be called ""dead"""
+optimizer constants,FEED_ARM_RUN,3,... and clear pushes seen in THIS run (the wiring may have changed since)
+optimizer constants,FEED_STOP_RETRY_S,"[60.0, 120.0, 300.0, 600.0]","dead feeder servo: one retry feed after each, then every last one"
+optimizer constants,FEED_STOP_EMPTY_S,600.0,feeder empty (IR + no current): retry this often even if the IR never changes
+optimizer constants,FEED_STOP_TOUCH_S,5.0,the feeder IR changed (cubes loaded / someone at the feeder): retry after this
+optimizer constants,FEED_MIN_SAMPLES,3,belt telemetry samples inside the FEED needed for a verdict
+optimizer constants,PROBE_FIRST_S,60.0,the first probe of an idle period comes at the latest after this ...
+optimizer constants,PROBE_MAX_S,600.0,... and later ones at the latest this far apart (a probe costs ~11 J)
+optimizer constants,RECOVER_WAIT_S,2.0,RECOVER: paused at least this long before running again
+optimizer constants,RECOVER_GIVEUP_S,180.0,RECOVER: the pause / settings did not land in this time -> ALERT
+optimizer constants,SLIP_WARN,0.6,cubes slower than this share of the belt speed (median of SLIP_CYCLES)
+optimizer constants,SLIP_CYCLES,5,
+optimizer constants,MOVING_MM_S,5.0,"a cube counts as ""fed"" when it moves along the belt at least this fast (either sign:"
+optimizer constants,EMPTY_TIMEOUTS_BLIND,2,camera off: transport timeouts in a row before IDLE (autoen stops at 3)
+optimizer constants,RESUMED_GRACE_S,5.0,IDLE/ALERT but autoen runs un-paused this long = someone resumed it
+optimizer constants,SETTLE_S,3.0,"after our own pause / resume, autoen's paused flag may lag this long"
+optimizer constants,ARRIVE_FACTOR,2.7,arrive_timeout = 2.7 x the belt ride (vision_check_v1 used ~2.6 x the median)
+optimizer constants,TRAVEL_MM,515.0,belt travel per cube (cal/baselines_summary.json)
+optimizer constants,MM_S_PER_RPM,2.81,= predict.BELT_MM_S_PER_RPM (do not touch)
+optimizer constants,NOT_ABNORMAL,"[""OK"", ""TIMEOUT_TRANSPORT"", ""NO_BLOCK"", ""ABORTED""]",any other cycle result -> ALERT
+optimizer constants,OBJECTIVES,"[""efficiency"", ""priority"", ""throughput"", ""energy"", ""balanced""]",
+optimizer constants,TIME_BAND,0.03,"efficiency: within 3 % of the fastest counts as ""fastest""; then energy decides"
+optimizer constants,K_T,5.0,live cycle time is blended with the model as if the model were 5 cycles
+optimizer constants,LIVE_MODEL_MIN,3,settings with >= LIVE_MODEL_N timed cycles needed to refit the time model
+optimizer constants,LIVE_MODEL_N,5,
+optimizer constants,OUTER_RPM,"[8.0, 30.0]",frontier: the outer wall it never passes (autoen allows 37)
+optimizer constants,OUTER_ARM,"[1.0, 3.0]",(autoen allows 8.8)
+optimizer constants,CARRY_MAX,2.0,carry speed (a cube in the gripper) never above the tested maximum
+optimizer constants,TRIAL_CYCLES,12,12 of 12 OK -> Wilson lower 0.816 >= P_LOW_FLOOR: proven
+optimizer constants,FRONTIER_EVERY,30,good cycles between two frontier trials ...
+optimizer constants,FRONTIER_CLEAN,10,... and the last this many all OK
+optimizer constants,FRONTIER_GAIN,0.01,only a step predicted at least 1 % better is worth a trial
+optimizer constants,BAN_CYCLES,300,a point whose trial failed waits this many cycles; failed twice = never
+optimizer constants,NO_BLOCK,NO_BLOCK,autoen's result after our abort_transport: an empty feed by definition
+actuator constants,BROKER_PORT,1883,
+actuator constants,POLL_S,0.5,autoen state read rate
+actuator constants,STATUS_S,1.0,orchestrator/status rate
+actuator constants,CONFIG_RETRY_S,2.0,do not resend the same settings faster than this
+actuator constants,RETRY_WAITS,"[0.5, 1.0, 2.0]",waits between tries when autoen does not answer (reads and settings only)
+actuator constants,TOGGLE_CHECK_S,3.0,a pause / resume must show in /api/state within this
+actuator constants,HOME_POSE,right,autoen's name for home
+actuator constants,FAST_ACTIONS,"[""feed"", ""flow_drop_newest"", ""flow_drop_oldest""]","flow: sent at once, beside the job queue"
+actuator constants,BRAKE_RPM,0.5,the brake is a 1 s belt_run at the lowest rpm: autoen BRAKEs at the end of every belt_run
+actuator constants,COMMANDS,"[""resume"", ""park"", ""wake""]",
+observer constants,BROKER_PORT,1883,
+observer constants,QUEUE_MAX,2000,messages buffered between ticks; beyond this we drop and count
+observer constants,DRAIN_MAX,300,"messages handled per tick, so one burst cannot stretch the tick"
+observer constants,MA_PER_COUNT,6.5,
+observer constants,STALE_S,"{""arm"": 1.0, ""belt"": 1.0, ""camera"": 3.0}",
+observer constants,T_ARM_TEL,arm/telemetry,"autoen_node.py, 10 Hz"
+observer constants,T_ARM_STATE,arm/state,"autoen_node.py, 10 Hz, retained"
+observer constants,T_GRIPPER,arm/gripper,"autoen_node.py, on every gripper event"
+observer constants,T_BELT_TEL,belt/telemetry,"autoen_node.py, once per new Mega sample"
+observer constants,T_BELT_EVT,belt/event,autoen_node.py: ARRIVED / FEED_DONE / FAULT
+observer constants,T_CAM_PERC,camera/perception,"camera node, 2 Hz"
+observer constants,T_CYCLE,autoen/cycle,auto_en_new.py: one message per finished cycle (optimize.py watches results)
+forecast constants,PRIOR_RATE_H,30.0,refills per idle hour before any history (~1 per 2 min: the 2026-10-26 sessions)
+forecast constants,PRIOR_HOURS,0.5,"idle hours of ""global"" evidence each hour-of-week bin starts with"
+forecast constants,P_TARGET,0.5,probe when a refill has happened with this probability
+forecast constants,BACKOFF,0.5,... but wait at least this fraction of the idle time so far (long idle -> rare probes)
+forecast constants,MIN_DELAY_S,30.0,trusted camera: a failed probe costs ~11 J / ~13 s
+forecast constants,MIN_DELAY_BLIND_S,300.0,"camera not trusted: a failed probe runs the belt to arrive_timeout, ~50 J"
+forecast constants,MAX_DELAY_S,1800.0,never wait longer than 30 min between probes
+forecast constants,MAX_GAPS,200,idle periods kept for inspection
+scene (light) constants,BASE_V,75.0,normal brightness of the belt (measured); adapts slowly while the light is ok
+scene (light) constants,BASE_ALPHA,0.01,per camera snapshot (2 Hz): the baseline follows a slow change in ~1 min
+scene (light) constants,DIM_RATIO,0.65,V below 65 % of normal = dim (warning only)
+scene (light) constants,DARK_RATIO,0.45,V below 45 % of normal = dark
+scene (light) constants,DARK_PCT,30.0,or this much of the belt too dark to see a colour
+scene (light) constants,GLARE_PCT,8.0,this much of the belt burnt out = glare (a white cube is ~2 %) ...
+scene (light) constants,GLARE_RATIO,1.8,or V this far above normal
+scene (light) constants,LIGHT_STABLE_S,3.0,"a light verdict must hold this long before it counts (a hand, a shadow passing)"
+scene (light) constants,IR_U,245.0,"(D415 picture, kept for reading old notes; the rules use camgeo.dist)"
+scene (light) constants,ENTRY_U,600.0,(D415 picture)
+scene (light) constants,MIN_HITS,3,camera frames before a track counts
+scene (light) constants,CUBE_MM,40.0,= predict.CUBE_EDGE_MM
+scene (light) constants,STUCK_S,4.0,still this long while the belt runs = stuck (a cube rides 20 rpm = 56 mm/s)
+scene (light) constants,BELT_MOVING_MM_S,10.0,the belt counts as running above this
+scene (light) constants,TRAIN_MM,20.0,free space between two cubes below half a cube = a train
+scene (light) constants,BACKLOG_RUSH,2,this many cubes waiting on the belt during a whole cycle = cubes come faster than the arm
+scene (light) constants,SLIP_MIN_V_MM_S,10.0,cube speeds below this say nothing about slip
+scene (light) constants,COLUMNS,"[""iso"", ""n"", ""result"", ""secs"", ""rpm"", ""arm_speed"", ""mode"", ""drop"", ""colour"", ""colour_share"", ""light"", ""v_mean"", ""s_mean"", ""glare_pct"", ""dark_pct"", ""light_bad_s"", ""backlog_max"", ""train"", ""min_gap_mm"", ""stuck_s"", ""slip"", ""cube_seen"", ""camera_fresh_pct""]",
+camera geometry constants,D415,"{""ir_along"": -245.0, ""entry_along"": -600.0, ""mm_per_px"": 0.95, ""note"": ""RealSense D415, 2026-10-26""}",
+camera geometry constants,D415_ENTRY_DIST,355.0,
+tuner constants,KNOBS,"{""in_flight"": [[-1, 0, 1], 0, ""cubes in flight, relative to the ride-time math""], ""spacing"": [[0.2, 0.33, 0.5], 0.33, ""share of the ride the last cube travels before the next push""], ""late"": [[1.25, 1.35, 1.6], 1.35, ""x its ride before a cube counts as not coming""]}","name: (values, start, what it means)"
+tuner constants,WARM,10,clean picks on the champions before (and between) experiments
+tuner constants,TRIAL_N,6,picks per experiment
+tuner constants,MARGIN,0.03,a challenger must be this much cheaper per pick
+tuner constants,FAIL_PENALTY_S,20.0,
+tuner constants,BAN_PICKS,50,a losing value is not tried again for this many picks
+sorting constants,ENTRY_U,520.0,(D415 picture) first seen at u >= this = a new cube from the feeder (real: 540-590)
+sorting constants,IGNORE_U,180.0,"(D415 picture) past the IR (real IR ~245): bins / gripper, never a cube on the belt"
+sorting constants,MIN_HITS,2,camera frames before a new track counts (first-seen hits were 1-3)
+sorting constants,VOTE_MIN,3,frames with a colour before a cube's colour is trusted
+sorting constants,RELINK_FRAMES,3,a feeder-end track joins the last listed cube only if that one was seen this recently
+vision constants,CAPTURE_WIDTH,1280,
+vision constants,CAPTURE_HEIGHT,720,
+vision constants,WIDTH,854,
+vision constants,HEIGHT,480,
+vision constants,FPS,6,
+vision constants,CAMERA_FPS,15,
+vision constants,CAMERA_BY_ID_GLOBS,"[""/dev/v4l/by-id/*Astro_HD_Camera*-video-index0"", ""/dev/v4l/by-id/*H264_USB_Camera*-video-index0"", ""/dev/v4l/by-id/usb-*-video-index0""]",
+vision constants,CAMERA_OPEN_WAIT_S,20.0,keep trying to open a busy / not yet ready camera this long
+vision constants,FRAME_TIMEOUT_MS,15000,
+vision constants,WARMUP_FRAMES,3,
+vision constants,MIN_AREA,500,
+vision constants,MAX_AREA,200000,
+vision constants,CUBE_MIN_H,38,px tall at least
+vision constants,CUBE_MIN_AREA,1700,px2 at least ...
+vision constants,EXIT_ZONE_U,160,"... except at the feeder exit (left edge, u below this): a cube still half in the feeder"
+vision constants,EXIT_MIN_AREA,900,may show only partly - the push check must still see it
+vision constants,CUBE_ASPECT,"[0.4, 3.0]",width / height
+vision constants,CUBE_FILL,0.55,contour area / bounding box: glare streaks are thin and patchy
+vision constants,MAX_MISSED_FRAMES,12,
+vision constants,MAX_MATCH_DISTANCE,90,
+vision constants,DEPTH_SAMPLE_RADIUS,5,
+vision constants,MIN_VALID_DEPTH,0.15,
+vision constants,MAX_VALID_DEPTH,5.0,
+vision constants,WINDOW_NAME,DELTA - Object Detection & Tracking,
+vision constants,SHOW_MASKS,False,
+vision constants,CALIB_FILE,vision_calibration_usb.json,
+vision constants,COUNT_MODE,confirm,
+vision constants,CONFIRM_FRAMES,6,
+vision constants,DEDUP_SECONDS,3.0,
+vision constants,DEDUP_DISTANCE,60,
+vision constants,DATA_COLLECTION_SECONDS,180,
+vision constants,DATA_SAMPLE_INTERVAL,10,
+vision constants,HISTORY_CSV,delta_demand_history.csv,
+vision constants,SUMMARY_CSV,delta_3min_summary.csv,
+vision constants,MQTT_PORT,1883,
+vision constants,PERCEPTION_PUBLISH_INTERVAL,0.5,
+vision constants,JPEG_TOPIC,video/camera/jpeg,
+vision constants,RAW_TOPIC,video/camera/raw,
+vision constants,CAM_CMD_TOPIC,camera/cmd,
+vision constants,RAW_HZ,2.0,
+vision constants,RAW_QUALITY,88,
+vision constants,CALIB_CHECK_S,2.0,
+vision constants,CAMERA_APPLY_FIRST,"[""auto_exposure"", ""white_balance_automatic"", ""focus_automatic_continuous"", ""exposure_dynamic_framerate""]",
+vision constants,JPEG_HZ,3.0,
+vision constants,JPEG_QUALITY,70,
+vision constants,COLOR_PRESETS,"{""white"": [[[0, 0, 180], [179, 50, 255]]], ""black"": [[[0, 0, 0], [179, 255, 50]]], ""red"": [[[0, 110, 70], [8, 255, 255]], [[172, 110, 70], [179, 255, 255]]], ""orange"": [[[9, 120, 90], [21, 255, 255]]], ""yellow"": [[[22, 100, 100], [34, 255, 255]]], ""green"": [[[40, 70, 60], [85, 255, 255]]], ""cyan"": [[[86, 80, 60], [99, 255, 255]]], ""blue"": [[[100, 100, 50], [130, 255, 255]]], ""purple"": [[[131, 60, 50], [160, 255, 255]]]}",
+vision constants,COLOR_BGR,"{""white"": [255, 255, 0], ""black"": [60, 60, 60], ""red"": [0, 0, 255], ""orange"": [0, 140, 255], ""yellow"": [0, 255, 255], ""green"": [0, 200, 0], ""cyan"": [255, 200, 0], ""blue"": [255, 80, 0], ""purple"": [200, 0, 160]}",
+vision constants,BOX_COLOR,"[255, 255, 0]",fallback
+vision constants,DEFAULT_BELT_AXIS,u,"""u"" = image x, ""v"" = image y"
+vision constants,DEFAULT_BELT_DIR,1,"+1: the coordinate GROWS in the direction of travel, -1: it shrinks"
+vision constants,GAP_MAX_MISSED,2,... and only if seen in the last 2 frames (no ghosts from predictions)
+vision constants,HISTORY_HEADER,"[""timestamp"", ""window_id"", ""elapsed_seconds"", ""interval_seconds"", ""count"", ""cumulative"", ""by_color""]",
+vision constants,SUMMARY_HEADER,"[""window_id"", ""window_start"", ""window_end"", ""duration_seconds"", ""total_objects"", ""by_color""]",
+vision constants,SCENE_GLARE_V,250,"V at or above this = burnt out (glare, sunlight, a lamp in the picture)"
+vision constants,SCENE_DARK_V,40,V below this = too dark to tell colours
+vision constants,BG_LEARN_FRAMES,12,frames averaged at start-up before anything is detected (2 s at 6 FPS)
+vision constants,BG_RELEARN_FRAMES,3,the same after a sudden change of the light
+vision constants,BG_DIFF_ABS,20,a pixel differs from the empty belt if a colour channel is off by more than this ...
+vision constants,BG_DIFF_REL,0.12,... plus this fraction of the expected brightness (bright pixels are noisier)
+vision constants,BG_ALPHA_FAST,0.12,learning rate per frame where there is no cube (about 1.5 s)
+vision constants,BG_ALPHA_SLOW,0.01,... under cube-coloured pixels that are not a confirmed cube yet (about 17 s)
+vision constants,BG_CUBE_MIN_PX,30,"a ""different from the belt"" area with this many cube-coloured pixels is a cube, all of it"
+vision constants,BG_HOLD_MAX_S,300.0,"a confirmed cube that does not move is kept this long, then it becomes background"
+vision constants,BG_FLASH_JUMP,0.35,"this much MORE of the belt ""different"" than one frame ago = the light changed: relearn"
+vision constants,BG_GAIN_LIMITS,"[0.4, 2.5]",
+vision constants,BG_CUBE_RECT,0.75,a cube-coloured area in the freshly learned belt that fills this much of its own
+vision constants,LIGHT_ADAPT_BELOW,0.85,belt darker than this x calibration -> lower the V limits of the colours
+vision constants,LIGHT_MIN_V,40,"... but never below this (darker than this no colour can be told, see SCENE_DARK_V)"
+vision constants,LIGHT_WHITE_S_EXTRA,60,white looks more coloured in a dark picture: allow up to this much more S
+vision constants,SCENE_EVERY_S,0.5,light statistics this often (same as the perception publish rate)

@@ -1,0 +1,51 @@
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261111_211137.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[observe] connected to broker: Success
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 5] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 6] IDLE   20 rpm / arm 1.5  action=stop_feed  - feeder empty: the feeder IR sees no cube and the push drew no current (2 mV). I carry on by myself as soon as cubes are loaded
+[plan 7] IDLE   20 rpm / arm 1.5  - feeder empty: the feeder IR sees no cube and the push drew no current (2 mV). I carry on by myself as soon as cubes are loaded
+[plan 8] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 1 (cubes loaded): one feed to see if it delivers again
+[plan 9] RUN    20 rpm / arm 1.5  - feeder retry 1 (cubes loaded): one feed to see if it delivers again
+[plan 10] ALERT  20 rpm / arm 1.5  action=alarm  - ALARM: the feeder servo does not move (no current, 12 V dip 1 mV, 1 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 11] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 1 mV, 1 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 12] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 1 (cubes loaded): one feed to see if it delivers again
+[plan 13] RUN    20 rpm / arm 1.5  - feeder retry 1 (cubes loaded): one feed to see if it delivers again
+[plan 14] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 118 mV): carrying on by myself
+[plan 15] RUN    20 rpm / arm 1.5  action=refeed  - the feeder servo did not move (12 V rail dipped 1 mV, a real push takes >= 30): feeding again (1/2)
+[plan 16] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 1 mV, a real push takes >= 30): feeding again (1/2)
+[plan 17] RUN    20 rpm / arm 1.5  action=refeed  - the feeder servo did not move (12 V rail dipped 3 mV, a real push takes >= 30): feeding again (2/2)
+[plan 18] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 3 mV, a real push takes >= 30): feeding again (2/2)
+[plan 19] ALERT  20 rpm / arm 1.5  action=alarm  - ALARM: the feeder servo does not move (no current, 12 V dip 1 mV, 3 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 20] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 1 mV, 3 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 21] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 22] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 23] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 71 mV): carrying on by myself
+[plan 24] IDLE   20 rpm / arm 1.5  action=stop_feed  - feeder empty: the feeder IR sees no cube and the push drew no current (4 mV). I carry on by myself as soon as cubes are loaded
+[plan 25] IDLE   20 rpm / arm 1.5  - feeder empty: the feeder IR sees no cube and the push drew no current (4 mV). I carry on by myself as soon as cubes are loaded
+[plan 26] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 1 (cubes loaded): one feed to see if it delivers again
+[plan 27] RUN    20 rpm / arm 1.5  - feeder retry 1 (cubes loaded): one feed to see if it delivers again
+[plan 28] ALERT  20 rpm / arm 1.5  action=alarm  - ALARM: the feeder servo does not move (no current, 12 V dip 4 mV, 1 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 29] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 4 mV, 1 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 30] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 31] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 32] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 125 mV): carrying on by myself
+[plan 33] RUN    20 rpm / arm 1.5  action=refeed  - the feeder servo did not move (12 V rail dipped 1 mV, a real push takes >= 30): feeding again (1/2)
+[plan 34] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 1 mV, a real push takes >= 30): feeding again (1/2)
+[plan 35] RUN    20 rpm / arm 1.5  action=refeed  - the feeder servo did not move (12 V rail dipped 1 mV, a real push takes >= 30): feeding again (2/2)
+[plan 36] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 1 mV, a real push takes >= 30): feeding again (2/2)
+[plan 37] ALERT  20 rpm / arm 1.5  action=alarm  - ALARM: the feeder servo does not move (no current, 12 V dip 2 mV, 3 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 38] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 2 mV, 3 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 39] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 40] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 41] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 79 mV): carrying on by myself
+[plan 42] IDLE   20 rpm / arm 1.5  action=idle  - 2 feeds in a row did not reach the IR (camera not trusted yet): feeder empty, or check the belt
+[plan 43] IDLE   20 rpm / arm 1.5  - 2 feeds in a row did not reach the IR (camera not trusted yet): feeder empty, or check the belt
+[observe] lost the broker: all feeds will go stale
+[observe] connected to broker: Success
+[observe] lost the broker: all feeds will go stale
+[observe] connected to broker: Success
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

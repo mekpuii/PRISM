@@ -1,0 +1,163 @@
+{
+ "entries": {
+  "5": {
+   "rpm_set": 5.0,
+   "rpm_meas_mean": 4.992,
+   "rpm_meas_std": 0.063,
+   "n": 251,
+   "belt_mA_mean": 28.219,
+   "belt_W_mean": 0.344,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:12:25",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  "8": {
+   "rpm_set": 8.0,
+   "rpm_meas_mean": 7.996,
+   "rpm_meas_std": 0.058,
+   "n": 252,
+   "belt_mA_mean": 41.373,
+   "belt_W_mean": 0.505,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:13:00",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  "11.1": {
+   "rpm_set": 11.1,
+   "rpm_meas_mean": 11.101,
+   "rpm_meas_std": 0.063,
+   "n": 249,
+   "belt_mA_mean": 57.193,
+   "belt_W_mean": 0.697,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:13:32",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  "15": {
+   "rpm_set": 15.0,
+   "rpm_meas_mean": 15.001,
+   "rpm_meas_std": 0.078,
+   "n": 250,
+   "belt_mA_mean": 79.496,
+   "belt_W_mean": 0.969,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:14:05",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  "20": {
+   "rpm_set": 20.0,
+   "rpm_meas_mean": 19.999,
+   "rpm_meas_std": 0.099,
+   "n": 258,
+   "belt_mA_mean": 109.202,
+   "belt_W_mean": 1.331,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:14:39",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  "25": {
+   "rpm_set": 25.0,
+   "rpm_meas_mean": 25.003,
+   "rpm_meas_std": 0.103,
+   "n": 259,
+   "belt_mA_mean": 141.463,
+   "belt_W_mean": 1.724,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:15:27",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  }
+ },
+ "history": [
+  {
+   "rpm_set": 5.0,
+   "rpm_meas_mean": 4.992,
+   "rpm_meas_std": 0.063,
+   "n": 251,
+   "belt_mA_mean": 28.219,
+   "belt_W_mean": 0.344,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:12:25",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  {
+   "rpm_set": 8.0,
+   "rpm_meas_mean": 7.996,
+   "rpm_meas_std": 0.058,
+   "n": 252,
+   "belt_mA_mean": 41.373,
+   "belt_W_mean": 0.505,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:13:00",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  {
+   "rpm_set": 11.1,
+   "rpm_meas_mean": 11.101,
+   "rpm_meas_std": 0.063,
+   "n": 249,
+   "belt_mA_mean": 57.193,
+   "belt_W_mean": 0.697,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:13:32",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  {
+   "rpm_set": 15.0,
+   "rpm_meas_mean": 15.001,
+   "rpm_meas_std": 0.078,
+   "n": 250,
+   "belt_mA_mean": 79.496,
+   "belt_W_mean": 0.969,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:14:05",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  {
+   "rpm_set": 20.0,
+   "rpm_meas_mean": 19.999,
+   "rpm_meas_std": 0.099,
+   "n": 258,
+   "belt_mA_mean": 109.202,
+   "belt_W_mean": 1.331,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:14:39",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  },
+  {
+   "rpm_set": 25.0,
+   "rpm_meas_mean": 25.003,
+   "rpm_meas_std": 0.103,
+   "n": 259,
+   "belt_mA_mean": 141.463,
+   "belt_W_mean": 1.724,
+   "seconds": 30.0,
+   "settle_s": 3.0,
+   "measured_at": "2026-10-24T21:15:27",
+   "run_id": "cal_20261024_211057",
+   "autoen_sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6"
+  }
+ ],
+ "updated": "2026-10-24T21:15:28"
+}

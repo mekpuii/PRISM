@@ -1,0 +1,143 @@
+# PRISM optimizer data — everything collected so far
+
+As of 2026-10-25 20:05. Goal of the optimizer: **throughput + energy** (see the 5-layer design: Optimizer = Linear MPC + OSQP, not built yet).
+Units: belt rpm = **real output rpm** (`rpm_units: output_rpm_cpr11880`, CPR 11880, 1:270 motor). Anything before 2026-10-24 21:00 is in old units (~9× real) and is **not** used.
+
+---
+
+## 1. Hardware constants
+
+| What | Value | Source |
+|---|---|---|
+| Belt CPR | 11880 (JGB37-520, 1:270) | seller + `belt_ref.json` |
+| Belt speed per rpm | **2.81 mm/s per rpm** (1800 mm / 57.57 s at 11.11 rpm) | `predict.py` (BELT_MM_S_PER_RPM) |
+| Belt rpm range | 0.5–37 (encoder limit ~25 rpm) | autoen / firmware |
+| Belt PID | 4.5 / 13.5 / 0, WDT 500 ms, TEMPMAX 60 °C | autoen defaults |
+| Belt supply | ~12.18 V (belt INA260) | belt runs |
+| Arm power | Σ servo current × 6.5 mA/count (coarse) × bus V | `experiment.py` stats |
+| Gripper | open 2492, fast 2323, grip_pos = contact 2012 (176.8°), window 150–181.8° | `autoencoder/gripper_cal.json` |
+
+## 2. Belt power vs rpm (empty belt) — B3 ✅
+
+Run `runs/beltpwr_20261025_164625`, 70 s steps, 10 s settle, 2 rounds, 0 faults. File: `baseline_belt_summary.json`.
+
+| rpm | belt W (mean ± std) | mA | mm/s | 2026-10-24 cross-check (30 s) |
+|---|---|---|---|---|
+| 0 (braked) | 0.000 | 0 | 0 | — |
+| 0 (autoen idle, not braked) | 0.048 | 3.9 | 0 | — |
+| 5 | — | — | 14.1 | 0.344 W |
+| 8 | 0.493 ± 0.031 | 40.5 | 22.5 | 0.505 |
+| 11.1 | 0.677 ± 0.037 | 55.6 | 31.2 | 0.697 |
+| 15 | 0.952 ± 0.057 | 78.2 | 42.2 | 0.969 |
+| 20 | 1.307 ± 0.065 | 107.3 | 56.2 | 1.331 |
+
+- Nearly linear: **P_belt ≈ 0.0625 W/rpm × rpm** (≈ 0.022 W per mm/s) above ~5 rpm.
+- Round 2 was 0.5–5.5 % lower (motor warm-up 25.4 → 26.9 °C).
+- Braking (X,BRAKE) saves the 0.048 W the driver draws when idle but not braked.
+- Not measured: 25 rpm.
+
+## 3. Arm power — holding poses
+
+| Pose | Arm W | Runs | Notes |
+|---|---|---|---|
+| **Home** (`right`) hold | **0.084 ± 0.053** | `base_20261025_190036` (B1a, 70 s) | J6 4.8 mA + J3 2.2 mA, rest ~0; steady |
+| Home, after wake | 0.06–0.12 | wake holds of the 3 B1b runs | |
+| Home, 30 s | 0.102 ± 0.060 | `base_20261025_190507` (mis-run B2, counts as an extra home point) | |
+| **Rest**, torque on | **0.28–0.35** (mean ~0.30) | `base_20261025_183009`, `_183853`, `_184933`, `_190640` r1 | J3 ~10 mA, J5 ~5.5, J4 2.5–8, J6 ~4.6, J2 0 (frame carries it) |
+| Rest, torque off J2/J3/J5 | **not measured** | — | firmware `Q` likely flashed, untested |
+
+**Key finding:** with torque on, rest costs **~3.5× more** than home (gravity-load P-offset: J3/J4/J5 stop ~25 ticks short and push). Rest is a **parking pose, not a low-power pose**. Even with torque off it would only reach about home level.
+
+## 4. Rest/wake transitions — B1b ✅, B2 🟡 in progress
+
+Each transition from the taught sequence (`config/poses.json`, speed 120):
+
+| Move | Time | Energy | Runs |
+|---|---|---|---|
+| Home → rest | 36.8–38.7 s (~37 s) | ~10.4 J | 4 runs |
+| Rest → home | 35.8–36.4 s (~36 s) | ~10.1 J | 3 runs |
+| **Round trip** | **~73 s** | **~20.5 J** | |
+
+- B2 (`base_20261025_190640`, home → rest → home ×5): **running**. Round 1 rest done (move 36.8 s, hold 0.281 W); the arm has been parked ~58 min waiting for Enter to wake. That long hold is also a good long-term rest-power data point.
+
+### Break-even for "go to rest when idle"
+`T_breakeven = E_round_trip ÷ (P_home − P_rest)`
+= 20.5 J ÷ (0.084 − 0.30) W → **negative → resting never saves energy** (torque on).
+Even if torque-off brought rest to ~0 W, break-even ≈ 20.5 ÷ 0.084 ≈ **240 s (4 min)** of idle, and it costs 73 s of unavailability.
+→ For the optimizer: **when idle, hold home and brake the belt**; use rest only for parking/shutdown.
+
+## 5. Production cycles — throughput and energy per cube ✅
+
+Dataset: **`runs/exp_20261025_005038_opt_grid_v1`** only (24/24 blocks, 240 cycles, 235 OK, 5 TIMEOUT_TRANSPORT, 0 grip misses). Do **not** mix with `exp_20261024_213856` or `exp_20261025_003715` (old grip bug).
+Grid: belt rpm × arm speed (0.7–2.0). Plan `plans/opt_grid_v1.json`.
+
+**Cycle-time model** (R² 0.88, `orchestrator/model.py`):
+```
+seconds_per_cube = 8.54 + 2.92 / arm_speed + 159.9 / rpm
+```
+
+**Energy per cube:** 20–23 J/cube everywhere. Faster = also less energy, because the waste is the arm idle-waiting (arm still 50–70 % of the time).
+
+| Setting (rpm / arm) | s/cube | cubes/min | J/cube |
+|---|---|---|---|
+| **20 / 1.5** (best throughput) | 19.1 | 3.14 | 20.8 |
+| 15 / 1.5 (best energy) | ~21.9 | 2.74 | 20.2 |
+| 20 / 2.0 | — | — | 26.2 (2 transport timeouts) |
+
+**Energy split per cube** (`cal/energy_blocks.py` on the grid; motor supplies only — belt INA260 + servo current sum, NOT the Pi / Mega / drivers):
+
+| rpm / arm | arm J | belt J | total J | belt runs % of cycle | belt W while running (vs empty baseline) |
+|---|---|---|---|---|---|
+| 8 / 1.5 | 12.7 | 10.4 | 23.1 | 69 % | 0.478 (−3 %) |
+| 11.1 / 1.5 | 10.5 | 11.2 | 21.7 | 65 % | 0.643 (−5 %) |
+| 15 / 1.5 | 9.5 | 10.7 | 20.2 | 55 % | 0.888 (−7 %) |
+| 20 / 1.5 | 9.3 | 11.4 | 20.8 | 49 % | 1.231 (−6 %) |
+| 20 / 2.0 | 9.0 | 17.2 | 26.2 | 63 % (timeouts) | 1.220 (−7 %) |
+
+- The belt **stops** at ARRIVED during grip/place (stopped ≈ 0.002 W), so `1.307 W × 19.1 s ≈ 25 J` is wrong; the belt only runs ~9.4 s of a 20/1.5 cycle.
+- A cube adds no measurable belt load (running W is 3–8 % *below* the empty baseline = warm motor at night; use ±8 % uncertainty).
+- The belt travels **~0.515 m per cube** (490–545 mm) at every rpm, so **belt J/cube ≈ 10–11 J, almost independent of rpm**:
+  `E_belt/cube = P_belt(rpm) × t_run`,  `t_run ≈ 515 mm ÷ (2.81 × rpm mm/s)`
+- What changes with the setting is the **arm idle time** (arm still 48–71 % of the cycle): faster = less arm idle energy per cube.
+
+Note: the gripper was re-calibrated on 2026-10-25 18:20 after the arm repair (contact 176.8°), so cycles after that may differ slightly from this grid.
+
+## 6. What the optimizer can use now
+
+| Quantity | Value |
+|---|---|
+| P_belt(rpm) | ≈ 0.0625 × rpm W (table §2) |
+| P_belt idle / braked | 0.048 / 0.000 W |
+| P_arm home hold | 0.084 W |
+| P_arm rest hold (torque on) | ~0.30 W |
+| E, t home→rest→home | ~20.5 J, ~73 s |
+| t/cube(rpm, arm) | 8.54 + 2.92/arm + 159.9/rpm |
+| E/cube | 20–23 J (min ~20.2 at 15/1.5), motors only |
+| E_belt/cube | P_belt(rpm) × 515 mm ÷ (2.81·rpm) ≈ 10–11 J |
+| belt stopped in cycle | ≈ 0.002 W |
+| Safe operating point | 20 rpm / arm 1.5 (2.0 causes timeouts) |
+
+## 7. Still missing
+
+- [ ] **B2** finish (rounds 2–5) → mean/std for transition E and t
+- [ ] **B1c** rest hold with torque off (`--torque-off`, J2/J3/J5) → P_rest_off
+- [ ] **C** camera ETA error + IR u position (no camera data in the new-unit dataset; needs operator decision: replay old runs with unit conversion, or a new short run with vision on)
+- [ ] **D** gap run (bursts with 10–60 s gaps, 20 rpm / arm 1.5) → real idle behaviour
+- [ ] 25 rpm belt power (optional)
+- [ ] Arm-supply INA260 (`arm_ma` / `arm_mv`) is parsed by Link but not logged; logging it would give real arm W instead of the coarse servo-current sum
+- [ ] `baselines_summary.json` (final output for the optimizer)
+- [ ] Forecaster, `optimize.py`, `actuate.py` not built yet
+
+## 8. Files
+
+| File | What |
+|---|---|
+| `cal/baseline_belt_summary.json` | belt W per rpm (B3) |
+| `cal/belt_ref.json` | 2026-10-24 belt calibration 5–25 rpm |
+| `cal/COLLECTION_STATUS.md` | checklist of the collection plan |
+| `cal/runs/base_20261025_*` | arm baselines (rest/home holds, B2) |
+| `cal/runs/beltpwr_20261025_164625.*` | belt power raw samples |
+| `cal/runs/exp_20261025_005038_opt_grid_v1.*` | production grid dataset |
+| `orchestrator/model.py` | cycle-time fit |
+| `config/poses.json` | rest/wake sequence, torque_off_joints [2, 3, 5] |
+| `autoencoder/gripper_cal.json` | gripper calibration |

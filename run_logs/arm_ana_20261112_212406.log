@@ -1,0 +1,66 @@
+[arm-analyzer] up. broker localhost:1883, db arm_analyzer.db, thresholds built-in defaults (run --write-thresholds or --calibrate to make the file). Ctrl+C to stop.
+[arm-analyzer] connected to broker: Success
+[21:24:15] NO_DATA    -> PICKING     (gripper holding)
+[21:24:18] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:24:28] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:24:38] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:24:40] PICKING    -> CARRYING    (via home)
+[21:24:42] CARRYING   -> PICKING     (gripper holding)
+[21:24:49] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:24:58] PICKING    -> CARRYING    (via home)
+[21:24:59] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:25:01] CARRYING   -> PLACING     (right_bin, gripper closed)
+[21:25:03] PLACING    -> CARRYING    (to right_bin)
+[21:25:06] CARRYING   -> PICKING     (gripper holding)
+[21:25:09] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[21:25:11] PICKING    -> CARRYING    (via home)
+[21:25:14] CARRYING   -> PLACING     (left_bin, gripper closed)
+[21:25:16] PLACING    -> CARRYING    (to left_bin)
+[21:25:19] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:25:19] CARRYING   -> PICKING     (gripper holding)
+[21:25:23] PICKING    -> CARRYING    (via home)
+[21:25:25] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.51 s, limit 26)
+[21:25:26] CONDITION J1 current 6 mA in CARRYING: WARN -> OK (held 0.5 s, limit 26)
+[21:25:26] CARRYING   -> PLACING     (right_bin, gripper closed)
+[21:25:28] PLACING    -> CARRYING    (to right_bin)
+[21:25:29] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:25:32] CARRYING   -> PICKING     (gripper holding)
+[21:25:37] PICKING    -> CARRYING    (via home)
+[21:25:39] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[21:25:40] CARRYING   -> PLACING     (left_bin, gripper closed)
+[21:25:42] PLACING    -> CARRYING    (to left_bin)
+[21:25:45] CARRYING   -> PICKING     (gripper holding)
+[21:25:49] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:25:53] PICKING    -> CARRYING    (via home)
+[21:25:55] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.5 s, limit 26)
+[21:25:56] CONDITION J1 current 6 mA in CARRYING: WARN -> OK (held 0.5 s, limit 26)
+[21:25:56] CARRYING   -> PLACING     (right_bin, gripper closed)
+[21:25:58] PLACING    -> CARRYING    (to right_bin)
+[21:25:59] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:26:01] CARRYING   -> PICKING     (gripper closing)
+[21:26:03] PICKING    -> CARRYING    (via home)
+[21:26:05] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.52 s, limit 26)
+[21:26:06] CONDITION J1 current 6 mA in CARRYING: WARN -> OK (held 0.5 s, limit 26)
+[21:26:06] CARRYING   -> PLACING     (right_bin, gripper closed)
+[21:26:07] PLACING    -> MOVING      (gripper opening)
+[21:26:09] state=MOVING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:26:08] MOVING     -> CARRYING    (to right_bin)
+[21:26:11] CARRYING   -> PICKING     (gripper closing)
+[21:26:13] PICKING    -> CARRYING    (via home)
+[21:26:16] CARRYING   -> PLACING     (right_bin, gripper closed)
+[21:26:18] PLACING    -> CARRYING    (to right_bin)
+[21:26:19] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:26:21] CARRYING   -> PICKING     (gripper closing)
+[21:26:23] PICKING    -> CARRYING    (via home)
+[21:26:26] CARRYING   -> PLACING     (right_bin, gripper closed)
+[21:26:28] PLACING    -> CARRYING    (to right_bin)
+[21:26:29] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[21:26:31] CARRYING   -> PICKING     (gripper closing)
+[21:26:33] PICKING    -> CARRYING    (via home)
+[21:26:36] CARRYING   -> PLACING     (right_bin, gripper closed)
+[21:26:38] PLACING    -> CARRYING    (to right_bin)
+[21:26:39] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:26:40] CARRYING   -> NO_DATA     (no telemetry for 1.0 s)
+
+[arm-analyzer] stopping
+[arm-analyzer] lost the broker

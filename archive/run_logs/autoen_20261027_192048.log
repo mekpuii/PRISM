@@ -1,0 +1,15 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+[mqtt] belt connected to localhost:1883: Success
+[mqtt] arm connected to localhost:1883: Success
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261027_192051.csv
+       riff_logs/autoen_sets_20261027_192051.csv
+       riff_logs/autoen_cycles_20261027_192051.csv
+       riff_logs/autoen_thresholds_20261027_192051.csv
+settings changed from the web page: {'sets': 2, 'cycles_per_set': 6, 'arm_speed': 1.0, 'carry_speed': 1.0, 'rpm': 6.7, 'offset': 0, 'drop_mode': 'alternate', 'first_drop': 'left', 'gap': 1.0, 'hz': 5.0, 'acc': 8, 'gripper_speed': 1200, 'open_pos': 2492, 'enable_b': 0, 'enable_a': 1, 'grip_fast_to_pos': 2323, 'grip_pos': 2012, 'grip_pos_speed': 400, 'grip_fast_speed': 1800, 'grip_fast_acc': 70, 'grip_fast_timeout': 2.0, 'enable_d': 1, 'grip_hold_preload': 150, 'grip_hold_torque_limit': 180, 'dwell_standby': 0.0, 'dwell_grip': 0.0, 'dwell_drop': 0.0, 'dwell_home': 0.0, 'feed_timeout': 5.0, 'arrive_timeout': 20.0, 'grip_timeout': 12.0, 'clear_timeout': 3.0, 'standby_timeout': 45.0, 'move_timeout': 40.0, 'pose_tol': 40, 'grip_tol': 25, 'hold_tol': 60, 'settle_tol': 100, 'max_fails': 3, 'temp_max': 60.0, 'belt_wdt_ms': 500, 'kp': 4.5, 'ki': 13.5, 'kd': 0.0, 'feeder_home': 90, 'feeder_push': 90, 'feeder_push_ms': 400, 'feeder_return_ms': 400, 'enable_verify': 1, 'grip_contact_min_deg': 150.0, 'grip_contact_max_deg': 181.8, 'grip_carry_min_ma': 0.0, 'grip_slip_max_deg': 2.0, 'enable_recover': 1, 'recover_conv_s': 7.0, 'enable_c': 0, 'arrival_guard': 1, 'arrival_margin_s': 0.5, 'queue_split': 0.5}
+Set 1 (19:20:52-19:21:25): J1: temp max 31C, current avg 4 / peak 6 mA; J2: temp max 31C, current avg 3 / peak 20 mA; J3: temp max 32C, current avg 54 / peak 110 mA; J4: temp max 32C, current avg 6 / peak 20 mA; J5: temp max 32C, current avg 4 / peak 6 mA; J6: temp max 33C, current avg 0 / peak 0 mA; Belt: temp max 24C, current avg 4 / peak 4 mA; ARM TOTAL: servo volt min 12.1 V, summed current avg 72 / peak 136 mA
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+stopped: stopped by the operator  (unparsable RX lines: 0)

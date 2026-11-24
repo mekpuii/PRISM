@@ -1,0 +1,207 @@
+{
+ "rpm": {
+  "0": {
+   "rpm_set": 0.0,
+   "W_mean": 0.0001,
+   "W_std": 0.0011,
+   "n": 1122,
+   "W_round1": 0.0001,
+   "W_round2": 0.0002,
+   "round2_vs_round1": 1.0,
+   "belt_ref_W_30s_2026-10-24": null,
+   "steps": [
+    {
+     "step": 1,
+     "round": 1,
+     "W_mean": 0.0001,
+     "W_std": 0.0009,
+     "n": 561,
+     "rpm_mean": 0.0,
+     "rpm_std": 0.0,
+     "mA_mean": 0.0053,
+     "V_mean": 12.185
+    },
+    {
+     "step": 10,
+     "round": 2,
+     "W_mean": 0.0002,
+     "W_std": 0.0014,
+     "n": 561,
+     "rpm_mean": 0.0,
+     "rpm_std": 0.0,
+     "mA_mean": 0.0125,
+     "V_mean": 12.189
+    }
+   ]
+  },
+  "8": {
+   "rpm_set": 8.0,
+   "W_mean": 0.4929,
+   "W_std": 0.0313,
+   "n": 1123,
+   "W_round1": 0.5017,
+   "W_round2": 0.4842,
+   "round2_vs_round1": -0.0349,
+   "belt_ref_W_30s_2026-10-24": 0.505,
+   "steps": [
+    {
+     "step": 3,
+     "round": 1,
+     "W_mean": 0.5017,
+     "W_std": 0.0286,
+     "n": 561,
+     "rpm_mean": 7.9989,
+     "rpm_std": 0.0667,
+     "mA_mean": 41.1836,
+     "V_mean": 12.182
+    },
+    {
+     "step": 8,
+     "round": 2,
+     "W_mean": 0.4842,
+     "W_std": 0.0315,
+     "n": 562,
+     "rpm_mean": 7.9957,
+     "rpm_std": 0.0684,
+     "mA_mean": 39.7349,
+     "V_mean": 12.186
+    }
+   ]
+  },
+  "11.1": {
+   "rpm_set": 11.1,
+   "W_mean": 0.6775,
+   "W_std": 0.0367,
+   "n": 1123,
+   "W_round1": 0.6792,
+   "W_round2": 0.6757,
+   "round2_vs_round1": -0.0052,
+   "belt_ref_W_30s_2026-10-24": 0.697,
+   "steps": [
+    {
+     "step": 5,
+     "round": 1,
+     "W_mean": 0.6792,
+     "W_std": 0.0357,
+     "n": 565,
+     "rpm_mean": 11.1023,
+     "rpm_std": 0.0795,
+     "mA_mean": 55.7062,
+     "V_mean": 12.192
+    },
+    {
+     "step": 6,
+     "round": 2,
+     "W_mean": 0.6757,
+     "W_std": 0.0377,
+     "n": 558,
+     "rpm_mean": 11.0978,
+     "rpm_std": 0.0792,
+     "mA_mean": 55.4319,
+     "V_mean": 12.19
+    }
+   ]
+  },
+  "15": {
+   "rpm_set": 15.0,
+   "W_mean": 0.952,
+   "W_std": 0.0568,
+   "n": 1126,
+   "W_round1": 0.9791,
+   "W_round2": 0.9252,
+   "round2_vs_round1": -0.0551,
+   "belt_ref_W_30s_2026-10-24": 0.969,
+   "steps": [
+    {
+     "step": 2,
+     "round": 1,
+     "W_mean": 0.9791,
+     "W_std": 0.0504,
+     "n": 561,
+     "rpm_mean": 14.9959,
+     "rpm_std": 0.0937,
+     "mA_mean": 80.385,
+     "V_mean": 12.18
+    },
+    {
+     "step": 9,
+     "round": 2,
+     "W_mean": 0.9252,
+     "W_std": 0.0497,
+     "n": 565,
+     "rpm_mean": 14.995,
+     "rpm_std": 0.0913,
+     "mA_mean": 75.9558,
+     "V_mean": 12.18
+    }
+   ]
+  },
+  "20": {
+   "rpm_set": 20.0,
+   "W_mean": 1.3071,
+   "W_std": 0.0646,
+   "n": 1115,
+   "W_round1": 1.3343,
+   "W_round2": 1.2799,
+   "round2_vs_round1": -0.0408,
+   "belt_ref_W_30s_2026-10-24": 1.331,
+   "steps": [
+    {
+     "step": 4,
+     "round": 1,
+     "W_mean": 1.3343,
+     "W_std": 0.0595,
+     "n": 558,
+     "rpm_mean": 19.9993,
+     "rpm_std": 0.1033,
+     "mA_mean": 109.552,
+     "V_mean": 12.179
+    },
+    {
+     "step": 7,
+     "round": 2,
+     "W_mean": 1.2799,
+     "W_std": 0.0578,
+     "n": 557,
+     "rpm_mean": 20.0,
+     "rpm_std": 0.1017,
+     "mA_mean": 105.1077,
+     "V_mean": 12.177
+    }
+   ]
+  }
+ },
+ "_doc": "Step 3: empty-belt power vs rpm. W = |belt INA260 current| x belt INA260 bus voltage (belt motor supply, ~12.18 V); first 10 s of every 70 s step not counted. W_std = spread of the individual samples (both rounds pooled). rpm 0 = belt braked by the driver: the belt INA260 reads 0 mA (below its ~1.25 mA step), so 0 W here is the motor branch only, NOT the controller/driver standby power.",
+ "rpm_units": "output_rpm_cpr11880",
+ "source_run": "beltpwr_20261025_164625",
+ "source_meta_sha256": "9a2d09a3c08ca88dd4624c76dd32b7093827e095c4a6e42536c378465d83862e",
+ "measured": [
+  "2026-10-25T16:46:25",
+  "2026-10-25T17:01:41"
+ ],
+ "plan": {
+  "path": "/home/mekkhram/Desktop/PRISM_mek/orchestrator/cal/plans/belt_power_v1.json",
+  "sha256": "a6cf0b60b829a8a7fc32766268afb7ffd61603118c2d85cfa3cd11ad5bc04f7d",
+  "seconds": 70.0,
+  "settle_s": 10.0
+ },
+ "belt_settings": [
+  "CPR,11880",
+  "TEMPMAX,60",
+  "PID,4.5,13.5,0",
+  "WDT,500"
+ ],
+ "voltage_source": "belt INA260 bus voltage (mV), 12.177..12.192 V mean per step",
+ "checks": {
+  "steps_done": "10/10",
+  "faults": 0,
+  "ir_hits": 0,
+  "outliers_gt_4sd_moving": 0,
+  "motor_temp_C": [
+   25.37,
+   26.94
+  ],
+  "drift": "round 2 is 0.5-5.5 % lower than round 1 at the same rpm while the motor warmed 25.4 -> 26.9 C (warm-up / lubricant); within a step the 10-s windows drift by <= ~4 %"
+ },
+ "created": "2026-10-25"
+}

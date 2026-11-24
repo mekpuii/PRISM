@@ -1,0 +1,360 @@
+"""arm_mega.py — backend คุมแขน SO101 ผ่าน Arduino Mega (โปรโตคอลเดียวกับระบบ PRISM)
+
+    คอม/Pi --USB--> Mega 2560 --Serial2--> URT-2 --> STS3215 x6
+ใช้ mega_link.py ตัวเดิมของ PRISM (ไม่ได้แก้) และคำสั่งของเฟิร์มแวร์ Mega:
+    P,<id>,<tick>,<speed>   ไปตำแหน่ง tick ด้วยความเร็ว tick/s   (เฟิร์มแวร์ constrain ด้วย SAFE_MIN/MAX)
+    H,<id>                  ค้างที่ตำแหน่งปัจจุบัน
+    C,6                     ปิด gripper ทีละนิดจนติดวัตถุ แล้วตอบ G,CLOSED (ติด) หรือ G,ERROR (ไม่ติด)
+    Q,<id>,<0|1>            ปล่อย/เปิด torque
+interface เหมือน arm.py (LeRobot): connect / read / send / move_smooth / open_gripper / close_gripper / torque_off / disconnect
+
+หน่วยข้อต่อ = tick ดิบของ STS3215 (0-4095)  ข้อสำคัญ:
+  * เฟิร์มแวร์ "บีบค่าเงียบๆ" ถ้าเกิน SAFE_MIN/MAX -> ที่นี่ตรวจเองก่อนส่งและปฏิเสธ (ArmLimitError)
+  * พอร์ตซีเรียลมีเจ้าของได้คนเดียว: ปิด autoen / dashboard ของ PRISM ก่อนรัน
+  * เปิดพอร์ตแล้ว Mega จะรีเซ็ต (connect() รอบูตนานสุด ~12 วินาที)
+  * Mega ทิ้งบางบรรทัด -> _drive() ส่ง P ซ้ำทุก 1 วินาทีสำหรับข้อต่อที่ยังไม่ถึง (เหมือน arm_sequence.py)
+"""
+import time
+
+import config as C
+from mega_link import MegaLink
+
+JOINTS = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper"]
+FEEDBACK_STALE_S = 1.5       # ไม่มีค่าตำแหน่งสดเกินนี้ = ตาบอด หยุดแล้วค้างแขน
+RESEND_EVERY_S = 0.25        # < 500 ms (POSITION_TIMEOUT_MS ของเฟิร์มแวร์) ไม่งั้นเป้าถูกแช่แข็งกลางทาง
+
+IDLE_HOOK = None             # ฟังก์ชันที่เรียกระหว่างรอแขนขยับ (follow_block ตั้งเป็น cv2.waitKey(1) -> หน้าต่างไม่ Not Responding ตอนหยิบ/กลับท่า)
+SERIAL_WRITE_TIMEOUT_S = 1.0  # เขียนพอร์ตค้างเกินนี้ = USB/Mega ค้าง -> error แทนการค้างทั้งโปรแกรมตลอดไป
+
+
+def _idle(seconds):
+    """time.sleep ที่ยังเรียก IDLE_HOOK เป็นระยะ (ทุก ~30 ms)"""
+    end = time.monotonic() + seconds
+    while True:
+        if IDLE_HOOK is not None:
+            try:
+                IDLE_HOOK()
+            except Exception:
+                pass
+        left = end - time.monotonic()
+        if left <= 0:
+            return
+        time.sleep(min(left, 0.03))
+
+
+class ArmError(RuntimeError):
+    """แขนทำไม่สำเร็จตามสั่ง (ค้างอยู่ที่ตำแหน่งเดิม ตรวจด้วยมือ)"""
+
+
+class ArmLimitError(ArmError):
+    """เป้าหมายเกินขอบเขต SAFE_MIN/MAX — ไม่ได้ส่งคำสั่งใดๆ"""
+
+
+class GripError(ArmError):
+    """ปิด gripper แล้วไม่มีสัญญาณยืนยันว่าติดบล็อก (G,ERROR) — อย่ายกต่อ"""
+
+
+class Arm:
+    def __init__(self, link=None):
+        """link: ส่ง MegaLink ที่เปิดอยู่แล้วเข้ามาได้ (เช่น ของ PRISM บน Pi — พอร์ตมีเจ้าของได้คนเดียว จึงต้องใช้ร่วมกัน)
+        ถ้าส่งมา connect() จะไม่เปิดพอร์ตใหม่ และ disconnect() จะไม่ปิดพอร์ตของคนอื่น"""
+        self.link = link
+        self._own_link = link is None
+        self.ids = C.MEGA_JOINT_ID
+        self.last_error = {}
+        self._moved = set()          # ID ของมอเตอร์ที่เราเคยสั่งเคลื่อนที่ (ตอนจบจะ H เฉพาะพวกนี้ ไม่แตะตัวที่เราไม่ได้สั่ง)
+
+    # ------------------------------------------------------------ เชื่อมต่อ
+    def connect(self):
+        """เปิดพอร์ต Mega (รอบูต) แล้วรอจน R,1 และทุกมอเตอร์รายงานตำแหน่ง"""
+        if self.link is None:
+            import pi_env
+            try:
+                pi_env.check_port_free(C.ARM_PORT)      # Pi: opening the port resets the Mega -> never while PRISM runs
+            except RuntimeError as e:
+                raise ArmError(str(e))
+            self.link = MegaLink(C.ARM_PORT, C.MEGA_BAUD)
+            try:
+                self.link.ser.write_timeout = SERIAL_WRITE_TIMEOUT_S   # เฉพาะพอร์ตที่เราเปิดเอง (ไม่แตะ link ของ PRISM)
+            except Exception:
+                pass
+        end = time.monotonic() + 20.0
+        ready, missing = None, list(range(1, 7))
+        while time.monotonic() < end:
+            ready = self.link.firmware_ready
+            missing = [i for i in range(1, 7) if self.link.servo_pos(i, FEEDBACK_STALE_S) is None]
+            if ready is True and not missing:
+                return
+            _idle(0.2)
+        raise ArmError(f"Mega ไม่พร้อมใน 20 วินาที: R={ready}, มอเตอร์ที่ไม่มีค่า={missing}, "
+                       f"บรรทัดตอนบูต={self.link.boot_lines[:6]} (ถูกโปรแกรมอื่นใช้พอร์ตอยู่ไหม? ARM_PORT ถูกไหม?)")
+
+    def disconnect(self, hold=True):
+        """ปิดพอร์ต (ไม่ส่ง STOP ไปที่สายพาน เพราะอาจเป็นของระบบ PRISM)
+        hold=True: สั่ง H ค้าง "เฉพาะข้อต่อที่เราเคยสั่งเคลื่อนที่" (1-5) — ตัวที่ไม่ได้สั่งจะไม่ถูกแตะเลย
+        (H บน Mega จะเปิด torque และบีบเป้าเข้า SAFE_MIN/MAX ถ้าข้อต่อนอกช่วง มันจะขยับเอง)
+        สคริปต์ที่แค่อ่านค่าให้ใช้ hold=False"""
+        if self.link is None:
+            return
+        try:
+            if hold:
+                for i in sorted(x for x in self._moved if x <= 5):
+                    self.link.write(f"H,{i}")
+        except Exception:
+            pass
+        if not self._own_link:                # link ของคนอื่น (PRISM): ไม่ปิด ไม่หยุด thread
+            return
+        self.link._running = False            # หยุด thread keep-alive/อ่าน (ไม่เรียก link.close() เพราะมันสั่ง belt STOP)
+        _idle(0.3)
+        try:
+            self.link.ser.close()
+        finally:
+            self.link = None
+
+    # ------------------------------------------------------------ อ่าน / ตรวจขอบเขต
+    def read(self):
+        """ตำแหน่งปัจจุบัน {ชื่อข้อต่อ: tick} (raise ถ้าข้อไหนไม่มีค่าสด)"""
+        out = {}
+        for j in JOINTS:
+            p = self.link.servo_pos(self.ids[j], FEEDBACK_STALE_S)
+            t_end = time.time() + 1.5             # ค่าหายชั่วคราวได้ (เช่น หลังปิด gripper บัสยุ่ง) -> รอสูงสุด 1.5 s ก่อนถือว่าหลุด
+            while p is None and time.time() < t_end:
+                _idle(0.05)
+                p = self.link.servo_pos(self.ids[j], FEEDBACK_STALE_S)
+            if p is None:
+                raise ArmError(f"ไม่มีค่าตำแหน่งสดของ {j} (ID {self.ids[j]}) — สาย/ไฟเลี้ยงหรือ Mega หลุด?")
+            out[j] = p
+        return out
+
+    def read_joint(self, joint, wait=3.0):
+        """อ่าน "ข้อต่อเดียว" รอค่าสดได้สูงสุด wait วินาที (ไม่ต้องให้ทั้ง 6 ข้อมีค่าพร้อมกันเหมือน read())
+        ใช้ตอนวัดค่าด้วยมือ: Mega ทิ้งบางบรรทัด telemetry ได้ ข้อใดข้อหนึ่งอาจขาดค่าชั่วคราว"""
+        end = time.monotonic() + wait
+        while True:
+            p = self.link.servo_pos(self.ids[joint], FEEDBACK_STALE_S)
+            if p is not None:
+                return p
+            if time.monotonic() > end:
+                raise ArmError(f"ไม่มีค่าตำแหน่งสดของ {joint} (ID {self.ids[joint]}) นาน {wait:.0f}s — สาย/ไฟเลี้ยงหรือ Mega หลุด?")
+            _idle(0.05)
+
+    def _check_limits(self, ticks):
+        for j, v in ticks.items():
+            lo, hi = C.JOINT_LIMITS[j]
+            if not (lo <= v <= hi):
+                raise ArmLimitError(f"{j}={v} เกินขอบเขต [{lo}, {hi}] — ไม่ส่งคำสั่ง (เฟิร์มแวร์จะบีบเงียบๆ ถ้าปล่อยผ่าน)")
+
+    def status(self):
+        """[(ชื่อข้อต่อ, tick ปัจจุบัน, min, max, อยู่ในช่วงไหม)] สำหรับตรวจก่อนสั่งขยับ (ไม่ส่งคำสั่งใดๆ)"""
+        cur = self.read()
+        return [(j, cur[j], *C.JOINT_LIMITS[j], C.JOINT_LIMITS[j][0] <= cur[j] <= C.JOINT_LIMITS[j][1]) for j in JOINTS]
+
+    def _require_in_range(self, cur):
+        """ปฏิเสธการขยับถ้าข้อต่อแขน (1-5) "ตอนนี้" อยู่นอก SAFE_MIN/MAX
+        เหตุผล: นอกช่วง = มักเป็นท่าพักบน cradle ของ PRISM; เฟิร์มแวร์จะบีบเป้าเข้าช่วงแล้วแขนกระโดด และ
+        การเคลื่อนเป็นเส้นตรงในปริภูมิข้อต่อจากท่าพักอาจชนโครง (PRISM มีลำดับ wake เฉพาะเพราะเคยชนมาแล้ว)"""
+        out = []
+        for j in JOINTS[:5]:
+            lo, hi = C.JOINT_LIMITS[j]
+            if not (lo <= cur[j] <= hi):
+                out.append(f"{j}={cur[j]} (ช่วง {lo}-{hi})")
+        if out:
+            raise ArmLimitError("ข้อต่อนอกขอบเขตอยู่แล้ว: " + ", ".join(out) +
+                                " — น่าจะอยู่ท่าพัก/cradle; ยกแขนด้วยมือหรือใช้ wake ของ PRISM ให้เข้าช่วงก่อน ไม่ขยับให้")
+
+    def _p(self, joint, tick, speed):
+        self.link.write(f"P,{self.ids[joint]},{int(tick)},{int(speed)}")
+
+    # ------------------------------------------------------------ เคลื่อนที่
+    def send(self, target):
+        """ส่งเป้าหมายครั้งเดียวไม่รอ (ข้อที่ไม่ระบุ = ค้างเดิม) ใช้ความเร็วเพดาน"""
+        ticks = {j: int(round(v)) for j, v in target.items()}
+        self._check_limits(ticks)
+        self._require_in_range(self.read())
+        self._moved.update(self.ids[j] for j in ticks)
+        for j, t in ticks.items():
+            self._p(j, t, C.MEGA_MAX_SPEED)
+        self.link.write("J,6,0")
+
+    def move_smooth(self, target, duration=2.0, fine=False):
+        """ไปเป้าหมายและรอจนถึง: ทุกข้อต่อออกเดินพร้อมกันและถึงพร้อมกันประมาณ duration วินาที
+        (ความเร็วต่อข้อ = ระยะทาง/duration ภายใน [MIN, MAX] tick/s; การเคลื่อนเป็นเส้นตรงในปริภูมิข้อต่อ ไม่ใช่ในปริภูมิงาน)
+        fine=True: โหมดแม่นยำสำหรับจุดหยิบ — รอจนนิ่ง แล้วชดเชยค่าคลาดค้าง (แรงโน้มถ่วง/deadband) ให้เหลือ ~3 tick
+        ถ้า target มี "gripper" จะสั่ง P,6 ด้วย (ปกติใช้ open_gripper/close_gripper แทน)"""
+        ticks = {j: int(round(v)) for j, v in target.items()}
+        self._check_limits(ticks)
+        cur = self.read()
+        self._require_in_range(cur)
+        speeds = {}
+        for j, t in ticks.items():
+            v = abs(t - cur[j]) / max(duration, 0.1)
+            speeds[j] = int(max(C.MEGA_MIN_SPEED, min(C.MEGA_MAX_SPEED, v)))
+        self._drive(ticks, speeds, C.MEGA_TOL_TICKS, fine=fine)
+
+    def _drive(self, ticks, speeds, tol, fine=False):
+        """ส่ง P ทุกข้อ รอจนอยู่ในค่าคลาดเคลื่อน; ส่ง P ซ้ำทุก RESEND_EVERY_S
+        (เฟิร์มแวร์: ถ้าข้อไหนไม่ได้รับคำสั่งเกิน 500 ms ขณะมีเป้า มันจะ "แช่แข็ง" เป้าไว้ที่ตำแหน่งปัจจุบัน -> ต้องส่งซ้ำถี่กว่านั้น
+         P เป้าเดิมซ้ำไม่เขียนลง servo ใหม่ แค่รีเฟรช watchdog จึงไม่กระตุก)
+        fine=False: ถึงในค่า tol แล้วสั่ง H ค้าง (เหมือน PRISM)
+        fine=True : รอจนนิ่ง -> ถ้ายังคลาด > MEGA_TOL_FINE ให้สั่งเป้าชดเชย (เป้า + ค่าคลาด) สูงสุด 3 รอบ -> ไม่สั่ง H (ให้ servo ยึดเป้าต่อ)
+        ตาบอด/หมดเวลา/Ctrl-C -> สั่ง H ค้างแขนแล้ว raise (ไม่ปล่อยให้ไปต่อ)"""
+        cmd = dict(ticks)                                  # เป้าที่ส่งจริง (โหมด fine อาจชดเชยต่างจาก ticks เล็กน้อย)
+
+        def send_all(only_far=False, pos=None):
+            for j, t in cmd.items():
+                if only_far and pos is not None and pos[j] is not None and abs(pos[j] - ticks[j]) <= tol and not fine:
+                    continue
+                self._p(j, t, speeds[j])
+
+        send_all()
+        self._moved.update(self.ids[j] for j in ticks)
+        start_pos = {j: self.link.servo_pos(self.ids[j], FEEDBACK_STALE_S) for j in ticks}
+        t_start = time.monotonic()
+        end = t_start + C.MEGA_MOVE_TIMEOUT_S
+        last_resend = time.monotonic()
+        blind_since = None
+        hist = []                                          # (เวลา, ตำแหน่ง) ใช้ดูว่านิ่งหรือยัง
+        trims = 0
+        try:
+            while True:
+                now = time.monotonic()
+                pos = {j: self.link.servo_pos(self.ids[j], FEEDBACK_STALE_S) for j in ticks}
+                if now - last_resend >= RESEND_EVERY_S:
+                    last_resend = now
+                    send_all(only_far=True, pos=pos)
+                if any(p is None for p in pos.values()):
+                    blind_since = blind_since or now
+                    if now - blind_since > FEEDBACK_STALE_S:
+                        miss = []                                  # บอกว่าข้อไหนขาด + ขาดมานานเท่าไร (ช่วยหาสาเหตุ)
+                        for jj, pp in pos.items():
+                            if pp is None:
+                                st = self.link.servo[self.ids[jj]]
+                                age = (time.monotonic() - st.t) if st.pos is not None else None
+                                miss.append(f"{jj}(ID{self.ids[jj]}) " + (f"เงียบมา {age:.1f}s" if age is not None else "ไม่เคยมีค่า"))
+                        raise ArmError("ไม่มีค่าตำแหน่งสด — แขนค้างอยู่ที่เดิม | ข้อที่ขาด: " + ", ".join(miss))
+                else:
+                    blind_since = None
+                    err = {j: ticks[j] - pos[j] for j in ticks}
+                    worst = max(abs(e) for e in err.values())
+                    if fine:                               # gripper ไม่ต้องละเอียด (ไม่มีผลต่อตำแหน่ง) ใช้ค่า tol ปกติ
+                        worst = max([abs(e) for j, e in err.items() if j != "gripper"] +
+                                    [max(0, abs(err.get("gripper", 0)) - tol)])
+                    if not fine:
+                        if worst <= tol:
+                            break
+                    else:
+                        if worst <= C.MEGA_TOL_FINE:
+                            break
+                        hist.append((now, dict(pos)))
+                        hist = [h for h in hist if now - h[0] <= 0.5]
+                        still = (now - hist[0][0] >= 0.4 and
+                                 all(abs(pos[j] - h[1][j]) <= 1 for h in hist for j in ticks))
+                        if still and worst <= 60:          # นิ่งแล้วแต่ยังคลาด: ชดเชยด้วยการขยับเป้า
+                            if trims >= 3:
+                                break                      # ชดเชยครบแล้ว ยอมรับค่าที่เหลือ (รายงานให้ผู้เรียกผ่าน last_error)
+                            trims += 1
+                            for j, e in err.items():
+                                if abs(e) > C.MEGA_TOL_FINE and j != "gripper":
+                                    lo, hi = C.JOINT_LIMITS[j]
+                                    cmd[j] = int(max(lo, min(hi, cmd[j] + e)))
+                            send_all()
+                            hist = []
+                if now - t_start > 2.5:                    # 2.5 วินาทีแล้วข้อต่อที่ยังห่างเป้าไม่ขยับเลย = ไม่รับคำสั่ง
+                    stuck = [j for j in ticks if pos[j] is not None and start_pos[j] is not None
+                             and abs(pos[j] - ticks[j]) > 5 * tol and abs(pos[j] - start_pos[j]) < 4]
+                    if stuck:                              # เฟิร์มแวร์เมิน P ของข้อต่อที่ torque ปิด
+                        raise ArmError(f"{stuck} ไม่ขยับทั้งที่สั่งแล้ว — torque อาจปิดอยู่ (ประคองแขน แล้วสั่ง arm.torque_on()) "
+                                       f"หรือบรรทัด P ไม่ถึง Mega")
+                if now > end:
+                    e2 = {j: (None if pos[j] is None else pos[j] - ticks[j]) for j in ticks}
+                    raise ArmError(f"ไปไม่ถึงเป้าใน {C.MEGA_MOVE_TIMEOUT_S:.0f}s (คลาดเคลื่อน tick ต่อข้อต่อ: {e2})")
+                _idle(0.02)
+        except BaseException:                              # รวม KeyboardInterrupt: ค้างแขนไว้ก่อนเสมอ
+            self._hold_all()
+            raise
+        self.last_error = {j: (pos[j] - ticks[j]) for j in ticks}   # ค่าคลาดสุดท้าย (tick) ให้ผู้เรียกตรวจ
+        if not fine:
+            for j in ticks:                                # ถึงแล้วค้างตำแหน่ง (ข้อ 1-5 เหมือน PRISM; gripper ปล่อยตาม P)
+                if j != "gripper":
+                    self.link.write(f"H,{self.ids[j]}")
+
+    def _hold_all(self):
+        """ค้างเฉพาะข้อต่อ 1-5 ที่เราเคยสั่ง (ไม่ไปเปิด torque ของตัวที่ไม่ได้ยุ่ง)"""
+        for i in sorted(x for x in self._moved if x <= 5):
+            try:
+                self.link.write(f"H,{i}")
+            except Exception:
+                pass
+
+    # ------------------------------------------------------------ ปลุกแขนจากท่าพัก (cradle)
+    def wake_step(self, joints_ticks, speed):
+        """ขยับ "เฉพาะข้อที่ระบุ" ด้วยความเร็วคงที่ โดย "ไม่" บังคับว่าข้อต่ออื่นต้องอยู่ในช่วงตอนนี้
+        (ใช้เฉพาะลำดับ wake เพราะต้นทางคือท่าพักที่นอกช่วง) แต่ "เป้าหมาย" ต้องอยู่ในช่วงเสมอ"""
+        ticks = {j: int(round(v)) for j, v in joints_ticks.items()}
+        self._check_limits(ticks)                         # เป้าต้องอยู่ใน SAFE_MIN/MAX
+        self._drive(ticks, {j: int(speed) for j in ticks}, C.MEGA_TOL_TICKS)
+
+    def wake(self, confirm=None):
+        """ลำดับ wake ที่เพื่อนสอนไว้ใน PRISM (config/poses.json -> wake_sequence) ทีละสเต็ป:
+        unstep4 -> unstep3 -> unstep2 -> unstep1  (ย้อนลำดับ rest; ข้อ 2 ขยับก่อนและลำพัง กันชนโครง)
+        1) เปิด torque ข้อ 2,3,5 ที่ตำแหน่งปัจจุบัน (เหมือน wake() ของ PRISM)
+        2) ทำทีละสเต็ปด้วยความเร็วช้า (rest_speed=120 tick/s) ก่อนทุกสเต็ปเรียก confirm(ชื่อ, เป้า) ถ้ามี
+        จบที่ท่า "start" ของ PRISM ซึ่งอยู่ในช่วง SAFE ทุกข้อ"""
+        steps = [("unstep4", {"wrist_roll": 934}),
+                 ("unstep3", {"elbow_flex": 2202, "wrist_roll": 1234}),
+                 ("unstep2", {"wrist_flex": 3188}),
+                 ("unstep1", {"shoulder_pan": 2096, "shoulder_lift": 1662, "elbow_flex": 2360,
+                              "wrist_flex": 3022, "gripper": 2484})]
+        speed = 120
+        for i in (2, 3, 4, 5, 6):                         # torque ON ที่ตำแหน่งปัจจุบัน (เฟิร์มแวร์ตั้ง goal=present, บีบเข้า SAFE)
+                                                          # รวม 4 (wrist_flex: เจอจริง unstep2 ไม่ขยับเพราะ torque ปิด) และ 6 (gripper): ถ้า torque ปิด เฟิร์มแวร์จะเมิน P,6 (เจอจริงครั้งแรกที่สเต็ป unstep1)
+            self.link.write(f"Q,{i},1")
+            _idle(0.15)
+        _idle(1.0)                                   # settle เท่า torque_off_settle_s ของ PRISM
+        for name, tgt in steps:
+            if confirm is not None and not confirm(name, tgt):
+                raise ArmError(f"ยกเลิกที่สเต็ป {name} (แขนค้างตำแหน่งปัจจุบัน)")
+            self.wake_step(tgt, speed)
+            _idle(0.5)
+
+    # ------------------------------------------------------------ gripper
+    def open_gripper(self):
+        """เปิด gripper ไปที่ GRIPPER_OPEN (ช้าๆ ด้วย MEGA_GRIPPER_SPEED)"""
+        t = int(round(C.GRIPPER_OPEN))
+        self._check_limits({"gripper": t})
+        self.link.write("Q,6,1")                          # torque ข้อ 6 อาจปิดอยู่ (เจอจริง: P,6 ถูกเมิน) เปิดที่ตำแหน่งปัจจุบัน ไม่กระโดด
+        _idle(0.3)
+        self._drive({"gripper": t}, {"gripper": C.MEGA_GRIPPER_SPEED}, 12)
+
+    def close_gripper(self):
+        """ปิดด้วย C,6: หุบทีละนิด (500 tick/s) จนตำแหน่งหยุดนิ่งแล้วหยุดเอง รอ G,CLOSED / G,ERROR
+        ข้อควรรู้ (อ่านจากเฟิร์มแวร์): G,CLOSED = "jaw หยุดแล้ว" เท่านั้น — หนีบอากาศจน jaw ชนกันก็ได้ CLOSED เหมือนกัน
+        G,ERROR เกิดเฉพาะตอนอ่านตำแหน่ง gripper ไม่ได้ (-> GripError)  การรู้ว่า "ได้บล็อกจริง" ต้องดู tick ที่หยุดเทียบ GRIP_TICK_RANGE
+        คืนตำแหน่ง tick ที่ gripper หยุด (ใช้เช็กว่าติดบล็อก 30 mm จริง: ค่าควรสอดคล้องกับความกว้างบล็อก)"""
+        self.link.clear_gripper_events()
+        self.link.write("C,6")
+        try:
+            state, pos = self.link.wait_gripper(("CLOSED", "ERROR"), C.MEGA_GRIP_TIMEOUT_S)
+        except TimeoutError:
+            raise ArmError("ไม่มีสัญญาณยืนยัน gripper (เฟิร์มแวร์ที่รองรับ C,6 ถูกอัปโหลดอยู่ไหม?)")
+        if state == "ERROR":
+            raise GripError(f"ปิด gripper แล้วไม่ยืนยันว่าติดวัตถุ (หยุดที่ {pos} tick) — ไม่ยกต่อ")
+        return pos if pos is not None else -1
+
+    # ------------------------------------------------------------ torque (ใช้ตอนวัด offset / สอนท่า)
+    def torque_off(self, ids=(1, 2, 3, 4, 5, 6)):
+        """ปล่อยข้อต่อ (ค่าเริ่มต้น = ทุกข้อ) ให้จับขยับด้วยมือได้ — แขนจะอ่อน ประคองไว้ก่อนเรียก
+        ส่งซ้ำ 2 รอบเพราะ Mega ทิ้งบางบรรทัดได้"""
+        for _ in range(2):
+            for i in ids:
+                self.link.write(f"Q,{i},0")
+            _idle(0.15)
+
+    def torque_on(self, ids=(1, 2, 3, 4, 5, 6)):
+        """เปิด torque ที่ตำแหน่งปัจจุบัน (เฟิร์มแวร์ตั้งเป้า = ตำแหน่งปัจจุบันก่อนเปิด จึงไม่กระโดด) ส่งซ้ำ 2 รอบ"""
+        # เฟิร์มแวร์ทำ Q,id,1 เฉพาะตอนอ่านตำแหน่งข้อนั้นได้ (ไม่งั้น "คงปิดไว้") — ข้อ 4 เคยค้างปิดเพราะอ่านพลาดครั้งเดียว
+        # จึงส่งหลายรอบห่างกัน: ครั้งหลังๆ มักอ่านได้ ถ้าข้อไหนเปิดอยู่แล้วคำสั่งซ้ำไม่มีผลเสีย
+        for _ in range(5):
+            for i in ids:
+                self.link.write(f"Q,{i},1")
+            _idle(0.2)

@@ -1,0 +1,10 @@
+{
+ "_about": "Feeder angle presets (2026-11-12). autoen uses the 'active' one at start (command-line / dashboard values still win). Angles in degrees: home = blade back, ready = where it waits ready_ms before the push, push = the end of the push. Try one alone: ~/autoen-env/bin/python feeder_test.py --preset fd2",
+ "active": "fd2",
+ "fd1": {"note": "pt4/pt5 feeder: back 170, push to 10 (2026-11-12 ~15:00)",
+         "feeder_home": 170, "feeder_ready": 170, "feeder_push": 10,
+         "feeder_ready_ms": 1000, "feeder_ramp_ms": 0, "feeder_push_ms": 800, "feeder_return_ms": 300},
+ "fd2": {"note": "shorter stroke: back 165, push to 15 (2026-11-12 21:45, the operator: 'fd 2 as 15-165')",
+         "feeder_home": 165, "feeder_ready": 165, "feeder_push": 15,
+         "feeder_ready_ms": 1000, "feeder_ramp_ms": 0, "feeder_push_ms": 800, "feeder_return_ms": 300}
+}

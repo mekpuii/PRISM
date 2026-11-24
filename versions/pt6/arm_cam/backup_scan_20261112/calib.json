@@ -1,0 +1,108 @@
+{
+ "JOINT_ZERO": {
+  "shoulder_pan": 2049.0,
+  "shoulder_lift": 2011.0,
+  "elbow_flex": 2061.0,
+  "wrist_flex": 2071.0,
+  "wrist_roll": 145.0
+ },
+ "JOINT_DIR": {
+  "shoulder_pan": 1,
+  "shoulder_lift": 1,
+  "elbow_flex": 1,
+  "wrist_flex": 1,
+  "wrist_roll": 1
+ },
+ "JOINT_LIMITS": {
+  "shoulder_pan": [
+   784,
+   3404
+  ],
+  "shoulder_lift": [
+   868,
+   3151
+  ],
+  "elbow_flex": [
+   996,
+   3056
+  ],
+  "wrist_flex": [
+   813,
+   3201
+  ],
+  "wrist_roll": [
+   298,
+   3859
+  ],
+  "gripper": [
+   1768,
+   3116
+  ]
+ },
+ "JOINT_LIMITS_OLD": {
+  "shoulder_pan": [
+   784,
+   3404
+  ],
+  "shoulder_lift": [
+   868,
+   3151
+  ],
+  "elbow_flex": [
+   996,
+   3056
+  ],
+  "wrist_flex": [
+   813,
+   3201
+  ],
+  "wrist_roll": [
+   298,
+   3859
+  ],
+  "gripper": [
+   1768,
+   3116
+  ]
+ },
+ "JOINT_LIMITS_MEASURED": {
+  "shoulder_pan": [
+   784,
+   3284
+  ],
+  "shoulder_lift": [
+   1025,
+   3028
+  ],
+  "elbow_flex": [
+   873,
+   3098
+  ],
+  "wrist_flex": [
+   749,
+   3249
+  ],
+  "wrist_roll": null,
+  "gripper": null
+ },
+ "SCAN_POSE": {
+  "shoulder_pan": 2113,
+  "shoulder_lift": 1432,
+  "elbow_flex": 2219,
+  "wrist_flex": 3029,
+  "wrist_roll": 1186,
+  "gripper": 2484
+ },
+ "DETECT_ROI": [
+  490,
+  367,
+  737,
+  578
+ ],
+ "BLOCK_IS_BRIGHT": true,
+ "TABLE_PLANE": [
+  61.067616291441155,
+  0.017639883428593812,
+  -0.004176178947957018
+ ]
+}

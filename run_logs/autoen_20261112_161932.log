@@ -1,0 +1,26 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261112_161939.csv
+       riff_logs/autoen_sets_20261112_161939.csv
+       riff_logs/autoen_cycles_20261112_161939.csv
+       riff_logs/autoen_thresholds_20261112_161939.csv
+[mqtt] arm connected to localhost:1883: Success
+[mqtt] belt connected to localhost:1883: Success
+settings changed from the web page: {'rpm': 6.7, 'arm_speed': 1.0, 'carry_speed': 1.0, 'arrive_timeout': 20.0}
+WARNING: belt INA260 (D20/D21, addr 0x40) returns nan right at the start: belt current/power will be empty - check its VCC/GND/SDA/SCL wires (the 200956 run had this too)
+settings changed from the web page: {'rpm': 20.0, 'arm_speed': 1.5, 'carry_speed': 1.5, 'arrive_timeout': 25.0, 'max_fails': 8, 'sets': 1000, 'cycles_per_set': 1000}
+set 1/1000 cycle 1/6  OK 55.1s 
+settings changed from the web page: {'drop_mode': 'left'}
+set 1/1000 cycle 2/6  OK 22.9s 
+set 1/1000 cycle 3/6  OK 10.2s DRIFT J2 -62t in phase GRIP
+set 1/1000 cycle 4/6  OK 9.6s 
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 5/6  OK 12.8s 
+set 1/1000 cycle 6/6  OK 9.5s 
+Set 1 (16:19:40-16:21:57): J1: temp max 34C, current avg 4 / peak 32 mA; J2: temp max 34C, current avg 7 / peak 91 mA; J3: temp max 37C, current avg 15 / peak 136 mA; J4: temp max 38C, current avg 3 / peak 46 mA; J5: temp max 35C, current avg 3 / peak 26 mA; J6: temp max 37C, current avg 4 / peak 39 mA; ARM TOTAL: servo volt min 11.9 V, summed current avg 37 / peak 202 mA
+Set 2 (16:21:57-16:22:01): J1: temp max 34C, current avg 4 / peak 20 mA; J2: temp max 33C, current avg 11 / peak 39 mA; J3: temp max 35C, current avg 39 / peak 124 mA; J4: temp max 34C, current avg 6 / peak 13 mA; J5: temp max 34C, current avg 4 / peak 13 mA; J6: temp max 37C, current avg 9 / peak 32 mA; ARM TOTAL: servo volt min 12.1 V, summed current avg 73 / peak 188 mA
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+stopped: stopped by the operator  (unparsable RX lines: 0)

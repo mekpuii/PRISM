@@ -1,0 +1,48 @@
+[health] watching arm, camera, logger_arm, logger_camera via localhost:1883. Ctrl+C to stop.
+[health] connected to broker: Success
+[01:18:50] ARM           UNKNOWN -> OFFLINE   (arm/status says offline (last will or clean exit))
+[01:18:50] CAMERA        UNKNOWN -> OFFLINE   (camera/status says offline (last will or clean exit))
+[01:18:51] LOGGER_ARM    UNKNOWN -> OK
+[01:18:51] LOGGER_CAMERA UNKNOWN -> OK
+[01:18:57] CAMERA        OFFLINE -> UNKNOWN   (camera/perception: no message yet)
+[01:18:58] ARM           OFFLINE -> RECOVERED
+[01:19:00] arm=RECOVERED  camera=UNKNOWN  logger_arm=OK  logger_camera=OK
+[01:19:01] ARM           RECOVERED -> OK
+[01:19:05] CAMERA        UNKNOWN -> OFFLINE   (camera/demand: never seen)
+[01:19:07] CAMERA        OFFLINE -> RECOVERED
+[01:19:10] CAMERA        RECOVERED -> OK
+[01:19:10] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:19:20] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:19:30] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:19:40] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:19:50] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:20:00] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:20:10] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:20:20] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:20:30] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:20:40] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:20:50] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:21:00] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:21:10] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:21:20] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:21:30] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:21:40] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:21:50] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:22:00] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:22:10] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:22:20] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:22:30] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:22:40] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:22:47] ARM           OK -> OFFLINE   (arm/status says offline (last will or clean exit))
+[01:22:50] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[01:22:53] ARM           OFFLINE -> RECOVERED
+[01:22:56] ARM           RECOVERED -> OK
+[01:23:00] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[01:23:07] ARM           OK -> STALE   (arm/telemetry silent 1.3 s)
+[01:23:10] arm=STALE  camera=OK  logger_arm=OK  logger_camera=OK
+[01:23:11] ARM           STALE -> OFFLINE   (arm/telemetry silent 5.3 s)
+[01:23:20] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[01:23:30] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[01:23:41] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[01:23:51] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[health] lost the broker: health is UNKNOWN until it is back

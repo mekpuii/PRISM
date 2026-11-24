@@ -1,0 +1,752 @@
+# optimize.py - Module 3 of the orchestrator (PRISM, Raspberry Pi 4). v1: rule-based, no new packages.
+#
+# WHAT THIS MODULE DOES
+#   Every tick it turns what the cell is doing into a Plan:
+#     1. WHICH SETTINGS, every cycle, by priority (objective "priority", the default):
+#          1. SAFETY  only tested settings whose cautious success rate passes the floor; servos or belt warm ->
+#                     only the gentler settings; hot -> pause at home until cool (mode COOL)
+#          2. ENERGY  keep the settings within ENERGY_BAND of the lowest J per good cube
+#          3. SPEED   of those, the fastest
+#        J per cube starts from the measured grid (cal/baselines_summary.json) and is then MEASURED LIVE for every
+#        setting (belt INA260 + servo current, meter.py), so it follows the machine as it is today. Success counts
+#        learn the same way. Now and then (EXPLORE_EVERY good cycles) a nearby safe setting with little live data
+#        is tried for a few cycles, so the live numbers stay current. "throughput" / "energy" / "balanced" remain.
+#     2. WHICH BIN (sortq.py, the operator's idea): cubes cannot overtake on a belt, so the order NEW cubes appear on
+#        the camera at the feeder end is the order they will be picked. They are kept in a list [W, O, O ...]; the
+#        front is the next pick, so its bin (orange -> left, white -> right, SORT_BINS) is known early. Each cube's
+#        colour is the majority of all its camera frames. When the belt stops, the cube AT THE IR re-syncs the list
+#        (phantoms before it are dropped). autoen picks the drop pose only after the grip, so the bin is set in time.
+#        Check (also the operator's): after the grip the cube the arm took vanishes from the camera -> "confirmed",
+#        another one vanished -> "disagree".
+#     3. WHICH MODE:
+#          RUN     autoen is running cycles: use the chosen settings.
+#          IDLE    the feeder ran dry: pause autoen, hold home, brake the belt (rule O2). Never rest.
+#          ALERT   an abnormal cycle (grip miss, fault ...): pause and wait for the operator.
+#          MANUAL  someone else paused autoen: hands off until they resume.
+#          PARK    the arm rests on the cradle; only the operator's "wake" leaves it.
+#          OFF     autoen not reachable / not started / finished, or experiment.py is in control.
+#
+# HOW AN EMPTY FEEDER IS SEEN
+#   autoen feeds its own cubes (FEED, then the belt runs until the IR). With nothing in the feeder the belt
+#   runs the whole arrive_timeout (~25 s x 1.3 W at 20 rpm) and the cycle ends TIMEOUT_TRANSPORT;
+#   after max_fails (3) of those autoen stops the run. So:
+#     camera trusted (it saw the cube in >= CAM_TRUST of the last CAM_WINDOW good cycles) and fresh:
+#                   no moving cube NO_CUBE_S into TRANSPORT -> the first time in a burst: abort that transport and
+#                   FEED AGAIN at once (a missed push costs ~6 s); still nothing -> pause AND abort the transport now
+#                   (belt brakes at once, cycle result NO_BLOCK; an older autoen ignores the abort and pauses at the
+#                   end of this cycle) -> IDLE after ONE empty cycle. If the cube arrives after all -> resume.
+#     otherwise:    EMPTY_TIMEOUTS_BLIND transport timeouts in a row -> IDLE (still below autoen's max_fails).
+#
+# WHAT IT DOES NOT DO
+#   It never talks to autoen or MQTT (actuate.py does). It never leaves the tested grid. It never wakes or parks
+#   on its own, and it resumes on its own only from IDLE: --probe-s (fixed interval) or --auto-resume, where
+#   forecast.py picks when to PROBE the feeder (one FEED; an empty one is aborted by the trusted camera, ~11 J).
+#
+# INPUTS each tick
+#   state: observe.WorldState, pred: predict.PredictOutput, view: actuate.AutoenView (None = autoen unknown),
+#   commands: operator commands from orchestrator/cmd ("resume", "park", "wake").
+#
+# ACTIONS (Plan.action, one-shot; actuate.py carries them out)
+#   pause   make sure autoen pauses at the next cycle boundary
+#   abort   pause, then end the running TRANSPORT now (POST /api/abort_transport): the feeder is empty
+#   refeed  end the running TRANSPORT now WITHOUT pausing: autoen's next cycle feeds again
+#   idle    pause, wait until it really paused, drive home, brake the belt
+#   resume  un-pause (only while the arm is awake)
+#   park    rest task (arm to the cradle)
+#   wake    wake task, then brake the belt
+
+import json
+import math
+import os
+from collections import deque
+
+from meter import arm_w, belt_w
+from sortq import SortQueue
+from dataclasses import dataclass, field
+from typing import Optional
+
+# ============================================================
+# CONFIGURATION
+# ============================================================
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+MODEL_FILE = os.path.join(HERE, "model.json")
+BASELINES_FILE = os.path.join(HERE, "cal", "baselines_summary.json")
+LEARNED_FILE = os.path.join(HERE, "learned_state.json")   # online success counts, kept across restarts (main.py only)
+
+SAFE = {"rpm": 20.0, "arm_speed": 1.5}  # best measured point; used when model.json is missing
+RPM_RANGE = (8.0, 20.0)                 # the tested grid: never leave it
+ARM_RANGE = (1.0, 2.0)
+P_LOW_FLOOR = 0.8                       # a config needs a cautious success rate (Wilson lower bound) of at least this
+Z = 1.645                               # same one-sided 95 % as model.py
+
+ENERGY_BAND = 0.05                      # priority: settings within 5 % of the lowest J per good cube count as "lowest"
+K_J = 5.0                               # live J per cube is blended with the grid value as if the grid were 5 cycles
+EXPLORE_EVERY = 40                      # good cycles between two short trials of another safe, low-energy setting
+EXPLORE_CYCLES = 4                      # cycles one trial lasts
+EXPLORE_MIN_N = 15                      # only settings with fewer live energy samples than this are worth a trial
+SERVO_WARM_C, SERVO_HOT_C = 55.0, 65.0  # STS3215: gentler settings above WARM, pause above HOT (A1 peak: 39 C)
+BELT_WARM_C, BELT_HOT_C = 50.0, 57.0    # belt motor: firmware faults at TEMPMAX 60 C (A1 peak: 26.5 C)
+COOL_HYST_C = 5.0                       # back to normal only this far below the limit
+GENTLE = {"rpm": 15.0, "arm_speed": 1.5}   # warm: no setting faster than this
+SWITCH_MARGIN = 0.03                    # a voluntary switch needs a 3 % better score ...
+MIN_HOLD_CYCLES = 3                     # ... and this many finished cycles on the current config (no flip-flopping)
+BOUNDARY_S = 1.5                        # settings are sent only this soon after a cycle ended (autoen gap = 1 s) or while paused
+
+NO_CUBE_S = 3.0                         # TRANSPORT this long with a fresh camera and no moving cube = nothing fed
+                                        # (the camera saw fed cubes 0.0-0.8 s after FEED_DONE, vision_check_v1)
+REFEEDS = 1                             # feed again this many times before deciding the feeder is empty
+SORT_BINS = {"orange": "left", "white": "down"}   # autoen drop poses: "left" = left bin, "down" = right bin
+UNKNOWN_BIN = "down"                    # colour not seen (camera missed it): this bin, and it is counted as unknown
+MOVING_MM_S = 5.0                       # a cube counts as "fed" when it moves along the belt at least this fast (either sign:
+                                        # vision_check_v1 showed the cubes moving toward SMALLER u with camera dir = 1)
+CAM_WINDOW, CAM_TRUST = 10, 0.9         # vision_check_v1: the camera saw the cube in only 4 of 24 good cycles -> not trusted
+EMPTY_TIMEOUTS_BLIND = 2                # camera off: transport timeouts in a row before IDLE (autoen stops at 3)
+RESUMED_GRACE_S = 5.0                   # IDLE/ALERT but autoen runs un-paused this long = someone resumed it
+SETTLE_S = 3.0                          # after our own pause / resume, autoen's paused flag may lag this long
+
+ARRIVE_FACTOR = 2.7                     # arrive_timeout = 2.7 x the belt ride (vision_check_v1 used ~2.6 x the median)
+ARRIVE_MIN_S, ARRIVE_MAX_S = 20.0, 120.0
+TRAVEL_MM = 515.0                       # belt travel per cube (cal/baselines_summary.json)
+MM_S_PER_RPM = 2.81                     # = predict.BELT_MM_S_PER_RPM (do not touch)
+
+NOT_ABNORMAL = ("OK", "TIMEOUT_TRANSPORT", "NO_BLOCK", "ABORTED")   # any other cycle result -> ALERT
+OBJECTIVES = ("priority", "throughput", "energy", "balanced")
+NO_BLOCK = "NO_BLOCK"                   # autoen's result after our abort_transport: an empty feed by definition
+
+# ============================================================
+# OUTPUT TYPE  (what actuate.py receives)
+# ============================================================
+
+@dataclass
+class Plan:
+    t: float
+    mode: str                      # RUN / IDLE / COOL / ALERT / MANUAL / PARK / OFF
+    rpm: float
+    arm_speed: float
+    carry_speed: float
+    arrive_timeout: float
+    reason: str
+    action: Optional[str] = None   # one-shot, appears in exactly one Plan: pause / idle / abort / refeed / resume / park / wake
+    at_boundary: bool = False      # True = safe to send settings now (just after a cycle, or paused)
+    seq: int = 0                   # +1 whenever mode, settings, reason or action change: log only when it moves
+    score: dict = field(default_factory=dict)   # t_s, J, p_low of the chosen config
+    drop: Optional[str] = None     # bin for the cube now on its way (autoen drop_mode), None = not sorting
+
+    def settings(self):
+        return {"rpm": self.rpm, "arm_speed": self.arm_speed, "carry_speed": self.carry_speed,
+                "arrive_timeout": self.arrive_timeout}
+
+
+# ============================================================
+# SMALL HELPERS
+# ============================================================
+
+def wilson_lower(ok, n):
+    """Same cautious success rate as model.py."""
+    if n == 0:
+        return 0.0
+    p = ok / n
+    den = 1 + Z * Z / n
+    centre = p + Z * Z / (2 * n)
+    margin = Z * math.sqrt(p * (1 - p) / n + Z * Z / (4 * n * n))
+    return max(0.0, (centre - margin) / den)
+
+
+def arrive_timeout(rpm):
+    ride = TRAVEL_MM / (MM_S_PER_RPM * rpm)
+    return float(round(min(ARRIVE_MAX_S, max(ARRIVE_MIN_S, ARRIVE_FACTOR * ride))))
+
+
+def _key(rpm, arm):
+    return (round(float(rpm), 1), round(float(arm), 2))
+
+
+def _load_json(path):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return None
+
+
+# ============================================================
+# MODULE
+# ============================================================
+
+class Optimize:
+    """Owns the config table (offline + online counts) and the mode state machine."""
+
+    def __init__(self, model_path=MODEL_FILE, baselines_path=BASELINES_FILE, objective="priority",
+                 lam=0.5, j_limit=None, probe_s=None, forecast=None, auto_resume=False, learned_path=None, sort=True):
+        if objective not in OBJECTIVES:
+            raise ValueError("objective must be one of " + ", ".join(OBJECTIVES))
+        self.objective, self.lam, self.j_limit, self.probe_s = objective, lam, j_limit, probe_s
+        self.forecast = forecast                    # forecast.Forecast: learns every idle period (None = no learning)
+        self.auto_resume = auto_resume              # True: probe when the forecast expects a refill
+        self.sort = sort                            # True: orange / white to their own bins
+        self.drop = None                            # bin chosen for the cube in transport
+        self._color = None                          # colour of the cube in transport, as the camera saw it
+        self.queue = SortQueue(tuple(SORT_BINS))    # the cubes on the belt, in pick order
+        self._vote_seq = None                       # last camera snapshot given to the queue
+        self._picked = None                         # queue entry chosen at the IR (the cube the arm will take)
+        self._pick_check = None                     # track ids present when the arm closed (disappearance check)
+        self.sort_stats = {"right_bin": 0, "wrong_bin": 0, "unknown": 0, "confirmed": 0, "disagree": 0}
+        self.model = _load_json(model_path)
+        self.baselines = _load_json(baselines_path)
+        self.warnings = []
+        self.heat = "ok"                            # ok / warm / hot (safety governor)
+        self.temps = {}                             # hottest servo / belt seen this tick, C
+        self._explore = None                        # (key, cycles left) while an exploration trial runs
+        if self.model is None:
+            self.warnings.append(f"no model at {model_path}: fixed {SAFE['rpm']:g} rpm / arm {SAFE['arm_speed']:g}")
+        if self.baselines is None:
+            self.warnings.append(f"no baselines at {baselines_path}: J per cube estimated")
+        self.configs = self._build_table()          # key -> dict(rpm, arm, n0, ok0, n, ok, t_s, J)
+        self.learned_path = learned_path            # None = learn for this run only (tests)
+        self._load_learned()
+
+        self.mode, self.reason = "OFF", "starting"
+        self.target = self._best_or_safe()
+        self.cycles_on_target = 0
+        self.seq, self._last_sig = 0, None
+        self._seen_cycles = set()                   # cycle numbers already counted (MQTT and HTTP both report them)
+        self._boundary_t = None                     # when the last cycle ended
+        self._mode_t = 0.0                          # when the current mode started
+        self._unpaused_since = None                 # IDLE/ALERT: autoen seen running un-paused since then
+        self._settle_until = 0.0                    # until then a paused flag that disagrees is our own action landing
+        self._idle_since = None                     # start of the current idle period (kept across failed probes)
+        self._next_probe_s = None                   # seconds until the next auto probe (shown in the plan)
+        self._probe_at = None                       # when the next probe is due (fixed on entering IDLE)
+        self._timeouts_in_row = 0
+        self._pending = []                          # configs of camera-off timeouts not yet counted (maybe an empty feeder)
+        self._early = False                         # camera says empty: pause requested during TRANSPORT
+        self._transport_t0 = None                   # when the current TRANSPORT phase started
+        self._cube_seen = False                     # a moving cube was seen since TRANSPORT started
+        self._camera_ok = False                     # the camera stayed fresh since TRANSPORT started
+        self._cam_record = deque(maxlen=CAM_WINDOW) # good cycles with a fresh camera: did it see the cube?
+        self._refeeds_left = REFEEDS                # feeds to try again before calling the feeder empty
+        self._refeeding = False                     # a refeed abort is under way (its NO_BLOCK is not "empty")
+        self._cyc_J = 0.0                           # energy since the last cycle ended (live J per cube)
+        self._cyc_metered = 0.0                     # seconds of that window with fresh belt AND arm power
+        self._cyc_clean = False                     # True while that window is plain RUN (no idle, probe, pause)
+        self._last_t, self._last_w = None, None
+        self._good_since_explore = 0
+
+    # ----- the config table -----
+
+    def _build_table(self):
+        energy = {}
+        for r in ((self.baselines or {}).get("per_cube") or {}).get("rows", []):
+            energy[_key(r["rpm"], r["arm_speed"])] = r["J"]
+        table = {}
+        for r in (self.model or {}).get("configs", []):
+            if abs(r["carry_speed"] - r["arm_speed"]) > 1e-6:
+                continue                            # the grid tied carry to arm; anything else is untested
+            if not (RPM_RANGE[0] <= r["rpm"] <= RPM_RANGE[1] and ARM_RANGE[0] <= r["arm_speed"] <= ARM_RANGE[1]):
+                continue
+            k = _key(r["rpm"], r["arm_speed"])
+            t = self.model["time_model"]
+            table[k] = {"rpm": r["rpm"], "arm": r["arm_speed"], "n0": r["n"], "ok0": r["ok"], "n": 0, "ok": 0,
+                        "t_s": t["a"] + t["b"] / r["arm_speed"] + t["c"] / r["rpm"],
+                        "J": energy.get(k, self._estimate_j(r["rpm"])), "j_sum": 0.0, "j_n": 0}
+        if not table:                               # no model: the one config we trust (exp_20261025_005038)
+            k = _key(SAFE["rpm"], SAFE["arm_speed"])
+            table[k] = {"rpm": SAFE["rpm"], "arm": SAFE["arm_speed"], "n0": 20, "ok0": 20, "n": 0, "ok": 0,
+                        "t_s": 19.1, "J": energy.get(k, 20.8), "j_sum": 0.0, "j_n": 0}
+        return table
+
+    def _load_learned(self):
+        """Add the success counts earlier runs learned on the machine (camera trust is NOT kept: re-earned each run)."""
+        d = _load_json(self.learned_path) if self.learned_path else None
+        for row in (d or {}).get("configs", []):
+            c = self.configs.get(_key(row["rpm"], row["arm_speed"]))
+            if c is not None:
+                c["n"], c["ok"] = int(row["n"]), int(row["ok"])
+                c["j_sum"], c["j_n"] = float(row.get("j_sum", 0.0)), int(row.get("j_n", 0))
+
+    def _save_learned(self):
+        if not self.learned_path:
+            return
+        rows = [{"rpm": c["rpm"], "arm_speed": c["arm"], "n": c["n"], "ok": c["ok"], "j_sum": round(c["j_sum"], 1),
+                 "j_n": c["j_n"]} for c in self.configs.values() if c["n"] or c["j_n"]]
+        tmp = self.learned_path + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump({"_doc": "cycles counted live by optimize.py on top of model.json", "configs": rows}, f, indent=1)
+        os.replace(tmp, self.learned_path)
+
+    def _estimate_j(self, rpm):
+        """No measured J for this config: belt J = P_belt(rpm) x ride time, plus the mean measured arm J."""
+        p_rpm, arm_j = 0.0625, 10.3
+        if self.baselines:
+            p_rpm = self.baselines["belt"]["P_W_per_rpm"]["value"]
+            rows = (self.baselines.get("per_cube") or {}).get("rows", [])
+            if rows:
+                arm_j = sum(r["arm_J"] for r in rows) / len(rows)
+        return p_rpm * rpm * TRAVEL_MM / (MM_S_PER_RPM * rpm) + arm_j
+
+    def p_low(self, c):
+        return wilson_lower(c["ok0"] + c["ok"], c["n0"] + c["n"])
+
+    def machine_scale(self):
+        """How much more (or less) the machine costs today than the grid, over all settings measured live.
+        Grid values are scaled by this, so a setting only loses when it is worse than the others, not because the
+        live meter counts a little more (the gap between cycles) or the machine is colder today."""
+        live = sum(c["j_sum"] for c in self.configs.values())
+        prior = sum(c["J"] * c["j_n"] for c in self.configs.values())
+        return min(2.0, max(0.5, live / prior)) if prior > 0 else 1.0
+
+    def j_est(self, c):
+        """J per cube: the (scaled) grid value, pulled toward what this setting really costs live (meter.py)."""
+        return (c["J"] * self.machine_scale() * K_J + c["j_sum"]) / (K_J + c["j_n"])
+
+    def per_good(self, c):
+        """(seconds, joules) per GOOD cube: the cycles a failure wastes count against a setting."""
+        p = (c["ok0"] + c["ok"] + 1) / (c["n0"] + c["n"] + 2)
+        return c["t_s"] / p, self.j_est(c) / p
+
+    def cost(self, c, j_min=None, current=False):
+        """Lower = better. priority: inside the energy band only speed counts; outside it, always worse.
+        The setting in use keeps a band twice as wide, so one bad cycle does not throw it out (hysteresis)."""
+        t_good, j_good = self.per_good(c)
+        if self.objective == "energy":
+            return j_good
+        if self.objective == "balanced":
+            return j_good + self.lam * t_good
+        if self.objective == "throughput":
+            return t_good
+        if j_min is not None and j_good > j_min * (1 + ENERGY_BAND * (2 if current else 1)):
+            return 1e6 + j_good                     # wastes energy: only if nothing in the band is safe
+        return t_good
+
+    def eligible(self):
+        """Priority 1, SAFETY: enough proven success, and gentle settings only while something is warm."""
+        out = [c for c in self.configs.values() if self.p_low(c) >= P_LOW_FLOOR]
+        if self.j_limit is not None:
+            out = [c for c in out if self.j_est(c) <= self.j_limit]
+        if self.heat != "ok":
+            gentle = [c for c in out if c["rpm"] <= GENTLE["rpm"] and c["arm"] <= GENTLE["arm_speed"]]
+            out = gentle or out
+        return out
+
+    def _j_min(self, ok):
+        return min(self.per_good(c)[1] for c in ok) if ok else None
+
+    def _best_or_safe(self):
+        ok = self.eligible()
+        if not ok:
+            return _key(SAFE["rpm"], SAFE["arm_speed"])
+        j_min = self._j_min(ok)
+        best = min(ok, key=lambda c: self.cost(c, j_min))
+        return _key(best["rpm"], best["arm"])
+
+    def choose(self):
+        """Best eligible config, with hysteresis and the occasional exploration trial. None = nothing is safe."""
+        ok = self.eligible()
+        if not ok:
+            return None
+        j_min = self._j_min(ok)
+        if self._explore is not None:
+            k, left = self._explore
+            if left > 0 and self.configs.get(k) in ok:
+                return k
+            self._explore = None
+        best = min(ok, key=lambda c: self.cost(c, j_min))
+        cur = self.configs.get(self.target)
+        if cur is None or cur not in ok:            # the current one is no longer safe: leave it now
+            return _key(best["rpm"], best["arm"])
+        if (self.cycles_on_target < MIN_HOLD_CYCLES
+                or self.cost(best, j_min) > self.cost(cur, j_min, current=True) * (1 - SWITCH_MARGIN)):
+            return self.target
+        return _key(best["rpm"], best["arm"])
+
+    def _maybe_explore(self):
+        """Every EXPLORE_EVERY good cycles, try a safe setting inside the energy band that has little live data."""
+        if self.objective != "priority" or self.heat != "ok" or self.mode != "RUN" or self._explore is not None:
+            return
+        if self._good_since_explore < EXPLORE_EVERY:
+            return
+        self._good_since_explore = 0
+        ok = self.eligible()
+        j_min = self._j_min(ok)
+        cand = [c for c in ok if _key(c["rpm"], c["arm"]) != self.target and c["j_n"] < EXPLORE_MIN_N
+                and self.per_good(c)[1] <= j_min * (1 + ENERGY_BAND)]
+        if cand:
+            c = min(cand, key=lambda c: c["j_n"])
+            self._explore = (_key(c["rpm"], c["arm"]), EXPLORE_CYCLES)
+            self.reason = (f"exploring {c['rpm']:g}/{c['arm']:g} for {EXPLORE_CYCLES} cycles "
+                           f"(only {c['j_n']} live energy samples)")
+
+    # ----- safety governor and live energy -----
+
+    def _safety(self, state, now):
+        """Priority 1: temperatures. Returns 'idle' when it must stop to cool down, 'resume' when cool again."""
+        servo = max((j.temp_c for j in state.joints.values() if j.temp_c is not None), default=None) \
+            if state.joints_fresh else None
+        belt = state.belt.temp_c if state.belt_fresh else None
+        self.temps = {"servo_C": servo, "belt_C": belt}
+        hot = (servo is not None and servo >= SERVO_HOT_C) or (belt is not None and belt >= BELT_HOT_C)
+        warm = (servo is not None and servo >= SERVO_WARM_C) or (belt is not None and belt >= BELT_WARM_C)
+        cool = ((servo is None or servo < SERVO_WARM_C - COOL_HYST_C)
+                and (belt is None or belt < BELT_WARM_C - COOL_HYST_C))
+        if hot and self.heat != "hot":
+            self.heat = "hot"
+            if self.mode == "RUN":
+                self._set_mode("COOL", f"too hot (servo {servo} C, belt {belt} C): pausing at home to cool down", now)
+                return "idle"
+        elif warm and self.heat == "ok":
+            self.heat = "warm"
+            self.reason = f"warm (servo {servo} C, belt {belt} C): gentler settings only"
+        elif cool and self.heat != "ok":
+            self.heat = "ok"
+            if self.mode == "COOL":
+                self._set_mode("RUN", f"cool again (servo {servo} C, belt {belt} C): running", now)
+                return "resume"
+        elif self.heat == "hot" and not hot and warm:
+            pass                                    # stay paused until really cool (hysteresis)
+        return None
+
+    def _meter(self, state, now):
+        """Integrate belt + arm power since the last cycle ended; the window counts only if it was plain RUN."""
+        bw, aw = belt_w(state), arm_w(state)
+        w = None if bw is None or aw is None else bw + aw
+        if self._last_t is not None and self._last_w is not None and 0 < now - self._last_t <= 0.5:
+            self._cyc_J += self._last_w * (now - self._last_t)
+            self._cyc_metered += now - self._last_t
+        self._last_t, self._last_w = now, w
+        if self.mode != "RUN" or self.probing:
+            self._cyc_clean = False
+
+    # ----- one tick -----
+
+    def step(self, state, pred, view, commands=()) -> Plan:
+        now = state.t
+        if not self._usable(view):
+            self._clear_run_flags()
+            self._set_mode("OFF", self._off_reason(view), now)
+            return self._plan(now, None, view)
+
+        action = self._safety(state, now)
+        self._meter(state, now)
+        for cyc in self._new_cycles(state, view):
+            action = self._on_cycle(cyc, now, view) or action
+        action = self._watch_transport(state, pred, view, now) or action
+        if action is not None:
+            self._settle_until = now + SETTLE_S
+        mode_action = self._modes(view, now, [str(c).lower() for c in commands])
+        if mode_action is not None:
+            action, self._settle_until = mode_action, now + SETTLE_S
+
+        self._maybe_explore()
+        nxt = self.choose()
+        if nxt is None:
+            if self.mode == "RUN":
+                self._set_mode("ALERT", f"no tested config has p_low >= {P_LOW_FLOOR}", now)
+                action = "pause"
+        elif nxt != self.target:
+            old = self.configs.get(self.target)
+            why = (" (exploring)" if self._explore and self._explore[0] == nxt else
+                   " (too warm: gentler)" if self.heat != "ok" else
+                   " (old one fell below the success floor)" if old is not None and self.p_low(old) < P_LOW_FLOOR else
+                   " (safe, within 5 % of the lowest energy, fastest)")
+            self.reason = f"settings {self.target[0]:g}/{self.target[1]:g} -> {nxt[0]:g}/{nxt[1]:g}{why}"
+            self.target, self.cycles_on_target = nxt, 0
+        return self._plan(now, action, view)
+
+    # ----- autoen availability -----
+
+    @staticmethod
+    def _usable(view):
+        if view is None or not view.ok:
+            return False
+        if (view.config or {}).get("pause_before_set"):
+            return False                            # experiment.py drives autoen: hands off
+        return view.status in ("running", "paused")
+
+    @staticmethod
+    def _off_reason(view):
+        if view is None or not view.ok:
+            return "autoen not reachable"
+        if (view.config or {}).get("pause_before_set"):
+            return "experiment.py in control (pause_before_set=1)"
+        return f"autoen {view.status}"
+
+    def _clear_run_flags(self):
+        self._refeeds_left, self._refeeding = REFEEDS, False
+        self._timeouts_in_row = 0
+        self._pending = []
+        self._early = False
+        self._transport_t0 = None
+
+    # ----- cycle results -----
+
+    def _new_cycles(self, state, view):
+        """Finished cycles from MQTT (autoen/cycle, immediate) and from the HTTP poll (fallback), each once."""
+        found = list(view.new_cycles or []) + [
+            {"n": ev.args[1], "result": ev.name, "secs": ev.args[0], "notes": ev.args[2],
+             "drop": ev.args[3] if len(ev.args) > 3 else None}
+            for ev in state.events if ev.source == "cycle" and len(ev.args) > 2 and ev.args[1]]
+        out = []
+        for c in sorted(found, key=lambda c: (c["n"], "drop" not in c)):   # the HTTP copy (with the bin) first
+            if c["n"] not in self._seen_cycles:
+                self._seen_cycles.add(c["n"])
+                out.append(c)
+        return out
+
+    def _on_cycle(self, cyc, now, view):
+        """Count the result for the config autoen actually ran, then decide what it means."""
+        self._boundary_t = now
+        res = str(cyc["result"])
+        cfg = view.config or {}
+        k = _key(cfg.get("rpm", 0), cfg.get("arm_speed", 0))
+        c = self.configs.get(k)
+        timeout = res in ("TIMEOUT_TRANSPORT", NO_BLOCK)
+        empty_feed = res == NO_BLOCK or (timeout and (self._early or (self.camera_trusted() and self._camera_ok
+                                                                       and not self._cube_seen)))
+        if res == "OK" and self._camera_ok:
+            self._cam_record.append(self._cube_seen)
+        blind = timeout and not empty_feed and not self._cube_seen   # camera off: cannot tell empty from slow
+        if blind:
+            self._pending.append(c)                 # decided by what comes next (empty feeder -> dropped)
+        elif c is not None and res != "ABORTED" and not empty_feed:
+            for p in self._pending:                 # a cycle ran normally after them: they were real timeouts
+                if p is not None:
+                    p["n"] += 1
+            self._pending = []
+            c["n"] += 1                             # an empty feeder says nothing about the settings
+            c["ok"] += res == "OK"
+            self._save_learned()
+        if res == "OK" and self.sort:
+            if self._color is None:
+                self.sort_stats["unknown"] += 1
+            elif cyc.get("drop") == SORT_BINS[self._color]:
+                self.sort_stats["right_bin"] += 1
+            elif cyc.get("drop"):
+                self.sort_stats["wrong_bin"] += 1       # the bin was set too late (or the camera saw two colours)
+        if res == "OK" and self.sort:
+            self.queue.pop(self._picked)            # the arm took it: the next cube is now the front of the list
+        self._color, self._picked, self._pick_check = None, None, None
+        if res == "OK" and c is not None:
+            secs = float(cyc.get("secs") or 0)
+            if self._cyc_clean and secs and self._cyc_metered >= 0.8 * secs:
+                c["j_sum"] += self._cyc_J          # a plain, metered cycle: what this setting really cost
+                c["j_n"] += 1
+                self._save_learned()
+            self._good_since_explore += 1
+        if self._explore is not None and k == self._explore[0]:
+            self._explore = (k, self._explore[1] - 1)
+        self._cyc_J, self._cyc_metered, self._cyc_clean = 0.0, 0.0, self.mode == "RUN" and not self.probing
+        if k == self.target:
+            self.cycles_on_target += 1
+        refeeding, self._refeeding = self._refeeding, False
+        early, self._early = self._early, False
+        self._transport_t0, self._cube_seen, self._camera_ok = None, False, False
+
+        if refeeding and res == NO_BLOCK:
+            self._refeeds_left -= 1                 # nothing was pushed: autoen feeds again in its next cycle
+            self.reason = "no cube after FEED: feeding again"
+            return None
+        if res == "OK":
+            self._timeouts_in_row = 0
+            self._refeeds_left = REFEEDS
+            self._end_idle(refill=True)             # cubes were found: the idle period ended with a refill
+            if early:                               # the camera missed a cube that did arrive: undo the pause
+                self.reason = "cube arrived after all: resuming"
+                return "resume"
+            if self.mode == "IDLE":
+                self._set_mode("RUN", "a cube arrived", now)
+            return None
+        if timeout:
+            self._timeouts_in_row += 1
+            if empty_feed:
+                self._set_mode("IDLE", "feeder empty: no cube on the camera after FEED", now)
+                return "idle"
+            if self._timeouts_in_row >= EMPTY_TIMEOUTS_BLIND and self.mode != "IDLE":
+                self._pending = []                  # the feeder ran dry: those timeouts were not the settings' fault
+                self._set_mode("IDLE", f"{self._timeouts_in_row} transport timeouts in a row (camera off): "
+                                       "feeder empty, or check the belt", now)
+                return "idle"
+            return None
+        if res not in NOT_ABNORMAL and self.mode != "ALERT":
+            notes = cyc.get("notes") or ""
+            self._set_mode("ALERT", f"cycle {cyc['n']} {res}: check before resuming" + (f" ({notes})" if notes else ""), now)
+            return "pause"
+        return None
+
+    def camera_trusted(self):
+        """Only a camera that keeps seeing the cubes may call the feeder empty."""
+        r = self._cam_record
+        return len(r) >= CAM_WINDOW // 2 and sum(r) / len(r) >= CAM_TRUST
+
+    def _vote_colours(self, state):
+        """Give each NEW camera snapshot to the queue (every phase: cubes appear while the arm works). True if new."""
+        if not state.camera_fresh or state.cam_seq == self._vote_seq:
+            return False
+        self._vote_seq = state.cam_seq
+        self.queue.update(state.cubes)
+        return True
+
+    def _watch_pick(self, state, view):
+        """Outside TRANSPORT: keep counting colours, and check which cube vanished after the grip."""
+        phase = view.phase or ""
+        if not self._vote_colours(state) or self._picked is None:
+            return
+        if phase == "GRIP" and self._pick_check is None:
+            self._pick_check = set(self.queue.present)       # the cubes on the belt while the arm closes
+        elif phase.startswith("CARRY") and self._pick_check is not None and self._pick_check is not True:
+            gone = self._pick_check - self.queue.present
+            if gone:
+                self.sort_stats["confirmed" if gone & self._picked["tracks"] else "disagree"] += 1
+                self._pick_check = True                      # checked once per cycle
+
+    def _watch_transport(self, state, pred, view, now):
+        """Camera early warning: TRANSPORT running, camera fresh, no moving cube -> pause at the end of this cycle."""
+        if (view.phase or "") != "TRANSPORT" or self.mode != "RUN":
+            if self._transport_t0 is not None and self.sort:
+                self._vote_colours(state)
+                e = self.queue.at_ir()              # the belt stopped: the cube AT the IR is the one the arm takes
+                if e is not None:
+                    self.queue.resync(e)            # cubes listed before it were phantoms
+                e = e or self.queue.head()
+                self._picked = e
+                colour = self.queue.colour(e)
+                if colour is not None:
+                    self._color = colour
+                self.drop = SORT_BINS.get(self._color, UNKNOWN_BIN)
+            self._transport_t0 = None
+            if self.sort:
+                self._watch_pick(state, view)
+            return None
+        if self._transport_t0 is None:
+            self._transport_t0, self._cube_seen, self._camera_ok = now, False, state.camera_fresh
+        self._camera_ok = self._camera_ok and state.camera_fresh
+        if any(not e.coasting and abs(e.vel_mm_s) >= MOVING_MM_S for e in pred.cubes):
+            self._cube_seen = True
+        if self._vote_colours(state):
+            colour = self.queue.colour(self.queue.head())   # the front of the list is the next pick
+            if colour is not None:
+                self._color = colour
+        if self.sort and self._color is not None:
+            self.drop = SORT_BINS[self._color]
+        if (self.camera_trusted() and self._camera_ok and not self._cube_seen and not self._early
+                and not self._refeeding and now - self._transport_t0 >= NO_CUBE_S):
+            if self._refeeds_left > 0 and not self.probing:
+                self._refeeding = True
+                self.reason = f"no cube on the camera {NO_CUBE_S:g} s after FEED: stopping the belt, feeding again"
+                return "refeed"
+            self._early = True
+            self.reason = f"no cube on the camera {NO_CUBE_S:g} s into TRANSPORT: braking the belt and pausing"
+            return "abort"
+        return None
+
+    # ----- modes -----
+
+    def _modes(self, view, now, cmds):
+        paused, awake = view.paused, view.rest_state == "awake"
+
+        if not awake:
+            if "wake" in cmds:
+                self.reason = "operator: wake"
+                return "wake"
+            self._set_mode("PARK", f"arm {view.rest_state}: operator 'wake' to leave", now)
+            return None
+        if self.mode == "PARK":                     # just woke up: stays paused at home until the operator resumes
+            self._set_mode("IDLE", "arm awake again: operator 'resume' to run", now)
+
+        if "park" in cmds:
+            if paused and self.mode in ("IDLE", "ALERT", "MANUAL"):
+                self.reason = "operator: park"
+                return "park"
+            self.reason = "park refused: only while paused (IDLE / ALERT / MANUAL)"
+        if "resume" in cmds and paused:
+            self._clear_run_flags()
+            self._set_mode("RUN", "operator: resume", now)
+            return "resume"
+        self._next_probe_s = None
+        if self.mode == "IDLE" and paused and view.status == "paused":
+            if self._probe_at is None:
+                delay = self._probe_delay(now)
+                self._probe_at = None if delay is None else self._mode_t + delay
+            if self._probe_at is not None:
+                self._next_probe_s = max(0.0, self._probe_at - now)
+                if self._next_probe_s == 0.0:
+                    self._clear_run_flags()
+                    self._set_mode("RUN", f"probe: try one feed after {now - self._idle_since:.0f} s idle", now)
+                    return "resume"
+
+        if self.mode == "COOL":
+            return None                             # only the safety governor leaves COOL
+        if self.mode in ("IDLE", "ALERT"):
+            if paused or view.status == "paused":
+                self._unpaused_since = None
+            else:                                   # our pause never landed (shadow) or someone pressed Resume
+                self._unpaused_since = self._unpaused_since or now
+                if now - self._unpaused_since >= RESUMED_GRACE_S and now - self._mode_t >= RESUMED_GRACE_S:
+                    self._set_mode("RUN", "autoen running again", now)
+            return None
+        if now < self._settle_until:
+            return None
+        if paused and not self._early:
+            if self.mode != "MANUAL":
+                self._set_mode("MANUAL", "autoen paused by someone else: hands off", now)
+            return None
+        if not paused and self.mode in ("OFF", "MANUAL"):
+            self._set_mode("RUN", "autoen running", now)
+        return None
+
+    @property
+    def probing(self):
+        """RUN inside an idle period: a probe (or resume) that has not found a cube yet. The meter books it apart."""
+        return self.mode == "RUN" and self._idle_since is not None
+
+    def _probe_delay(self, now):
+        """Seconds after entering IDLE (or after the last failed probe) to probe again; None = wait for the operator.
+        Only with a trusted camera: then an empty probe is aborted (NO_BLOCK, not a fault). Blind, it would run to
+        arrive_timeout and count toward autoen's max_fails, so three of them would stop the run."""
+        if not self.camera_trusted():
+            return None
+        if self.auto_resume and self.forecast is not None:
+            return self.forecast.probe_delay(self._mode_t - (self._idle_since or self._mode_t), self.camera_trusted())
+        return self.probe_s
+
+    def _end_idle(self, refill):
+        if self._idle_since is not None:
+            self._idle_since = None
+            if self.forecast is not None:
+                self.forecast.idle_ended(refill)
+
+    def _set_mode(self, mode, reason, now):
+        self.reason = reason
+        if mode != self.mode:
+            self.mode, self._mode_t, self._unpaused_since, self._probe_at = mode, now, None, None
+            if mode == "IDLE":
+                if self._idle_since is None:        # a failed probe keeps the same idle period going
+                    self._idle_since = now
+                    if self.forecast is not None:
+                        self.forecast.idle_started()
+            elif mode in ("OFF", "ALERT", "MANUAL", "PARK", "COOL"):
+                self._end_idle(refill=False)        # cut off: says nothing about when cubes would have come
+
+    # ----- output -----
+
+    def _plan(self, now, action, view):
+        c = self.configs.get(self.target)
+        rpm, arm = self.target
+        at_boundary = bool(view is not None and view.ok and (view.status == "paused" or (
+            self._boundary_t is not None and now - self._boundary_t <= BOUNDARY_S)))
+        score = {} if c is None else {"t_s": round(c["t_s"], 2), "J": round(c["J"], 2), "p_low": round(self.p_low(c), 3),
+                                      "n_live": c["n"], "ok_live": c["ok"],
+                                      "cam_seen": f"{sum(self._cam_record)}/{len(self._cam_record)}",
+                                      "cam_trusted": self.camera_trusted(),
+                                      "next_probe_s": None if self._next_probe_s is None else round(self._next_probe_s),
+                                      "J_live": round(self.j_est(c), 1), "j_n": c["j_n"], "heat": self.heat,
+                                      **({"sort": {**self.sort_stats, **self.queue.stats},
+                                          "queue": self.queue.letters()} if self.sort else {}),
+                                      **{k: v for k, v in self.temps.items() if v is not None}}
+        sig = (self.mode, self.target, self.reason, action, self.camera_trusted(), self.drop)
+        if sig != self._last_sig:
+            self.seq, self._last_sig = self.seq + 1, sig
+        return Plan(t=now, mode=self.mode, rpm=rpm, arm_speed=arm, carry_speed=arm,
+                    arrive_timeout=arrive_timeout(rpm), reason=self.reason, action=action,
+                    at_boundary=at_boundary, seq=self.seq, score=score,
+                    drop=self.drop if self.sort and self.mode == "RUN" else None)

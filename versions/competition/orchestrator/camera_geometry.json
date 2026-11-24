@@ -1,0 +1,6 @@
+{
+  "ir_along": 805.0,
+  "entry_along": 65.0,
+  "mm_per_px": 0.64,
+  "note": "ACTIVE since 2026-11-12 (pt3, the operator's OK). Astro HD camera (0408:2090), 1280x720 -> 854x480, belt left -> right (dir +1). measured 2026-11-12 night. entry 65 px: new cubes first seen at 60-85 px (01:07 run) and 63-74 px (03:55 run). mm_per_px 0.64: cube width 62 px mid-belt for a 40 mm cube (0.645) and the steady belt speed 88 px/s at 20 rpm = 56.2 mm/s (0.639). ir 805 px: one direct sighting 812 px (03:55) and ride 8.37 s x 56.2 mm/s = 470 mm from the exit = 799 px; the arm at Standby hides the IR spot, so confirm with one cube placed at the IR (pick IR reads blocked) before trusting it to +-20 px."
+}

@@ -1,0 +1,189 @@
+{
+ "run_id": "base_20261025_184933",
+ "kind": "base",
+ "start": "2026-10-25T18:49:33",
+ "end": "2026-10-25T18:55:08",
+ "status": "finished",
+ "rpm_units": "output_rpm_cpr11880",
+ "operator_note": "",
+ "cube_set": "none",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "2331163618d6ef6c9d2fbe05b403008786a88c731c7b45608871148d7bde780c",
+  "mtime": "2026-10-25T14:56:43"
+ },
+ "experiment_sha256": "f1832e33bb6f36d1e8d62125c80e8956155daf864402c4302e370057af053af5",
+ "config_snapshots": [],
+ "tasks": [
+  {
+   "id": 1,
+   "status": "done",
+   "kind": "rest",
+   "seconds": 60.0,
+   "settle_s": 3.0,
+   "torque_off": false,
+   "t_start": 1792928977.942248,
+   "t_end": 1792929074.937617,
+   "arrived": false,
+   "error": null,
+   "stats": {
+    "belt_rpm": {
+     "n": 530,
+     "mean": 0.0,
+     "std": 0.0
+    },
+    "belt_mA": {
+     "n": 530,
+     "mean": 3.917,
+     "std": 0.276
+    },
+    "belt_W": {
+     "n": 530,
+     "mean": 0.048,
+     "std": 0.003
+    },
+    "arm_mA": {
+     "n": 273,
+     "mean": 23.0,
+     "std": 6.628
+    },
+    "arm_W": {
+     "n": 273,
+     "mean": 0.28,
+     "std": 0.081
+    }
+   },
+   "move_s": 36.98
+  },
+  {
+   "id": 2,
+   "status": "done",
+   "kind": "wake",
+   "seconds": 60.0,
+   "settle_s": 3.0,
+   "t_start": 1792929213.0270195,
+   "t_end": 1792929308.8213663,
+   "arrived": false,
+   "error": null,
+   "stats": {
+    "belt_rpm": {
+     "n": 534,
+     "mean": 0.0,
+     "std": 0.0
+    },
+    "belt_mA": {
+     "n": 534,
+     "mean": 3.934,
+     "std": 0.247
+    },
+    "belt_W": {
+     "n": 534,
+     "mean": 0.048,
+     "std": 0.003
+    },
+    "arm_mA": {
+     "n": 278,
+     "mean": 6.827,
+     "std": 4.222
+    },
+    "arm_W": {
+     "n": 278,
+     "mean": 0.083,
+     "std": 0.051
+    }
+   },
+   "move_s": 35.77
+  }
+ ],
+ "blocks": [],
+ "baseline": {
+  "kind": "rest",
+  "seconds": 60.0,
+  "settle_s": 3.0,
+  "torque_off": false
+ },
+ "rounds": [
+  {
+   "round": 1,
+   "rest": {
+    "id": 1,
+    "status": "done",
+    "kind": "rest",
+    "seconds": 60.0,
+    "settle_s": 3.0,
+    "torque_off": false,
+    "t_start": 1792928977.942248,
+    "t_end": 1792929074.937617,
+    "arrived": false,
+    "error": null,
+    "stats": {
+     "belt_rpm": {
+      "n": 530,
+      "mean": 0.0,
+      "std": 0.0
+     },
+     "belt_mA": {
+      "n": 530,
+      "mean": 3.917,
+      "std": 0.276
+     },
+     "belt_W": {
+      "n": 530,
+      "mean": 0.048,
+      "std": 0.003
+     },
+     "arm_mA": {
+      "n": 273,
+      "mean": 23.0,
+      "std": 6.628
+     },
+     "arm_W": {
+      "n": 273,
+      "mean": 0.28,
+      "std": 0.081
+     }
+    },
+    "move_s": 36.98
+   },
+   "wake": {
+    "id": 2,
+    "status": "done",
+    "kind": "wake",
+    "seconds": 60.0,
+    "settle_s": 3.0,
+    "t_start": 1792929213.0270195,
+    "t_end": 1792929308.8213663,
+    "arrived": false,
+    "error": null,
+    "stats": {
+     "belt_rpm": {
+      "n": 534,
+      "mean": 0.0,
+      "std": 0.0
+     },
+     "belt_mA": {
+      "n": 534,
+      "mean": 3.934,
+      "std": 0.247
+     },
+     "belt_W": {
+      "n": 534,
+      "mean": 0.048,
+      "std": 0.003
+     },
+     "arm_mA": {
+      "n": 278,
+      "mean": 6.827,
+      "std": 4.222
+     },
+     "arm_W": {
+      "n": 278,
+      "mean": 0.083,
+      "std": 0.051
+     }
+    },
+    "move_s": 35.77
+   }
+  }
+ ]
+}

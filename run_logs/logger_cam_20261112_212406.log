@@ -1,0 +1,168 @@
+[logger] logger_camera: topics camera -> camera.db; broker localhost:1883. Ctrl+C to stop.
+[logger] connected to broker: Success
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+
+White-object counting - window #1
+Elapsed time   New white objects    Cumulative count
+----------------------------------------------------
+00:10          0                    0
+[logger] wrote 0 telemetry, 1 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+00:20          0                    0
+[logger] wrote 0 telemetry, 2 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+00:30          0                    0
+[logger] wrote 0 telemetry, 1 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+00:40          1                    1
+[logger] wrote 0 telemetry, 1 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+00:50          1                    2
+[logger] wrote 0 telemetry, 1 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+01:01          1                    3
+[logger] wrote 0 telemetry, 2 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+01:11          1                    4
+[logger] wrote 0 telemetry, 2 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+01:21          0                    4
+[logger] wrote 0 telemetry, 2 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+01:31          2                    6
+[logger] wrote 0 telemetry, 2 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+01:41          2                    8
+[logger] wrote 0 telemetry, 1 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+01:51          0                    8
+[logger] wrote 0 telemetry, 1 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+02:01          0                    8
+[logger] wrote 0 telemetry, 1 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+02:11          0                    8
+[logger] wrote 0 telemetry, 2 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+02:21          0                    8
+[logger] wrote 0 telemetry, 2 events, 1 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 1 events, 0 camera demand, 0 camera windows
+[logger] wrote 0 telemetry, 2 events, 0 camera demand, 0 camera windows

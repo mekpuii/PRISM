@@ -1,0 +1,660 @@
+/*
+  SO-101 Xbox joint-jog controller for Arduino Mega 2560
+  PC Python dashboard <-> Mega USB Serial <-> URT-2 bus interface <-> STS3215 bus
+
+  Protocol from PC:
+    J,<servo_id>,<rate>\n
+    rate = -1000..1000. Zero stops incrementing the target.
+    P,<servo_id>,<position>\n   fixed position target (for saved-pose moves)
+    H,<servo_id>\n                    hold the servo at its measured position now
+    C,6\n                              start the IR-sequence gripper close crawl
+    X,<cmd>,...\n                     conveyor/feeder/sensor module (see belt_module.h);
+                                      replies and telemetry are also prefixed "X,"
+  Telemetry to PC:
+    H,SO101_MEGA_V1
+    R,1   (all six servos answer and report position mode)
+    S,<id>,<mode>,<present_position>
+    T,<id>,<present_position>,<speed_raw>,<current_raw>
+    TT,<id>,<temperature_C>,<voltage_x10>   (rare: every TEMP_VOLT_EVERY visits of a servo)
+
+  IMPORTANT:
+    - This sketch never calls WheelMode() and assumes position mode (0).
+    - Run so101_restore_position_mode.ino once first if the older sketch
+      put the servos into wheel mode.
+    - Motion is disabled unless all 6 IDs respond and report mode 0.
+    - The initial target is each servo's measured boot position.
+    - The user's measured safe endpoint readings bound each joint. Review and
+      recalibrate these constants if the physical endpoint measurements change.
+*/
+
+#include <SCServo.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include "belt_module.h"   // conveyor + feeder + INA260 x2 + DS18B20 (added)
+
+SMS_STS servo;
+
+const uint8_t SERVO_COUNT = 6;
+const uint8_t FIRST_ID = 1;
+const uint8_t MODE_REGISTER = 33;
+
+const uint32_t SERVO_BAUD = 1000000;
+// Spread telemetry reads across loop passes instead of blocking on all six
+// servos at once; this keeps streamed motion updates more evenly timed.
+const uint32_t TELEMETRY_INTERVAL_MS = 10;
+const uint8_t  TEMP_VOLT_EVERY = 20;     // temperature + voltage are slow-changing: read them once per this many telemetry visits of a servo
+const uint32_t MOTION_INTERVAL_MS = 10;
+const uint8_t  STARTUP_READ_TRIES = 8;   // attempts per servo at boot before it counts as missing
+const uint32_t COMMAND_TIMEOUT_MS = 350;
+const uint32_t POSITION_TIMEOUT_MS = 500;
+const uint32_t HELLO_INTERVAL_MS = 1000;
+
+// Optional 3-wire digital IR proximity module. Wire OUT to Mega D22,
+// GND to GND and VCC only to the voltage printed on the sensor module.
+// Most LM393-style modules pull OUT LOW on detection; change this to HIGH
+// if your module's output is active-high.
+const uint8_t IR_SENSOR_PIN = 22;
+const uint8_t IR_DETECTED_LEVEL = LOW;
+const uint32_t IR_DEBOUNCE_MS = 40;            // (no longer used: replaced by the window filter below)
+// Window filter: sample the IR once per millisecond; "detected" only when MORE than IR_DETECT_PCT % of the
+// samples in the last IR_WINDOW_MS read the detected level. Short blinks and flicker are ignored.
+const uint16_t IR_WINDOW_MS = 60;
+const uint8_t  IR_DETECT_PCT = 80;
+const uint32_t IR_STATUS_INTERVAL_MS = 500;
+// Close by advancing the position target in small, slow increments and stop
+// when position feedback stalls. SAFE_MIN[6] and the timeout bound travel.
+const uint32_t IR_GRIPPER_CRAWL_STEP_MS = 20;
+const int16_t IR_GRIPPER_CRAWL_STEP_TICKS = 10;
+const uint32_t IR_GRIPPER_STALL_SAMPLE_MS = 80;
+const uint32_t IR_GRIPPER_STALL_TIMEOUT_MS = 240;
+const int16_t IR_GRIPPER_STALL_MIN_PROGRESS = 3;
+const int16_t IR_GRIPPER_STALL_TARGET_GAP = 8;
+// Default "squeeze past contact" amount after G,CLOSED (ticks) and the STS3215 torque
+// limit (0-1000 = 0-100%) applied while holding. These are now PER-CALL overrides
+// (feature D, see task notes) instead of fixed constants: the PC may send
+// "C,6,<preload>,<torque_limit>" to use different numbers; a plain "C,6" (no extra
+// fields) keeps using these exact defaults, so any older PC sender behaves unchanged.
+const int16_t IR_GRIPPER_HOLD_PRELOAD_TICKS = 150;
+const uint16_t STS_TORQUE_LIMIT_FULL = 1000;        // STS3215 register unit: 1000 = 100% (factory default)
+const uint16_t IR_GRIPPER_CRAWL_TORQUE_LIMIT = 400; // torque limit while crawling closed, until G,CLOSED (40%)
+const int16_t IR_GRIPPER_MAX_TRAVEL_TICKS = 900;
+const uint32_t IR_GRIPPER_CRAWL_TIMEOUT_MS = 20000;
+
+// Jog rate cap (raw position ticks/s); matched to the STS speed-command range.
+// The Python dashboard scales commands to this value. Jog position-goal speed
+// follows the commanded rate so small streamed goals do not finish at a fixed
+// speed and pause before the next goal arrives.
+const float MAX_TARGET_TICKS_PER_SECOND = 3400.0f;
+const uint16_t POSITION_SPEED = 3400;  // controlled streamed-target speed, in raw ticks/s
+const uint16_t POSITION_MOVE_SPEED_MAX = 3400;  // dashboard maximum, in raw ticks/s
+const uint8_t POSITION_ACC = 8;
+// Smooth streamed jog-rate changes on the Mega with a scalar Kalman filter.
+// The PC already ramps its commands; these values add light filtering without
+// delaying a zero-rate stop. Rates use the PC's -1000..1000 command units.
+const float JOG_RATE_PROCESS_VARIANCE_PER_SECOND = 180000.0f;
+const float JOG_RATE_MEASUREMENT_VARIANCE = 10000.0f;
+
+char inputLine[48];
+uint8_t inputIndex = 0;
+
+bool allReady = false;
+bool servoReady[7] = {false, false, false, false, false, false, false};
+float targetExact[7] = {0};
+int16_t lastSentTarget[7] = {-1, -1, -1, -1, -1, -1, -1};
+uint16_t lastPositionSpeed[7] = {0};
+int16_t jogRate[7] = {0};
+float jogRateEstimate[7] = {0};
+float jogRateVariance[7] = {0};
+uint32_t lastCommandMs[7] = {0};
+bool positionTargetActive[7] = {false, false, false, false, false, false, false};
+
+void setJogRateKalman(uint8_t id, int16_t measurement) {
+  if (measurement == 0) {
+    // A zero is the explicit stop/watchdog-safe command. Do not let filtering
+    // make the arm continue after the operator releases the stick or stops.
+    jogRate[id] = 0;
+    jogRateEstimate[id] = 0.0f;
+    jogRateVariance[id] = JOG_RATE_MEASUREMENT_VARIANCE;
+    return;
+  }
+
+  if (jogRate[id] == 0) {
+    // Start promptly; Python applies the acceleration ramp before this point.
+    jogRateEstimate[id] = (float)measurement;
+    jogRateVariance[id] = JOG_RATE_MEASUREMENT_VARIANCE;
+  } else {
+    uint32_t elapsedMs = millis() - lastCommandMs[id];
+    if (elapsedMs < 5) elapsedMs = 5;
+    if (elapsedMs > 50) elapsedMs = 50;
+    float dt = (float)elapsedMs / 1000.0f;
+    jogRateVariance[id] += JOG_RATE_PROCESS_VARIANCE_PER_SECOND * dt;
+    float gain = jogRateVariance[id] /
+                 (jogRateVariance[id] + JOG_RATE_MEASUREMENT_VARIANCE);
+    jogRateEstimate[id] += gain * ((float)measurement - jogRateEstimate[id]);
+    jogRateVariance[id] *= (1.0f - gain);
+  }
+
+  jogRate[id] = (int16_t)constrain((int)lroundf(jogRateEstimate[id]), -1000, 1000);
+}
+
+// LeRobot calibration recorded 2026-10-18. Keep a 40-tick margin inside
+// recorded mechanical travel for joints 1-4 and the gripper. Wrist roll uses
+// the SO-101 URDF range centered on the calibrated 2047 home position to avoid
+// cable-twisting at the full-turn servo limits.
+const int16_t SAFE_MIN[7] = {0, 784, 868, 996, 813, 298, 1768};
+const int16_t SAFE_MAX[7] = {4095, 3404, 3151, 3056, 3201, 3859, 3116};
+
+uint32_t lastTelemetryMs = 0;
+uint32_t lastMotionMs = 0;
+uint8_t telemetryServoId = FIRST_ID;
+uint32_t lastHelloMs = 0;
+int irLastReading = HIGH;
+int irStableReading = HIGH;
+uint32_t irLastChangeMs = 0;
+uint32_t irLastStatusMs = 0;
+uint8_t  irWin[IR_WINDOW_MS];       // ring buffer of the last samples, 1 = detected level
+uint16_t irWinPos = 0, irWinSum = 0;
+uint32_t irLastSampleMs = 0;
+bool irStatusInitialized = false;
+bool irGripperCrawlActive = false;
+int16_t irGripperCrawlStartPosition = 0;
+int16_t irGripperCrawlTarget = 0;
+int16_t irGripperLastProgressPosition = 0;
+int16_t irGripperLastMeasuredPosition = 0;
+uint32_t irGripperCrawlStartedMs = 0;
+uint32_t irGripperLastStepMs = 0;
+uint32_t irGripperLastSampleMs = 0;
+uint32_t irGripperLastProgressMs = 0;
+// feature D: the preload/torque-limit values the CURRENT crawl will use once it reports
+// CLOSED. Set once per crawl in beginGripperCrawl() from the optional C,6 fields (or the
+// defaults above when the PC did not send them).
+int16_t  irGripperHoldPreload     = IR_GRIPPER_HOLD_PRELOAD_TICKS;
+uint16_t irGripperHoldTorqueLimit = STS_TORQUE_LIMIT_FULL;
+
+// extra: an optional trailing field (e.g. a torque-limit readback); -1 = omit it, so every
+// existing call/parser that only expects "G,<state>,<position>" keeps working unchanged.
+void reportGripperState(const __FlashStringHelper *state, int position, int extra = -1) {
+  Serial.print(F("G,"));
+  Serial.print(state);
+  Serial.print(',');
+  Serial.print(position);
+  if (extra >= 0) {
+    Serial.print(',');
+    Serial.println(extra);
+  } else {
+    Serial.println();
+  }
+}
+
+void stopGripperCrawl(bool reportClosed, int position) {
+  irGripperCrawlActive = false;
+  position = constrain(position, SAFE_MIN[6], SAFE_MAX[6]);
+  int holdTarget = position;
+  if (reportClosed) {
+    // Keep firm closing pressure after contact during transfers. Bound the
+    // extra squeeze by both the calibrated servo minimum and crawl travel cap.
+    // irGripperHoldPreload is normally IR_GRIPPER_HOLD_PRELOAD_TICKS (150); the PC can
+    // send a smaller value via "C,6,<preload>,..." (feature D) to squeeze less hard,
+    // which is what was driving J6's current climb during CARRY (measured: it kept
+    // trying to reach a target still inside the block, 150 ticks past contact).
+    int holdMinimum = max((int)SAFE_MIN[6],
+                          (int)irGripperCrawlStartPosition - IR_GRIPPER_MAX_TRAVEL_TICKS);
+    holdTarget = max(holdMinimum, position - irGripperHoldPreload);
+  }
+  jogRate[6] = 0;
+  targetExact[6] = (float)holdTarget;
+  lastSentTarget[6] = (int16_t)holdTarget;
+  positionTargetActive[6] = true;
+  lastCommandMs[6] = millis();
+  // feature D: cap the servo's own torque limit register while holding, so even if the
+  // hold target above still sits inside the block, the current/heat it can pull is bounded.
+  // irGripperHoldTorqueLimit defaults to STS_TORQUE_LIMIT_FULL (1000 = 100%, i.e. no cap);
+  // only written here (not every loop) because it only matters for the hold phase.
+  //
+  // ROUND 2 FINDING: lowering this to 300 (30%) measured NO drop in J6's CARRY current (still
+  // ~750-810 mA, same as with the limit off). writeWord() does not retry on its own, and the
+  // Mega<->servo UART is documented elsewhere in this file as dropping 15-35% of replies -- so
+  // this now (a) retries the write up to 3 times and (b) reads the register straight back and
+  // reports it on the G,CLOSED line, so the PC can see directly whether the value actually took
+  // instead of inferring it indirectly from current telemetry.
+  int torqueReadback = -1;
+  if (reportClosed && irGripperHoldTorqueLimit != IR_GRIPPER_CRAWL_TORQUE_LIMIT) {   // the crawl left 400 in the register
+    for (uint8_t attempt = 0; attempt < 3; attempt++) {
+      servo.writeWord(6, SMS_STS_TORQUE_LIMIT_L, irGripperHoldTorqueLimit);
+      torqueReadback = servo.readWord(6, SMS_STS_TORQUE_LIMIT_L);
+      if (torqueReadback == (int)irGripperHoldTorqueLimit) break;   // confirmed written; stop retrying
+      delay(5);
+    }
+  }
+  servo.WritePosEx(6, (int16_t)holdTarget, 80, POSITION_ACC);
+  if (reportClosed) reportGripperState(F("CLOSED"), position, torqueReadback);
+}
+
+void failGripperCrawl(const __FlashStringHelper *reason, int position) {
+  irGripperCrawlActive = false;
+  position = constrain(position, SAFE_MIN[6], SAFE_MAX[6]);
+  jogRate[6] = 0;
+  targetExact[6] = (float)position;
+  lastSentTarget[6] = (int16_t)position;
+  positionTargetActive[6] = true;
+  servo.WritePosEx(6, (int16_t)position, 80, POSITION_ACC);
+  Serial.print(F("G,ERROR,"));
+  Serial.print(position);
+  Serial.print(',');
+  Serial.println(reason);
+}
+
+// preloadOverride/torqueOverride: -1 means "not sent by the PC, use the firmware default".
+// Called from a plain "C,6" (both -1) or "C,6,<preload>,<torque_limit>" (feature D).
+bool beginGripperCrawl(uint32_t now, int16_t preloadOverride, int16_t torqueOverride) {
+  int position = -1;
+  for (uint8_t attempt = 0; attempt < 3; attempt++) {
+    position = servo.ReadPos(6);
+    if (position >= SAFE_MIN[6] && position <= SAFE_MAX[6]) break;
+    delay(8);
+  }
+  if (position < SAFE_MIN[6] || position > SAFE_MAX[6]) {
+    reportGripperState(F("ERROR"), position);
+    return false;
+  }
+
+  // Resolve this crawl's hold preload/torque-limit once, used later by stopGripperCrawl().
+  irGripperHoldPreload = (preloadOverride >= 0) ? preloadOverride : IR_GRIPPER_HOLD_PRELOAD_TICKS;
+  irGripperHoldTorqueLimit = (torqueOverride >= 0) ? (uint16_t)torqueOverride : STS_TORQUE_LIMIT_FULL;
+  // Start every crawl at the same capped torque, whatever the previous cycle left in the register.
+  // Was STS_TORQUE_LIMIT_FULL: the stall check needs 240+ ms without progress, and in that time the
+  // crawl target runs ~120-160 ticks into the block, so the contact squeeze was at 100% torque
+  // (audible crunch on the cube). Retried + read back like the hold write in stopGripperCrawl().
+  for (uint8_t attempt = 0; attempt < 3; attempt++) {
+    servo.writeWord(6, SMS_STS_TORQUE_LIMIT_L, IR_GRIPPER_CRAWL_TORQUE_LIMIT);
+    if (servo.readWord(6, SMS_STS_TORQUE_LIMIT_L) == (int)IR_GRIPPER_CRAWL_TORQUE_LIMIT) break;
+    delay(5);
+  }
+
+  irGripperCrawlActive = true;
+  irGripperCrawlStartPosition = (int16_t)position;
+  irGripperCrawlTarget = (int16_t)position;
+  irGripperLastMeasuredPosition = (int16_t)position;
+  irGripperLastProgressPosition = (int16_t)position;
+  irGripperCrawlStartedMs = now;
+  irGripperLastStepMs = now;
+  irGripperLastSampleMs = now;
+  irGripperLastProgressMs = now;
+  jogRate[6] = 0;
+  positionTargetActive[6] = false;
+  lastCommandMs[6] = now;
+  reportGripperState(F("CLOSING"), position);
+  return true;
+}
+
+void updateGripperCrawl(uint32_t now) {
+  if (!irGripperCrawlActive || now - irGripperLastStepMs < IR_GRIPPER_CRAWL_STEP_MS) return;
+  irGripperLastStepMs = now;
+  int measured = -1;
+  for (uint8_t attempt = 0; attempt < 3; attempt++) {
+    measured = servo.ReadPos(6);
+    if (measured >= SAFE_MIN[6] && measured <= SAFE_MAX[6]) break;
+    delay(8);
+  }
+  if (measured < SAFE_MIN[6] || measured > SAFE_MAX[6]) {
+    failGripperCrawl(F("position feedback lost"), irGripperLastMeasuredPosition);
+    return;
+  }
+  irGripperLastMeasuredPosition = (int16_t)measured;
+
+  // Servo 6 closes toward lower raw positions on this arm.
+  int16_t travelLimit = (int16_t)max((int)SAFE_MIN[6], (int)irGripperCrawlStartPosition - IR_GRIPPER_MAX_TRAVEL_TICKS);
+  if (now - irGripperCrawlStartedMs >= IR_GRIPPER_CRAWL_TIMEOUT_MS || irGripperCrawlTarget <= travelLimit) {
+    // At the bounded close limit, keep a small extra close target so the
+    // fingers maintain grip during the transfer instead of relaxing back to
+    // the measured angle. stopGripperCrawl clamps the preload to SAFE_MIN.
+    stopGripperCrawl(true, measured);
+    return;
+  }
+
+  if (now - irGripperLastSampleMs >= IR_GRIPPER_STALL_SAMPLE_MS) {
+    // Closing moves toward lower encoder ticks. Ignore upward encoder jitter;
+    // otherwise small bidirectional noise can keep resetting the stall timer
+    // forever and the crawl reaches its travel limit without recognizing grip.
+    if (irGripperLastProgressPosition - measured >= IR_GRIPPER_STALL_MIN_PROGRESS) {
+      irGripperLastProgressPosition = (int16_t)measured;
+      irGripperLastProgressMs = now;
+    }
+    irGripperLastSampleMs = now;
+    if (now - irGripperLastProgressMs >= IR_GRIPPER_STALL_TIMEOUT_MS &&
+        irGripperCrawlTarget <= measured - IR_GRIPPER_STALL_TARGET_GAP) {
+      stopGripperCrawl(true, measured);
+      return;
+    }
+  }
+
+  irGripperCrawlTarget = (int16_t)max((int)travelLimit, (int)irGripperCrawlTarget - IR_GRIPPER_CRAWL_STEP_TICKS);
+  targetExact[6] = (float)irGripperCrawlTarget;
+  lastSentTarget[6] = irGripperCrawlTarget;
+  lastPositionSpeed[6] = 600;
+  servo.WritePosEx(6, irGripperCrawlTarget, 600, POSITION_ACC);
+}
+
+void sendIrStatus(int rawLevel, bool detected) {
+  Serial.print(F("IR,"));
+  Serial.print(rawLevel == HIGH ? 1 : 0);
+  Serial.print(',');
+  Serial.println(detected ? 1 : 0);
+}
+
+void updateIrGripperTrigger() {
+  uint32_t now = millis();
+
+  // ---- take one sample per millisecond; if the loop was slow, repeat the current sample for the missed milliseconds
+  uint8_t sample = (digitalRead(IR_SENSOR_PIN) == IR_DETECTED_LEVEL) ? 1 : 0;
+  uint32_t missed = now - irLastSampleMs;
+  if (missed > IR_WINDOW_MS) missed = IR_WINDOW_MS;
+  for (uint32_t i = 0; i < missed; i++) {
+    irWinSum -= irWin[irWinPos];
+    irWin[irWinPos] = sample;
+    irWinSum += sample;
+    irWinPos = (irWinPos + 1) % IR_WINDOW_MS;
+  }
+  irLastSampleMs = now;
+
+  // ---- decide: detected when MORE than IR_DETECT_PCT % of the window reads detected
+  bool filtDetected = ((uint32_t)irWinSum * 100UL > (uint32_t)IR_DETECT_PCT * IR_WINDOW_MS);
+  int filtReading = filtDetected ? IR_DETECTED_LEVEL : (IR_DETECTED_LEVEL == LOW ? HIGH : LOW);
+
+  bool changed = (filtReading != irStableReading);
+  if (!changed && irStatusInitialized && now - irLastStatusMs < IR_STATUS_INTERVAL_MS) return;
+  if (changed) irStableReading = filtReading;
+  irStatusInitialized = true;
+  irLastStatusMs = now;
+  bool detected = (irStableReading == IR_DETECTED_LEVEL);
+
+  if (!detected) {
+    sendIrStatus(irStableReading, false);
+    return;
+  }
+
+  sendIrStatus(irStableReading, true);
+  // The dashboard owns automation sequencing and explicitly starts the close
+  // crawl. Sensor reporting must never move the gripper by itself.
+}
+
+// Shared with belt_module.h: the SAME debounced D22 reading the arm sequence uses.
+bool irStableDetected() { return irStableReading == IR_DETECTED_LEVEL; }
+
+void printStartupServo(uint8_t id, int mode, int pos) {
+  Serial.print(F("S,"));
+  Serial.print(id);
+  Serial.print(',');
+  Serial.print(mode);
+  Serial.print(',');
+  Serial.println(pos);
+}
+
+void setup() {
+  Serial.begin(115200);
+  belt::begin();                 // conveyor outputs to a safe state first (added)
+  Serial2.begin(SERVO_BAUD);     // Mega RX2=17, TX2=16
+  pinMode(IR_SENSOR_PIN, INPUT_PULLUP);
+  irLastReading = digitalRead(IR_SENSOR_PIN);
+  irStableReading = irLastReading;
+  irLastChangeMs = millis();
+  servo.pSerial = &Serial2;
+  delay(800);
+
+  bool everyServoReady = true;
+
+  for (uint8_t id = FIRST_ID; id <= SERVO_COUNT; id++) {
+    // The Mega<->servo link drops some replies (15-35% garbled), so retry the startup read a few times
+    // before declaring a servo missing. One bad reply must not block the whole arm (R,0).
+    int mode = -1;
+    int pos = -1;
+    bool posValid = false;
+    for (uint8_t attempt = 0; attempt < STARTUP_READ_TRIES; attempt++) {
+      mode = servo.readByte(id, MODE_REGISTER);
+      pos = servo.ReadPos(id);
+      posValid = (pos >= 0 && pos <= 4095);
+      if (mode == 0 && posValid) break;
+      delay(15);                                   // let the bus settle before asking again
+    }
+    servoReady[id] = (mode == 0 && posValid);
+
+    printStartupServo(id, mode, pos);
+
+    if (servoReady[id]) {
+      targetExact[id] = (float)constrain(pos, SAFE_MIN[id], SAFE_MAX[id]);
+      lastSentTarget[id] = (int16_t)pos;
+      jogRate[id] = 0;
+      lastCommandMs[id] = millis();
+    } else {
+      everyServoReady = false;
+    }
+    delay(20);
+  }
+
+  allReady = everyServoReady;
+
+  Serial.print(F("R,"));
+  Serial.println(allReady ? 1 : 0);
+  Serial.println(F("BOOT_DONE"));
+  lastHelloMs = millis();
+  lastTelemetryMs = millis();
+  lastMotionMs = millis();
+}
+
+void parseCommand(char *line) {
+  if (line[0] == 'X' && line[1] == ',') { belt::handle(line + 2); return; }  // conveyor module (added)
+  char *savePtr = nullptr;
+  char *kind = strtok_r(line, ",", &savePtr);
+  if (kind == nullptr) return;
+
+  char *idText = strtok_r(nullptr, ",", &savePtr);
+  if (idText == nullptr) return;
+  int id = atoi(idText);
+  if (id < FIRST_ID || id > SERVO_COUNT) return;
+  if (!allReady || !servoReady[id]) {
+    jogRate[id] = 0;
+    return;
+  }
+
+  if (strcmp(kind, "J") == 0) {
+    char *rateText = strtok_r(nullptr, ",", &savePtr);
+    if (rateText == nullptr) return;
+    int rate = constrain(atoi(rateText), -1000, 1000);
+    setJogRateKalman((uint8_t)id, (int16_t)rate);
+    // Zero jog refreshes the command watchdog without interrupting a fixed
+    // position hold. A nonzero manual jog takes control from the pose target.
+    if (rate != 0 && positionTargetActive[id]) {
+      int present = servo.ReadPos(id);
+      if (present >= SAFE_MIN[id] && present <= SAFE_MAX[id]) {
+        targetExact[id] = (float)present;
+        lastSentTarget[id] = (int16_t)present;
+      }
+      positionTargetActive[id] = false;
+    }
+    lastCommandMs[id] = millis();
+  } else if (strcmp(kind, "C") == 0) {
+    // feature D: optional "C,6,<preload_ticks>,<torque_limit>" overrides the default
+    // hold-preload/torque-limit for this one crawl. Either or both fields may be absent
+    // (older PC, or feature disabled) -> -1 sentinel -> beginGripperCrawl uses firmware defaults.
+    char *preloadText = strtok_r(nullptr, ",", &savePtr);
+    char *torqueText  = strtok_r(nullptr, ",", &savePtr);
+    int16_t preloadOverride = preloadText ? (int16_t)constrain(atoi(preloadText), 0, (int)IR_GRIPPER_MAX_TRAVEL_TICKS) : -1;
+    int16_t torqueOverride  = torqueText  ? (int16_t)constrain(atoi(torqueText), 0, (int)STS_TORQUE_LIMIT_FULL) : -1;
+    if (id == 6 && !irGripperCrawlActive) beginGripperCrawl(millis(), preloadOverride, torqueOverride);
+  } else if (strcmp(kind, "P") == 0) {
+    char *positionText = strtok_r(nullptr, ",", &savePtr);
+    if (positionText == nullptr) return;
+    char *speedText = strtok_r(nullptr, ",", &savePtr);
+    uint16_t moveSpeed = POSITION_SPEED;
+    if (speedText != nullptr) {
+      moveSpeed = (uint16_t)constrain(atoi(speedText), 90, POSITION_MOVE_SPEED_MAX);
+    }
+    // ACC patch: optional 4th field = servo acceleration (0..254, x100 ticks/s^2).
+    // Absent -> POSITION_ACC (8), so every older sender behaves exactly as before.
+    char *accText = strtok_r(nullptr, ",", &savePtr);
+    uint8_t moveAcc = POSITION_ACC;
+    if (accText != nullptr) {
+      moveAcc = (uint8_t)constrain(atoi(accText), 0, 254);
+    }
+    int16_t target = (int16_t)constrain(atoi(positionText), SAFE_MIN[id], SAFE_MAX[id]);
+    if (id == 6) {
+      // feature D: any explicit position command to the gripper (open, recovery, or the
+      // feature-A fast pre-close move) always gets full torque back first. Only
+      // stopGripperCrawl()'s hold step is ever allowed to lower it, and only on request.
+      servo.writeWord(6, SMS_STS_TORQUE_LIMIT_L, STS_TORQUE_LIMIT_FULL);
+      if (irGripperCrawlActive) {
+        int present = servo.ReadPos(6);
+        stopGripperCrawl(false, present);
+      }
+    }
+    jogRate[id] = 0;
+    targetExact[id] = (float)target;
+    positionTargetActive[id] = true;
+    lastCommandMs[id] = millis();
+    if (target != lastSentTarget[id] || moveSpeed != lastPositionSpeed[id]) {
+      servo.WritePosEx(id, target, moveSpeed, moveAcc);
+      lastSentTarget[id] = target;
+      lastPositionSpeed[id] = moveSpeed;
+    }
+  } else if (strcmp(kind, "H") == 0) {
+    int present = servo.ReadPos(id);
+    if (present < SAFE_MIN[id]) present = SAFE_MIN[id];
+    if (present > SAFE_MAX[id]) present = SAFE_MAX[id];
+    jogRate[id] = 0;
+    targetExact[id] = (float)present;
+    positionTargetActive[id] = true;
+    lastSentTarget[id] = (int16_t)present;
+    servo.WritePosEx(id, (int16_t)present, POSITION_SPEED, POSITION_ACC);
+    lastCommandMs[id] = millis();
+  }
+}
+
+void readPcCommands() {
+  while (Serial.available() > 0) {
+    char c = (char)Serial.read();
+    if (c == '\n' || c == '\r') {
+      if (inputIndex > 0) {
+        inputLine[inputIndex] = '\0';
+        parseCommand(inputLine);
+        inputIndex = 0;
+      }
+    } else if (inputIndex < sizeof(inputLine) - 1) {
+      inputLine[inputIndex++] = c;
+    } else {
+      inputIndex = 0; // discard an overlong command line
+    }
+  }
+}
+
+void updateJointTargets() {
+  uint32_t now = millis();
+  if (now - lastMotionMs < MOTION_INTERVAL_MS) return;
+
+  uint32_t elapsedMs = now - lastMotionMs;
+  if (elapsedMs > 50) elapsedMs = 50; // prevent a large jump after blocking reads
+  lastMotionMs = now;
+
+  if (!allReady) return;
+
+  updateGripperCrawl(now);
+
+  for (uint8_t id = FIRST_ID; id <= SERVO_COUNT; id++) {
+    if (!servoReady[id]) continue;
+
+    if (now - lastCommandMs[id] > COMMAND_TIMEOUT_MS) {
+      jogRate[id] = 0;
+    }
+
+    if (id == 6 && irGripperCrawlActive) continue;
+
+    if (positionTargetActive[id] && now - lastCommandMs[id] > POSITION_TIMEOUT_MS) {
+      // Communication loss while moving: freeze at the latest measured pose.
+      int present = servo.ReadPos(id);
+      if (present < SAFE_MIN[id]) present = SAFE_MIN[id];
+      if (present > SAFE_MAX[id]) present = SAFE_MAX[id];
+      targetExact[id] = (float)present;
+      lastSentTarget[id] = (int16_t)present;
+      servo.WritePosEx(id, (int16_t)present, POSITION_SPEED, POSITION_ACC);
+      positionTargetActive[id] = false;
+      jogRate[id] = 0;
+      continue;
+    }
+
+    if (positionTargetActive[id]) continue;
+
+    if (jogRate[id] == 0) continue;
+
+    float rate = ((float)jogRate[id] / 1000.0f) * MAX_TARGET_TICKS_PER_SECOND;
+    targetExact[id] += rate * ((float)elapsedMs / 1000.0f);
+
+    // Allow the complete raw position range instead of a boot-relative jog cap.
+    if (targetExact[id] < SAFE_MIN[id]) targetExact[id] = SAFE_MIN[id];
+    if (targetExact[id] > SAFE_MAX[id]) targetExact[id] = SAFE_MAX[id];
+
+    int16_t target = (int16_t)lroundf(targetExact[id]);
+    if (target != lastSentTarget[id]) {
+      uint16_t jogSpeed = (uint16_t)lroundf(fabsf(rate));
+      if (jogSpeed < 1) jogSpeed = 1;
+      if (jogSpeed > POSITION_SPEED) jogSpeed = POSITION_SPEED;
+      servo.WritePosEx(id, target, jogSpeed, POSITION_ACC);
+      lastSentTarget[id] = target;
+    }
+  }
+}
+
+void sendTelemetry() {
+  uint32_t now = millis();
+  if (now - lastTelemetryMs < TELEMETRY_INTERVAL_MS) return;
+  lastTelemetryMs = now;
+
+  uint8_t id = telemetryServoId;
+  if (servoReady[id]) {
+    int pos = servo.ReadPos(id);
+    int speedRaw = servo.ReadSpeed(id);
+    int currentRaw = servo.ReadCurrent(id);
+
+    Serial.print(F("T,"));
+    Serial.print(id);
+    Serial.print(',');
+    Serial.print(pos);
+    Serial.print(',');
+    Serial.print(speedRaw);
+    Serial.print(',');
+    Serial.println(currentRaw);
+
+    // Temperature and supply voltage change slowly, so each servo is asked only every TEMP_VOLT_EVERY visits.
+    // Extra reads on a noisy bus cost time, which is why this is rare.
+    static uint8_t tvCount[SERVO_COUNT + 1];
+    if (++tvCount[id] >= TEMP_VOLT_EVERY) {
+      tvCount[id] = 0;
+      int temperature = servo.ReadTemper(id);     // deg C, -1 = no reply
+      int voltage = servo.ReadVoltage(id);        // 0.1 V units, -1 = no reply
+      Serial.print(F("TT,"));
+      Serial.print(id);
+      Serial.print(',');
+      Serial.print(temperature);
+      Serial.print(',');
+      Serial.println(voltage);
+    }
+  }
+
+  telemetryServoId++;
+  if (telemetryServoId > SERVO_COUNT) telemetryServoId = FIRST_ID;
+}
+
+void loop() {
+  readPcCommands();
+  updateIrGripperTrigger();
+  belt::update();                // conveyor module (added)
+  updateJointTargets();
+  sendTelemetry();
+
+  uint32_t now = millis();
+  if (now - lastHelloMs >= HELLO_INTERVAL_MS) {
+    lastHelloMs = now;
+    Serial.println(F("H,SO101_MEGA_V1"));
+    Serial.print(F("R,"));
+    Serial.println(allReady ? 1 : 0);
+  }
+}

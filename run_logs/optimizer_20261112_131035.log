@@ -1,0 +1,58 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261112_131045.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 2] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 3] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 5] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 6] RUN    20 rpm / arm 1.5  action=verdict:1:fed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 7] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 8] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 9] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 10] RUN    20 rpm / arm 1.5  action=verdict:2:nudge  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 11] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 12] RUN    20 rpm / arm 1.5  action=verdict:2:empty  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 13] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 14] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 15] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 16] RUN    20 rpm / arm 1.5  action=verdict:3:fed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 17] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 18] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 19] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 20] RUN    20 rpm / arm 1.5  action=verdict:4:fed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 21] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 22] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 23] RUN    20 rpm / arm 1.5  action=feed  - feed 4: the cube is stuck at the feeder exit (the belt moved, it did not): the push was too short - pushing again, longer (300 -> 550 ms)
+[plan 24] RUN    20 rpm / arm 1.5  - feed 4: the cube is stuck at the feeder exit (the belt moved, it did not): the push was too short - pushing again, longer (300 -> 550 ms)
+[plan 25] RUN    20 rpm / arm 1.5  action=verdict:5:nudge  - feed 4: the cube is stuck at the feeder exit (the belt moved, it did not): the push was too short - pushing again, longer (300 -> 550 ms)
+[plan 26] RUN    20 rpm / arm 1.5  - feed 4: the cube is stuck at the feeder exit (the belt moved, it did not): the push was too short - pushing again, longer (300 -> 550 ms)
+[plan 27] RUN    20 rpm / arm 1.5  action=verdict:5:empty  - feed 4: the cube is stuck at the feeder exit (the belt moved, it did not): the push was too short - pushing again, longer (300 -> 550 ms)
+[plan 28] RUN    20 rpm / arm 1.5  - feed 4: the cube is stuck at the feeder exit (the belt moved, it did not): the push was too short - pushing again, longer (300 -> 550 ms)
+[plan 29] RUN    20 rpm / arm 1.5  action=feed  - feed 4: the cube is stuck at the feeder exit (the belt moved, it did not): the push was too short - pushing again, longer (300 -> 550 ms)
+[plan 30] RUN    20 rpm / arm 1.5  - feed 4: the cube is stuck at the feeder exit (the belt moved, it did not): the push was too short - pushing again, longer (300 -> 550 ms)
+[plan 31] RUN    20 rpm / arm 1.5  action=verdict:6:nudge  - feed 4: the cube is stuck at the feeder exit (the belt moved, it did not): the push was too short - pushing again, longer (300 -> 550 ms)
+[plan 32] RUN    20 rpm / arm 1.5  - feed 4: the cube is stuck at the feeder exit (the belt moved, it did not): the push was too short - pushing again, longer (300 -> 550 ms)
+[plan 33] RUN    20 rpm / arm 1.5  action=verdict:6:empty  - feed 4: the cube is stuck at the feeder exit (the belt moved, it did not): the push was too short - pushing again, longer (300 -> 550 ms)
+[plan 34] RUN    20 rpm / arm 1.5  - feed 4: the cube is stuck at the feeder exit (the belt moved, it did not): the push was too short - pushing again, longer (300 -> 550 ms)
+[plan 35] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: the last 3 feeds brought nothing
+[story] FEEDER EMPTY
+    I tried / saw:  feed 4 pushed during GRIP: nothing came (no arrival after 17 s of belt)
+    I tried / saw:  feed for cycle 2: 12 V dip 4 mV (no current: the servo did not move), feeder IR empty
+    I tried / saw:  feed 6: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 6 during TRANSPORT: servo did not move (4 mV), camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  feed 6 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    so:             3 feeds in a row brought no block to the IR (feed 5 during CARRY_DOWN, feed 4 during GRIP, feed 6 during TRANSPORT)  ->  the feeder has no cubes left (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 36] IDLE   20 rpm / arm 1.5  - feeder empty: the last 3 feeds brought nothing
+[plan 37] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 2: 12 V dip 4 mV (no current: the servo did not move), feeder IR empty
+    I tried / saw:  feed 6: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 6 during TRANSPORT: servo did not move (4 mV), camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  feed 6 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  cycle 2: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 38] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

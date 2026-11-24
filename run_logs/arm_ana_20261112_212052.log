@@ -1,0 +1,31 @@
+[arm-analyzer] up. broker localhost:1883, db arm_analyzer.db, thresholds built-in defaults (run --write-thresholds or --calibrate to make the file). Ctrl+C to stop.
+[arm-analyzer] connected to broker: Success
+[21:21:00] NO_DATA    -> CARRYING    (to left_bin)
+[21:21:00] CONDITION J1 current 39 mA in CARRYING: OK -> WARN (held 0.53 s, limit 26)
+[21:21:03] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=J1.current=WARN
+[21:21:13] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=J1.current=WARN
+[21:21:23] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=J1.current=WARN
+[21:21:31] CONDITION J1 current 6 mA in CARRYING: WARN -> OK (held 0.51 s, limit 26)
+[21:21:33] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[21:21:36] CARRYING   -> PICKING     (gripper holding)
+[21:21:43] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:21:47] CONDITION J6 current 78 mA in PICKING: OK -> ALARM (held 0.5 s, limit 52)
+[21:21:48] PICKING    -> CARRYING    (via home)
+[21:21:48] CONDITION J6 current 6 mA in CARRYING: ALARM -> OK (held 0.5 s, limit 26)
+[21:21:50] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.5 s, limit 26)
+[21:21:51] CONDITION J1 current 6 mA in CARRYING: WARN -> OK (held 0.5 s, limit 26)
+[21:21:52] CARRYING   -> PLACING     (right_bin, gripper closed)
+[21:21:54] state=PLACING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:21:54] PLACING    -> CARRYING    (to right_bin)
+[21:21:57] CARRYING   -> PICKING     (gripper holding)
+[21:22:00] PICKING    -> CARRYING    (via home)
+[21:22:03] CARRYING   -> PLACING     (right_bin, gripper closed)
+[21:22:04] state=PLACING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:22:05] PLACING    -> CARRYING    (to right_bin)
+[21:22:08] CARRYING   -> PICKING     (gripper holding)
+[21:22:14] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[21:22:24] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[21:22:34] state=PICKING  broker=up  arm/telemetry=0.2 s ago  cycles_ok=0  levels=all OK
+
+[arm-analyzer] stopping
+[arm-analyzer] lost the broker

@@ -1,0 +1,35 @@
+[health] watching arm, camera, logger_arm, logger_camera via localhost:1883. Ctrl+C to stop.
+[health] connected to broker: Success
+[18:35:28] ARM           UNKNOWN -> OFFLINE   (arm/status says offline (last will or clean exit))
+[18:35:28] CAMERA        UNKNOWN -> OFFLINE   (camera/status says offline (last will or clean exit))
+[18:35:28] LOGGER_CAMERA UNKNOWN -> OFFLINE   (logger/camera/status says offline (last will or clean exit))
+[18:35:28] LOGGER_CAMERA OFFLINE -> UNKNOWN   (logger/camera/heartbeat: no message yet)
+[18:35:29] LOGGER_ARM    UNKNOWN -> OK
+[18:35:29] LOGGER_CAMERA UNKNOWN -> OK
+[18:35:34] CAMERA        OFFLINE -> UNKNOWN   (camera/demand: no message yet)
+[18:35:35] ARM           OFFLINE -> RECOVERED
+[18:35:37] arm=RECOVERED  camera=UNKNOWN  logger_arm=OK  logger_camera=OK
+[18:35:38] ARM           RECOVERED -> OK
+[18:35:42] CAMERA        UNKNOWN -> OFFLINE   (camera/demand: never seen)
+[18:35:44] CAMERA        OFFLINE -> RECOVERED
+[18:35:47] CAMERA        RECOVERED -> OK
+[18:35:47] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[18:35:57] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[18:36:07] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[18:36:17] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[18:36:27] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[18:36:32] ARM           OK -> OFFLINE   (arm/status says offline (last will or clean exit))
+[18:36:37] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[18:36:47] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[18:36:57] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[18:37:07] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[18:37:17] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[18:37:27] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[18:37:37] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[18:37:47] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[18:37:57] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[18:38:07] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[18:38:17] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[18:38:27] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[18:38:37] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[health] lost the broker: health is UNKNOWN until it is back

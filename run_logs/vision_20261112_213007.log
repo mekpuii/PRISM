@@ -1,0 +1,135 @@
+=================================================================
+DELTA - Raspberry Pi 4 Object Perception + Spacing + Demand Collection
+=================================================================
+Mode: HSV color detection + USB camera (no depth) + Kalman
+Colours (priority order): white, orange
+Belt axis: u   direction: +1
+Camera streams: 854x480 at 6 FPS
+Demand window: 180 seconds
+Data sample interval: 10 seconds
+History file: delta_demand_history.csv
+Summary file: delta_3min_summary.csv
+Press ESC or Q to exit.
+=================================================================
+[camera] using /dev/v4l/by-id/usb-QCM_Astro_HD_Camera-video-index0
+
+Starting USB camera /dev/v4l/by-id/usb-QCM_Astro_HD_Camera-video-index0 at 1280x720 -> 854x480, 6 FPS (camera 15 FPS, MJPG)...
+Camera warm-up: 1/3
+Camera warm-up: 2/3
+Camera warm-up: 3/3
+[spacing] USB camera has no depth; gaps will be in pixels only
+[shape] cube: h>=38 px, area>=1700 (exit u<160: >=900), w/h 0.4..3.0, fill>=0.55
+[camera] settings: auto_exposure=3, white_balance_automatic=1, focus_automatic_continuous=1, exposure_dynamic_framerate=1, brightness=-7, contrast=6, saturation=30, hue=0, gamma=7, power_line_frequency=0, white_balance_temperature=6500 (refused), sharpness=3, backlight_compensation=1, exposure_time_absolute=18 (refused), focus_absolute=1 (refused)
+[belt] learning the empty belt (reflections are ignored); belt brightness at calibration V=67
+[DATA] Window 1 |   10.0s | +0 {} (total 0)
+[DATA] Window 1 |   20.2s | +0 {} (total 0)
+[DATA] Window 1 |   30.4s | +0 {} (total 0)
+[DATA] Window 1 |   40.4s | +1 {'white': 1} (total 1)
+[DATA] Window 1 |   50.5s | +2 {'white': 2} (total 3)
+[DATA] Window 1 |   60.5s | +1 {'white': 1} (total 4)
+[DATA] Window 1 |   70.7s | +1 {'white': 1} (total 5)
+[DATA] Window 1 |   80.7s | +2 {'white': 2} (total 7)
+[DATA] Window 1 |   90.9s | +1 {'orange': 1} (total 8)
+[DATA] Window 1 |  101.0s | +1 {'orange': 1} (total 9)
+[DATA] Window 1 |  111.0s | +2 {'orange': 2} (total 11)
+[DATA] Window 1 |  121.2s | +1 {'orange': 1} (total 12)
+[DATA] Window 1 |  131.2s | +2 {'orange': 1, 'white': 1} (total 14)
+[DATA] Window 1 |  141.2s | +2 {'orange': 1, 'white': 1} (total 16)
+[DATA] Window 1 |  151.4s | +1 {'orange': 1} (total 17)
+[DATA] Window 1 |  161.5s | +2 {'orange': 2} (total 19)
+[DATA] Window 1 |  171.7s | +0 {} (total 19)
+[belt] light changed (67% of the belt different at once): learning the empty belt again
+[belt] light changed (60% of the belt different at once): learning the empty belt again
+[belt] light changed (50% of the belt different at once): learning the empty belt again
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #1 COMPLETE
+Objects : 19   by colour: {'white': 9, 'orange': 10}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 2 |   10.0s | +1 {'white': 1} (total 1)
+[DATA] Window 2 |   20.0s | +2 {'white': 1, 'orange': 1} (total 3)
+[DATA] Window 2 |   30.2s | +1 {'white': 1} (total 4)
+[DATA] Window 2 |   40.3s | +1 {'orange': 1} (total 5)
+[DATA] Window 2 |   50.3s | +3 {'white': 2, 'orange': 1} (total 8)
+[DATA] Window 2 |   60.5s | +1 {'orange': 1} (total 9)
+[DATA] Window 2 |   70.7s | +0 {} (total 9)
+[DATA] Window 2 |   80.8s | +2 {'white': 1, 'orange': 1} (total 11)
+[DATA] Window 2 |   91.0s | +1 {'white': 1} (total 12)
+[DATA] Window 2 |  101.2s | +3 {'white': 3} (total 15)
+[DATA] Window 2 |  111.3s | +1 {'white': 1} (total 16)
+[DATA] Window 2 |  121.5s | +1 {'white': 1} (total 17)
+[DATA] Window 2 |  131.5s | +2 {'white': 2} (total 19)
+[DATA] Window 2 |  141.7s | +2 {'white': 1, 'orange': 1} (total 21)
+[DATA] Window 2 |  151.8s | +2 {'white': 1, 'orange': 1} (total 23)
+[DATA] Window 2 |  161.8s | +1 {'orange': 1} (total 24)
+[DATA] Window 2 |  172.0s | +1 {'white': 1} (total 25)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #2 COMPLETE
+Objects : 25   by colour: {'white': 17, 'orange': 8}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 3 |   10.2s | +2 {'white': 2} (total 2)
+[DATA] Window 3 |   20.3s | +2 {'white': 1, 'orange': 1} (total 4)
+[DATA] Window 3 |   30.3s | +1 {'orange': 1} (total 5)
+[DATA] Window 3 |   40.3s | +1 {'orange': 1} (total 6)
+[DATA] Window 3 |   50.3s | +1 {'white': 1} (total 7)
+[DATA] Window 3 |   60.5s | +1 {'orange': 1} (total 8)
+[DATA] Window 3 |   70.6s | +2 {'white': 2} (total 10)
+[DATA] Window 3 |   80.6s | +0 {} (total 10)
+[DATA] Window 3 |   90.7s | +1 {'orange': 1} (total 11)
+[DATA] Window 3 |  100.8s | +2 {'white': 1, 'orange': 1} (total 13)
+[DATA] Window 3 |  110.8s | +1 {'orange': 1} (total 14)
+[DATA] Window 3 |  120.9s | +1 {'white': 1} (total 15)
+[DATA] Window 3 |  130.9s | +0 {} (total 15)
+[DATA] Window 3 |  141.1s | +2 {'white': 1, 'orange': 1} (total 17)
+[DATA] Window 3 |  151.1s | +1 {'white': 1} (total 18)
+[DATA] Window 3 |  161.2s | +2 {'white': 2} (total 20)
+[DATA] Window 3 |  171.2s | +0 {} (total 20)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #3 COMPLETE
+Objects : 20   by colour: {'white': 12, 'orange': 8}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 4 |   10.0s | +0 {} (total 0)
+[DATA] Window 4 |   20.2s | +0 {} (total 0)
+[DATA] Window 4 |   30.3s | +0 {} (total 0)
+[DATA] Window 4 |   40.4s | +0 {} (total 0)
+[DATA] Window 4 |   50.5s | +0 {} (total 0)
+[DATA] Window 4 |   60.6s | +0 {} (total 0)
+[DATA] Window 4 |   70.6s | +0 {} (total 0)
+[DATA] Window 4 |   80.7s | +0 {} (total 0)
+[DATA] Window 4 |   90.8s | +1 {'white': 1} (total 1)
+[DATA] Window 4 |  100.8s | +0 {} (total 1)
+[DATA] Window 4 |  111.0s | +0 {} (total 1)
+[DATA] Window 4 |  121.2s | +0 {} (total 1)
+[DATA] Window 4 |  131.2s | +0 {} (total 1)
+[DATA] Window 4 |  141.3s | +0 {} (total 1)
+[DATA] Window 4 |  151.3s | +0 {} (total 1)
+[DATA] Window 4 |  161.5s | +0 {} (total 1)
+[DATA] Window 4 |  171.5s | +0 {} (total 1)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #4 COMPLETE
+Objects : 1   by colour: {'white': 1}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 5 |   10.0s | +0 {} (total 0)
+[DATA] Window 5 |   20.2s | +0 {} (total 0)
+[DATA] Window 5 |   30.2s | +0 {} (total 0)
+[DATA] Window 5 |   40.3s | +0 {} (total 0)
+[DATA] Window 5 |   50.3s | +0 {} (total 0)
+[DATA] Window 5 |   60.3s | +0 {} (total 0)
+[DATA] Window 5 |   70.5s | +0 {} (total 0)
+[DATA] Window 5 |   80.5s | +0 {} (total 0)
+
+Stopping...
+
+Stopping camera...
+Done.

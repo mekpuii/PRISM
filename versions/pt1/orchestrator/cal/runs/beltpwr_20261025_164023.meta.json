@@ -1,0 +1,142 @@
+{
+ "run_id": "beltpwr_20261025_164023",
+ "kind": "belt_power",
+ "start": "2026-10-25T16:40:23",
+ "end": "2026-10-25T16:44:13",
+ "status": "error",
+ "rpm_units": "output_rpm_cpr11880",
+ "operator_note": "belt only, arm broken",
+ "cube_set": "none (empty belt)",
+ "power_formula": "W = |belt INA260 mA| x belt INA260 bus mV / 1e6 (belt motor supply), as autoen belt_run",
+ "plan": {
+  "path": "/home/mekkhram/Desktop/PRISM/orchestrator/cal/plans/belt_power_v1.json",
+  "sha256": "a6cf0b60b829a8a7fc32766268afb7ffd61603118c2d85cfa3cd11ad5bc04f7d",
+  "seconds": 70.0,
+  "settle_s": 10.0
+ },
+ "script_sha256": "d9d38efaa81c8de3ff494c2e8f6a02c792dd840d6c369816141ca39208a594a5",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "2331163618d6ef6c9d2fbe05b403008786a88c731c7b45608871148d7bde780c",
+  "used_for": "Link + belt defaults"
+ },
+ "belt_settings_sent": [
+  "CPR,11880",
+  "TEMPMAX,60",
+  "PID,4.5,13.5,0",
+  "WDT,500"
+ ],
+ "arm": "not used (autoen not running; servos not commanded)",
+ "steps": [
+  {
+   "step": 1,
+   "round": 1,
+   "rpm_set": 0.0,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:40:37",
+   "end": "2026-10-25T16:41:47",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 583,
+     "mean": 0.0,
+     "std": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "mA": {
+     "n": 583,
+     "mean": 0.0103,
+     "std": 0.1009,
+     "min": 0.0,
+     "max": 1.0
+    },
+    "mV": {
+     "n": 583,
+     "mean": 12187.331,
+     "std": 1.1214,
+     "min": 12186.0,
+     "max": 12190.0
+    },
+    "W": {
+     "n": 583,
+     "mean": 0.0001,
+     "std": 0.0012,
+     "min": 0.0,
+     "max": 0.0122
+    },
+    "pwm": {
+     "n": 583,
+     "mean": 0.0,
+     "std": 0.0,
+     "min": 0,
+     "max": 0
+    },
+    "W_first_half_mean": 0.0001,
+    "W_second_half_mean": 0.0001,
+    "n_settle_skipped": 98
+   }
+  },
+  {
+   "step": 2,
+   "round": 1,
+   "rpm_set": 15.0,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:42:55",
+   "end": "2026-10-25T16:44:06",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 463,
+     "mean": 15.0004,
+     "std": 0.0864,
+     "min": 14.8,
+     "max": 15.2
+    },
+    "mA": {
+     "n": 463,
+     "mean": 80.9309,
+     "std": 3.8726,
+     "min": 71.0,
+     "max": 90.0
+    },
+    "mV": {
+     "n": 463,
+     "mean": 12185.7343,
+     "std": 2.3145,
+     "min": 12181.0,
+     "max": 12191.0
+    },
+    "W": {
+     "n": 463,
+     "mean": 0.9862,
+     "std": 0.0472,
+     "min": 0.865,
+     "max": 1.0966
+    },
+    "pwm": {
+     "n": 463,
+     "mean": 113.3866,
+     "std": 1.0575,
+     "min": 111,
+     "max": 116
+    },
+    "W_first_half_mean": 0.9996,
+    "W_second_half_mean": 0.9729,
+    "n_settle_skipped": 99
+   }
+  }
+ ],
+ "mega_boot_lines": [
+  "S,4,-1,-1",
+  "S,5,-1,-1",
+  "S,6,-1,-1",
+  "R,0",
+  "BOOT_DONE"
+ ],
+ "error": "TimeoutError: no reply to X,CONV,8.00"
+}

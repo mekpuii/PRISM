@@ -1,0 +1,4 @@
+{"ts": 1793003245.302, "iso": "2026-10-26T15:27:25", "kind": "start", "shadow": true, "api": "http://127.0.0.1:8781", "idle_brake": true}
+{"ts": 1793003245.315, "iso": "2026-10-26T15:27:25", "kind": "plan", "t": 12353.027043134, "mode": "OFF", "rpm": 20.0, "arm_speed": 1.5, "carry_speed": 1.5, "arrive_timeout": 25.0, "reason": "autoen not reachable", "action": null, "at_boundary": false, "seq": 1, "score": {"t_s": 18.55, "J": 20.8, "p_low": 0.922, "n_live": 0, "ok_live": 0, "cam_seen": "0/0", "cam_trusted": false, "next_probe_s": null}, "shadow": true}
+{"ts": 1793003248.327, "iso": "2026-10-26T15:27:28", "kind": "energy", "by_mode": {"OFF": {"belt_J": 0.0, "arm_J": 0.0, "s": 2.96, "metered_s": 0.0}}}
+{"ts": 1793003248.52, "iso": "2026-10-26T15:27:28", "kind": "stop", "last_job": "", "last_error": ""}

@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+"""record_run.py - log every topic the optimizer needs into one JSONL file.
+
+Usage:  python3 record_run.py --out runs/run3.jsonl --rpm 30 --note "belt 30 rpm, 6 cubes"
+Stop with Ctrl-C.  Run it on the Pi while the normal system (camera + autoen) is running.
+
+One line per MQTT message:
+  {"rt": <wall clock at receipt>, "mono": <monotonic at receipt>, "topic": ..., "retained": bool, "data": <parsed JSON or raw str>}
+First line is a header: {"header": {...}} with the rpm you set and a note.
+We stamp OUR receive time ("rt"), never trust payload "ts" across machines: the camera and
+Mega clocks are different clocks. Pi-local time keeps all topics on one time axis.
+
+Load on the Pi: ~40 msgs/s, tiny. Each line is flushed so a power cut loses < 1 s.
+"""
+import argparse
+import json
+import os
+import signal
+import time
+
+import paho.mqtt.client as mqtt
+
+TOPICS = [
+    ("camera/perception", 0), ("belt/telemetry", 0), ("belt/event", 1),
+    ("arm/telemetry", 0), ("arm/state", 0), ("arm/gripper", 1), ("arm/ir", 1),
+    ("autoen/state", 0), ("autoen/cycle", 1), ("analyzer/arm/#", 0), ("health/status", 0),
+]
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--host", default=os.environ.get("MQTT_HOST", "localhost"))
+    ap.add_argument("--port", type=int, default=1883)
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--rpm", type=float, default=None, help="belt rpm you set on the autoen page")
+    ap.add_argument("--note", default="")
+    a = ap.parse_args()
+
+    os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)
+    f = open(a.out, "a", buffering=1, encoding="utf-8")        # line-buffered
+    f.write(json.dumps({"header": {"rt": time.time(), "rpm_set": a.rpm, "note": a.note}}) + "\n")
+    counts = {}
+
+    def on_connect(c, ud, flags, rc, *rest):
+        # (re)subscribe on every connect so a broker restart does not silently stop the log
+        for t, q in TOPICS:
+            c.subscribe(t, q)
+        print("connected, recording ->", a.out)
+
+    def on_message(c, ud, m):
+        try:
+            data = json.loads(m.payload)
+        except Exception:
+            data = m.payload.decode("utf-8", "replace")        # keep it, summarize will skip it
+        f.write(json.dumps({"rt": time.time(), "mono": time.monotonic(), "topic": m.topic,
+                            "retained": bool(m.retain), "data": data}) + "\n")
+        counts[m.topic] = counts.get(m.topic, 0) + 1
+
+    try:                                                        # paho 2.x needs the version arg
+        c = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
+    except AttributeError:                                      # paho 1.x
+        c = mqtt.Client()
+    c.on_connect, c.on_message = on_connect, on_message
+    c.connect(a.host, a.port, 30)
+    c.loop_start()
+
+    stop = []
+    signal.signal(signal.SIGINT, lambda *x: stop.append(1))
+    signal.signal(signal.SIGTERM, lambda *x: stop.append(1))
+    t0 = time.time()
+    while not stop:
+        time.sleep(5)
+        print(f"{time.time()-t0:6.0f}s  " + "  ".join(f"{k}:{v}" for k, v in sorted(counts.items())))
+    c.loop_stop()
+    f.close()
+    print("saved", a.out)
+
+
+if __name__ == "__main__":
+    main()

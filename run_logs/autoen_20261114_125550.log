@@ -1,0 +1,67 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+[mqtt] arm connected to localhost:1883: Success
+[mqtt] belt connected to localhost:1883: Success
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261114_125559.csv
+       riff_logs/autoen_sets_20261114_125559.csv
+       riff_logs/autoen_cycles_20261114_125559.csv
+       riff_logs/autoen_thresholds_20261114_125559.csv
+settings changed from the web page: {'rpm': 6.7, 'arm_speed': 1.0, 'carry_speed': 1.0, 'arrive_timeout': 20.0}
+settings changed from the web page: {'rpm': 22.0, 'arm_speed': 1.75, 'carry_speed': 1.75, 'arrive_timeout': 22.0, 'max_fails': 8, 'sets': 1000, 'cycles_per_set': 1000}
+settings changed from the web page: {'feeder_push_ms': 850}
+settings changed from the web page: {'drop_mode': 'left'}
+set 1/1000 cycle 1/1000  OK 26.0s 
+set 1/1000 cycle 2/1000  OK 12.3s 
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 3/1000  OK 11.8s settled drop pose 'down': J3 +43t
+settings changed from the web page: {'drop_mode': 'left'}
+set 1/1000 cycle 4/1000  OK 11.4s 
+set 1/1000 cycle 5/1000  OK 11.4s 
+set 1/1000 cycle 6/1000  OK 12.7s 
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 7/1000  OK 14.7s settled drop pose 'down': J3 +45t
+settings changed from the web page: {'drop_mode': 'left'}
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 8/1000  OK 17.2s settled drop pose 'down': J3 +45t
+set 1/1000 cycle 9/1000  OK 12.3s settled drop pose 'down': J3 +45t
+set 1/1000 cycle 10/1000  OK 12.1s settled drop pose 'down': J3 +43t
+set 1/1000 cycle 11/1000  OK 12.4s settled drop pose 'down': J3 +43t
+set 1/1000 cycle 12/1000  OK 13.4s settled home with block: J3 +43t; settled drop pose 'down': J3 +43t
+set 1/1000 cycle 13/1000  OK 12.0s settled drop pose 'down': J3 +43t
+set 1/1000 cycle 14/1000  OK 15.1s settled drop pose 'down': J3 +41t
+settings changed from the web page: {'drop_mode': 'left'}
+set 1/1000 cycle 15/1000  OK 16.3s 
+set 1/1000 cycle 16/1000  OK 11.4s settled drop pose 'left': J3 +41t
+set 1/1000 cycle 17/1000  OK 9.3s 
+set 1/1000 cycle 18/1000  OK 11.5s 
+set 1/1000 cycle 19/1000  OK 12.4s 
+set 1/1000 cycle 20/1000  OK 11.5s 
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 21/1000  OK 13.1s settled drop pose 'down': J3 +43t
+settings changed from the web page: {'drop_mode': 'left'}
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 22/1000  OK 12.2s settled drop pose 'down': J3 +41t
+set 1/1000 cycle 23/1000  OK 12.1s settled drop pose 'down': J3 +49t
+set 1/1000 cycle 24/1000  OK 12.5s settled drop pose 'down': J3 +43t
+settings changed from the web page: {'drop_mode': 'left'}
+set 1/1000 cycle 25/1000  OK 11.6s 
+set 1/1000 cycle 26/1000  OK 10.8s 
+set 1/1000 cycle 27/1000  OK 11.0s settled drop pose 'left': J3 +41t
+set 1/1000 cycle 28/1000  OK 10.5s 
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 29/1000  OK 12.7s settled drop pose 'down': J3 +43t
+settings changed from the web page: {'drop_mode': 'left'}
+set 1/1000 cycle 30/1000  OK 11.6s settled drop pose 'left': J3 +41t
+set 1/1000 cycle 31/1000  OK 10.6s 
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 32/1000  OK 11.6s settled drop pose 'down': J3 +43t
+set 1/1000 cycle 33/1000  OK 12.2s settled drop pose 'down': J3 +43t
+set 1/1000 cycle 34/1000  OK 11.6s settled drop pose 'down': J3 +43t
+set 1/1000 cycle 35/1000  OK 12.1s settled drop pose 'down': J3 +43t
+set 1/1000 cycle 36/1000  OK 9.7s settled drop pose 'down': J3 +43t
+Set 1 (12:56:00-13:07:54): J1: temp max 38C, current avg 5 / peak 39 mA; J2: temp max 33C, current avg 9 / peak 117 mA; J3: temp max 35C, current avg 25 / peak 162 mA; J4: temp max 33C, current avg 3 / peak 32 mA; J5: temp max 36C, current avg 4 / peak 46 mA; J6: temp max 39C, current avg 6 / peak 46 mA; Belt: temp max 25C, current avg 26 / peak 398 mA; ARM TOTAL: servo volt min 11.2 V, summed current avg 52 / peak 234 mA
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+stopped: stopped by the operator  (unparsable RX lines: 0)

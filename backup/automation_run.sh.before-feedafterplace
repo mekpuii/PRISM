@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# automation/run.sh - the PLAIN automation: feed -> belt to the IR -> pick -> place -> feed again. Nothing else.
+# No optimizer, no vision, no dashboard, no MQTT, no emergency grip, no grip checks, no feeder rest, no arrival guard.
+# It runs autoencoder/auto_en_new.py (same arm poses, same calibration, same firmware protocol as PRISM) with every
+# smart feature switched off.     ./automation/run.sh [cubes=100] [fd1|fd2]
+set -u
+PRISM="$HOME/Desktop/PRISM"; HERE="$PRISM/automation"; API="http://127.0.0.1:8781"; STAMP=$(date +%Y%m%d_%H%M%S)
+N="${1:-100}"; FD="${2:-fd1}"
+RPM="${RPM:-20}"; ARM="${ARM:-1.5}"; CARRY="${CARRY:-1.5}"      # override: RPM=37 ARM=8.8 CARRY=8.8 ./automation/run.sh
+mkdir -p "$HERE/logs" "$HERE/riff_logs"
+st() { curl -s -m 2 "$API/api/state" | python3 -c 'import json,sys; print(json.load(sys.stdin)["'"$1"'"])' 2>/dev/null; }
+if pgrep -f auto_en_new.py >/dev/null; then
+  echo "autoen is already running - stop it first:  $PRISM/stop_cell.sh   (a plain run needs a plain autoen)"; exit 1
+fi
+for pid in $(pgrep -f "main.py"); do
+  [ "$(readlink "/proc/$pid/cwd" 2>/dev/null)" = "$PRISM/orchestrator" ] && { echo "the optimizer is running - stop it first: $PRISM/stop_cell.sh"; exit 1; }
+done
+"$HOME/orch-env/bin/python" "$PRISM/orchestrator/relay.py" on 2>&1 | sed 's/^/relay:     /'   # does nothing until the relay was taught
+(cd "$PRISM/autoencoder" && nohup "$HOME/autoen-env/bin/python" auto_en_new.py --no-mqtt --log-dir "$HERE/riff_logs" \
+   --enable-f 0 --enable-b 0 --enable-c 0 --rescue 0 --enable-verify 0 --enable-recover 0 --arrival-guard 0 \
+   --feeder-relax 0 --feeder-preset "$FD" > "$HERE/logs/autoen_$STAMP.log" 2>&1 &)
+echo -n "autoen:    starting (feeder $FD) "
+for _ in $(seq 1 60); do [ -n "$(st status)" ] && break; echo -n "."; sleep 1; done; echo
+[ "$(st status)" = "ready" ] || { echo "autoen is '$(st status)' - look at $HERE/logs/autoen_$STAMP.log"; exit 1; }
+rest=$(st rest_state)
+echo "arm: $rest. Belt EMPTY, cubes in the feeder, arm area clear, E-stop within reach."
+[ "$rest" != "awake" ] && echo "(a resting arm is woken along the taught path first, ~36 s)"
+read -r -p "Enter = Start $N cubes (plain cycle, belt $RPM rpm, arm $ARM, carry $CARRY); q = quit: " ans
+[[ "$ans" =~ ^[Qq] ]] && { echo "Not started. Stop autoen with: $HERE/stop.sh"; exit 0; }
+curl -s -m 5 -X POST "$API/api/start" -H 'Content-Type: application/json' -d '{"clear": true, "config": {
+  "rpm": '"$RPM"', "arm_speed": '"$ARM"', "carry_speed": '"$CARRY"', "arrive_timeout": 25,
+  "sets": 1, "cycles_per_set": '"$N"', "pause_before_set": 0}}'
+echo
+if [ "$rest" != "awake" ]; then
+  for _ in $(seq 1 30); do [ "$(st status)" = "paused" ] && break; sleep 1; done
+  curl -s -m 5 -X POST "$API/api/task" -H 'Content-Type: application/json' -d '{"kind": "wake", "seconds": 5, "settle_s": 0}' >/dev/null
+  echo "waking the arm, then the run begins."
+fi
+echo "Running. autoen's page: $API   Stop: $HERE/stop.sh   Data: $HERE/riff_logs/"

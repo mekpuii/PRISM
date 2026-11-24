@@ -1,0 +1,55 @@
+{
+ "_doc": "Energy/time constants for optimize.py (roadmap B5). PROVISIONAL 2026-10-25 22:50: built from data collected BEFORE the arm repair + gripper re-cal (18:20) and with the coarse servo-current arm power. Redo after the vision_check_v1 run (A1): refit model.json, re-check arm W with the arm INA260 (B3), u_IR / ETA from the new session (B4). Units: belt rpm = real output rpm (output_rpm_cpr11880). Every number has a source.",
+ "created": "2026-10-25T22:50",
+ "status": "provisional_pre_repair",
+ "rpm_units": "output_rpm_cpr11880",
+ "belt": {
+  "P_W_per_rpm": {"value": 0.0625, "source": "cal/baseline_belt_summary.json (beltpwr_20261025_164625), linear above ~5 rpm"},
+  "P_W": {"value": {"8": 0.493, "11.1": 0.677, "15": 0.952, "20": 1.307}, "source": "cal/baseline_belt_summary.json"},
+  "P_idle_not_braked_W": {"value": 0.048, "source": "cal/OPTIMIZER_DATA.md section 2"},
+  "P_braked_W": {"value": 0.0, "source": "cal/baseline_belt_summary.json rpm 0"},
+  "travel_mm_per_cube": {"value": 515, "range": [490, 545], "source": "cal/energy_blocks.py on exp_20261025_005038"},
+  "mm_s_per_rpm": {"value": 2.81, "source": "predict.py BELT_MM_S_PER_RPM (do not touch)"}
+ },
+ "arm": {
+  "P_home_W": {"value": 0.084, "std": 0.053, "source": "base_20261025_190036 (B1a)"},
+  "P_rest_torque_on_W": {"value": 0.30, "range": [0.28, 0.35], "source": "base_20261025_183009/_183853/_184933/_190640"},
+  "P_rest_torque_off_W": {"value": null, "source": "not measured (B1c skipped: Mega firmware does not answer Q)"},
+  "P_wait_in_cycle_W": {"value": 0.23, "source": "energy_blocks 20/1.5: idle 2.2 J over 51 % of 19.1 s"},
+  "power_method": "sum of servo current x 6.5 mA/count x bus V (misses servo electronics; arm INA260 logging added 22:15, not used yet)"
+ },
+ "rest_transition": {
+  "home_to_rest": {"s": 37, "J": 10.4},
+  "rest_to_home": {"s": 36, "J": 10.1},
+  "round_trip": {"s": 73, "J": 20.5},
+  "source": "B1b runs + B2 round 1 (base_20261025_190640); B2 stopped after 1 round"
+ },
+ "T_breakeven_rest_s": {"value": null, "why": "P_rest (0.30 W) > P_home (0.084 W): resting never saves energy. Even at 0 W rest it would need ~240 s idle and costs 73 s of unavailability."},
+ "idle_rule": {"value": "O2", "what": "hold home + brake the belt; rest only for parking/shutdown", "source": "OPTIMIZER_ROADMAP.md section 0"},
+ "camera": {
+  "u_IR_px": {"value": 247, "source": "cal/camera_eta_summary.json (provisional, old-unit runs)"},
+  "eta_err_s": {"value": 0.5, "at_horizon_s": 5, "source": "cal/camera_eta_summary.json (provisional)"},
+  "lookahead_s": {"value": 13, "source": "OPTIMIZER_ROADMAP.md section 0"},
+  "fps": 6
+ },
+ "per_cube": {
+  "_doc": "Measured per block of exp_20261025_005038_opt_grid_v1 by cal/energy_blocks.py (window = 1st to last cycle end of a block). s_per_cube is block wall time / cubes; J are motor supplies only (belt INA260 + servo current sum), not Pi / Mega / drivers.",
+  "source": "cal/runs/exp_20261025_005038_opt_grid_v1.jsonl via cal/energy_blocks.py (run 2026-10-25 22:48)",
+  "rows": [
+   {"rpm": 8.0,  "arm_speed": 1.0, "ok": 20, "n": 20, "s_per_cube": 32.7, "arm_J": 12.7, "belt_J": 10.2, "J": 22.9},
+   {"rpm": 8.0,  "arm_speed": 1.5, "ok": 20, "n": 20, "s_per_cube": 31.5, "arm_J": 12.7, "belt_J": 10.4, "J": 23.1},
+   {"rpm": 8.0,  "arm_speed": 2.0, "ok": 20, "n": 20, "s_per_cube": 31.1, "arm_J": 11.6, "belt_J": 10.3, "J": 21.9},
+   {"rpm": 11.1, "arm_speed": 1.0, "ok": 19, "n": 20, "s_per_cube": 27.5, "arm_J": 10.7, "belt_J": 11.0, "J": 21.7},
+   {"rpm": 11.1, "arm_speed": 1.5, "ok": 19, "n": 20, "s_per_cube": 26.8, "arm_J": 10.5, "belt_J": 11.2, "J": 21.7},
+   {"rpm": 11.1, "arm_speed": 2.0, "ok": 20, "n": 20, "s_per_cube": 25.2, "arm_J": 11.0, "belt_J": 10.3, "J": 21.3},
+   {"rpm": 15.0, "arm_speed": 1.0, "ok": 20, "n": 20, "s_per_cube": 23.3, "arm_J": 10.9, "belt_J": 10.6, "J": 21.5},
+   {"rpm": 15.0, "arm_speed": 1.5, "ok": 20, "n": 20, "s_per_cube": 21.9, "arm_J": 9.5,  "belt_J": 10.7, "J": 20.2},
+   {"rpm": 15.0, "arm_speed": 2.0, "ok": 19, "n": 20, "s_per_cube": 22.4, "arm_J": 9.1,  "belt_J": 11.8, "J": 20.9},
+   {"rpm": 20.0, "arm_speed": 1.0, "ok": 20, "n": 20, "s_per_cube": 20.5, "arm_J": 10.7, "belt_J": 11.3, "J": 22.0},
+   {"rpm": 20.0, "arm_speed": 1.5, "ok": 20, "n": 20, "s_per_cube": 19.1, "arm_J": 9.3,  "belt_J": 11.4, "J": 20.8},
+   {"rpm": 20.0, "arm_speed": 2.0, "ok": 18, "n": 20, "s_per_cube": 22.5, "arm_J": 9.0,  "belt_J": 17.2, "J": 26.2}
+  ]
+ },
+ "cycle_time_model": {"value": "secs = 8.541 + 2.919/arm_speed + 159.869/rpm", "r2": 0.879, "rmse_s": 1.69, "source": "orchestrator/model.json (fitted 2026-10-25 22:46 from exp_20261025_005038 only; pre-repair)"},
+ "safe_default": {"rpm": 20, "arm_speed": 1.5, "carry_speed": 1.5, "why": "best throughput, J/cube within 3 % of the minimum; arm 2.0 caused transport timeouts"}
+}

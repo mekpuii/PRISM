@@ -1,0 +1,31 @@
+orchestrator LIVE  objective=priority  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261026_181323.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[observe] connected to broker: Success
+[plan 2] OFF    20 rpm / arm 1.5  - autoen starting
+[plan 3] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 4] OFF    20 rpm / arm 1.5  - autoen preparing
+[plan 5] RUN    20 rpm / arm 1.5  - autoen running
+[plan 6] RUN    20 rpm / arm 1.5  - autoen running
+[plan 7] RUN    20 rpm / arm 1.5  - autoen running
+[plan 8] RUN    20 rpm / arm 1.5  - autoen running
+[plan 9] RUN    20 rpm / arm 1.5  - autoen running
+[plan 10] RUN    20 rpm / arm 1.5  - autoen running
+[plan 11] RUN    20 rpm / arm 1.5  - autoen running
+[plan 12] RUN    20 rpm / arm 1.5  - autoen running
+[plan 13] RUN    20 rpm / arm 1.5  - autoen running
+[plan 14] RUN    20 rpm / arm 1.5  action=refeed  - no cube on the camera 3 s after FEED: stopping the belt, feeding again
+[plan 15] RUN    20 rpm / arm 1.5  - no cube after FEED: feeding again
+[plan 16] RUN    20 rpm / arm 1.5  - no cube after FEED: feeding again
+[plan 17] RUN    20 rpm / arm 1.5  action=abort  - no cube on the camera 3 s into TRANSPORT: braking the belt and pausing
+[plan 18] RUN    20 rpm / arm 1.5  - no cube on the camera 3 s into TRANSPORT: braking the belt and pausing
+[plan 19] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube on the camera after FEED
+[plan 20] IDLE   20 rpm / arm 1.5  - feeder empty: no cube on the camera after FEED
+[plan 21] RUN    20 rpm / arm 1.5  action=resume  - probe: try one feed after 154 s idle
+[plan 22] RUN    20 rpm / arm 1.5  - probe: try one feed after 154 s idle
+[plan 23] RUN    20 rpm / arm 1.5  action=abort  - no cube on the camera 3 s into TRANSPORT: braking the belt and pausing
+[plan 24] RUN    20 rpm / arm 1.5  - no cube on the camera 3 s into TRANSPORT: braking the belt and pausing
+[plan 25] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube on the camera after FEED
+[plan 26] IDLE   20 rpm / arm 1.5  - feeder empty: no cube on the camera after FEED
+[observe] lost the broker: all feeds will go stale
+[observe] cannot reach the broker at localhost:1883 - retrying
+stopping: autoen is left as it is

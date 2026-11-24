@@ -1,0 +1,6 @@
+[dashboard] optimizer trace: 29 records from its last log
+[dashboard] page: http://127.0.0.1:8080   broker localhost:1883   autoen http://127.0.0.1:8781   data /home/mekkhram/Desktop/PRISM/dashboard/data
+[dashboard] connected to the broker: Success
+
+[dashboard] stopping
+[dashboard] lost the broker

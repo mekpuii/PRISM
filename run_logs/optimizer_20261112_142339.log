@@ -1,0 +1,86 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261112_142351.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 5] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 6] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 7] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 8] RUN    20 rpm / arm 1.5  action=verdict:1:fed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 9] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 10] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 11] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 12] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 13] RUN    20 rpm / arm 1.5  action=verdict:2:fed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 14] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 15] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 16] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 17] RUN    20 rpm / arm 1.5  action=verdict:3:fed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 18] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 19] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 20] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 21] RUN    20 rpm / arm 1.5  action=verdict:4:fed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 22] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 23] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 123.3, normal 87; 0.0 % too dark, 12.57 % burnt out): camera not used for decisions
+[plan 24] RUN    20 rpm / arm 1.5  action=feed  - light on the belt: glare (V 123.3, normal 87; 0.0 % too dark, 12.57 % burnt out): camera not used for decisions
+[plan 25] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 123.3, normal 87; 0.0 % too dark, 12.57 % burnt out): camera not used for decisions
+[plan 26] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 27] RUN    20 rpm / arm 1.5  action=verdict:5:fed  - light on the belt ok again: camera back in use
+[plan 28] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 29] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 116.2, normal 88; 0.0 % too dark, 11.46 % burnt out): camera not used for decisions
+[plan 30] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 31] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 32] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 33] RUN    20 rpm / arm 1.5  action=verdict:6:fed  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 34] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 35] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 36] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 37] RUN    20 rpm / arm 1.5  action=verdict:7:fed  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 38] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 39] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 40] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 41] RUN    20 rpm / arm 1.5  action=verdict:8:fed  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 42] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 20 mV: I don't use the dip check until I see clear pushes again
+[plan 43] RUN    20 rpm / arm 1.5  - slip: cubes move at 53% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 44] RUN    20 rpm / arm 1.5  action=feed  - slip: cubes move at 53% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 45] RUN    20 rpm / arm 1.5  - slip: cubes move at 53% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 46] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 47] RUN    20 rpm / arm 1.5  action=verdict:9:fed  - light on the belt ok again: camera back in use
+[plan 48] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 49] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 119.4, normal 90; 0.0 % too dark, 11.4 % burnt out): camera not used for decisions
+[plan 50] RUN    20 rpm / arm 1.5  action=feed  - light on the belt: glare (V 119.4, normal 90; 0.0 % too dark, 11.4 % burnt out): camera not used for decisions
+[plan 51] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 119.4, normal 90; 0.0 % too dark, 11.4 % burnt out): camera not used for decisions
+[plan 52] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 53] RUN    20 rpm / arm 1.5  action=verdict:10:fed  - light on the belt ok again: camera back in use
+[plan 54] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 55] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 107.5, normal 92; 0.0 % too dark, 10.54 % burnt out): camera not used for decisions
+[plan 56] RUN    20 rpm / arm 1.5  action=feed  - light on the belt: glare (V 107.5, normal 92; 0.0 % too dark, 10.54 % burnt out): camera not used for decisions
+[plan 57] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 107.5, normal 92; 0.0 % too dark, 10.54 % burnt out): camera not used for decisions
+[plan 58] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 59] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped -7 mV): giving that push up, feeding again (1/2)
+[plan 60] RUN    20 rpm / arm 1.5  action=verdict:11:fed  - the feeder servo did not move (12 V rail dipped -7 mV): giving that push up, feeding again (1/2)
+[plan 61] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped -7 mV): giving that push up, feeding again (1/2)
+[plan 62] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 118.3, normal 94; 0.0 % too dark, 12.67 % burnt out): camera not used for decisions
+[plan 63] RUN    20 rpm / arm 1.5  action=feed  - light on the belt: glare (V 118.3, normal 94; 0.0 % too dark, 12.67 % burnt out): camera not used for decisions
+[plan 64] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 118.3, normal 94; 0.0 % too dark, 12.67 % burnt out): camera not used for decisions
+[plan 65] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 66] RUN    20 rpm / arm 1.5  action=verdict:12:fed  - light on the belt ok again: camera back in use
+[plan 67] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 68] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 122.6, normal 95; 0.0 % too dark, 12.76 % burnt out): camera not used for decisions
+[plan 69] RUN    20 rpm / arm 1.5  action=feed  - light on the belt: glare (V 122.6, normal 95; 0.0 % too dark, 12.76 % burnt out): camera not used for decisions
+[plan 70] RUN    20 rpm / arm 1.5  - light on the belt: glare (V 122.6, normal 95; 0.0 % too dark, 12.76 % burnt out): camera not used for decisions
+[plan 71] IDLE   20 rpm / arm 1.5  action=stop_feed  - feeder empty: the feeder IR sees no cube and the push drew no current (1 mV). I carry on by myself as soon as cubes are loaded
+[story] FEEDER EMPTY
+    I tried / saw:  cycle 9: OK (11.7 s)
+    I tried / saw:  feed 10 pushed during GRIP: delivered
+    I tried / saw:  feed for cycle 11: 12 V dip 22 mV (unclear), feeder IR sees cubes
+    I tried / saw:  feed 12 during GRIP: servo unclear (22 mV), camera: new block at 89 px after 0.3 s, feeder IR cubes => FED
+    I tried / saw:  feed for cycle 11: 12 V dip 1 mV (no current: the servo did not move), feeder IR empty
+    so:             the feeder IR sees no cube, and the push drew no current  ->  there is nothing to push: not a fault
+    next:           I wait. When the feeder IR sees cubes for 5 s I start again by myself
+[plan 72] IDLE   20 rpm / arm 1.5  - feeder empty: the feeder IR sees no cube and the push drew no current (1 mV). I carry on by myself as soon as cubes are loaded
+[plan 73] IDLE   20 rpm / arm 1.5  action=verdict:13:empty  - feeder empty: the feeder IR sees no cube and the push drew no current (1 mV). I carry on by myself as soon as cubes are loaded
+[plan 74] IDLE   20 rpm / arm 1.5  - feeder empty: the feeder IR sees no cube and the push drew no current (1 mV). I carry on by myself as soon as cubes are loaded
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

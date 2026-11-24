@@ -1,0 +1,103 @@
+{
+ "run_id": "base_20261024_201655",
+ "kind": "base",
+ "start": "2026-10-24T20:16:55",
+ "end": "2026-10-24T20:18:18",
+ "status": "finished",
+ "operator_note": "",
+ "cube_set": "none",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "e0f1899cfa43748f5eb69e2e09a2e9f0c5da9a965b943cbc283e872cbbc90e09",
+  "mtime": "2026-10-24T18:43:38"
+ },
+ "experiment_sha256": "5e4ce00370914660710fdb817747df8b31e9d9ba4c8d56ee690c6e47e6979668",
+ "config_snapshots": [],
+ "tasks": [
+  {
+   "id": 1,
+   "status": "error",
+   "kind": "belt_run",
+   "seconds": 60.0,
+   "settle_s": 3.0,
+   "rpm": 100.0,
+   "t_start": 1792847867.68073,
+   "t_end": 1792847898.4921792,
+   "arrived": false,
+   "error": "FAULT_4: belt FAULT during task",
+   "stats": {
+    "belt_rpm": {
+     "n": 175,
+     "mean": 78.69,
+     "std": 39.909
+    },
+    "belt_mA": {
+     "n": 175,
+     "mean": 46.406,
+     "std": 24.796
+    },
+    "belt_W": {
+     "n": 175,
+     "mean": 0.564,
+     "std": 0.307
+    },
+    "arm_mA": {
+     "n": 72,
+     "mean": 13.451,
+     "std": 5.966
+    },
+    "arm_W": {
+     "n": 72,
+     "mean": 0.164,
+     "std": 0.073
+    }
+   }
+  }
+ ],
+ "blocks": [],
+ "baseline": {
+  "kind": "belt_run",
+  "seconds": 60.0,
+  "settle_s": 3.0,
+  "rpm": 100.0
+ },
+ "result": {
+  "id": 1,
+  "status": "error",
+  "kind": "belt_run",
+  "seconds": 60.0,
+  "settle_s": 3.0,
+  "rpm": 100.0,
+  "t_start": 1792847867.68073,
+  "t_end": 1792847898.4921792,
+  "arrived": false,
+  "error": "FAULT_4: belt FAULT during task",
+  "stats": {
+   "belt_rpm": {
+    "n": 175,
+    "mean": 78.69,
+    "std": 39.909
+   },
+   "belt_mA": {
+    "n": 175,
+    "mean": 46.406,
+    "std": 24.796
+   },
+   "belt_W": {
+    "n": 175,
+    "mean": 0.564,
+    "std": 0.307
+   },
+   "arm_mA": {
+    "n": 72,
+    "mean": 13.451,
+    "std": 5.966
+   },
+   "arm_W": {
+    "n": 72,
+    "mean": 0.164,
+    "std": 0.073
+   }
+  }
+ }
+}

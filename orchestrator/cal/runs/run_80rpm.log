@@ -1,0 +1,82 @@
+/home/mekkhram/Desktop/PRISM/orchestrator/cal/record_run.py:60: DeprecationWarning: Callback API version 1 is deprecated, update to latest version
+  c = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
+connected, recording -> runs/run_80rpm.jsonl
+     5s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:10  health/status:1
+    10s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:19  health/status:1
+    15s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:29  health/status:1
+    20s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:38  health/status:1
+    25s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:48  health/status:1
+    30s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:58  health/status:1
+    35s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:68  health/status:1
+    40s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:78  health/status:1
+    45s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:87  health/status:1
+    50s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:96  health/status:1
+    55s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:106  health/status:1
+    60s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:116  health/status:1
+    65s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:126  health/status:1
+    70s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:135  health/status:1
+    75s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:1  arm/state:1  autoen/state:1  camera/perception:145  health/status:1
+    80s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:27  arm/telemetry:26  autoen/state:3  belt/telemetry:23  camera/perception:153  health/status:1
+    85s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:77  arm/telemetry:76  autoen/state:8  belt/telemetry:73  camera/perception:163  health/status:1
+    90s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:126  arm/telemetry:125  autoen/state:13  belt/telemetry:122  camera/perception:172  health/status:1
+    95s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:176  arm/telemetry:172  autoen/state:18  belt/telemetry:169  camera/perception:182  health/status:1
+   100s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:226  arm/telemetry:221  autoen/state:23  belt/telemetry:218  camera/perception:191  health/status:1
+   105s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:276  arm/telemetry:269  autoen/state:28  belt/telemetry:262  camera/perception:200  health/status:1
+   110s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:326  arm/telemetry:318  autoen/state:33  belt/telemetry:307  camera/perception:210  health/status:1
+   115s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:376  arm/telemetry:367  autoen/state:38  belt/telemetry:351  camera/perception:220  health/status:1
+   120s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:426  arm/telemetry:414  autoen/state:43  belt/telemetry:399  camera/perception:230  health/status:1
+   125s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:476  arm/telemetry:463  autoen/state:48  belt/telemetry:448  camera/perception:240  health/status:1
+   130s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:525  arm/telemetry:512  autoen/state:53  belt/telemetry:492  camera/perception:249  health/status:1
+   135s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:575  arm/telemetry:561  autoen/state:58  belt/event:1  belt/telemetry:539  camera/perception:258  health/status:1
+   140s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:625  arm/telemetry:610  autoen/state:63  belt/event:1  belt/telemetry:583  camera/perception:267  health/status:1
+   145s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:675  arm/telemetry:660  autoen/state:68  belt/event:1  belt/telemetry:630  camera/perception:277  health/status:1
+   150s  analyzer/arm/state:1  analyzer/arm/status:1  arm/ir:2  arm/state:725  arm/telemetry:707  autoen/state:73  belt/event:1  belt/telemetry:673  camera/perception:287  health/status:1
+   155s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:2  arm/ir:4  arm/state:774  arm/telemetry:757  autoen/state:78  belt/event:2  belt/telemetry:721  camera/perception:297  health/status:1
+   160s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:2  arm/ir:4  arm/state:825  arm/telemetry:807  autoen/state:83  belt/event:2  belt/telemetry:770  camera/perception:306  health/status:1
+   165s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:2  arm/ir:4  arm/state:875  arm/telemetry:853  autoen/cycle:1  autoen/state:88  belt/event:2  belt/telemetry:816  camera/perception:316  health/status:1
+   170s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:2  arm/ir:4  arm/state:925  arm/telemetry:903  autoen/cycle:1  autoen/state:93  belt/event:3  belt/telemetry:863  camera/perception:326  health/status:1
+   175s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:2  arm/ir:4  arm/state:974  arm/telemetry:950  autoen/cycle:1  autoen/state:98  belt/event:3  belt/telemetry:909  camera/perception:336  health/status:1
+   180s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:2  arm/ir:4  arm/state:1024  arm/telemetry:994  autoen/cycle:1  autoen/state:103  belt/event:3  belt/telemetry:952  camera/perception:346  health/status:1
+   185s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:2  arm/ir:5  arm/state:1074  arm/telemetry:1042  autoen/cycle:1  autoen/state:108  belt/event:4  belt/telemetry:999  camera/perception:355  health/status:1
+   190s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:4  arm/ir:6  arm/state:1124  arm/telemetry:1089  autoen/cycle:1  autoen/state:113  belt/event:4  belt/telemetry:1048  camera/perception:365  health/status:1
+   195s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:4  arm/ir:6  arm/state:1174  arm/telemetry:1138  autoen/cycle:2  autoen/state:118  belt/event:4  belt/telemetry:1096  camera/perception:374  health/status:1
+   200s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:4  arm/ir:6  arm/state:1224  arm/telemetry:1188  autoen/cycle:2  autoen/state:123  belt/event:5  belt/telemetry:1144  camera/perception:384  health/status:1
+   205s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:4  arm/ir:6  arm/state:1274  arm/telemetry:1236  autoen/cycle:2  autoen/state:128  belt/event:5  belt/telemetry:1188  camera/perception:394  health/status:1
+   210s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:4  arm/ir:6  arm/state:1324  arm/telemetry:1285  autoen/cycle:2  autoen/state:133  belt/event:5  belt/telemetry:1233  camera/perception:403  health/status:1
+   215s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:4  arm/ir:6  arm/state:1374  arm/telemetry:1334  autoen/cycle:2  autoen/state:138  belt/event:5  belt/telemetry:1282  camera/perception:413  health/status:1
+   220s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:4  arm/ir:6  arm/state:1424  arm/telemetry:1383  autoen/cycle:3  autoen/state:143  belt/event:6  belt/telemetry:1329  camera/perception:422  health/status:1
+   225s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:6  arm/ir:7  arm/state:1473  arm/telemetry:1431  autoen/cycle:3  autoen/state:148  belt/event:7  belt/telemetry:1372  camera/perception:432  health/status:1
+   230s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:6  arm/ir:8  arm/state:1523  arm/telemetry:1479  autoen/cycle:3  autoen/state:153  belt/event:7  belt/telemetry:1416  camera/perception:442  health/status:1
+   235s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:6  arm/ir:8  arm/state:1573  arm/telemetry:1526  autoen/cycle:4  autoen/state:158  belt/event:7  belt/telemetry:1461  camera/perception:451  health/status:1
+   240s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:6  arm/ir:8  arm/state:1623  arm/telemetry:1575  autoen/cycle:4  autoen/state:163  belt/event:8  belt/telemetry:1506  camera/perception:461  health/status:1
+   245s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:6  arm/ir:8  arm/state:1673  arm/telemetry:1625  autoen/cycle:4  autoen/state:168  belt/event:8  belt/telemetry:1552  camera/perception:471  health/status:1
+   250s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:6  arm/ir:8  arm/state:1723  arm/telemetry:1668  autoen/cycle:4  autoen/state:173  belt/event:8  belt/telemetry:1597  camera/perception:480  health/status:1
+   255s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:8  arm/ir:10  arm/state:1773  arm/telemetry:1718  autoen/cycle:4  autoen/state:178  belt/event:9  belt/telemetry:1646  camera/perception:490  health/status:1
+   260s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:8  arm/ir:10  arm/state:1823  arm/telemetry:1768  autoen/cycle:4  autoen/state:183  belt/event:9  belt/telemetry:1692  camera/perception:500  health/status:1
+   265s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:8  arm/ir:10  arm/state:1873  arm/telemetry:1817  autoen/cycle:5  autoen/state:188  belt/event:10  belt/telemetry:1737  camera/perception:509  health/status:1
+   270s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:10  arm/ir:12  arm/state:1923  arm/telemetry:1865  autoen/cycle:5  autoen/state:193  belt/event:11  belt/telemetry:1783  camera/perception:519  health/status:1
+   275s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:10  arm/ir:12  arm/state:1972  arm/telemetry:1912  autoen/cycle:5  autoen/state:198  belt/event:11  belt/telemetry:1828  camera/perception:529  health/status:1
+   280s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:10  arm/ir:12  arm/state:2022  arm/telemetry:1962  autoen/cycle:6  autoen/state:203  belt/event:12  belt/telemetry:1874  camera/perception:539  health/status:1
+   285s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:10  arm/ir:12  arm/state:2072  arm/telemetry:2009  autoen/cycle:6  autoen/state:208  belt/event:12  belt/telemetry:1919  camera/perception:548  health/status:1
+   290s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:10  arm/ir:12  arm/state:2122  arm/telemetry:2059  autoen/cycle:6  autoen/state:213  belt/event:12  belt/telemetry:1967  camera/perception:558  health/status:1
+   295s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:10  arm/ir:13  arm/state:2172  arm/telemetry:2109  autoen/cycle:6  autoen/state:218  belt/event:13  belt/telemetry:2011  camera/perception:568  health/status:1
+   300s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:12  arm/ir:14  arm/state:2222  arm/telemetry:2159  autoen/cycle:6  autoen/state:223  belt/event:13  belt/telemetry:2059  camera/perception:577  health/status:1
+   305s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:12  arm/ir:14  arm/state:2272  arm/telemetry:2208  autoen/cycle:6  autoen/state:228  belt/event:13  belt/telemetry:2104  camera/perception:587  health/status:1
+   310s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:12  arm/ir:14  arm/state:2322  arm/telemetry:2257  autoen/cycle:7  autoen/state:233  belt/event:14  belt/telemetry:2151  camera/perception:596  health/status:1
+   315s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:14  arm/ir:16  arm/state:2372  arm/telemetry:2306  autoen/cycle:7  autoen/state:238  belt/event:15  belt/telemetry:2197  camera/perception:606  health/status:1
+   320s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:14  arm/ir:16  arm/state:2421  arm/telemetry:2355  autoen/cycle:7  autoen/state:243  belt/event:15  belt/telemetry:2245  camera/perception:615  health/status:1
+   325s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:14  arm/ir:16  arm/state:2471  arm/telemetry:2404  autoen/cycle:8  autoen/state:248  belt/event:16  belt/telemetry:2293  camera/perception:625  health/status:1
+   330s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:14  arm/ir:16  arm/state:2521  arm/telemetry:2448  autoen/cycle:8  autoen/state:253  belt/event:16  belt/telemetry:2337  camera/perception:635  health/status:1
+   335s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:14  arm/ir:16  arm/state:2571  arm/telemetry:2496  autoen/cycle:8  autoen/state:258  belt/event:16  belt/telemetry:2385  camera/perception:645  health/status:1
+   340s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:15  arm/ir:17  arm/state:2621  arm/telemetry:2545  autoen/cycle:8  autoen/state:263  belt/event:17  belt/telemetry:2433  camera/perception:654  health/status:1
+   345s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:16  arm/ir:18  arm/state:2671  arm/telemetry:2595  autoen/cycle:8  autoen/state:268  belt/event:17  belt/telemetry:2477  camera/perception:663  health/status:1
+   350s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:16  arm/ir:18  arm/state:2720  arm/telemetry:2643  autoen/cycle:9  autoen/state:272  belt/event:17  belt/telemetry:2521  camera/perception:673  health/status:1
+   355s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:16  arm/ir:18  arm/state:2770  arm/telemetry:2691  autoen/cycle:9  autoen/state:277  belt/event:18  belt/telemetry:2566  camera/perception:682  health/status:1
+   360s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:18  arm/ir:20  arm/state:2820  arm/telemetry:2740  autoen/cycle:9  autoen/state:282  belt/event:19  belt/telemetry:2612  camera/perception:691  health/status:1
+   365s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:18  arm/ir:20  arm/state:2870  arm/telemetry:2788  autoen/cycle:9  autoen/state:287  belt/event:19  belt/telemetry:2658  camera/perception:701  health/status:1
+   370s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:18  arm/ir:20  arm/state:2920  arm/telemetry:2838  autoen/cycle:10  autoen/state:292  belt/event:19  belt/telemetry:2703  camera/perception:710  health/status:1
+   375s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:18  arm/ir:20  arm/state:2970  arm/telemetry:2888  autoen/cycle:10  autoen/state:297  belt/event:19  belt/telemetry:2751  camera/perception:720  health/status:1
+   380s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:18  arm/ir:20  arm/state:3020  arm/telemetry:2938  autoen/cycle:10  autoen/state:302  belt/event:19  belt/telemetry:2800  camera/perception:729  health/status:1
+   385s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:18  arm/ir:20  arm/state:3069  arm/telemetry:2985  autoen/cycle:10  autoen/state:307  belt/event:19  belt/telemetry:2847  camera/perception:739  health/status:1
+   390s  analyzer/arm/state:1  analyzer/arm/status:1  arm/gripper:18  arm/ir:20  arm/state:3119  arm/telemetry:3034  autoen/cycle:10  autoen/state:312  belt/event:19  belt/telemetry:2896  camera/perception:748  health/status:1
+saved runs/run_80rpm.jsonl

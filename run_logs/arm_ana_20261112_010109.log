@@ -1,0 +1,20 @@
+[arm-analyzer] up. broker localhost:1883, db arm_analyzer.db, thresholds built-in defaults (run --write-thresholds or --calibrate to make the file). Ctrl+C to stop.
+[arm-analyzer] connected to broker: Success
+[01:01:21] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:01:31] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:01:41] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:01:51] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:02:01] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:02:11] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:02:21] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:02:31] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:02:41] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:02:51] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:03:01] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:03:11] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:03:21] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:03:31] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[01:03:41] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+
+[arm-analyzer] stopping
+[arm-analyzer] lost the broker

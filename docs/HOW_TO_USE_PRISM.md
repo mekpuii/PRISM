@@ -1,0 +1,376 @@
+# How to use PRISM
+
+PRISM is a pick-and-place cell: a **feeder** pushes cubes onto a **conveyor belt**, the belt carries each cube to an
+**IR sensor**, and a **robot arm** picks it up and drops it in a bin. A **camera** watches the belt.
+
+You can run it in two ways:
+
+| Way | What runs | When to use it |
+|---|---|---|
+| **With the optimizer** (recommended) | vision + autoen + optimizer | normal work: saves energy, stops by itself when the feeder is empty, restarts by itself when you refill |
+| **Independent** (autoen alone) | autoen (vision optional) | testing, calibration, or if the optimizer has a problem. Works like the old automation |
+
+---
+
+## 1. Quick start (with the optimizer)
+
+```bash
+cd ~/Desktop/PRISM
+./start_cell.sh
+```
+
+The script starts everything in the right order and asks you before the arm moves:
+
+1. starts the helpers that only watch and record: **health**, the **loggers** (`logger/arm.db`, `logger/camera.db`),
+   the **arm and belt analyzers** and the **dashboard** (http://127.0.0.1:8080). `--no-extras` skips them
+2. starts **vision** (camera), **autoen** (arm + belt) and the **optimizer**
+3. checks that the optimizer can talk to autoen, then prints the **connection checklist** (every program and every
+   piece of hardware: OK / FAIL) and **READY** or **NOT READY**. It waits up to 20 s for READY; if something is
+   still FAIL, the Start question says "Start anyway"
+4. tells you where autoen thinks the arm is (on the cradle or not) and asks you to confirm
+5. **Enter = Start.** Before you press it: belt empty, cubes in the feeder, nobody near the arm, E-stop within reach
+
+**The dashboard** (http://127.0.0.1:8080, opens on **Overview**) shows the same READY / NOT READY at the top, then the
+Raspberry Pi (CPU, temperature, memory, disk, power), every program, every piece of hardware with a hint when
+something is wrong, the **optimizer talking** (what it changed, why, and how sure it is), vision + the case array,
+autoen's buttons and the log. It works with whatever is connected and turns READY by itself once everything is.
+The **live camera** (vision's picture with the boxes, tracks and belt area, ~3 per second) is on the Overview and on
+Control > Camera. autoen's own page (http://127.0.0.1:8781) no longer opens by itself: start autoen with
+`--open-page` if you want it. Its address stays on, because the optimizer and the dashboard send commands to it.
+
+Then just keep the feeder filled. When it is empty, the cell stops and waits by itself; when you refill, it carries on
+by itself (it tries one feed now and then to check).
+
+**How the optimizer decides (every cycle), in this order:**
+
+1. **Safety:** only settings that have proven they work; if a servo or the belt gets warm, only gentler settings;
+   if hot, it pauses at home to cool down (mode COOL) and continues by itself when cool.
+2. **Energy:** it keeps the settings within 5 % of the lowest energy per cube. It **measures** the energy of every
+   setting live, and now and then tries a nearby safe setting for 4 cycles to keep its numbers up to date.
+3. **Speed:** of those, it picks the fastest (today: 20 rpm, arm 1.5).
+
+**Colour sorting:** the camera sees each cube's colour on the belt, and the optimizer sends it to its own bin:
+**orange → left bin, white → right bin**. A cube the camera did not see goes to the right bin and is counted as
+"colour not seen" in the report. To sort the old way (alternating bins), start the optimizer with `--no-sort`.
+
+If no cube appears on the camera 3 s after a feed, it **feeds once more** at once (a missed push). If there is still
+nothing, the feeder is empty: belt stopped, arm home.
+
+**Feeder IR sensor (Mega D36, needs the new firmware):** when it reads "empty" for 2 s, the cell finishes the cube
+on the belt and goes IDLE without an empty feed. When it reads "cubes" for 2 s while idle, it resumes at once. Until
+it has been right 3 times, the probes still run as a backup. If it is ever wrong (it said cubes but the feed was
+empty, or it said empty but a probe found a cube), the optimizer ignores it until the next start and says so in its
+log. With the old firmware nothing changes.
+
+**Stop everything:**
+
+```bash
+./stop_cell.sh          # stops the run, the optimizer and autoen (vision keeps running)
+./stop_cell.sh --all    # also stops vision, health, the loggers, the analyzers and the dashboard
+```
+
+**Other ways to start:**
+
+```bash
+./start_cell.sh --no-auto   # the optimizer waits for you to say "resume" (see section 4)
+./start_cell.sh --shadow    # the optimizer only writes down what it would do, it sends nothing
+./start_cell.sh --no-extras # without health, loggers, analyzers and dashboard
+```
+
+The programs run in the background. Their output is in `~/Desktop/PRISM/run_logs/`. To watch the optimizer:
+
+```bash
+tail -f ~/Desktop/PRISM/run_logs/optimizer_*.log
+```
+
+---
+
+## 2. Independent mode (autoen alone, no optimizer)
+
+autoen is the program that drives the arm, the belt and the feeder. It works on its own.
+
+```bash
+cd ~/Desktop/PRISM/autoencoder
+~/autoen-env/bin/python auto_en_new.py
+```
+
+A web page opens at **http://127.0.0.1:8781**. On it:
+
+1. set the parameters (good values below)
+2. tick **"arm area is clear"**
+3. press **Start**
+
+Good settings (measured as the best):
+
+| Setting | Value |
+|---|---|
+| rpm (belt) | **20** |
+| arm speed | **1.5** |
+| carry speed | **1.5** |
+| arrive timeout | **25** |
+| sets / cycles per set | how many cubes you want (e.g. 100 / 100) |
+
+**What is different without the optimizer:**
+
+- when the feeder is empty, autoen keeps trying: 3 empty cycles (~25 s of belt each), then it **stops with an error**
+- it never restarts by itself
+- nothing saves energy while waiting
+
+Vision is optional in this mode (autoen does not need the camera). To start it anyway:
+
+```bash
+cd ~/Desktop/PRISM/vision
+~/prism-env/bin/python vision_live_tracks.py --colors white,orange --belt-dir -1
+```
+
+> **Important:** if you want the optimizer, it must be running **before** you press Start.
+> If you start the optimizer after Start, autoen is already running on its own.
+
+---
+
+## 3. Starting each program by hand (instead of start_cell.sh)
+
+Use three terminals, in this order:
+
+```bash
+# 1. camera
+cd ~/Desktop/PRISM/vision && ~/prism-env/bin/python vision_live_tracks.py --colors white,orange --belt-dir -1
+
+# 2. arm + belt
+cd ~/Desktop/PRISM/autoencoder && ~/autoen-env/bin/python auto_en_new.py
+
+# 3. optimizer (wait until it prints "autoen ready")
+cd ~/Desktop/PRISM/orchestrator && ~/orch-env/bin/python main.py --auto-resume
+```
+
+Then press Start on the autoen page (http://127.0.0.1:8781).
+
+Optimizer options:
+
+| Option | What it does |
+|---|---|
+| *(none)* | live control; when the feeder is empty it waits for your `resume` |
+| `--auto-resume` | live control; checks the feeder by itself when a refill is likely |
+| `--shadow` | sends nothing, only logs what it would do (for testing) |
+| `--objective priority` | default: 1 safety, 2 energy, 3 speed (see section 1) |
+| `--objective energy` | fewest joules per cube, whatever the speed |
+| `--objective throughput` | most cubes per minute, whatever the energy |
+| `--no-sort` | no colour sorting: autoen uses its own bin order from its web page |
+| `--no-brake` | when idle, leave the belt coasting instead of braking it |
+
+---
+
+## 4. Talking to the optimizer while it runs
+
+Send commands from any terminal:
+
+```bash
+mosquitto_pub -t orchestrator/cmd -m resume   # carry on (after a refill, or after you fixed a problem)
+mosquitto_pub -t orchestrator/cmd -m park     # put the arm on the cradle (only while paused)
+mosquitto_pub -t orchestrator/cmd -m wake     # take the arm off the cradle (back to home)
+```
+
+What the optimizer is doing (its **mode**, shown in its log):
+
+| Mode | Meaning | What you do |
+|---|---|---|
+| **RUN** | picking cubes at 20 rpm / arm 1.5 | nothing |
+| **IDLE** | feeder empty: belt stopped, arm at home (~0.08 W) | refill the feeder (with `--auto-resume` it continues by itself) |
+| **COOL** | a servo (≥ 65 °C) or the belt motor (≥ 57 °C) is too hot: paused at home | nothing: it continues when cool; if it happens often, check ventilation |
+| **ALERT** | something went wrong (grip miss, fault, no reply from the Mega) | look at the cell, fix it, then send `resume` |
+| **MANUAL** | someone paused autoen on its web page | the optimizer does nothing until autoen runs again |
+| **PARK** | the arm rests on the cradle | send `wake` |
+| **OFF** | autoen not running, not started, or an experiment is running | start autoen / press Start |
+
+---
+
+### 4b. When the feeder stops delivering (no Resume needed)
+
+The optimizer measures the feeder servo's current on every push (the 12 V rail dip; it trusts that only after
+3 clear pushes in the run). It handles a stopped feeder by itself:
+
+| What it sees | What it does |
+|---|---|
+| feeder IR **empty** + the push drew no current | **feeder empty**: pauses quietly (blue banner). Starts again **by itself** 5 s after the IR sees cubes (also tries once every 10 min) |
+| feeder IR sees cubes, but no current on 3 pushes | **ALARM** (red banner on the Overview): pauses, the arm **shakes its wrist** 3 times once. Tries one feed by itself after 1, 2, 5, then every 10 min, and 5 s after you touch the feeder (IR changes) |
+| a later push draws current or a cube arrives | the alarm ends and it carries on |
+
+Your own Resume still works at any time.
+
+**Feeder push:** the old single push (180 -> 0 deg, 300 ms) is the default again. The new sketch can also do a
+*gentle push* (ready angle + wait + slow sweep): on autoen's page set *Feeder ready wait ms* and *slow push ms*
+above 0 to try it (it looks like two pushes).
+
+**Did a cube come out?** The 12 V dip only says *the servo moved*: a push with cubes and an empty push both dip
+~200 mV (measured 2026-11-11), so it cannot see the load. The optimizer uses TIME instead: it learns how long the
+belt needs to bring a cube to the IR at each belt speed (from cubes that arrived). A cube later than 1.3 x the
+slowest recent ride + 1.5 s (~13 s at 20 rpm) is not coming: it stops the belt and feeds again at once; still
+nothing -> feeder empty, pause. No camera needed, and it also lets it try one feed by itself while idle, so after a
+refill it starts again without Resume.
+
+### 4d. Flow: the optimizer plans the feeding (default since 2026-11-12)
+
+A "cycle" is now ONE PICK, and the next one never waits for it to end. autoen only picks (wait at Standby for a
+cube at the IR, grip, lift, drop, back); the belt brings cubes whenever the arm allows (held while it grips, lifts
+and comes down to Standby; the lead cube is held just short of the IR until the arm is parked). The OPTIMIZER
+decides every push of the feeder:
+
+- **how many cubes ride the belt:** ride time / belt time one pick leaves (both measured, ride by the encoder),
+  1 to 3, so the next cube is at the IR when the gripper is ready;
+- **when to push:** it learns for each arm phase how often a push delivers (feeder and arm share one supply: while
+  the arm lifts, pushes are weak) and pushes in the phases that work;
+- **late cube:** past 1.35 x its ride it is not coming: given up, fed again at once;
+- **3 feeds in a row bring nothing:** feeder empty, pause; it tries one feed by itself later, and carries on after
+  a refill without Resume.
+
+On the fake hardware: 2.4 s per cube in flow vs 5.5 s serial. `./start_cell.sh --serial` = the old cycle,
+`--pipeline` = autoen's fixed pipeline.
+
+### 4e. pt2: every push is verified before the belt moves (2026-11-12)
+
+pt1 (flow as of 2026-11-12 01:00) is saved in `versions/pt1/` (its README says how to go back).
+In pt2 the optimizer checks every push of the feeder before the belt runs for it:
+
+| servo current (12 V dip) | camera: new block at the feeder exit (left edge) | decision |
+|---|---|---|
+| any | yes | **fed**: the belt may move it |
+| moved | no | **nudge** the belt 1 s and look again; still nothing -> **empty**, push again |
+| did not move | no | **empty**, push again at once; 3 dead pushes in a row -> ALARM (arm shake) |
+| no usable camera | - | as pt1: servo moved = fed (a late cube tells) |
+
+- The belt never runs for a push that brought nothing (only the 1 s nudges).
+- The next push waits until the last cube has left the exit (camera) or had 3 s of belt.
+- The feeder exit position in the picture is learned from the confirmed cubes; a block that sits still (glare) never
+  counts. The feeder IR is only recorded (plan score `flow.ir_seen`) until it has proven itself.
+- No fixed 1 s pause between picks in flow.
+- autoen alone (no optimizer): a push without a verdict counts as fed after 4 s, as before.
+
+### 4c. Faster cycles, settings at once, and the optimizer's stories (2026-11-11)
+
+- **Pipeline (default, also when you press Start on autoen's own page):** the next cube is fed while the arm grips, and rides the belt while the arm carries and
+  places (~9 s per cube in the 10-27 test instead of ~18 s). `./start_cell.sh --serial` = the old one-at-a-time cycle.
+  `./start_cell.sh --queue` also keeps a second cube on the belt (each transport ~half the belt; not tried with the
+  optimizer yet). After every pause autoen first rebuilds the pipeline (gripper open, Home, Standby, a cube to the IR).
+  An empty feeder no longer ends the run: it is a failed cycle, and the optimizer pauses as usual.
+- **Settings at once:** the optimizer sends a new belt / arm setting the moment it decides; autoen uses it from the
+  next arm move or belt run. A cycle that ran on two settings is counted for neither (clean learning).
+- **Stories:** whenever it stops (or a problem is solved) the optimizer tells what it tried, what it saw, what that
+  means and what it does next: in the Optimizer chat on the Overview, and in `run_logs/optimizer_*.log` as `[story]`.
+
+## 5. The arm and the cradle (safety)
+
+The arm has a **rest pose on the cradle**. From the cradle, the arm must **not** drive straight home, or it hits the
+frame. It must use the **wake** move (the path taught with `rest_teach.py`, ~36 s).
+
+- autoen **remembers** whether the arm is resting, in `autoencoder/rest_state.json`, even after a restart or power cut
+- `start_cell.sh` reads this and wakes the arm safely before the run starts
+- if the arm is **not** really on the cradle (you moved it by hand), start autoen with `--awake`
+- if the arm **is** on the cradle but autoen thinks it is awake, start autoen with `--resting`
+
+```bash
+~/autoen-env/bin/python auto_en_new.py --resting   # arm is on the cradle: Start moves nothing until wake
+~/autoen-env/bin/python auto_en_new.py --awake     # arm is NOT on the cradle, whatever the file says
+```
+
+Resting does **not** save energy (the cradle pose uses ~0.30 W, home uses ~0.08 W). Use it to park the arm at the end of
+the day, not while waiting for cubes.
+
+---
+
+## 6. Daily report
+
+```bash
+cd ~/Desktop/PRISM/orchestrator
+~/orch-env/bin/python report.py              # today
+~/orch-env/bin/python report.py 2026-10-26   # a given day
+~/orch-env/bin/python report.py --week       # last 7 days, one line each
+```
+
+It shows: cubes picked, cubes per minute, joules per cube, idle power, how often the feeder ran empty, probes,
+problems, and what the optimizer has learned. Reports are saved in `orchestrator/reports/`.
+
+---
+
+## 7. Start automatically when the Pi boots (optional)
+
+```bash
+cp ~/Desktop/PRISM/prism-cell.desktop ~/.config/autostart/    # turn on
+rm ~/.config/autostart/prism-cell.desktop                     # turn off
+```
+
+After login, a "PRISM cell" window opens, starts everything and asks you **once** before the arm moves.
+
+---
+
+## 8. Experiments and calibration (advanced)
+
+For measuring new settings, use `experiment.py` (the optimizer must **not** be in control; it switches itself OFF
+when it sees an experiment):
+
+```bash
+cd ~/Desktop/PRISM/orchestrator/cal
+~/orch-env/bin/python experiment.py run --plan plans/vision_check_v1.json --cubes "orange+white 40mm" --note "what you test"
+```
+
+After new experiment data, refit the model the optimizer uses:
+
+```bash
+cd ~/Desktop/PRISM/orchestrator
+~/orch-env/bin/python model.py fit --runs cal/runs/<session>.jsonl ...
+~/orch-env/bin/python model.py show
+```
+
+Camera colour calibration (only if the cubes or the light change):
+
+```bash
+cd ~/Desktop/PRISM/vision
+~/prism-env/bin/python vision_live_tracks.py --calibrate --colors white,orange
+```
+
+Select the colour in the window **first**, then hold that cube under the camera. Never enable **green** (the belt is
+green). Check that the pink tape on the belt edge is not detected.
+
+---
+
+## 9. Problems we have seen
+
+| What you see | Why | What to do |
+|---|---|---|
+| belt runs again and again on an empty feeder, then autoen stops | the optimizer was not running when you pressed Start | start the optimizer first (or use `start_cell.sh`) |
+| optimizer log says "autoen not reachable" | autoen is not running | start autoen |
+| camera only counts white cubes | orange not calibrated / wrong colour saved | recalibrate orange (section 8), select "orange" before holding the cube |
+| the optimizer never stops the belt early | camera not trusted yet (it must see 9 of the last 10 cubes) | check the camera window; it needs ~5 cubes after each start |
+| ALERT "no reply to X,..." | a message from the Mega got lost | autoen now asks again by itself; if it still happens, check the USB cable |
+| ALERT "GRIP_MISS" | the gripper closed on nothing | check the cube position and the gripper, then `resume` |
+| belt power shows nothing (voltage empty) | INA260 not answering | the belt INA260 must be on SDA 20 / SCL 21 (there is no arm INA260) |
+| arm on the cradle and autoen is about to Start | autoen does not know it rests | stop; start autoen with `--resting` |
+
+---
+
+## 10. Where things are
+
+| Path | What |
+|---|---|
+| `start_cell.sh`, `stop_cell.sh` | start / stop everything |
+| `autoencoder/auto_en_new.py` | autoen: arm, belt, feeder (web page :8781) |
+| `autoencoder/rest_state.json` | autoen's memory: is the arm on the cradle? |
+| `vision/vision_live_tracks.py` | camera node; colours in `vision/vision_calibration.json` |
+| `orchestrator/main.py` | the optimizer (observe → predict → optimize → actuate) |
+| `orchestrator/forecast_state.json` | what it learned about your refill times |
+| `orchestrator/learned_state.json` | what it learned about which settings work |
+| `orchestrator/logs/` | one log per optimizer run (plans, cycles, energy) |
+| `orchestrator/reports/` | daily reports |
+| `docs/OPTIMIZER_ROADMAP.md` | the full history: measurements, decisions, results |
+| `orchestrator/test/` | tests that run without the robot |
+
+Python environments: `~/autoen-env` (autoen), `~/prism-env` (vision), `~/orch-env` (optimizer, reports),
+`~/db-env` (simulator tests).
+
+Run all tests (no robot needed):
+
+```bash
+cd ~/Desktop/PRISM/orchestrator
+~/orch-env/bin/python test/test_opt.py
+~/orch-env/bin/python test/test_forecast.py
+~/db-env/bin/python test/test_auto_sim.py
+```

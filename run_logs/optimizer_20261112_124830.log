@@ -1,0 +1,75 @@
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261112_124841.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[observe] connected to broker: Success
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 5] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 6] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 7] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 8] RUN    20 rpm / arm 1.5  action=verdict:1:fed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 9] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 10] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 11] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 12] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 13] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 14] RUN    20 rpm / arm 1.5  action=verdict:2:nudge  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 15] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 16] RUN    20 rpm / arm 1.5  action=verdict:3:nudge  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 17] RUN    20 rpm / arm 1.5  action=verdict:2:empty  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 18] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 19] RUN    20 rpm / arm 1.5  action=verdict:3:empty  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 20] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 21] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 22] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 23] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 24] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 25] RUN    20 rpm / arm 1.5  action=verdict:4:nudge  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 26] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 27] RUN    20 rpm / arm 1.5  action=verdict:4:empty  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 28] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 29] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: the last 3 feeds brought nothing
+[story] FEEDER EMPTY
+    I tried / saw:  feed 3 during GRIP: servo unknown, camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  feed 3 pushed during GRIP: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed 4: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 4 during GRIP: servo unknown, camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  feed 4 pushed during GRIP: nothing came (nothing came out (optimizer: servo / camera))
+    so:             3 feeds in a row brought no block to the IR (feed 2 during GRIP, feed 3 during GRIP, feed 4 during GRIP)  ->  the feeder has no cubes left (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 30] IDLE   20 rpm / arm 1.5  - feeder empty: the last 3 feeds brought nothing
+[plan 31] RECOVER 20 rpm / arm 1.5  action=pause  - cycle 1 GRIP_MISS: auto response 'retry' (try 1/2, learned success 50%)
+[plan 32] RECOVER 20 rpm / arm 1.5  - cycle 1 GRIP_MISS: auto response 'retry' (try 1/2, learned success 50%)
+[plan 33] RUN    20 rpm / arm 1.5  action=resume  - auto response 'retry': running again
+[plan 34] RUN    20 rpm / arm 1.5  - auto response 'retry': running again
+[plan 35] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 36] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 37] RUN    20 rpm / arm 1.5  action=verdict:6:nudge  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 38] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 39] RUN    20 rpm / arm 1.5  action=verdict:6:empty  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 40] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 41] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 42] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 43] RUN    20 rpm / arm 1.5  action=verdict:7:nudge  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 44] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 45] RUN    20 rpm / arm 1.5  action=verdict:7:empty  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 46] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 47] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 48] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 49] RUN    20 rpm / arm 1.5  action=verdict:8:nudge  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 50] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 51] RUN    20 rpm / arm 1.5  action=verdict:8:empty  - flow: I keep 1 block in flight - a block needs 9.9 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 52] ALERT  20 rpm / arm 1.5  action=alarm  - ALARM: the feeder servo does not move (no current, 12 V dip 0 mV, 3 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed 7 during TRANSPORT: servo did not move (0 mV), camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  feed 7 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 2: 12 V dip 0 mV (no current: the servo did not move), feeder IR empty
+    I tried / saw:  feed 8: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 8 during TRANSPORT: servo did not move (0 mV), camera: no new block even after a nudge, feeder IR empty => EMPTY
+    so:             the push drew no current (12 V dip 0 mV, a real push dips >= 30) although the feeder IR cannot tell  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 60 s, or 5 s after you touch the feeder
+[plan 53] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 0 mV, 3 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 54] OFF    20 rpm / arm 1.5  - autoen stopped
+[plan 55] OFF    20 rpm / arm 1.5  - autoen not reachable
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

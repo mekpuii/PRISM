@@ -1,0 +1,141 @@
+// p_machine.js - "Machine": health, analysis and log on one page, in plain words (2026-11-12, the operator:
+// "health, log and analysis on the same page, easy to read: the machine is in good shape - no over power, no over
+// temperature"). Every tile says OK / check / problem and WHY, with the number behind it.
+(function () {
+  const P = window.PRISM, $ = P.$, f = P.f, esc = P.esc;
+  let timer = null, ov = null, lastPaint = 0;
+  const LIM = {              // the limits behind the words (the same ones the cell's own checks use)
+    railOk: 11.5, railBad: 10.5,                  // 12 V rail: below 11.5 V the feeder may not push
+    servoWarm: 55, servoHot: 65,                  // STS3215 servo temperature, deg C
+    servoMa: 1500,                                // a servo drawing more than this = straining
+    beltWarm: 45, beltHot: 60,                    // belt motor (DS18B20), deg C
+    piWarm: 70, piHot: 80,                        // Raspberry Pi SoC, deg C
+  };
+
+  P.page('/machine', {
+    title: 'Machine',
+    mount(el) {
+      el.innerHTML = `
+      <div class="card"><h2>Raspberry Pi <span class="r dim" id="mc-model"></span></h2><div id="mc-pi" class="ov-pi"></div></div>
+      <div class="card ov-hero" id="mc-hero" style="margin-top:12px"><div class="ov-ready"><div class="ov-word" id="mc-word">…</div>
+        <div class="dim" id="mc-why">checking</div></div></div>
+      <div class="mc-tiles" style="margin-top:12px" id="mc-tiles"></div>
+      <div class="grid g2" style="margin-top:12px">
+        <div class="card"><h2>Programs</h2><table id="mc-prog" class="ov-tab"></table></div>
+        <div class="card"><h2>Connections</h2><table id="mc-hw" class="ov-tab"></table></div>
+      </div>
+      <div class="card" style="margin-top:12px"><h2>Log <span class="r dim">newest first</span></h2><div id="mc-log" class="ov-log"></div></div>`;
+      poll();
+      timer = setInterval(poll, 2000);
+    },
+    update(L) { const now = Date.now(); if (now - lastPaint < 1000) return; lastPaint = now; paint(L); },   // 1 Hz is plenty
+    unmount() { clearInterval(timer); },
+  });
+
+  async function poll() {
+    try { ov = await P.api('/api/overview'); } catch (e) { /* keep the last one */ }
+    lastPaint = Date.now();
+    try { paint(P.live || {}); } catch (e) { console.error('machine paint', e); }   // also with the cell stopped (no stream)
+  }
+
+  const lvl = (v, warn, bad, up = true) => v == null ? 'off' : (up ? v >= bad : v <= bad) ? 'bad' : (up ? v >= warn : v <= warn) ? 'warn' : 'ok';
+  const WORD = { ok: 'OK', warn: 'Check', bad: 'Problem', off: 'No data' };
+
+  function tile(name, state, big, why) {
+    return { name, state, html: `<div class="mc-tile ${state}"><h3>${esc(name)}</h3><div class="mc-big">${WORD[state]}${big ? ' · ' + esc(big) : ''}</div>
+      <div class="mc-why dim">${esc(why)}</div></div>` };
+  }
+
+  // the Raspberry Pi at the top - plain rows (the operator, 2026-11-12: "no glow for beauty, keep it simple")
+  function paintPi(pi) {
+    const el = $('#mc-pi'); if (!el) return;
+    $('#mc-model').textContent = pi.model || '';
+    const memPct = pi.mem_total_mb ? 100 * pi.mem_used_mb / pi.mem_total_mb : null;
+    const thr = pi.throttled;
+    const st = (v, warn, bad) => v == null ? '' : v >= bad ? 'bad' : v >= warn ? 'warn' : 'ok';
+    const pwr = !thr ? ['', 'unknown'] : thr.flags.some(x => x.endsWith('now')) ? ['bad', thr.flags.join(', ')]
+      : thr.flags.length ? ['warn', thr.flags.join(', ')] : ['ok', 'good'];
+    const row = (name, cls, val, note) => `<tr><td><span class="dot ${cls}"></span>${esc(name)}</td><td class="mono">${val}</td><td class="dim">${esc(note || '')}</td></tr>`;
+    el.innerHTML = `<table class="ov-tab">
+      ${row('Temperature', st(pi.temp_c, LIM.piWarm, LIM.piHot), f(pi.temp_c, 1) + ' °C', `warm ${LIM.piWarm}, hot ${LIM.piHot}`)}
+      ${row('CPU', st(pi.cpu_pct, 70, 90), f(pi.cpu_pct, 0) + ' %', `load ${(pi.load || []).join(' / ') || '-'} · ${pi.mhz ?? '-'} MHz`)}
+      ${row('Memory', st(memPct, 75, 90), f(memPct, 0) + ' %', `${pi.mem_used_mb ?? '-'} of ${pi.mem_total_mb ?? '-'} MB`)}
+      ${row('Disk', st(pi.disk_used_pct, 85, 95), f(pi.disk_used_pct, 0) + ' %', `${f(pi.disk_free_gb, 1)} GB free`)}
+      ${row('Power supply', pwr[0], esc(pwr[1]), 'under-voltage / throttling')}
+      ${row('Up for', '', pi.uptime_s != null ? P.dur(pi.uptime_s) : '-', '')}
+    </table>`;
+  }
+
+  function paint(L) {
+    if (!$('#mc-tiles')) return;
+    const t = [];
+    const b = L.belt && L.belt.d, bAge = L.belt && L.belt.age;
+    const fresh = bAge != null && bAge < 5;
+    // 12 V power
+    const v = fresh ? b.voltage : null;
+    const vs = v == null ? 'off' : v < LIM.railBad ? 'bad' : v < LIM.railOk ? 'warn' : 'ok';
+    t.push(tile('12 V power', vs, v == null ? '' : f(v, 2) + ' V',
+      v == null ? 'no belt telemetry (is autoen running?)' : vs === 'ok' ? 'steady - the feeder and the arm have full power'
+        : vs === 'warn' ? `below ${LIM.railOk} V: pushes may be weak (the arm's grip pulls the shared supply down)`
+        : `below ${LIM.railBad} V: the supply is collapsing - check it`));
+    // belt motor
+    const bt = fresh ? b.temp : null, bi = fresh ? b.current : null;
+    const ab = L.an_belt && L.an_belt.d, blev = ab && ab.levels || {};
+    let bs = lvl(bt, LIM.beltWarm, LIM.beltHot);
+    if (blev.current === 'ALARM' || blev.temp === 'ALARM') bs = 'bad'; else if ((blev.current === 'WARN' || blev.temp === 'WARN') && bs === 'ok') bs = 'warn';
+    t.push(tile('Belt motor', bs, bt == null ? '' : f(bt, 0) + ' °C',
+      bt == null ? 'no data yet' : `${f(bi, 0)} mA · current ${blev.current || '-'} · temperature ${blev.temp || '-'}` +
+        (bs === 'ok' ? ' - not over-powered, not hot' : '')));
+    // arm servos
+    const J = Object.values((L.arm && L.arm.joints) || {});
+    const temps = J.map(j => j && j.temp).filter(x => x != null), curs = J.map(j => j && Math.abs(j.cur || 0));
+    const tmax = temps.length ? Math.max(...temps) : null, cmax = curs.length ? Math.max(...curs) : null;
+    let as = lvl(tmax, LIM.servoWarm, LIM.servoHot);
+    if (cmax != null && cmax > LIM.servoMa && as === 'ok') as = 'warn';
+    t.push(tile('Arm servos', as, tmax == null ? '' : `max ${f(tmax, 0)} °C`,
+      tmax == null ? 'no arm telemetry yet' : `hottest ${f(tmax, 0)} °C (limit ${LIM.servoWarm}) · highest current ${f(cmax, 0)} mA (limit ${LIM.servoMa})`));
+    // analysis
+    const aa = L.an_arm && L.an_arm.d;
+    const astate = aa ? aa.state : null;
+    t.push(tile('Arm analysis', !aa ? 'off' : /ALARM|FAULT|OFF_PATH/.test(astate) ? 'bad' : /WARN|NO_DATA/.test(astate) ? 'warn' : 'ok',
+      astate || '', aa ? (aa.detail || '') + (aa.cycles_ok != null ? ` · ${aa.cycles_ok} good cycles` : '') : 'the arm analyzer is not running'));
+    t.push(tile('Belt analysis', !ab ? 'off' : /ALARM|FAULT/.test(ab.state) ? 'bad' : /WARN|NO_DATA/.test(ab.state) ? 'warn' : 'ok',
+      ab ? ab.state : '', ab ? (ab.detail || '') + (ab.runs_total != null ? ` · ${ab.runs_ok}/${ab.runs_total} runs OK` : '') : 'the belt analyzer is not running'));
+    // the Pi
+    const pi = (ov && ov.pi) || {};
+    const thr = pi.throttled, under = thr && thr.flags && thr.flags.some(x => x.endsWith('now'));
+    let ps = lvl(pi.temp_c, LIM.piWarm, LIM.piHot);
+    if (under) ps = 'bad';
+    const mem = pi.mem_total_mb ? Math.round(100 * pi.mem_used_mb / pi.mem_total_mb) : null;
+    if (ps === 'ok' && ((pi.cpu_pct || 0) > 90 || (mem || 0) > 92)) ps = 'warn';
+    t.push(tile('Raspberry Pi', ov ? ps : 'off', pi.temp_c == null ? '' : f(pi.temp_c, 0) + ' °C',
+      !ov ? 'waiting' : under ? 'UNDER-VOLTAGE now: the Pi power supply is too weak'
+        : `CPU ${f(pi.cpu_pct, 0)} % · memory ${mem ?? '-'} % · power supply ${thr && thr.flags && thr.flags.length ? thr.flags.join(', ') : 'good'}`));
+    t.push(tile('Messages (MQTT)', L.mqtt == null ? 'off' : L.mqtt ? 'ok' : 'bad', L.mqtt == null ? '' : L.mqtt ? 'connected' : 'DOWN',
+      L.mqtt == null ? 'waiting for the live data' : L.mqtt ? 'every program can talk to the others' : 'the broker is down: sudo systemctl start mosquitto'));
+
+    $('#mc-tiles').innerHTML = t.map(x => x.html).join('');
+    const bad = t.filter(x => x.state === 'bad'), warn = t.filter(x => x.state === 'warn');
+    const machineOff = ['12 V power', 'Belt motor', 'Arm servos'].every(n => t.find(x => x.name === n).state === 'off');
+    const hero = $('#mc-hero');
+    hero.className = 'card ov-hero ' + (bad.length ? 'notready' : machineOff ? '' : 'ready');
+    $('#mc-word').textContent = bad.length ? 'Needs attention' : machineOff ? 'Not running'
+      : warn.length ? 'Good, with notes' : 'In good shape';
+    $('#mc-why').textContent = bad.length ? 'Problem: ' + bad.map(x => x.name).join(', ')
+      : machineOff ? 'No data from the arm, the belt or the power sensor - start the cell to check it.'
+      : warn.length ? 'Check: ' + warn.map(x => x.name).join(', ') + ' - nothing is over the limits'
+      : 'No over-power, no over-temperature, everything connected.';
+
+    if (ov) paintPi(ov.pi || {});
+    if (ov) {
+      const DOT = { ok: 'ok', warn: 'warn', bad: 'bad', off: '' };
+      $('#mc-prog').innerHTML = ov.programs.map(x => `<tr><td><span class="dot ${DOT[x.state] || ''}"></span>${esc(x.name)}</td>
+        <td class="l ov-txt">${esc(x.text)}</td><td class="dim">${x.cpu_pct == null ? '' : f(x.cpu_pct, 1) + ' %'}</td></tr>`).join('');
+      $('#mc-hw').innerHTML = ov.hardware.map(x => `<tr><td><span class="dot ${DOT[x.state] || ''}"></span>${esc(x.name)}</td>
+        <td class="l ov-txt">${esc(x.text)}${x.hint ? `<div class="ov-hint">→ ${esc(x.hint)}</div>` : ''}</td></tr>`).join('');
+    }
+    const ev = (P.events || []).slice(-40).reverse();
+    $('#mc-log').innerHTML = ev.map(e => `<div class="ev ${e.level}"><span class="t">${P.hms(e.t)}</span><span class="s">${esc(e.src)}</span><span class="x">${esc(e.text)}</span></div>`).join('')
+      || '<div class="dim">nothing yet</div>';
+  }
+})();

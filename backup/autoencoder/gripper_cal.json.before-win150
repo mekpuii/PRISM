@@ -1,0 +1,35 @@
+{
+  "open_pos": 2492,
+  "contact_pos": 2012,
+  "grip_fast_to_pos": 2323,
+  "grip_pos": 2012,
+  "contact_deg": 176.8,
+  "grip_contact_min_deg": 155.0,
+  "grip_contact_max_deg": 181.8,
+  "measured_at": "2026-10-25T18:20:00",
+  "source": "user: grip at 176.8 deg (taught with grip_calibrate, not saved because of the 173 deg check) and window down to 160 deg; open 2492 / fast 2323 kept from 2026-10-24 (fast is 311 ticks above contact: safe, a bit slower close); 2026-10-25: window floor 160 -> 155 deg on user request",
+  "history": [
+    {
+      "open_pos": 2492,
+      "contact_pos": 2084,
+      "grip_fast_to_pos": 2323,
+      "contact_deg": 183.2,
+      "grip_contact_min_deg": 178.2,
+      "grip_contact_max_deg": 188.2,
+      "measured_at": "2026-10-24T23:34:07",
+      "source": "from logs, not taught: contact moved 2037 -> 2084 at the 22:46 crunch, so the old open 2445 / fast 2276 were shifted +47 to keep the same physical opening. Re-teach with grip_calibrate.py. grip_pos 2111 = J6 position the user set by hand on 2026-10-24 23:4x (read from the servo)",
+      "grip_pos": 2111
+    },
+    {
+      "open_pos": 2492,
+      "contact_pos": 2084,
+      "grip_fast_to_pos": 2323,
+      "contact_deg": 183.2,
+      "grip_contact_min_deg": 178.2,
+      "grip_contact_max_deg": 188.2,
+      "measured_at": "2026-10-24T23:53:35",
+      "source": "grip_pos 2101 = 184.7 deg set by the user (was 2111 = 185.5 deg); open/fast/window unchanged from the log-derived calibration",
+      "grip_pos": 2101
+    }
+  ]
+}

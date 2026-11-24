@@ -1,0 +1,17 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=priority  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261027_223120.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen starting
+[plan 3] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 4] OFF    20 rpm / arm 1.5  - autoen preparing
+[plan 5] RUN    20 rpm / arm 1.5  - autoen running
+[observe] lost the broker: all feeds will go stale
+[observe] connected to broker: Success
+[plan 6] ALERT  20 rpm / arm 1.5  action=pause  - cycle 13 GRIP_MISS: check before resuming (gripper stopped at 182.1 deg, outside the block window 150-181.5 deg - no block caught | gripper stopped +60t short of grip_pos 2012: holding at 2062 (block wider than taught); recovery: after GRIP_MISS: belt brought the waiting block to the IR)
+[plan 7] ALERT  20 rpm / arm 1.5  - cycle 13 GRIP_MISS: check before resuming (gripper stopped at 182.1 deg, outside the block window 150-181.5 deg - no block caught | gripper stopped +60t short of grip_pos 2012: holding at 2062 (block wider than taught); recovery: after GRIP_MISS: belt brought the waiting block to the IR)
+[plan 8] RUN    20 rpm / arm 1.5  - autoen running again
+[plan 9] ALERT  20 rpm / arm 1.5  action=pause  - cycle 36 GRIP_MISS: check before resuming (gripper stopped at 184.2 deg, outside the block window 150-181.5 deg - no block caught | gripper stopped +84t short of grip_pos 2012: holding at 2086 (block wider than taught); recovery: after GRIP_MISS: block already at the IR)
+[plan 10] ALERT  20 rpm / arm 1.5  - cycle 36 GRIP_MISS: check before resuming (gripper stopped at 184.2 deg, outside the block window 150-181.5 deg - no block caught | gripper stopped +84t short of grip_pos 2012: holding at 2086 (block wider than taught); recovery: after GRIP_MISS: block already at the IR)
+[plan 11] OFF    20 rpm / arm 1.5  - autoen stopped
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

@@ -1,0 +1,29 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+[mqtt] arm connected to localhost:1883: Success
+[mqtt] belt connected to localhost:1883: Success
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261026_164334.csv
+       riff_logs/autoen_sets_20261026_164334.csv
+       riff_logs/autoen_cycles_20261026_164334.csv
+       riff_logs/autoen_thresholds_20261026_164334.csv
+settings changed from the web page: {'sets': 2, 'cycles_per_set': 6, 'arm_speed': 1.0, 'carry_speed': 1.0, 'rpm': 6.7, 'offset': 0, 'drop_mode': 'alternate', 'first_drop': 'left', 'gap': 1.0, 'hz': 5.0, 'acc': 8, 'gripper_speed': 1200, 'open_pos': 2492, 'enable_b': 0, 'enable_a': 1, 'grip_fast_to_pos': 2323, 'grip_pos': 2012, 'grip_pos_speed': 400, 'grip_fast_speed': 1800, 'grip_fast_acc': 70, 'grip_fast_timeout': 2.0, 'enable_d': 1, 'grip_hold_preload': 150, 'grip_hold_torque_limit': 180, 'dwell_standby': 0.0, 'dwell_grip': 0.0, 'dwell_drop': 0.0, 'dwell_home': 0.0, 'feed_timeout': 5.0, 'arrive_timeout': 20.0, 'grip_timeout': 12.0, 'clear_timeout': 3.0, 'standby_timeout': 45.0, 'move_timeout': 40.0, 'pose_tol': 40, 'grip_tol': 25, 'hold_tol': 60, 'settle_tol': 100, 'max_fails': 3, 'temp_max': 60.0, 'belt_wdt_ms': 500, 'kp': 4.5, 'ki': 13.5, 'kd': 0.0, 'feeder_home': 170, 'feeder_push': 0, 'feeder_push_ms': 400, 'feeder_return_ms': 400, 'enable_verify': 1, 'grip_contact_min_deg': 150.0, 'grip_contact_max_deg': 181.8, 'grip_carry_min_ma': 0.0, 'grip_slip_max_deg': 2.0, 'enable_recover': 1, 'recover_conv_s': 7.0, 'enable_c': 0, 'arrival_guard': 1, 'arrival_margin_s': 0.5, 'queue_split': 0.5}
+set 1/2 cycle 1/6  TIMEOUT_TRANSPORT 21.0s block did not reach the IR within 20 s
+settings changed from the web page: {'rpm': 20.0, 'arm_speed': 1.5, 'carry_speed': 1.5, 'arrive_timeout': 25.0}
+set 1/2 cycle 2/6  OK 11.9s 
+set 1/2 cycle 3/6  OK 16.7s 
+set 1/2 cycle 4/6  OK 11.9s 
+set 1/2 cycle 5/6  OK 16.7s 
+set 1/2 cycle 6/6  OK 12.7s DRIFT J2 -65t in phase IDLE
+Set 1 (16:43:35-16:45:22): J1: temp max 35C, current avg 8 / peak 136 mA; J2: temp max 35C, current avg 9 / peak 84 mA; J3: temp max 35C, current avg 12 / peak 84 mA; J4: temp max 35C, current avg 3 / peak 20 mA; J5: temp max 36C, current avg 3 / peak 26 mA; J6: temp max 36C, current avg 7 / peak 39 mA; Belt: temp max 26C, current avg 31 / peak 323 mA; ARM TOTAL: servo volt min 11.6 V, summed current avg 43 / peak 195 mA
+set 2/2 cycle 1/6  OK 17.6s 
+set 2/2 cycle 2/6  NO_BLOCK 4.2s transport aborted: no block on the camera after FEED
+set 2/2 cycle 3/6  NO_BLOCK 4.1s transport aborted: no block on the camera after FEED
+set 2/2 cycle 4/6  NO_BLOCK 4.5s transport aborted: no block on the camera after FEED
+set 2/2 cycle 5/6  OK 19.8s DRIFT J3 -69t in phase RELEASE
+set 2/2 cycle 6/6  OK 17.0s 
+Set 2 (16:45:22-16:49:25): J1: temp max 35C, current avg 9 / peak 104 mA; J2: temp max 35C, current avg 8 / peak 72 mA; J3: temp max 35C, current avg 12 / peak 84 mA; J4: temp max 35C, current avg 4 / peak 20 mA; J5: temp max 39C, current avg 3 / peak 26 mA; J6: temp max 37C, current avg 6 / peak 32 mA; Belt: temp max 27C, current avg 50 / peak 341 mA; ARM TOTAL: servo volt min 12.1 V, summed current avg 42 / peak 176 mA
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+finished: 2 sets done  (unparsable RX lines: 0)

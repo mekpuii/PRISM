@@ -1,0 +1,13 @@
+version,date,median s per cube,J per cube (belt+arm unless noted),cubes,what it is / what changed
+serial (old one-at-a-time cycle),2026-11-11 22:08,18.7,29.0,12,"feed -> belt -> pick -> place, one cube at a time"
+"serial, gentle push",2026-11-11 22:44,19.9,32.0,6,slower push
+pipeline B,2026-11-11 23:10,11.8,168,2,pushes during the lift failed (shared 12 V supply)
+pt1 flow,2026-11-12 01:07,11.6,19.9,31,the optimizer plans every push; no colour sorting
+pt3/pt4 fill,2026-11-12 14:23,11.7,18.6,10,"belt filled, every push verified; sorting 1 left / 9 right"
+pt4 (piled up),2026-11-12 18:17,10.4,14.1,8,looked fast but cubes piled up at the feeder (ride 468 -> 230 mm)
+pt5 run A,2026-11-12 20:00,13.3,23.6,33,"room-first spacing, camera may only block a push; orange->left, rest->right"
+pt5 run B (PRISM_friend),2026-11-12 21:07,11.8,20.2,30,repeat of pt5
+pt5 + rest probe run C,2026-11-12 21:30,11.0,16.2,44,restart after a refill in seconds; ended with a feeder servo alarm
+pt5 run D (100 cubes),2026-11-13 00:25,13.0,22.2,93,"93 of 102 cycles, 0 wrong bins"
+pt5 200cubes (PRISM_mek),2026-11-13 16:20,11.4,not measured (arm only: 9.1),199,199 of 200 cycles in 39.9 min
+pt6,2026-11-13 17:40,,,,"pt5 + fault system, heat guard, emergency grip, sleep/relay, Limits zone, run report (saved in versions/pt6; NOT active in the main folder since 19:40)"

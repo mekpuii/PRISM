@@ -1,0 +1,4 @@
+12:54:02.925 RX X,VER,Nov 13 2026 20:57:04,enc=1,ina=1,temp=1,hz=10000,home=170,ready=120/0,ramp=0,lamp=1,on=1111
+12:54:03.111 TX X,STATE,WAIT
+12:55:28.971 TX X,STOP
+12:55:31.001 ## end, unparsable RX lines: 0

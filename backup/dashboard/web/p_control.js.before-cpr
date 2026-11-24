@@ -1,0 +1,275 @@
+/* CONTROL pages: Run (autoen_node's buttons + settings, relayed), Camera, 3D Twin. */
+(function () {
+  const P = window.PRISM, $ = P.$, f = P.f, esc = P.esc;
+
+  // =====================================================================================================
+  // RUN  -  the same buttons as autoen_node's own page. The dashboard only relays them to autoen_node.
+  // =====================================================================================================
+  // [key, label, min, max, step]; the limits mirror autoen_node.Study.LIMITS (autoen refuses anything else and says why)
+  const SETTINGS = [
+    ['Run', [['sets', 'Sets', 1, 1000, 1], ['cycles_per_set', 'Cycles / set', 1, 1000, 1], ['gap', 'Gap between cycles s', 0, 60, .5], ['hz', 'Samples / s', 1, 20, 1]]],
+    ['Drop', [['drop_mode', 'Drop order', ['alternate', 'left', 'down']], ['first_drop', 'First drop', ['left', 'down']]]],
+    ['Speed', [['arm_speed', 'Arm speed (x360 t/s, max 8.8)', .2, 8.8, .1], ['carry_speed', 'Carry speed (max 8.8)', .2, 8.8, .1], ['acc', 'Servo ACC (0-254)', 0, 254, 1],
+      ['rpm', 'Belt RPM (rated 250, no-load 333)', 5, 333, 5], ['offset', 'Offset after IR (counts)', 0, 5000, 10]]],
+    ['Gripper', [['gripper_speed', 'Gripper speed', 100, 3200, 50], ['open_pos', 'Open position (ticks)', 1800, 3100, 10]]],
+    ['Dwell (s)', [['dwell_standby', 'At standby', 0, 30, .5], ['dwell_grip', 'After grip', 0, 30, .5], ['dwell_drop', 'At drop', 0, 30, .5], ['dwell_home', 'At home', 0, 30, .5]]],
+    ['Timeouts (s)', [['feed_timeout', 'Feed', 1, 30, 1], ['arrive_timeout', 'Arrive (IR)', 5, 120, 5], ['grip_timeout', 'Grip', 3, 30, 1], ['clear_timeout', 'Clear IR', .5, 20, .5],
+      ['standby_timeout', 'Standby', 10, 120, 5], ['move_timeout', 'Move', 5, 120, 5]]],
+    ['Tolerances', [['pose_tol', 'Pose (ticks)', 10, 100, 5], ['grip_tol', 'Grip (ticks)', 5, 100, 5], ['hold_tol', 'Drift (0=off)', 0, 300, 10], ['settle_tol', 'Settle (0=off)', 0, 300, 10],
+      ['max_fails', 'Stop after N fails', 1, 20, 1], ['temp_max', 'Belt temp max C', 0, 100, 5]]],
+    ['Belt PID', [['kp', 'Kp', 0, 20, .1], ['ki', 'Ki', 0, 50, .1], ['kd', 'Kd', 0, 5, .05]]],
+    ['Feeder', [['feeder_home', 'Home angle', 0, 180, 5], ['feeder_push', 'Push angle', 0, 180, 5], ['feeder_push_ms', 'Push ms', 50, 2000, 50], ['feeder_return_ms', 'Return ms', 50, 2000, 50]]]
+  ];
+  const PHASES = [['FEED', 'FEED'], ['TRANSPORT', 'TRANSPORT'], ['GRIP', 'GRIP'], ['CARRY', 'CARRY'], ['RELEASE', 'RELEASE'], ['HOME', 'HOME'], ['CLEAR', 'CLEAR']];
+  const phaseIdx = ph => { if (!ph) return -1; if (ph.startsWith('CARRY')) return 3; return PHASES.findIndex(p => p[0] === ph); };
+  const phaseHelp = { FEED: 'blade pushes one block out of the magazine', TRANSPORT: 'belt runs until the IR sees the block; arm goes to standby', GRIP: 'close the gripper on the block',
+    CARRY: 'lift via Home and move to the drop pose', RELEASE: 'open the gripper', HOME: 'back to Home', CLEAR: 'wait until the IR no longer sees a block' };
+
+  let runTimer = null, cfgFilled = false;
+  P.page('/control/run', {
+    title: 'Run',
+    mount(el) {
+      cfgFilled = false;
+      let form = '';
+      SETTINGS.forEach(([grp, items]) => {
+        form += `<div class="fieldset-title">${grp}</div>`;
+        items.forEach(it => {
+          if (Array.isArray(it[2])) form += `<label>${it[1]}<select name="${it[0]}">${it[2].map(o => `<option>${o}</option>`).join('')}</select></label>`;
+          else form += `<label>${it[1]}<input name="${it[0]}" type="number" min="${it[2]}" max="${it[3]}" step="${it[4]}"></label>`;
+        });
+      });
+      el.innerHTML = `
+      <div id="run-na" hidden></div>
+      <div class="grid g2">
+        <div class="card" id="run-status">
+          <h2>Cycle <span class="r dim" id="run-msg"></span></h2>
+          <div class="row"><div class="big" id="run-big">-</div><span class="spacer"></span>
+            <button class="stop" id="b-stop">&#9632; Stop</button><button class="warn" id="b-pause">&#10074;&#10074; Pause</button></div>
+          <div class="steps" id="run-steps" style="margin:10px 0 4px">${PHASES.map(p => `<span class="step" data-p="${p[0]}">${p[1]}</span>`).join('')}</div>
+          <div class="dim" id="run-help" style="min-height:18px;font-size:12px"></div>
+          <div class="bar" style="margin:10px 0 4px"><i id="run-bar" style="width:0"></i></div>
+          <div class="dim" id="run-prog" style="font-size:13px"></div>
+          <div id="run-start" style="margin-top:12px" class="row">
+            <label class="row"><input type="checkbox" id="run-clear"> Arm area is clear and the E-stop is within reach</label>
+            <button class="go" id="b-start">&#9654; Start run</button></div>
+          <span class="msg" id="run-cfgmsg"></span>
+        </div>
+        <div class="card"><h2>Devices (live, from autoen_node)</h2><table id="run-live"></table>
+          <div class="dim" style="font-size:12px;margin-top:6px" id="run-mq"></div></div>
+      </div>
+      <div class="card" style="margin-top:12px"><h2>Settings <span class="r dim" id="run-cfghint"></span></h2>
+        <form id="run-form" class="form">${form}</form>
+        <div class="row" style="margin-top:12px"><button class="pri" id="b-apply">Apply</button><button id="b-reload">Reload from node</button><span class="msg" id="run-applymsg"></span></div></div>
+      <div class="grid g2" style="margin-top:12px">
+        <div class="card"><h2>Finished sets</h2><ul id="run-sets" class="dim" style="margin:0;padding-left:18px"></ul></div>
+        <div class="card"><h2>Last cycles</h2><div class="scroll"><table id="run-cyc"></table></div><div class="dim" style="font-size:12px;margin-top:6px" id="run-files"></div></div>
+      </div>`;
+      const ro = P.info.read_only;
+      const form$ = () => { const o = {}; new FormData($('#run-form')).forEach((v, k) => { if (v !== '') o[k] = ['drop_mode', 'first_drop'].includes(k) ? v : +v; }); return o; };
+      const act = async (name, body, msgEl) => {
+        try { await P.post('/api/control/' + name, body); if (msgEl) P.setMsg(msgEl, name + ' sent', true); poll(); }
+        catch (e) { P.setMsg(msgEl || $('#run-cfgmsg'), e.message, false); }
+      };
+      $('#b-stop').onclick = () => { if (confirm('Stop the run?')) act('stop', {}); };
+      $('#b-pause').onclick = () => act('pause', {});
+      $('#b-start').onclick = () => act('start', { clear: $('#run-clear').checked, config: form$() }, $('#run-cfgmsg'));
+      $('#b-apply').onclick = (e) => { e.preventDefault(); act('config', form$(), $('#run-applymsg')); };
+      $('#b-reload').onclick = (e) => { e.preventDefault(); cfgFilled = false; poll(); };
+      if (ro) ['#b-stop', '#b-pause', '#b-start', '#b-apply'].forEach(s => { $(s).disabled = true; });
+      poll(); runTimer = setInterval(poll, 1000);
+    },
+    unmount() { clearInterval(runTimer); runTimer = null; }
+  });
+
+  async function poll() {
+    if (!$('#run-big')) return;
+    let s;
+    try { s = await P.api('/api/control/state'); $('#run-na').hidden = true; }
+    catch (e) {
+      const na = $('#run-na'); na.hidden = false;
+      na.innerHTML = P.na('autoen_node is not reachable', `${e.message}. Start it (python3 autoen_node.py --port <serial>) or pass --autoen http://host:port to this dashboard. Telemetry on the other pages still works from MQTT.`);
+      $('#run-big').textContent = 'offline'; return;
+    }
+    const run = s.status;
+    $('#run-big').textContent = run + ' / ' + s.phase;
+    $('#run-msg').textContent = s.message || '';
+    const pi = phaseIdx(s.phase);
+    document.querySelectorAll('#run-steps .step').forEach((e, i) => { e.className = 'step' + (i === pi ? ' on' : (run === 'running' && i < pi ? ' done' : '')); });
+    $('#run-help').textContent = pi >= 0 ? phaseHelp[PHASES[pi][0]] : '';
+    const tot = s.sets * s.cycles_per_set;
+    $('#run-bar').style.width = Math.min(100, 100 * s.cycle_total / Math.max(1, tot)) + '%';
+    $('#run-prog').innerHTML = `Set <b>${s.set} / ${s.sets}</b> · cycle ${s.cycle_in_set} / ${s.cycles_per_set} · total ${s.cycle_total} / ${tot} · ${P.dur(s.elapsed)} · drifts corrected ${s.drifts}`;
+    $('#run-start').style.display = run === 'ready' ? 'flex' : 'none';
+    $('#b-pause').style.display = run === 'ready' ? 'none' : '';
+    $('#b-pause').innerHTML = s.paused ? '&#9654; Resume' : '&#10074;&#10074; Pause after this cycle';
+    $('#b-stop').innerHTML = run === 'ready' ? '&#9632; Quit' : '&#9632; Stop';
+    $('#run-cfghint').textContent = run === 'ready' ? 'set everything, tick the box, press Start' : 'all apply from the next cycle; cycles per set from the next set';
+    if (!cfgFilled && s.config) {
+      cfgFilled = true;
+      for (const k in s.config) { const i = document.querySelector('#run-form [name=' + k + ']'); if (i) i.value = s.config[k]; }
+    }
+    let h = '<tr><th>device</th><th>temp C</th><th>current mA</th><th>velocity</th><th>position</th><th>volt V</th></tr>';
+    (s.devices || []).forEach(d => {
+      const x = s.live[d] || {}, b = d === 'Belt';
+      h += `<tr><td>${d === 'Belt' ? 'Belt motor' : d === 'Arm' ? 'Arm total (sum I, min V)' : 'Joint ' + d.slice(1)}</td><td>${f(x.temp, 1)}</td><td>${f(x.current, 0)}</td><td>${f(x.velocity, 1)}${b ? ' rpm' : ' deg/s'}</td><td>${f(x.position, b ? 2 : 1)}${b ? ' rev' : ' deg'}</td><td>${f(x.voltage, 2)}</td></tr>`;
+    });
+    $('#run-live').innerHTML = h;
+    $('#run-mq').textContent = s.mqtt ? `autoen MQTT ${s.mqtt.host}:${s.mqtt.port} · arm ${s.mqtt.arm_up ? 'connected' : 'NOT connected'} · belt ${s.mqtt.belt_up ? 'connected' : 'NOT connected'} · published ${s.mqtt.sent}` : 'autoen MQTT off';
+    $('#run-sets').innerHTML = (s.set_summaries || []).slice().reverse().map(x => `<li>${esc(x)}</li>`).join('') || '<li>none yet</li>';
+    $('#run-cyc').innerHTML = '<tr><th>#</th><th>set</th><th>result</th><th>sec</th><th class="l">notes</th></tr>' +
+      (s.cycles || []).slice().reverse().map(c => `<tr><td>${c.n}</td><td>${c.set}</td><td class="${c.result === 'OK' ? 'lvl-OK' : 'lvl-ALARM'}">${esc(c.result)}</td><td>${c.secs}</td><td class="l">${esc(c.notes || '')}</td></tr>`).join('');
+    $('#run-files').textContent = 'files: ' + (s.files || []).join('  |  ');
+  }
+
+  // =====================================================================================================
+  // CAMERA  -  camera/perception (fps, tracks), camera/demand (count per 10 s), camera/window (3-minute totals)
+  // =====================================================================================================
+  let camTimer = null, chDemand = null, chFps = null;
+  P.page('/control/camera', {
+    title: 'Camera',
+    mount(el) {
+      el.innerHTML = `
+      <div id="cam-na"></div>
+      <div class="grid g4">
+        <div class="card"><h2>Perception</h2><div class="big" id="cam-fps">-</div><div class="dim">frames / s</div></div>
+        <div class="card"><h2>Active tracks</h2><div class="big" id="cam-active">-</div><div class="dim">objects in view now</div></div>
+        <div class="card"><h2>This window</h2><div class="big" id="cam-win">-</div><div class="dim" id="cam-win2"></div></div>
+        <div class="card"><h2>Last 3-min total</h2><div class="big" id="cam-last">-</div><div class="dim" id="cam-last2"></div></div>
+      </div>
+      <div class="grid g2" style="margin-top:12px">
+        <div class="card"><h2>Objects counted per 10 s <span class="r dim">current + previous window</span></h2><canvas class="chart" id="cam-demand"></canvas></div>
+        <div class="card"><h2>Frame rate</h2><canvas class="chart" id="cam-fpsch"></canvas></div>
+        <div class="card"><h2>Tracks in the image <span class="r dim">u,v of each tracked object</span></h2><canvas class="chart tall" id="cam-map"></canvas></div>
+        <div class="card"><h2>3-minute windows</h2><div class="scroll"><table id="cam-wins"></table></div></div>
+      </div>`;
+      chDemand = new Charts.LineChart($('#cam-demand'), { series: [{ name: 'count', color: '#f08a24' }], unit: '' });
+      chFps = new Charts.LineChart($('#cam-fpsch'), { series: [{ name: 'fps', color: '#5aa9ff' }, { name: 'tracks', color: '#3ecf8e' }], yMin: 0 });
+      pollCam(); camTimer = setInterval(pollCam, 3000);
+    },
+    update(L) {
+      const c = L.camera || {}, p = c.perception, n = L.nodes && L.nodes.camera;
+      if (!$('#cam-fps')) return;
+      $('#cam-na').innerHTML = n && (n.status === 'NO DATA' || n.status === 'OFFLINE') ? P.na('Camera node: ' + n.status, n.reason + '. Start 3mins.py (the camera publisher).') : '';
+      $('#cam-fps').textContent = p && p.d ? f(p.d.fps, 1) : '-';
+      $('#cam-active').textContent = p && p.d ? p.d.active : '-';
+      if (c.demand) { $('#cam-win').textContent = c.demand.cumulative; $('#cam-win2').textContent = `window ${c.demand.window_id} · ${f(c.demand.elapsed_s, 0)} s elapsed`; }
+      if (c.window) { $('#cam-last').textContent = c.window.total; $('#cam-last2').textContent = `window ${c.window.window_id} · ${f(c.window.duration_s, 0)} s`; }
+      drawTracks(p && p.d ? p.d.tracks || [] : []);
+    },
+    unmount() { clearInterval(camTimer); camTimer = null; }
+  });
+  async function pollCam() {
+    if (!$('#cam-demand')) return;
+    try {
+      const r = await P.api('/api/rings');
+      const d = r.camera_demand || [];
+      const cur = d.length ? d[d.length - 1].window_id : null;
+      const pts = d.filter(x => x.window_id === cur || x.window_id === cur - 1);
+      chDemand.set(pts.map(x => x.ts), [pts.map(x => x.count)]);
+      const fr = r.camera_fps || [];
+      chFps.set(fr.map(x => x[0]), [fr.map(x => x[1]), fr.map(x => x[2])]);
+      $('#cam-wins').innerHTML = '<tr><th>window</th><th>duration s</th><th>total</th><th>finished</th></tr>' +
+        (r.camera_window || []).slice().reverse().map(w => `<tr><td>${w.window_id}</td><td>${f(w.duration_s, 0)}</td><td>${w.total}</td><td>${P.hms(w.ts)}</td></tr>`).join('');
+    } catch (e) { /* backend down */ }
+  }
+  function drawTracks(tr) {
+    const cv = $('#cam-map'); if (!cv) return;
+    const r = cv.getBoundingClientRect(), dpr = devicePixelRatio || 1; cv.width = r.width * dpr; cv.height = r.height * dpr;
+    const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, r.width, r.height);
+    g.strokeStyle = '#2a3440'; g.strokeRect(.5, .5, r.width - 1, r.height - 1);
+    const W = Math.max(640, ...tr.map(t => t.u + 20)), H = Math.max(480, ...tr.map(t => t.v + 20));
+    g.font = '11px ui-monospace,monospace'; g.fillStyle = '#8a97a6';
+    tr.forEach(t => { const x = t.u / W * r.width, y = t.v / H * r.height; g.fillStyle = '#f08a24'; g.beginPath(); g.arc(x, y, 6, 0, 7); g.fill(); g.fillStyle = '#e6ebf0'; g.fillText(`#${t.id}  ${f(t.dist_m, 2)} m`, x + 9, y + 4); });
+    if (!tr.length) { g.fillStyle = '#5d6a79'; g.textAlign = 'center'; g.fillText('no objects in view', r.width / 2, r.height / 2); }
+  }
+
+  // =====================================================================================================
+  // 3D TWIN  -  CAD model driven by the real joint ticks, belt speed, IR and the cycle phase
+  // =====================================================================================================
+  const loadJs = src => new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => no(new Error('cannot load ' + src)); document.head.appendChild(s); });
+  let twinLoad = null;
+  const TW = { api: null, stage: null };
+  function loadTwin() {
+    if (!twinLoad) twinLoad = (async () => {
+      await loadJs('vendor/three.min.js'); await loadJs('vendor/OrbitControls.js'); await loadJs('cad_data.js'); await loadJs('cell3d.js');
+    })();
+    return twinLoad;
+  }
+  const PRESET = [['ov', 'Overview'], ['pick', 'Pick point'], ['top', 'Top'], ['ins', 'Camera'], ['tray', 'Trays']];
+  P.page('/control/twin', {
+    title: '3D Twin',
+    mount(el) {
+      if (TW.stage) { el.appendChild(TW.stage); if (TW.api) { TW.api.start(); } return; }
+      const st = TW.stage = P.h(`
+      <div><div class="stage" id="tw-stage">
+        <canvas id="cv"></canvas>
+        <div class="hud tl glass" id="tw-load">Loading the CAD model (2.9 MB, once)…</div>
+        <div class="hud tr">
+          <div id="tw-badge" class="stale-badge">waiting for arm/telemetry</div>
+          <div class="row" id="tw-chips"><span class="chip" data-k="FEED">FEED</span><span class="chip" data-k="TRANSPORT">TRANSPORT</span><span class="chip" data-k="GRIP">GRIP</span><span class="chip" data-k="CARRY">CARRY</span><span class="chip" data-k="RELEASE">RELEASE</span><span class="chip" data-k="HOME">HOME</span></div>
+          <div class="count"><div class="glass p"><b id="tw-np">0</b><span>PASS tray</span></div><div class="glass f"><b id="tw-nf">0</b><span>FAIL tray</span></div></div>
+          <div class="glass dim" id="tw-info" style="font-size:12px;text-align:right">cycle - · drop -</div>
+        </div>
+        <div class="hud bl glass parts" id="parts" hidden></div>
+        <div class="hud br glass joints" id="tw-joints"></div>
+        <div class="hud bc"><div class="grp" id="tw-cam">${PRESET.map((p, i) => `<button data-c="${p[0]}"${i ? '' : ' class="on"'}>${p[1]}</button>`).join('')}</div>
+          <div class="grp" style="margin-top:6px;justify-content:center"><button id="tw-bparts">Parts</button><button id="tw-balign">Align</button><button id="tw-bclear">Clear trays</button><button id="tw-bdef">Reset view</button></div></div>
+        <div class="hud tl glass align" id="tw-align" hidden style="top:60px"></div>
+      </div></div>`);
+      el.appendChild(st);
+      loadTwin().then(async () => {
+        const api = TW.api = await window.Cell3D({ canvas: $('#cv', st) });
+        try { api.setMap(await P.api('/api/armmap')); } catch (e) { /* default map stays */ }
+        $('#tw-load', st).remove(); api.start(); wireTwin(st, api);
+        if (P.live) api.onLive(P.live);
+      }).catch(e => { $('#tw-load', st).textContent = '3D failed: ' + e.message; });
+    },
+    update(L) {
+      if (!TW.api) return;
+      TW.api.onLive(L);
+      const S = TW.api.state, st = TW.stage, c = TW.api.counts();
+      const badge = $('#tw-badge', st);
+      badge.className = S.live ? 'live-badge' : 'stale-badge';
+      badge.textContent = S.live ? `LIVE · arm ${f(S.armAge, 1)} s old` : (S.armAge == null ? 'no arm/telemetry' : `STALE · arm data ${f(S.armAge, 1)} s old`);
+      const ph = S.phase.startsWith('CARRY') ? 'CARRY' : S.phase;
+      st.querySelectorAll('#tw-chips .chip').forEach(ch => ch.classList.toggle('on', ch.dataset.k === ph));
+      $('#tw-np', st).textContent = c.pass; $('#tw-nf', st).textContent = c.fail;
+      $('#tw-info', st).textContent = `${S.status} · cycle ${S.cycle} · drop ${S.drop || '-'} · belt ${f(S.beltV, 0)} mm/s${S.ir ? ' · IR: block' : ''}`;
+      const J = (L.arm && L.arm.joints) || [], q = TW.api.modelQ();
+      let h = '<table><tr><th>J</th><th>ticks</th><th>model°</th><th>mA</th><th>°C</th></tr>';
+      for (let i = 0; i < 6; i++) {
+        const j = J[i] || {}, deg = i < 5 ? q[i] * 180 / Math.PI : null;
+        h += `<tr><td>J${i + 1}</td><td>${j.pos == null ? '-' : j.pos}</td><td>${deg == null ? 'jaw' : f(deg, 0)}</td><td>${f(j.cur_mA, 0)}</td><td>${f(j.temp, 0)}</td></tr>`;
+      }
+      $('#tw-joints', st).innerHTML = h + '</table>';
+    },
+    unmount() { if (TW.api) TW.api.stop(); }
+  });
+
+  function wireTwin(st, api) {
+    st.querySelectorAll('#tw-cam button').forEach(b => b.onclick = () => { api.goCam(b.dataset.c); st.querySelectorAll('#tw-cam button').forEach(x => x.classList.toggle('on', x === b)); });
+    $('#tw-bparts', st).onclick = () => { const on = api.togglePanel(); $('#tw-bparts', st).classList.toggle('on', on); };
+    $('#tw-bclear', st).onclick = () => api.clearTrays();
+    $('#tw-bdef', st).onclick = () => api.goCam('ov');
+    const al = $('#tw-align', st);
+    $('#tw-balign', st).onclick = () => { al.hidden = !al.hidden; $('#tw-balign', st).classList.toggle('on', !al.hidden); if (!al.hidden) paintAlign(); };
+    function paintAlign() {
+      const m = api.getMap();
+      al.innerHTML = `<b>Align the model to the real arm</b>
+        <div class="dim">Move the REAL arm to a pose the model knows, pick the same pose here, press the button: the zero offsets of J1-J5 are set from the live ticks. Signs: J1-J4 agree with the named poses; J5 is a guess.</div>
+        <select id="al-pose">${api.poses.map(p => `<option${p === 'pick_down' ? ' selected' : ''}>${p}</option>`).join('')}</select>
+        <div class="row"><button id="al-set" class="pri">Set joints from live arm</button><button id="al-jaw">Jaw = closed on block</button></div>
+        <table class="thr" style="margin-top:6px"><tr><th>J</th><th>sign</th><th>zero (ticks)</th></tr>
+        ${m.joints.map((j, i) => `<tr><td>J${i + 1}</td><td><select data-i="${i}" class="al-s"><option${j.sign === 1 ? ' selected' : ''}>1</option><option${j.sign === -1 ? ' selected' : ''}>-1</option></select></td><td><input data-i="${i}" class="al-z" type="number" value="${j.zero}"></td></tr>`).join('')}
+        <tr><td>jaw</td><td></td><td><input id="al-gz" type="number" value="${m.gripper.zero}"></td></tr></table>
+        <div class="row" style="margin-top:6px"><button id="al-save" class="pri">Save</button><button id="al-def">Defaults</button><span class="msg" id="al-msg"></span></div>`;
+      const msg = $('#al-msg', al);
+      const readTable = () => ({ joints: Array.from(al.querySelectorAll('.al-z')).map((z, i) => ({ sign: +al.querySelectorAll('.al-s')[i].value, zero: +z.value })), gripper: { zero: +$('#al-gz', al).value } });
+      $('#al-set', al).onclick = () => { try { api.setMap(readTable()); api.alignTo($('#al-pose', al).value); paintAlign(); P.setMsg($('#al-msg', al), 'zeros set (not saved yet)', true); } catch (e) { P.setMsg(msg, e.message, false); } };
+      $('#al-jaw', al).onclick = () => { try { api.setMap(readTable()); api.alignTo('closed'); paintAlign(); P.setMsg($('#al-msg', al), 'jaw zero set', true); } catch (e) { P.setMsg(msg, e.message, false); } };
+      $('#al-save', al).onclick = async () => { try { const m2 = readTable(); api.setMap(m2); await P.post('/api/armmap', m2); P.setMsg(msg, 'saved to arm_model_map.json', true); } catch (e) { P.setMsg(msg, e.message, false); } };
+      $('#al-def', al).onclick = () => { api.setMap(api.defaultMap()); paintAlign(); };
+      al.querySelectorAll('input,select').forEach(x => x.onchange = () => api.setMap(readTable()));
+    }
+  }
+})();

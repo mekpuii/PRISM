@@ -1,0 +1,5 @@
+# PC:  pip install -r requirements.txt  แล้วติดตั้ง LeRobot แยกตาม docs (git clone + pip install -e ".[feetech]")
+# Pi (ไม่มีจอ): เปลี่ยน opencv-python เป็น opencv-python-headless  (ไม่ใช้ cv2.imshow -> ใช้ --nogui / --save-debug)
+numpy
+opencv-python
+pyserial

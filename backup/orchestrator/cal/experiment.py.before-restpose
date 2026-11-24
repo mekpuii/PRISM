@@ -1,0 +1,806 @@
+#!/usr/bin/env python3
+"""experiment.py - collect a clean, fully-labelled dataset for the optimizer, block by block.
+
+  python3 experiment.py run       --plan plans/grid.json --note "fresh cubes" --cubes "10x white 40mm"  [--dry-run]
+  python3 experiment.py calibrate --rpms 5,8,11,15,20,25 --seconds 30                                    [--dry-run]
+  python3 experiment.py baseline  --kind belt --rpm 11.1 --seconds 60      (or --kind pose --pose right / --kind idle)
+
+Needs auto_en_new.py running (its web API on 127.0.0.1:8781) and the MQTT broker. experiment.py never sends anything
+to the Mega itself: it only uses autoen's HTTP API, and nothing moves until the operator presses Enter.
+
+HOW A SESSION RUNS
+  autoen is started (or reused) with pause_before_set=1: it pauses before every set, and one set = one block of the plan.
+  For every block:  POST /api/config (rpm, arm_speed, carry_speed, cycles_per_set = n_cycles, extra keys) -> read it
+  back from GET /api/state and log the snapshot -> operator presses Enter -> belt check: autoen runs the empty belt
+  for --belt-check-s at the block's rpm (POST /api/task belt_run) and the measured rpm must be within --tolerance of
+  cal/belt_ref.json (filled by "calibrate") -> resume -> exactly n_cycles cycles -> autoen pauses again.
+  Every cycle gets one result class (RESULT_CLASSES); the raw autoen result + text are kept next to it.
+
+FILES (runs/<run_id>.*, never overwritten)
+  <run_id>.jsonl      record_run.py format: every MQTT message + "exp/..." lines (session, config, belt_check, cycle, block)
+  <run_id>.meta.json  plan, block order, config snapshots, belt checks, per-block results, sha256 of auto_en_new.py /
+                      this file / the plan, operator note, cube set, start/end. Rewritten (atomically) after every block.
+
+The belt check compares autoen's own encoder rpm against the reference table. It catches a belt that is slipping,
+loaded, mis-configured (CPR / PID) or stopped, not an error in what "1 rpm" means in mm/s (BELT_MM_S_PER_RPM is not
+touched here).
+"""
+import argparse
+import datetime as dt
+import hashlib
+import json
+import os
+import random
+import re
+import sys
+import time
+import urllib.error
+import urllib.request
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+PRISM = os.path.dirname(os.path.dirname(HERE))
+DEFAULT_AUTOEN = os.path.join(PRISM, "autoencoder", "auto_en_new.py")
+DEFAULT_BELT_REF = os.path.join(HERE, "belt_ref.json")
+DEFAULT_RUNS = os.path.join(HERE, "runs")
+
+RESULT_CLASSES = ("OK", "GRIP_MISS", "DROP_CARRY", "TIMEOUT_TRANSPORT", "TIMEOUT_OTHER", "EXCEPTION", "ABORTED")
+# autoen result code -> class. Anything not listed (a Python exception name leaking out of auto_en_new.py:1554, a new code)
+# becomes EXCEPTION with its raw text, so a bare "TimeoutError" can never end up as a result.
+AUTOEN_CODES = {
+    "OK": "OK",
+    "GRIP_SUSPECT": "DROP_CARRY",          # J6 slipped / lost current while carrying: suspected, see the block's bin count
+    "GRIP_MISS": "GRIP_MISS",              # gripper stopped outside the block window
+    "GRIP_FAILED": "GRIP_MISS",            # no G,CLOSED / G,ERROR
+    "NO_BLOCK_AT_IR": "GRIP_MISS",         # IR empty when GRIP was due: nothing could be gripped
+    "BLOCK_STILL_AT_IR": "GRIP_MISS",      # cycle "finished" but the block never left the IR
+    "TIMEOUT_TRANSPORT": "TIMEOUT_TRANSPORT",
+    "TIMEOUT_FEED": "TIMEOUT_OTHER",
+    "TIMEOUT_STANDBY": "TIMEOUT_OTHER",
+}
+RPM_UNITS = "output_rpm_cpr11880"     # what "rpm" means in this data: real output-shaft rpm (autoen --cpr 11880)
+IR_RETRIES = 3                        # belt check found a cube at the IR: ask the operator to clear it, this many times
+PLAN_LIMITS = {"rpm": (0.5, 37.0), "arm_speed": (0.2, 8.8), "carry_speed": (0.2, 8.8), "n_cycles": (1, 1000)}
+# set by experiment.py itself; a plan's "set" block may not touch them (enable_b/c would break one-set-per-block)
+RESERVED = {"rpm", "arm_speed", "carry_speed", "cycles_per_set", "sets", "pause_before_set", "enable_b", "enable_c"}
+ORDERS = ("rounds", "shuffle", "as_listed")
+
+
+class PlanError(ValueError):
+    pass
+
+
+class SessionError(RuntimeError):
+    pass
+
+
+# ====================================================================== plan
+def load_plan(path):
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
+    if path.endswith((".yaml", ".yml")):
+        try:
+            import yaml
+        except ImportError:
+            raise PlanError("YAML plan needs PyYAML (pip install pyyaml in this env) - or write the plan as .json")
+        return yaml.safe_load(text)
+    return json.loads(text)
+
+
+def expand_plan(plan):
+    """plan -> list of blocks in run order. Each config runs `repeats` times:
+    order "rounds" (default) = every round runs each config once, round order shuffled with `seed` (balanced interleaving);
+    "shuffle" = all blocks shuffled with `seed`; "as_listed" = round after round in the listed order."""
+    if not isinstance(plan, dict):
+        raise PlanError("plan must be a JSON/YAML object")
+    configs = plan.get("configs", plan.get("blocks"))
+    if not configs or not isinstance(configs, list):
+        raise PlanError("plan needs a non-empty 'configs' list")
+    defaults = plan.get("defaults", {}) or {}
+    repeats = int(plan.get("repeats", 1))
+    order = plan.get("order", "rounds")
+    seed = plan.get("seed", 0)
+    if repeats < 1:
+        raise PlanError("repeats must be >= 1")
+    if order not in ORDERS:
+        raise PlanError(f"order must be one of {ORDERS}")
+    full = []
+    for i, c in enumerate(configs, 1):
+        b = {**defaults, **c}
+        extra = {**(defaults.get("set") or {}), **(c.get("set") or {})}
+        for k in ("rpm", "arm_speed", "carry_speed", "n_cycles"):
+            if k not in b:
+                raise PlanError(f"config {i}: missing {k}")
+            lo, hi = PLAN_LIMITS[k]
+            try:
+                v = float(b[k])
+            except (TypeError, ValueError):
+                raise PlanError(f"config {i}: {k} must be a number")
+            if not lo <= v <= hi:
+                raise PlanError(f"config {i}: {k}={b[k]} outside {lo:g}..{hi:g}")
+        if int(b["n_cycles"]) != float(b["n_cycles"]):
+            raise PlanError(f"config {i}: n_cycles must be a whole number")
+        bad = sorted(set(extra) & RESERVED)
+        if bad:
+            raise PlanError(f"config {i}: 'set' may not contain {bad} (experiment.py controls them)")
+        full.append({"config_id": i, "label": b.get("label", f"c{i}"), "rpm": float(b["rpm"]),
+                     "arm_speed": float(b["arm_speed"]), "carry_speed": float(b["carry_speed"]),
+                     "n_cycles": int(b["n_cycles"]), "set": extra})
+    rng = random.Random(seed)
+    seq = []
+    if order == "shuffle":
+        seq = [(r, c) for r in range(1, repeats + 1) for c in full]
+        rng.shuffle(seq)
+    else:
+        for r in range(1, repeats + 1):
+            rnd = list(full)
+            if order == "rounds":
+                rng.shuffle(rnd)
+            seq += [(r, c) for c in rnd]
+    return [{"block": n, "repeat": r, **c} for n, (r, c) in enumerate(seq, 1)]
+
+
+def block_config(b):
+    """What experiment.py POSTs to /api/config before block b."""
+    return {"rpm": b["rpm"], "arm_speed": b["arm_speed"], "carry_speed": b["carry_speed"],
+            "cycles_per_set": b["n_cycles"], **b["set"]}
+
+
+# ====================================================================== classification / checks
+def classify(result, notes=""):
+    """autoen cycle result -> {"class", "raw_result", "raw_text", "drop_suspected"}; class is always in RESULT_CLASSES."""
+    result, notes = str(result or ""), str(notes or "")
+    if result in AUTOEN_CODES:
+        cls = AUTOEN_CODES[result]
+    elif result == "TimeoutError" and notes.startswith("arm did not finish"):
+        cls = "TIMEOUT_OTHER"                           # drive() move timeout, leaks as a bare exception name
+    else:
+        cls = "EXCEPTION"                               # FAULT_n, TimeoutError "no reply to X,...", RuntimeError ...
+    return {"class": cls, "raw_result": result, "raw_text": notes if cls != "EXCEPTION" else f"{result}: {notes}".strip(),
+            "drop_suspected": cls == "DROP_CARRY"}
+
+
+def belt_check(task, ref_entry, tol=0.15, allow_missing_ref=False, min_samples=10):
+    """task = autoen's finished belt_run task. -> {"ok", "reason", "meas_rpm", "ref_rpm", "dev"}"""
+    out = {"ok": False, "reason": "", "meas_rpm": None, "ref_rpm": None, "dev": None}
+    if task is None or task.get("status") != "done":
+        out["reason"] = f"belt task did not finish: {None if task is None else task.get('status')} {task and task.get('error')}"
+        return out
+    if task.get("arrived"):
+        out["reason"] = "a block reached the IR during the belt check - the belt must be empty"
+        return out
+    st = (task.get("stats") or {}).get("belt_rpm") or {}
+    if (st.get("n") or 0) < min_samples or st.get("mean") is None:
+        out["reason"] = f"only {st.get('n') or 0} belt samples (need {min_samples}) - belt telemetry missing?"
+        return out
+    out["meas_rpm"] = st["mean"]
+    if ref_entry is None:
+        out["ok"] = allow_missing_ref
+        out["reason"] = "no belt_ref entry for this rpm (run calibrate)" + (" - allowed" if allow_missing_ref else "")
+        return out
+    ref = ref_entry["rpm_meas_mean"]
+    out["ref_rpm"] = ref
+    out["dev"] = round((st["mean"] - ref) / ref, 4) if ref else None
+    out["ok"] = out["dev"] is not None and abs(out["dev"]) <= tol
+    out["reason"] = f"measured {st['mean']:.2f} rpm vs reference {ref:.2f} ({out['dev']:+.1%}, limit ±{tol:.0%})" \
+        if out["dev"] is not None else "reference rpm is 0"
+    return out
+
+
+def rpm_key(rpm):
+    return f"{float(rpm):g}"
+
+
+class BeltRef:
+    """cal/belt_ref.json: {"entries": {"<rpm>": {...latest...}}, "history": [every calibration ever]}"""
+
+    def __init__(self, path):
+        self.path = path
+        self.data = {"entries": {}, "history": []}
+        if os.path.exists(path):
+            with open(path, encoding="utf-8") as f:
+                self.data = json.load(f)
+            self.data.setdefault("entries", {})
+            self.data.setdefault("history", [])
+
+    def get(self, rpm):
+        return self.data["entries"].get(rpm_key(rpm))
+
+    def update(self, rpm, task, run_id, autoen_sha):
+        s = task["stats"]
+        e = {"rpm_set": float(rpm), "rpm_meas_mean": s["belt_rpm"]["mean"], "rpm_meas_std": s["belt_rpm"]["std"],
+             "n": s["belt_rpm"]["n"], "belt_mA_mean": s["belt_mA"]["mean"], "belt_W_mean": s["belt_W"]["mean"],
+             "seconds": task["seconds"], "settle_s": task["settle_s"], "measured_at": iso(task.get("t_end") or time.time()),
+             "run_id": run_id, "autoen_sha256": autoen_sha}
+        self.data["entries"][rpm_key(rpm)] = e
+        self.data["history"].append(e)
+        self.data["updated"] = iso(time.time())
+        return e
+
+    def save(self):
+        write_json_atomic(self.path, self.data)
+
+
+# ====================================================================== small helpers
+def iso(t):
+    return dt.datetime.fromtimestamp(t).isoformat(timespec="seconds")
+
+
+def sha256_file(path):
+    if not path or not os.path.exists(path):
+        return None
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def write_json_atomic(path, data):
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=1)
+        f.write("\n")
+    os.replace(tmp, path)                                   # never a half-written file
+
+
+def same(a, b):
+    try:
+        return abs(float(a) - float(b)) < 1e-6
+    except (TypeError, ValueError):
+        return a == b
+
+
+def default_ask(prompt):
+    """input(), but Enter presses typed BEFORE the prompt appeared are thrown away: each prompt starts motion, so only
+    an answer given after reading it counts (2026-10-25: queued Enters ran 22 belt checks in one minute)."""
+    try:
+        if sys.stdin.isatty():
+            import termios
+            termios.tcflush(sys.stdin, termios.TCIFLUSH)
+        return input(prompt)
+    except EOFError:
+        return "q"
+
+
+# ====================================================================== autoen HTTP API
+class ApiError(RuntimeError):
+    pass
+
+
+class Api:
+    def __init__(self, base="http://127.0.0.1:8781", timeout=5.0):
+        self.base, self.timeout = base.rstrip("/"), timeout
+
+    def _req(self, path, body=None):
+        data = None if body is None else json.dumps(body).encode()
+        req = urllib.request.Request(self.base + path, data=data, method="GET" if body is None else "POST",
+                                     headers={"Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=self.timeout) as r:
+                return json.loads(r.read() or b"{}")
+        except urllib.error.HTTPError as e:
+            try:
+                msg = json.loads(e.read()).get("error", str(e))
+            except Exception:                               # noqa: BLE001
+                msg = str(e)
+            raise ApiError(f"{path}: {msg}")
+        except (urllib.error.URLError, OSError) as e:
+            raise ApiError(f"autoen API not reachable at {self.base} ({e})")
+
+    def state(self):
+        return self._req("/api/state")
+
+    def post(self, path, body=None):
+        return self._req(path, body if body is not None else {})
+
+    def wait(self, pred, timeout, poll=0.5, what="autoen"):
+        end = time.monotonic() + timeout
+        while True:
+            st = self.state()
+            if pred(st):
+                return st
+            if time.monotonic() > end:
+                raise SessionError(f"timed out after {timeout:.0f}s waiting for {what} (status {st.get('status')})")
+            time.sleep(poll)
+
+
+# ====================================================================== session (files)
+class NullRecorder:
+    """Used by --no-record and the tests: keeps the exp/... lines in memory."""
+
+    def __init__(self, *a, **k):
+        self.events, self.connected = [], True
+
+    def write_event(self, topic, data):
+        self.events.append((topic, data))
+
+    def stop(self):
+        pass
+
+
+def mqtt_recorder(host, port):
+    def make(path, header):
+        from record_run import Recorder
+        rec = Recorder(path, header, host, port, mode="x")
+        rec.start()
+        end = time.monotonic() + 5.0
+        while not rec.connected and time.monotonic() < end:
+            time.sleep(0.1)
+        if not rec.connected:
+            rec.stop()
+            raise SessionError(f"MQTT broker {host}:{port} did not accept the recorder within 5 s")
+        return rec
+    return make
+
+
+class Session:
+    def __init__(self, kind, runs_dir, recorder_factory, autoen_path, note="", cubes="", name="", extra=None):
+        os.makedirs(runs_dir, exist_ok=True)
+        stamp = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
+        name = re.sub(r"[^A-Za-z0-9_-]+", "-", name).strip("-")[:40]
+        base, k = f"{kind}_{stamp}" + (f"_{name}" if name else ""), 1
+        while True:                                         # two sessions in the same second: _2, _3 ... never overwrite
+            self.run_id = base if k == 1 else f"{base}_{k}"
+            self.jsonl = os.path.join(runs_dir, self.run_id + ".jsonl")
+            self.meta_path = os.path.join(runs_dir, self.run_id + ".meta.json")
+            if not (os.path.exists(self.jsonl) or os.path.exists(self.meta_path)):
+                break
+            k += 1
+        self.meta = {"run_id": self.run_id, "kind": kind, "start": iso(time.time()), "end": None, "status": "running",
+                     "rpm_units": RPM_UNITS,
+                     "operator_note": note, "cube_set": cubes,
+                     "autoen": {"path": autoen_path, "sha256": sha256_file(autoen_path),
+                                "mtime": iso(os.path.getmtime(autoen_path)) if os.path.exists(autoen_path) else None},
+                     "experiment_sha256": sha256_file(os.path.abspath(__file__)),
+                     "config_snapshots": [], "tasks": [], "blocks": [], **(extra or {})}
+        self.rec = recorder_factory(self.jsonl, {"rt": time.time(), "run_id": self.run_id, "kind": kind, "note": note,
+                                                 "cube_set": cubes, "rpm_set": None})
+        self.save()
+        self.event("session", {"state": "start", "run_id": self.run_id})
+
+    def event(self, topic, data):
+        self.rec.write_event("exp/" + topic, data)
+
+    def save(self):
+        write_json_atomic(self.meta_path, self.meta)
+
+    def close(self, status):
+        self.meta.update(status=status, end=iso(time.time()))
+        self.event("session", {"state": "end", "status": status})
+        self.save()
+        self.rec.stop()
+
+
+# ====================================================================== autoen control
+def start_autoen(api, session, ask, start_config):
+    """Bring autoen to "paused before a set" with pause_before_set=1. Reuses an autoen that is already paused that way;
+    otherwise needs a fresh one ("ready") and the operator's Enter, because Start opens the gripper and drives Home."""
+    st = api.state()
+    cfg = st.get("config", {})
+    if "pause_before_set" not in cfg:
+        raise SessionError("this auto_en_new.py has no pause_before_set setting - start the patched version")
+    if st["status"] == "paused" and st.get("set_boundary"):
+        session.event("autoen", {"state": "reused", "set": st.get("set"), "cycle_total": st.get("cycle_total")})
+        return st
+    if st["status"] != "ready":
+        raise SessionError(f"autoen status is '{st['status']}' ({st.get('message')}): restart auto_en_new.py for a fresh run")
+    ans = ask("autoen is ready. Start = gripper opens and the arm drives Home.\n"
+              "Arm area clear and E-stop within reach?  Enter = start, q = quit: ").strip().lower()
+    if ans == "q":
+        raise SessionError("operator quit before start")
+    api.post("/api/start", {"clear": True, "config": {"pause_before_set": 1, "sets": 1000, "enable_b": 0, "enable_c": 0,
+                                                      **start_config}})
+    st = api.wait(lambda s: s["status"] in ("paused", "error", "stopped", "finished"), 180, what="autoen to pause before set 1")
+    if st["status"] != "paused":
+        raise SessionError(f"autoen did not reach the pause: {st['status']} {st.get('message')}")
+    session.event("autoen", {"state": "started", "set": st.get("set")})
+    return st
+
+
+def apply_config(api, session, cfg, block=None):
+    applied = api.post("/api/config", cfg).get("applied", {})
+    got = api.state().get("config", {})
+    mismatch = {k: [v, got.get(k)] for k, v in cfg.items() if not same(v, got.get(k))}
+    snap = {"t": iso(time.time()), "block": block, "posted": cfg, "applied": applied, "readback": got, "mismatch": mismatch}
+    session.meta["config_snapshots"].append(snap)
+    session.event("config", snap)
+    return snap
+
+
+def run_task(api, session, body, extra_wait=30.0):
+    tid = api.post("/api/task", body)["task"]["id"]
+    st = api.wait(lambda s: (s.get("task") or {}).get("id") == tid and s["task"]["status"] in ("done", "error")
+                  or s["status"] in ("stopped", "error", "finished"),
+                  body.get("seconds", 30) + extra_wait, poll=0.5, what=f"task {tid}")
+    task = st.get("task") if (st.get("task") or {}).get("id") == tid else None
+    session.meta["tasks"].append(task)
+    session.event("task", task or {"id": tid, "status": "lost", "autoen_status": st["status"]})
+    return task
+
+
+def resume(api):
+    st = api.state()
+    if not st.get("paused"):
+        raise SessionError(f"expected autoen to be paused, status is {st['status']}")
+    api.post("/api/pause")                                  # toggles: paused -> running
+    api.wait(lambda s: not s.get("paused"), 5, poll=0.2, what="resume")
+
+
+def collect_block(api, session, block, last_n, poll=1.0, on_cycle=None):
+    """Follow autoen's cycle log until the block has n_cycles results and autoen paused again, or the run ended.
+    -> (cycles, last_n, end) with end = "complete" | "ended:<status>" | "interrupted"."""
+    cycles, n = [], block["n_cycles"]
+    try:
+        while True:
+            st = api.state()
+            for c in sorted(st.get("cycles", []), key=lambda c: c["n"]):
+                if c["n"] <= last_n:
+                    continue
+                if c["n"] > last_n + 1:                     # the state keeps the last 12 only: should never happen
+                    for _ in range(c["n"] - last_n - 1):
+                        cycles.append(cycle_record(block, len(cycles) + 1, None, aborted="cycle result lost between polls"))
+                last_n = c["n"]
+                rec = cycle_record(block, len(cycles) + 1, c)
+                cycles.append(rec)
+                session.event("cycle", rec)
+                if on_cycle:
+                    on_cycle(rec)
+            if st["status"] in ("finished", "stopped", "error"):
+                return cycles, last_n, f"ended:{st['status']}: {st.get('message', '')}"
+            if len(cycles) >= n and st.get("paused"):
+                return cycles, last_n, "complete"
+            time.sleep(poll)
+    except KeyboardInterrupt:
+        try:
+            api.post("/api/stop")                          # autoen: belt STOP, arm holds where it is
+        except ApiError:
+            pass
+        return cycles, last_n, "interrupted"
+
+
+def cycle_record(block, k, c, aborted=None):
+    base = {"block": block["block"], "cycle_in_block": k, "config_id": block["config_id"],
+            "rpm": block["rpm"], "arm_speed": block["arm_speed"], "carry_speed": block["carry_speed"], "t": iso(time.time())}
+    if c is None:
+        return {**base, "class": "ABORTED", "raw_result": None, "raw_text": aborted, "drop_suspected": False,
+                "autoen_n": None, "autoen_set": None, "secs": None}
+    return {**base, **classify(c.get("result"), c.get("notes")), "autoen_n": c["n"], "autoen_set": c.get("set"),
+            "secs": c.get("secs")}
+
+
+def fill_aborted(block, cycles, reason):
+    return cycles + [cycle_record(block, k, None, aborted=reason) for k in range(len(cycles) + 1, block["n_cycles"] + 1)]
+
+
+def block_summary(block, cycles, status, reason="", belt=None, bins=None):
+    counts = {c: 0 for c in RESULT_CLASSES}
+    for c in cycles:
+        counts[c["class"]] += 1
+    s = {**{k: block[k] for k in ("block", "repeat", "config_id", "label", "rpm", "arm_speed", "carry_speed", "n_cycles")},
+         "status": status, "reason": reason, "counts": counts, "belt_check": belt, "bin_count": bins, "cycles": cycles}
+    if bins is not None:
+        expected = counts["OK"] + counts["DROP_CARRY"]
+        s["drop_check"] = {"expected_in_bins": expected, "bin_count": bins, "missing": expected - bins}
+    return s
+
+
+# ====================================================================== commands
+def dry_run(api, blocks, belt_ref, args, mqtt_check=True):
+    """Print the plan and check everything that can be checked without moving anything (GETs only, no POST)."""
+    ok = True
+    print(f"\n{len(blocks)} blocks, {sum(b['n_cycles'] for b in blocks)} cycles")
+    print(f"{'blk':>3} {'rep':>3} {'cfg':>3} {'label':<10} {'rpm':>6} {'arm':>5} {'carry':>5} {'n':>4}  ref_rpm  extra")
+    for b in blocks:
+        ref = belt_ref.get(b["rpm"])
+        print(f"{b['block']:>3} {b['repeat']:>3} {b['config_id']:>3} {b['label']:<10.10} {b['rpm']:>6g} {b['arm_speed']:>5g} "
+              f"{b['carry_speed']:>5g} {b['n_cycles']:>4}  {ref['rpm_meas_mean'] if ref else '-':>7}  {b['set'] or ''}")
+    est = sum(b["n_cycles"] * args.cycle_s_est + args.belt_check_s + 20 for b in blocks)
+    print(f"estimated duration ~{est / 60:.0f} min (at ~{args.cycle_s_est:g} s/cycle, {args.belt_check_s:g} s belt check, "
+          f"20 s operator per block)\n")
+
+    def check(cond, msg):
+        nonlocal ok
+        print(("  OK    " if cond else "  FAIL  ") + msg)
+        ok = ok and cond
+
+    try:
+        st = api.state()
+        check(True, f"autoen API {api.base}: status '{st['status']}', set {st.get('set')}, cycle_total {st.get('cycle_total')}")
+        cfg = st.get("config", {})
+        check("pause_before_set" in cfg, "auto_en_new.py supports pause_before_set + /api/task")
+        reusable = st["status"] == "paused" and bool(st.get("set_boundary"))
+        check(st["status"] == "ready" or reusable, "autoen can start a session (ready, or paused between sets)")
+        keys = sorted({k for b in blocks for k in block_config(b)} - set(cfg))
+        check(not keys, "every plan key exists in autoen's config" + (f" - unknown: {keys}" if keys else ""))
+    except ApiError as e:
+        check(False, str(e))
+    missing = sorted({rpm_key(b["rpm"]) for b in blocks if belt_ref.get(b["rpm"]) is None})
+    check(not missing or args.allow_missing_ref, "belt_ref.json has every rpm" + (f" - missing {missing}" if missing else "")
+          + (" (allowed)" if missing and args.allow_missing_ref else ""))
+    a_sha = sha256_file(args.autoen_path)
+    check(a_sha is not None, f"auto_en_new.py sha256 {a_sha} ({args.autoen_path})")
+    if mqtt_check and not args.no_record:
+        check(*mqtt_reachable(args.mqtt_host, args.mqtt_port))
+    print("\nDRY RUN: nothing was sent to autoen, nothing moved.", "All checks passed." if ok else "Fix the FAILs first.")
+    return 0 if ok else 1
+
+
+def mqtt_reachable(host, port):
+    try:
+        import paho.mqtt.client as mqtt
+        try:
+            c = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
+        except AttributeError:
+            c = mqtt.Client()
+        c.connect(host, port, 5)
+        c.disconnect()
+        return True, f"MQTT broker {host}:{port} reachable"
+    except Exception as e:                                  # noqa: BLE001
+        return False, f"MQTT broker {host}:{port} not reachable ({e})"
+
+
+def cmd_run(args, api, ask=default_ask, recorder_factory=None, poll=1.0):
+    plan = load_plan(args.plan)
+    blocks = expand_plan(plan)
+    belt_ref = BeltRef(args.belt_ref)
+    if args.dry_run:
+        return dry_run(api, blocks, belt_ref, args)
+    sess = Session("exp", args.runs_dir, recorder_factory, args.autoen_path, args.note, args.cubes, plan.get("name", ""),
+                   extra={"plan_file": os.path.abspath(args.plan), "plan_sha256": sha256_file(args.plan), "plan": plan,
+                          "seed": plan.get("seed", 0), "order": plan.get("order", "rounds"),
+                          "block_order": [{k: b[k] for k in ("block", "repeat", "config_id", "label")} for b in blocks],
+                          "belt_check": {"seconds": args.belt_check_s, "tolerance": args.tolerance,
+                                         "allow_missing_ref": args.allow_missing_ref, "belt_ref": belt_ref.data["entries"]}})
+    print(f"session {sess.run_id}\n  {sess.jsonl}\n  {sess.meta_path}")
+    status, last_n, ended = "finished", 0, None
+    remaining = list(blocks)
+    try:
+        st = start_autoen(api, sess, ask, {"cycles_per_set": blocks[0]["n_cycles"]})
+        last_n = st.get("cycle_total", 0)
+        while remaining:
+            b = remaining.pop(0)
+            if ended:
+                sess.meta["blocks"].append(block_summary(b, fill_aborted(b, [], ended), "not_run", ended))
+                continue
+            snap = apply_config(api, sess, block_config(b), b["block"])
+            head = (f"\n=== block {b['block']}/{len(blocks)}  [{b['label']} rep {b['repeat']}]  rpm {b['rpm']:g}  "
+                    f"arm {b['arm_speed']:g}  carry {b['carry_speed']:g}  x{b['n_cycles']} cycles")
+            if snap["mismatch"]:
+                print(head, "\n  config read-back mismatch:", snap["mismatch"], "- block aborted")
+                sess.meta["blocks"].append(block_summary(b, fill_aborted(b, [], "config read-back mismatch"),
+                                                         "aborted_config", json.dumps(snap["mismatch"])))
+                sess.save()
+                continue
+            print(head)
+            ans = ask(f"Load >= {b['n_cycles']} cubes into the feeder, belt empty.  Enter = start, s = skip, q = quit: ")
+            ans = ans.strip().lower()
+            if ans in ("s", "q"):
+                why = "skipped by operator" if ans == "s" else "operator quit"
+                sess.meta["blocks"].append(block_summary(b, fill_aborted(b, [], why), "skipped", why))
+                sess.event("block", {"block": b["block"], "status": "skipped", "reason": why})
+                if ans == "q":
+                    ended, status = "operator quit", "quit"
+                sess.save()
+                continue
+            for attempt in range(1, IR_RETRIES + 2):
+                task = run_task(api, sess, {"kind": "belt_run", "rpm": b["rpm"], "seconds": args.belt_check_s,
+                                            "settle_s": args.settle_s})
+                chk = belt_check(task, belt_ref.get(b["rpm"]), args.tolerance, args.allow_missing_ref)
+                sess.event("belt_check", {"block": b["block"], "attempt": attempt, **chk})
+                print(("  belt check OK: " if chk["ok"] else "  belt check FAILED: ") + chk["reason"])
+                if chk["ok"] or not task.get("arrived") or attempt > IR_RETRIES:
+                    break
+                # a cube left at the IR (e.g. after a GRIP_MISS) fails the check of every later block: let the operator clear it
+                ans = ask("  A cube is at the IR. Take it off the belt.  Enter = check again, s = skip block, q = quit: ")
+                ans = ans.strip().lower()
+                if ans in ("s", "q"):
+                    if ans == "q":
+                        ended, status = "operator quit", "quit"
+                    break
+            if not chk["ok"]:
+                sess.meta["blocks"].append(block_summary(b, fill_aborted(b, [], "belt check failed: " + chk["reason"]),
+                                                         "aborted_belt_check", chk["reason"], chk))
+                sess.save()
+                continue
+            resume(api)
+            sess.event("block", {"block": b["block"], "status": "started"})
+            cycles, last_n, end = collect_block(api, sess, b, last_n, poll,
+                                                lambda r: print(f"  cycle {r['cycle_in_block']:>3}  {r['class']:<17} "
+                                                                f"{r['secs']}s  {r['raw_text'][:70] if r['raw_text'] else ''}"))
+            if end == "complete":
+                bstatus, reason = "complete", ""
+            else:
+                bstatus, reason = "partial", end
+                cycles = fill_aborted(b, cycles, end)
+                ended, status = end, ("interrupted" if end == "interrupted" else "ended_early")
+            bins = None
+            if end == "complete" or end.startswith("ended"):
+                txt = ask("Cubes that landed in the bins this block (Enter = skip): ").strip()
+                bins = int(txt) if txt.isdigit() else None
+            summ = block_summary(b, cycles, bstatus, reason, chk, bins)
+            sess.meta["blocks"].append(summ)
+            sess.event("block", {k: v for k, v in summ.items() if k != "cycles"})
+            sess.save()
+            print("  " + "  ".join(f"{k}:{v}" for k, v in summ["counts"].items() if v))
+    except KeyboardInterrupt:
+        status = "interrupted"
+        try:
+            api.post("/api/stop")
+        except ApiError:
+            pass
+    except (SessionError, ApiError) as e:
+        status = "error"
+        sess.meta["error"] = str(e)
+        print("STOPPED:", e)
+    finally:
+        done = {s["block"] for s in sess.meta["blocks"]}
+        for b in blocks:
+            if b["block"] not in done:
+                why = f"session {status}"
+                sess.meta["blocks"].append(block_summary(b, fill_aborted(b, [], why), "not_run", why))
+        if args.stop_at_end:
+            try:
+                api.post("/api/stop")
+            except ApiError:
+                pass
+        sess.close(status)
+    print_summary(sess)
+    return 0 if status == "finished" else 1
+
+
+def print_summary(sess):
+    print(f"\n{sess.run_id}: {sess.meta['status']}")
+    for s in sess.meta["blocks"]:
+        c = "  ".join(f"{k}:{v}" for k, v in s["counts"].items() if v)
+        print(f"  block {s['block']:>3} rpm {s['rpm']:>6g} arm {s['arm_speed']:>4g} carry {s['carry_speed']:>4g}  "
+              f"{s['status']:<18} {c}")
+    print(f"meta: {sess.meta_path}")
+
+
+def cmd_calibrate(args, api, ask=default_ask, recorder_factory=None):
+    """No cubes: run the empty belt at every rpm and store the measured rpm in belt_ref.json."""
+    rpms = [float(x) for x in args.rpms.split(",") if x.strip()]
+    for r in rpms:
+        lo, hi = PLAN_LIMITS["rpm"]
+        if not lo <= r <= hi:
+            raise PlanError(f"rpm {r:g} outside {lo:g}..{hi:g}")
+    ref = BeltRef(args.belt_ref)
+    if args.dry_run:
+        print("calibrate:", ", ".join(f"{r:g}" for r in rpms), f"rpm, {args.seconds:g} s each -> {args.belt_ref}")
+        fake = [{"block": i, "repeat": 1, "config_id": i, "label": "cal", "rpm": r, "arm_speed": 1.0, "carry_speed": 1.0,
+                 "n_cycles": 1, "set": {}} for i, r in enumerate(rpms, 1)]
+        args.allow_missing_ref = True
+        return dry_run(api, fake, ref, args)
+    a_sha = sha256_file(args.autoen_path)
+    sess = Session("cal", args.runs_dir, recorder_factory, args.autoen_path, args.note, "none (empty belt)",
+                   extra={"rpms": rpms, "seconds": args.seconds, "belt_ref_file": args.belt_ref})
+    status = "finished"
+    try:
+        start_autoen(api, sess, ask, {})
+        for r in rpms:
+            if ask(f"\nrpm {r:g}: the belt will run EMPTY for {args.seconds:g} s. Belt clear? Enter = run, s = skip, q = quit: "
+                   ).strip().lower() in ("s", "q"):
+                continue
+            task = run_task(api, sess, {"kind": "belt_run", "rpm": r, "seconds": args.seconds, "settle_s": args.settle_s})
+            chk = belt_check(task, None, allow_missing_ref=True)
+            if not chk["ok"]:
+                print(f"  rpm {r:g}: NOT stored - {chk['reason']}")
+                continue
+            e = ref.update(r, task, sess.run_id, a_sha)
+            ref.save()
+            sess.event("belt_ref", e)
+            print(f"  rpm {r:g}: measured {e['rpm_meas_mean']} ± {e['rpm_meas_std']} rpm, {e['belt_W_mean']} W -> stored")
+    except KeyboardInterrupt:
+        status = "interrupted"
+    except (SessionError, ApiError) as e:
+        status = "error"
+        sess.meta["error"] = str(e)
+        print("STOPPED:", e)
+    finally:
+        sess.meta["belt_ref_after"] = ref.data["entries"]
+        if args.stop_at_end:
+            try:
+                api.post("/api/stop")
+            except ApiError:
+                pass
+        sess.close(status)
+    return 0 if status == "finished" else 1
+
+
+def cmd_baseline(args, api, ask=default_ask, recorder_factory=None):
+    """No cubes: hold a pose / run the empty belt / do nothing for N seconds, and log the power."""
+    body = {"kind": {"belt": "belt_run", "pose": "hold_pose", "idle": "idle"}[args.kind], "seconds": args.seconds,
+            "settle_s": args.settle_s}
+    if args.kind == "belt":
+        body["rpm"] = args.rpm
+    if args.kind == "pose":
+        body["pose"] = args.pose
+    if args.dry_run:
+        print("baseline task:", body)
+        fake = [{"block": 1, "repeat": 1, "config_id": 1, "label": "base", "rpm": args.rpm or 60.0, "arm_speed": 1.0,
+                 "carry_speed": 1.0, "n_cycles": 1, "set": {}}]
+        args.allow_missing_ref = True
+        return dry_run(api, fake, BeltRef(args.belt_ref), args)
+    sess = Session("base", args.runs_dir, recorder_factory, args.autoen_path, args.note, "none", extra={"baseline": body})
+    status = "finished"
+    try:
+        start_autoen(api, sess, ask, {})
+        if args.kind == "belt":
+            what = f"the belt runs EMPTY at {args.rpm:g} rpm"
+        elif args.kind == "pose":
+            what = f"the arm drives to pose '{args.pose}' and holds"
+        else:
+            what = "nothing moves (arm holds)"
+        if ask(f"\nbaseline: {what} for {args.seconds:g} s. Enter = run, q = quit: ").strip().lower() != "q":
+            task = run_task(api, sess, body, extra_wait=30.0 + (60.0 if args.kind == "pose" else 0.0))
+            sess.meta["result"] = task
+            st = (task or {}).get("stats") or {}
+            print(f"  {(task or {}).get('status')}: " + "  ".join(f"{k} {v.get('mean')}" for k, v in st.items()))
+    except KeyboardInterrupt:
+        status = "interrupted"
+    except (SessionError, ApiError) as e:
+        status = "error"
+        sess.meta["error"] = str(e)
+        print("STOPPED:", e)
+    finally:
+        if args.stop_at_end:
+            try:
+                api.post("/api/stop")
+            except ApiError:
+                pass
+        sess.close(status)
+    return 0 if status == "finished" else 1
+
+
+def build_parser():
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("--api", default="http://127.0.0.1:8781", help="autoen web API")
+    common.add_argument("--mqtt-host", default=os.environ.get("MQTT_HOST", "localhost"))
+    common.add_argument("--mqtt-port", type=int, default=1883)
+    common.add_argument("--runs-dir", default=DEFAULT_RUNS)
+    common.add_argument("--belt-ref", default=DEFAULT_BELT_REF)
+    common.add_argument("--autoen-path", default=DEFAULT_AUTOEN, help="file whose sha256 goes into the meta")
+    common.add_argument("--note", default="", help="operator note")
+    common.add_argument("--settle-s", type=float, default=3.0, help="belt spin-up skipped by the rpm/power statistics")
+    common.add_argument("--dry-run", action="store_true", help="print + check (GET only), move nothing, write nothing")
+    common.add_argument("--no-record", action="store_true", help="no MQTT recording (exp/ lines are dropped) - testing only")
+    common.add_argument("--stop-at-end", action="store_true",
+                        help="POST /api/stop when done (default: leave autoen paused so the next session can reuse it)")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    r = sub.add_parser("run", parents=[common], help="run a plan")
+    r.add_argument("--plan", required=True)
+    r.add_argument("--cubes", default="", help="cube set, e.g. '10x white 40mm, batch B'")
+    r.add_argument("--belt-check-s", type=float, default=30.0)
+    r.add_argument("--tolerance", type=float, default=0.15, help="max belt rpm deviation from belt_ref (fraction)")
+    r.add_argument("--allow-missing-ref", action="store_true", help="run blocks whose rpm has no belt_ref entry")
+    r.add_argument("--cycle-s-est", type=float, default=25.0, help="for the duration estimate only")
+    c = sub.add_parser("calibrate", parents=[common], help="no cubes: fill belt_ref.json")
+    c.add_argument("--rpms", required=True, help="comma list, e.g. 20,60,100,300")
+    c.add_argument("--seconds", type=float, default=30.0)
+    b = sub.add_parser("baseline", parents=[common], help="no cubes: log power of the empty belt / a held pose / idle")
+    b.add_argument("--kind", choices=("belt", "pose", "idle"), required=True)
+    b.add_argument("--rpm", type=float, default=None)
+    b.add_argument("--pose", default="right", help="up=standby right=home left down (auto_en_new.py pose names)")
+    b.add_argument("--seconds", type=float, default=60.0)
+    for p in (c, b):
+        p.set_defaults(belt_check_s=0.0, cycle_s_est=0.0, allow_missing_ref=True, tolerance=0.15)
+    return ap
+
+
+def main(argv=None):
+    args = build_parser().parse_args(argv)
+    if args.cmd == "baseline" and args.kind == "belt" and args.rpm is None:
+        raise SystemExit("--kind belt needs --rpm")
+    api = Api(args.api)
+    rec = NullRecorder if args.no_record else mqtt_recorder(args.mqtt_host, args.mqtt_port)
+    try:
+        fn = {"run": cmd_run, "calibrate": cmd_calibrate, "baseline": cmd_baseline}[args.cmd]
+        return fn(args, api, recorder_factory=rec)
+    except (PlanError, SessionError, ApiError) as e:
+        raise SystemExit(f"error: {e}")
+
+
+if __name__ == "__main__":
+    sys.path.insert(0, HERE)                                 # record_run.py lives next to this file
+    raise SystemExit(main())

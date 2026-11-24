@@ -1,0 +1,84 @@
+[arm-analyzer] up. broker localhost:1883, db arm_analyzer.db, thresholds built-in defaults (run --write-thresholds or --calibrate to make the file). Ctrl+C to stop.
+[arm-analyzer] connected to broker: Success
+[22:30:08] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:30:18] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:30:28] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:30:38] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:30:48] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:30:58] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:31:08] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:31:18] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:31:28] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:31:38] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:31:48] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:31:58] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:32:08] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:32:18] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:32:28] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:32:38] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:32:48] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:32:58] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:33:08] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:33:18] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:33:28] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:33:38] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:33:48] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:33:58] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:34:08] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:34:18] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:34:28] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:34:38] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:34:48] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:34:58] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:35:09] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:35:19] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:35:29] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:35:39] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:35:49] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:35:59] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:36:09] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:36:19] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:36:29] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:36:39] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[arm-analyzer] lost the broker
+[arm-analyzer] connected to broker: Success
+[07:46:56] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:47:06] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:47:16] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:47:26] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:47:36] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:47:47] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:47:57] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:48:07] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:48:17] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:48:27] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:48:37] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:48:47] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:48:57] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:49:07] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:49:17] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:49:27] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:49:37] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:49:47] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:49:57] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:50:07] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:50:17] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:50:27] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:50:37] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:50:47] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:50:57] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:51:07] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:51:17] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:51:27] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:51:37] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:51:47] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:51:57] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:52:07] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:52:17] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:52:27] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:52:37] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:52:47] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[07:52:57] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+
+[arm-analyzer] stopping
+[arm-analyzer] lost the broker

@@ -1,0 +1,195 @@
+"""config.py — ค่าตั้งทั้งหมดของโปรเจกต์อยู่ที่ไฟล์นี้ไฟล์เดียว
+ย้ายจาก PC ไป Raspberry Pi: ปกติแก้แค่ CAM_INDEX กับ ARM_PORT (ถ้า OS ต่างกัน ส่วนที่เหลือเลือกให้อัตโนมัติ)
+ค่าที่มีป้าย  *** MUST MEASURE ***  คือค่า placeholder ต้องวัดจากแขนจริงของคุณ ห้ามเชื่อค่า default
+"""
+import sys
+import cv2
+
+# ตรวจ OS เพื่อเลือก backend ของกล้องและ port ของแขนให้ถูก
+IS_WINDOWS = sys.platform.startswith("win")
+
+# ======================= กล้อง OV9281 =======================
+CAM_INDEX = 1                      # Linux/Pi: ดูด้วย `v4l2-ctl --list-devices` (อาจเป็น 0, 2, 4 ...) หรือใส่ "/dev/video0"
+# Windows: ต้องใช้ MSMF — วัดจริงบนกล้องตัวนี้ (camera_modes.py 2026-11-11): DSHOW ติดที่ 10 fps (720p) / 30 fps (640) เพราะได้แต่ YUY2
+# ส่วน MSMF ได้ ~115 fps ที่ 1280x720 และ 1280x800  (Linux/Pi ใช้ V4L2 — ลอง v4l2-ctl --list-formats-ext ดูโหมดที่กล้องมี)
+CAM_BACKEND = cv2.CAP_MSMF if IS_WINDOWS else cv2.CAP_V4L2
+CAM_W, CAM_H, CAM_FPS = 1280, 720, 120   # MSMF วัดได้จริง ~115 fps ถ้า Pi ช้า/CPU เต็มให้ลดเป็น 60
+CAM_MANUAL_EXPOSURE = True         # ล็อก exposure ไม่ให้ภาพกระเพื่อมจนค่าพิกัดแกว่ง
+# หมายเหตุ: หน่วยและค่า "manual" ต่างกันตาม driver ถ้าภาพไม่เปลี่ยนตามค่า ให้ตั้งด้วย v4l2-ctl บน Pi:
+#   v4l2-ctl -d /dev/video0 --set-ctrl=auto_exposure=1,exposure_time_absolute=100
+CAM_AUTO_EXPOSURE_MANUAL_VAL = 0.25 if IS_WINDOWS else 1
+CAM_EXPOSURE_VAL = -7 if IS_WINDOWS else 100   # Windows: 2^ค่า วินาที (-7 = 1/128 s) | V4L2: หน่วย 100 µs (100 = 10 ms)
+# วัดบนกล้องนี้ (MSMF, ฉากเพดานสว่าง): exp -3 -> 27 fps ขาวทะลุ | -5 -> ~105 fps สว่าง 240 | -7 -> 120 fps สว่าง ~130-150 | -9 -> สว่าง 40-55 | -11 -> เกือบดำ
+# exposure ยาวกว่า -6 ทำให้ fps ตก  ภาพจริงของสายพานมืดกว่าเพดานมาก: ปรับให้ "บล็อกขาวได้ ~200-230 ไม่ทะลุ 255 และพื้นสายพานมืด"
+# (ดูค่าตอนทำ set_roi.py) ค่า get() ของ exposure ใน MSMF อ่านกลับได้เป็น -6 เสมอ ไม่ต้องสนใจ ดูที่ความสว่างของภาพแทน
+
+INTRINSICS_FILE = "intrinsics.npz"   # ได้จาก calib_intrinsics.py (ถ้ามีไฟล์นี้ ภาพจะถูก undistort อัตโนมัติ)
+HOMOGRAPHY_FILE = "homography.npy"   # ได้จาก calib_homography.py
+
+# กระดานหมากรุกสำหรับ calib_intrinsics.py (นับ "มุมด้านใน" ไม่ใช่จำนวนช่อง)
+CHECKER_COLS, CHECKER_ROWS, CHECKER_SQUARE_MM = 9, 6, 25.0
+
+# ======================= บล็อก =======================
+BLOCK_LONG_MM, BLOCK_SHORT_MM, BLOCK_H_MM = 40.0, 30.0, 20.0
+BLOCK_SIZE_TOL_MM = 12.0           # ยอมให้ขนาดที่วัดจากภาพคลาดจาก 40x30 ได้เท่านี้ (ชั่วคราว 12: homography รอบแรกยังไม่แม่น วัดบล็อกได้ 49x33 -> ลดเหลือ ~5 หลังสอบเทียบใหม่)
+BLOCK_IS_BRIGHT = True             # True = บล็อกสว่างกว่าพื้น | False = บล็อกมืดกว่าพื้น (กล้อง mono แยกด้วยสีไม่ได้)
+MIN_CONTOUR_AREA_PX = 400          # ตัด noise เล็กๆ (ปรับตามความสูงกล้อง)
+# ROI ที่ใช้หาบล็อก (x0, y0, x1, y1) เป็น pixel — ใช้ตัดส่วนที่เห็น jaw/ตัวแขนในภาพทิ้ง
+# เพราะกล้องติดข้อมือ jaw TPU จะโผล่ในเฟรมเสมอ  *** MUST MEASURE *** (ดูจากภาพจริงแล้วแก้)
+DETECT_ROI = (0, 0, CAM_W, CAM_H)
+
+# CALIBRATION_PLANE_Z_MM: ระดับความสูงของระนาบที่ใช้ทำ homography
+# ต้องเท่ากับความสูง "หน้าบนของบล็อก" (20 mm) เพราะกล้องเห็นหน้าบน ไม่ใช่พื้นโต๊ะ
+# ถ้าคาลิเบรตที่พื้นโต๊ะ พิกัดจะเพี้ยนตาม parallax (หลายมม.ที่ขอบภาพ)
+CALIBRATION_PLANE_Z_MM = BLOCK_H_MM
+
+# ======================= แขน SO101 =======================
+# ARM_BACKEND เลือกว่าคุยกับแขนทางไหน:
+#   "mega"    = ผ่าน Arduino Mega + URT-2 (โปรโตคอลเดียวกับ PRISM: P/H/C,6) หน่วยข้อต่อ = tick ดิบ 0-4095  <- ค่าเริ่มต้น
+#   "lerobot" = ต่อ URT-2 เข้าคอมตรงๆ แล้วใช้ LeRobot หน่วยข้อต่อ = องศา (ต้องติดตั้ง LeRobot)
+ARM_BACKEND = "mega"
+ARM_PORT = "COM17" if IS_WINDOWS else "/dev/ttyACM0"   # พอร์ตของ Mega (หรือของ URT-2 ถ้าใช้ lerobot) *** แก้ให้ตรงเครื่อง ***
+ARM_ID = "my_follower"             # (เฉพาะ lerobot) ต้องตรงกับ --robot.id ที่ใช้ตอน lerobot-calibrate
+MAX_STEP_DEG = 8.0                 # ชั้นความปลอดภัยของ LeRobot: จำกัดการขยับต่อ 1 คำสั่ง
+MOVE_HZ = 30                       # ความถี่ส่งคำสั่งตอนเคลื่อนที่แบบนุ่ม
+
+# --- เรขาคณิตของแขนมาจาก CAD (URDF so101_new_calib) อยู่ใน kinematics.py แล้ว ที่นี่มีเฉพาะค่าที่ขึ้นกับ "แขนตัวจริงของคุณ" ---
+BASE_Z_MM = 0.0          # ผิวล่างของฐานแขนสูงจากระนาบโต๊ะที่วางบล็อกเท่าไร (ถ้ายึดบนแผ่นรอง/แคลมป์ ให้ใส่ความหนา) *** MUST MEASURE ***
+# jaw (พิกัดในเฟรม gripper ของ CAD): ผิวด้านในของ jaw ตายตัวเยื้องจากแกน roll -7.9 mm, ปลาย jaw ห่างแกนข้อมือ roll 104.4 mm
+JAW_FACE_X_MM = -7.9
+JAW_TIP_LEN_MM = 107.0
+JAW_PAD_MM = 2.0         # ถ้าติดแผ่น TPU/ยางที่ผิว jaw ตายตัว ใส่ความหนา (mm) *** MUST MEASURE ถ้ามี ***
+GRASP_CLEARANCE_MM = 3.0 # เว้นช่องระหว่าง jaw ตายตัวกับบล็อกก่อนหนีบ (jaw ที่ขยับจะดันบล็อกมาชิดเอง)
+GRASP_UP_MM = 6.0        # จุดหนีบอยู่สูงจากปลาย jaw เท่านี้
+LIMIT_MARGIN = 15        # IK ไม่ใช้ช่วง 15 หน่วยสุดท้ายก่อนถึงขอบ SAFE (กันเฟิร์มแวร์บีบค่า)
+
+# --- mapping มุมข้อต่อ q (rad ตาม URDF; q=0 ทุกข้อ = "ท่า L") <-> ค่า motor:  motor = JOINT_ZERO + JOINT_DIR * q * UNITS_PER_RAD
+JOINT_DIR = {"shoulder_pan": 1, "shoulder_lift": 1, "elbow_flex": 1, "wrist_flex": 1, "wrist_roll": 1}
+JOINT_ZERO = {"shoulder_pan": 0.0, "shoulder_lift": 0.0, "elbow_flex": 0.0, "wrist_flex": 0.0, "wrist_roll": 0.0}
+
+# ขอบเขตปลอดภัยของแต่ละข้อต่อ (หน่วยเดียวกับค่า motor)
+JOINT_LIMITS = {
+    "shoulder_pan": (-100, 100), "shoulder_lift": (-100, 100), "elbow_flex": (-100, 100),
+    "wrist_flex": (-95, 95), "wrist_roll": (-160, 160), "gripper": (0, 100),
+}
+
+# --- gripper (ช่วง 0-100 ตามที่ LeRobot ใช้) *** MUST MEASURE ***
+GRIPPER_OPEN = 45.0      # เปิดกว้างกว่า 30 mm พร้อมเผื่อ (ดูว่าชน jaw TPU ไหม)
+GRIPPER_CLOSE = 12.0     # ค่าสั่งปิด: ตั้งให้ต่ำกว่าค่าตอนหนีบ 30 mm นิดหน่อย (ไม่ใช่ 0 เพื่อไม่ให้ motor stall เต็มแรง)
+
+# --- ท่าและความสูง ---
+# SCAN_POSE = ท่าที่แขนไปยืนมองโต๊ะ (ค่าในหน่วย LeRobot) บันทึกด้วย read_joints.py โดยจับแขนวางท่าเอง
+# กล้องติดข้อมือ: homography ใช้ได้เมื่อแขนกลับมาท่านี้เป๊ะเท่านั้น  *** MUST MEASURE ***
+SCAN_POSE = {"shoulder_pan": 0.0, "shoulder_lift": 0.0, "elbow_flex": 0.0,
+             "wrist_flex": 0.0, "wrist_roll": 0.0, "gripper": GRIPPER_OPEN}
+# ความสูงทั้งหมดเป็นของ "จุดหนีบ" (สูงจากปลาย jaw GRASP_UP_MM) เทียบระนาบโต๊ะ
+Z_HOVER_MM = 60.0        # ลอยเหนือบล็อก (ปลาย jaw สูง ~54 mm > บล็อก 20 mm)
+Z_GRASP_MM = 9.0         # ตอนหนีบ: ปลาย jaw สูงจากโต๊ะ 3 mm, jaw กินตัวบล็อก ~17 mm
+Z_MIN_MM = 8.0           # ห้ามสั่งต่ำกว่านี้ (ปลาย jaw จะเหลือ 2 mm จากโต๊ะ)
+TABLE_PLANE = [0.0, 0.0, 0.0]   # ระดับโต๊ะตามที่แขนวัดเอง: z_โต๊ะ(x,y) = a + b*x + c*y (mm) — calib_touch.py เขียนให้ใน calib.json
+
+# ======================= หยิบบล็อกที่กำลังเคลื่อนที่ (intercept.py / pick_moving.py) =======================
+# หลักการ: ที่ท่า scan วัดตำแหน่ง+ความเร็วบล็อกจากหลายเฟรม -> คำนวณจุดที่บล็อกจะไปถึง -> แขนไป "ดัก" (jaw คร่อมทางวิ่ง) -> ปิด jaw ตรงเวลา
+INTERCEPT_TRACK_S = 1.0            # เวลาที่ใช้ตามดูบล็อกเพื่อวัดความเร็ว (นานขึ้น = ความเร็วแม่นขึ้น แต่เหลือระยะดักน้อยลง)
+INTERCEPT_MIN_HITS = 10            # ต้องเห็นบล็อกอย่างน้อยกี่เฟรมในช่วงตามดู
+INTERCEPT_MIN_SPEED = 5.0          # mm/s ต่ำกว่านี้ถือว่า "นิ่ง" (ให้ใช้ pick_block.py)
+INTERCEPT_MAX_SPEED = 120.0        # mm/s สูงกว่านี้ไม่ลอง (แขนไปดักไม่ทัน/ค่าวัดน่าสงสัย)
+INTERCEPT_MAX_RMS_MM = 2.5         # ค่าคลาดของการ fit เส้นตรง ถ้าเกิน = บล็อกไม่ได้วิ่งคงที่/ตรวจจับสั่น
+INTERCEPT_ARM_TIME_S = 3.5         # เวลาที่เผื่อให้แขนไปถึงท่าดัก (ดูค่า slack_s ที่โปรแกรมพิมพ์ แล้วลดได้ถ้า slack เหลือเยอะ)
+INTERCEPT_MAX_WAIT_S = 6.0         # ยอมรอบล็อกที่ท่าดักนานสุดเท่านี้ (หาจุดดักตามทางวิ่งได้ไกลสุด = ความเร็ว x ค่านี้)
+INTERCEPT_ZONE = (100.0, 230.0, -140.0, 140.0)   # โซนที่ยอมให้ดัก (x_min, x_max, y_min, y_max) mm ในกรอบแขน *** ตั้งให้พ้นราง M17 ***
+INTERCEPT_CLEARANCE_MM = 6.0       # ช่องว่างระหว่าง jaw ตายตัวกับข้างบล็อกตอนดัก (กว้างกว่าตอนหยิบนิ่ง เพราะตำแหน่งขวางทางวิ่งคลาดได้)
+INTERCEPT_PREGAP_TICKS = 120       # ตอนดัก gripper หุบรอไว้ที่ (tick ตอนหนีบบล็อก + ค่านี้)  น้อย = ปิดเร็วและตรงเวลากว่า แต่ช่องแคบ
+GRIP_CRAWL_TICKS_PER_S = 500.0     # ความเร็วหุบของ C,6 ในเฟิร์มแวร์ (10 tick ทุก 20 ms)
+CAM_LATENCY_S = 0.04               # ภาพที่ได้ "เก่า" กว่าเวลาอ่านประมาณนี้ (ยังไม่ได้วัด — รวมปรับที่ INTERCEPT_TIME_BIAS_S ได้)
+INTERCEPT_TIME_BIAS_S = 0.0        # ปรับจูนจากของจริง: + = ปิด jaw ช้าลง, - = ปิดเร็วขึ้น (ดู MOVING.md)
+
+# ======================= backend "mega" (หน่วย tick) =======================
+# ค่าชุดนี้ "แทนที่" ค่าหน่วยองศาด้านบนเมื่อ ARM_BACKEND == "mega"
+MEGA_BAUD = 115200                 # USB ระหว่างคอม/Pi กับ Mega (ตามเฟิร์มแวร์ PRISM)
+MEGA_JOINT_ID = {"shoulder_pan": 1, "shoulder_lift": 2, "elbow_flex": 3,
+                 "wrist_flex": 4, "wrist_roll": 5, "gripper": 6}
+# สำเนาของ SAFE_MIN/SAFE_MAX ในเฟิร์มแวร์ Mega (ต้องตรงกันเสมอ!) เฟิร์มแวร์ "บีบค่าเงียบๆ" ถ้าเกิน
+# ฝั่ง Python จึงตรวจเองแล้วปฏิเสธ แทนที่จะปล่อยให้แขนไปท่าที่ไม่ใช่ที่สั่ง
+MEGA_SAFE = {"shoulder_pan": (784, 3404), "shoulder_lift": (868, 3151), "elbow_flex": (996, 3056),
+             "wrist_flex": (813, 3201), "wrist_roll": (298, 3859), "gripper": (1768, 3116)}
+MEGA_MAX_SPEED = 700               # tick/s เพดานความเร็วตอนย้ายท่า (PRISM ใช้ 700 ตอนถือบล็อก)
+MEGA_MIN_SPEED = 90                # ขั้นต่ำที่เฟิร์มแวร์รับ
+MEGA_GRIPPER_SPEED = 200           # tick/s ตอนเปิด gripper (ค่าเดียวกับ arm_node.py)
+MEGA_TOL_TICKS = 12                # ถึงเป้าเมื่อคลาดไม่เกินนี้ (~1 องศา)
+MEGA_TOL_FINE = 3                  # โหมดแม่นยำ (จุดหยิบ): คลาดไม่เกิน 3 tick (~0.26° ≈ 1 mm ที่ปลายแขน)
+MEGA_MOVE_TIMEOUT_S = 40.0
+MEGA_GRIP_TIMEOUT_S = 12.0         # รอ G,CLOSED/G,ERROR จาก C,6
+
+if ARM_BACKEND == "mega":
+    UNITS_PER_DEG = 4096.0 / 360.0                 # STS3215: 4096 tick ต่อรอบ
+    UNITS_PER_RAD = 4096.0 / (2 * 3.141592653589793)
+    # JOINT_ZERO = tick ของแต่ละข้อที่ "ท่า L" (q=0 ของ URDF)  เพื่อนคาลิเบรตด้วย LeRobot ซึ่งตั้งกลางช่วง ~2048 ไว้ใกล้ท่านี้
+    # แต่วางด้วยมือ จึงอาจคลาดได้หลายองศา  *** MUST MEASURE: รัน calib_zero.py *** (pan=2044 คือค่าที่วัดแล้ว 2026-11-11)
+    JOINT_ZERO = {"shoulder_pan": 2044.0, "shoulder_lift": 2048.0, "elbow_flex": 2048.0,
+                  "wrist_flex": 2048.0, "wrist_roll": 2048.0}
+    # JOINT_DIR = +1 ถ้า tick เพิ่มเมื่อ q ของ URDF เพิ่ม  (pan วัดแล้ว = +1; ที่เหลือคาดว่า +1 — calib_zero.py ตรวจให้)
+    JOINT_DIR = {"shoulder_pan": 1, "shoulder_lift": 1, "elbow_flex": 1, "wrist_flex": 1, "wrist_roll": 1}
+    JOINT_LIMITS = dict(MEGA_SAFE)
+    GRIPPER_OPEN = 2484.0                          # ~0.67 rad: ปลาย jaw อ้า ~60 mm (บล็อก 30 mm) — ค่าเดียวกับท่า start ของ PRISM
+    GRIPPER_CLOSE = None                           # ไม่ใช้: ปิดด้วย C,6 (หนีบจนติดแล้วหยุดเอง)
+    # ท่า scan เริ่มต้น = ท่า standby ของ PRISM  *** MUST MEASURE: ท่าที่ OV9281 เห็นโต๊ะครบ (teach_scan_pose.py) ***
+    SCAN_POSE = {"shoulder_pan": 2103, "shoulder_lift": 1662, "elbow_flex": 2357,
+                 "wrist_flex": 3009, "wrist_roll": 1239, "gripper": GRIPPER_OPEN}
+else:
+    UNITS_PER_DEG = 1.0                            # LeRobot: หน่วยข้อต่อ = องศา
+    UNITS_PER_RAD = 57.29577951308232
+
+# ท่าวางบล็อก (tick ทุกข้อ) สอนด้วย teach_place.py — None = ยังไม่สอน (pick_block.py --place จะปฏิเสธ)
+PLACE_POSE = None
+# ช่วง tick ที่ gripper ควรหยุดเมื่อหนีบบล็อก 30 mm จริง [min, max] — repeat_test.py วัดแล้วเสนอค่าให้ (None = ไม่ตรวจ)
+GRIP_TICK_RANGE = None
+GRIP_TICK_RANGE_LONG = None        # เหมือนกัน แต่ตอนหนีบ "ด้านยาว 40 mm" (ใช้เมื่อบล็อกอยู่ในรางนำ) — repeat_test.py เสนอค่าให้
+# ระยะระหว่างผิวแผ่น jaw สองข้าง (ที่ปลาย) ตอน gripper อยู่ที่ GRIPPER_OPEN หน่วย mm — วัดด้วยไม้บรรทัด (teach_rail.py ถามแล้วบันทึกให้)
+# None = ยังไม่วัด: โปรแกรมจะไม่ยอมหนีบด้านยาว 40 mm และตรวจชนโดยสมมติ 60 mm
+GRIPPER_OPEN_MM = None
+# รางนำสายพาน (M17) ที่ jaw ห้ามลงไปชน — สอนด้วย teach_rail.py (None = ไม่มีราง/ยังไม่สอน: ไม่ตรวจ)
+#   {"p1": [x, y], "p2": [x, y], "up": [ux, uy], "z_top": h}
+#   p1, p2 = มุมบนด้านในของผนังรางสองข้าง ที่ "ปลายราง" ; up = ทิศชี้เข้าหาตัวราง (ทวนทางวิ่ง) ; z_top = ความสูงผนังเหนือผิวสายพาน
+#   พื้นที่ต้องห้าม = ทุกจุดที่อยู่เลยปลายรางเข้าไป, อยู่นอกช่องระหว่าง p1-p2, และต่ำกว่า z_top  (+ RAIL_MARGIN_MM ทุกด้าน)
+RAIL = None
+RAIL_MARGIN_MM = 3.0
+
+# ======================= ค่าที่วัดจากแขนจริง (calib.json) =======================
+# สคริปต์ calib_zero.py / teach_scan.py / calib_touch.py บันทึกผลลง calib.json แล้วค่าพวกนี้ "ทับ" ค่า default ด้านบน
+# ย้ายไป Pi: คัดลอก calib.json + homography.npy (+ intrinsics.npz ถ้ามี) ไปด้วย
+import json as _json
+import os as _os
+_HERE = _os.path.dirname(_os.path.abspath(__file__))
+CALIB_FILE = _os.path.join(_HERE, "calib.json")
+# ไฟล์สอบเทียบอยู่ข้างโค้ดเสมอ ไม่ขึ้นกับว่ารันจากโฟลเดอร์ไหน (สำคัญตอนรันเป็น service บน Pi)
+INTRINSICS_FILE = _os.path.join(_HERE, INTRINSICS_FILE)
+HOMOGRAPHY_FILE = _os.path.join(_HERE, HOMOGRAPHY_FILE)
+_CALIB_KEYS = ("JOINT_ZERO", "JOINT_DIR", "SCAN_POSE", "TABLE_PLANE", "DETECT_ROI", "BASE_Z_MM", "JAW_PAD_MM",
+               "PLACE_POSE", "GRIP_TICK_RANGE", "BLOCK_IS_BRIGHT", "GRIP_TICK_RANGE_LONG", "GRIPPER_OPEN_MM", "RAIL",
+               "JOINT_LIMITS", "MEGA_SAFE", "JOINT_LIMITS_OLD", "JOINT_LIMITS_MEASURED", "Z_GRASP_MM")
+
+
+def _load_calib():
+    if not _os.path.exists(CALIB_FILE):
+        return {}
+    with open(CALIB_FILE, encoding="utf-8") as f:
+        return _json.load(f)
+
+
+def save_calib(**kv):
+    """บันทึกค่าที่วัดได้ลง calib.json (รวมกับของเดิม) และอัปเดตค่าในโมดูลนี้ทันที"""
+    d = _load_calib()
+    for k, v in kv.items():
+        if k not in _CALIB_KEYS:
+            raise KeyError(k)
+        d[k] = v
+        globals()[k] = tuple(v) if k == "DETECT_ROI" else v
+    with open(CALIB_FILE, "w", encoding="utf-8") as f:
+        _json.dump(d, f, indent=1)
+
+
+for _k, _v in _load_calib().items():
+    if _k in _CALIB_KEYS:
+        globals()[_k] = tuple(_v) if _k == "DETECT_ROI" else _v
+CALIBRATED = {k: (k in _load_calib()) for k in ("JOINT_ZERO", "SCAN_POSE", "TABLE_PLANE")}   # ใช้เตือนถ้ายังไม่ได้วัด

@@ -1,0 +1,5 @@
+device,metric,unit,n,min,mean,std,p50,p95,p99,max,mean_plus_3sd
+Belt,current,mA,9,4.0,4.0,0.0,4.0,4.0,4.0,4.0,4.0
+Belt,velocity,deg/s (belt: rpm),9,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Belt,position,deg (belt: rev),9,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Belt,voltage,V,9,12.17,12.17,0.0,12.17,12.17,12.17,12.17,12.18

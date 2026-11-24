@@ -1,0 +1,321 @@
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261112_213024.jsonl
+[observe] connected to broker: Success
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 5] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 6] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 7] RUN    20 rpm / arm 1.5  action=verdict:1:fed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 8] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 9] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 10] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 11] RUN    20 rpm / arm 1.5  action=verdict:2:fed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 12] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 13] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 14] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 15] RUN    20 rpm / arm 1.5  action=verdict:3:fed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 16] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 17] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 18] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 19] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 20] RUN    20 rpm / arm 1.5  action=verdict:4:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 21] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 22] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 23] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 24] RUN    20 rpm / arm 1.5  action=verdict:5:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 25] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 26] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 27] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 28] RUN    20 rpm / arm 1.5  action=verdict:6:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 29] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 30] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 31] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 32] RUN    20 rpm / arm 1.5  action=verdict:7:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 33] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 34] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 35] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 36] RUN    20 rpm / arm 1.5  action=verdict:8:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 37] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 38] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 39] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 40] RUN    20 rpm / arm 1.5  action=verdict:9:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 41] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 42] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 43] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 44] RUN    20 rpm / arm 1.5  action=verdict:10:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 45] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 46] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 47] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 48] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 49] RUN    20 rpm / arm 1.5  action=verdict:11:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 50] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 51] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 52] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 53] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 54] RUN    20 rpm / arm 1.5  action=verdict:12:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 55] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 56] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.2 s per pick
+[plan 57] RUN    20 rpm / arm 1.5  action=feed  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.2 s per pick
+[plan 58] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.2 s per pick
+[plan 59] IDLE   20 rpm / arm 1.5  action=stop_feed  - feeder empty: the feeder IR sees no cube and the push drew no current (9 mV). I carry on by myself as soon as cubes are loaded
+[story] FEEDER EMPTY
+    I tried / saw:  feed 12 during GRIP: servo moved (36 mV), camera: new block at 100 px after 0.1 s, feeder IR empty => FED
+    I tried / saw:  experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 13.2 s per pick
+    I tried / saw:  cycle 10: OK (11.0 s)
+    I tried / saw:  feed 11 pushed during GRIP: delivered
+    I tried / saw:  feed for cycle 12: 12 V dip 9 mV (no current: the servo did not move), feeder IR empty
+    so:             the feeder IR sees no cube, and the push drew no current  ->  there is nothing to push: not a fault
+    next:           I wait. When the feeder IR sees cubes for 5 s I start again by myself
+[plan 60] IDLE   20 rpm / arm 1.5  - feeder empty: the feeder IR sees no cube and the push drew no current (9 mV). I carry on by myself as soon as cubes are loaded
+[plan 61] IDLE   20 rpm / arm 1.5  action=verdict:13:fed  - feeder empty: the feeder IR sees no cube and the push drew no current (9 mV). I carry on by myself as soon as cubes are loaded
+[plan 62] IDLE   20 rpm / arm 1.5  - feeder empty: the feeder IR sees no cube and the push drew no current (9 mV). I carry on by myself as soon as cubes are loaded
+[plan 63] IDLE   20 rpm / arm 1.5  action=feed_probe  - resting: probe push 1 (the feeder IR sees cubes) - the camera watches the exit
+[plan 64] IDLE   20 rpm / arm 1.5  - resting: probe push 1 (the feeder IR sees cubes) - the camera watches the exit
+[plan 65] RUN    20 rpm / arm 1.5  action=resume  - feeder refilled: probe push 1 brought a cube - running again
+[plan 66] RUN    20 rpm / arm 1.5  - feeder refilled: probe push 1 brought a cube - running again
+[plan 67] RUN    20 rpm / arm 1.5  - feeder refilled: probe push 1 brought a cube - running again
+[plan 68] RUN    20 rpm / arm 1.5  action=feed  - feeder refilled: probe push 1 brought a cube - running again
+[plan 69] RUN    20 rpm / arm 1.5  - feeder refilled: probe push 1 brought a cube - running again
+[plan 70] RUN    20 rpm / arm 1.5  action=verdict:14:fed  - feeder refilled: probe push 1 brought a cube - running again
+[plan 71] RUN    20 rpm / arm 1.5  - feeder refilled: probe push 1 brought a cube - running again
+[plan 72] RUN    20 rpm / arm 1.5  action=feed  - feeder refilled: probe push 1 brought a cube - running again
+[plan 73] RUN    20 rpm / arm 1.5  - feeder refilled: probe push 1 brought a cube - running again
+[plan 74] RUN    20 rpm / arm 1.5  action=verdict:15:fed  - feeder refilled: probe push 1 brought a cube - running again
+[plan 75] RUN    20 rpm / arm 1.5  - feeder refilled: probe push 1 brought a cube - running again
+[plan 76] RUN    20 rpm / arm 1.5  action=feed  - feeder refilled: probe push 1 brought a cube - running again
+[plan 77] RUN    20 rpm / arm 1.5  - feeder refilled: probe push 1 brought a cube - running again
+[plan 78] RUN    20 rpm / arm 1.5  action=verdict:16:fed  - feeder refilled: probe push 1 brought a cube - running again
+[plan 79] RUN    20 rpm / arm 1.5  - feeder refilled: probe push 1 brought a cube - running again
+[plan 80] RUN    20 rpm / arm 1.5  - feeder refilled: probe push 1 brought a cube - running again
+[plan 81] RUN    20 rpm / arm 1.5  action=feed  - feeder refilled: probe push 1 brought a cube - running again
+[plan 82] RUN    20 rpm / arm 1.5  - feeder refilled: probe push 1 brought a cube - running again
+[plan 83] RUN    20 rpm / arm 1.5  action=verdict:17:fed  - feeder refilled: probe push 1 brought a cube - running again
+[plan 84] RUN    20 rpm / arm 1.5  - feeder refilled: probe push 1 brought a cube - running again
+[plan 85] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 86] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 87] RUN    20 rpm / arm 1.5  action=feed  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 88] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 89] RUN    20 rpm / arm 1.5  action=verdict:18:fed  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 90] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 91] RUN    20 rpm / arm 1.5  action=feed  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 92] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 93] RUN    20 rpm / arm 1.5  action=verdict:19:fed  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 94] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 95] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 96] RUN    20 rpm / arm 1.5  action=feed  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 97] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 98] RUN    20 rpm / arm 1.5  action=verdict:20:fed  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 99] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 100] RUN    20 rpm / arm 1.5  action=feed  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 101] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 102] RUN    20 rpm / arm 1.5  action=verdict:21:fed  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 103] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 104] RUN    20 rpm / arm 1.5  action=feed  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 105] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 106] RUN    20 rpm / arm 1.5  action=verdict:22:fed  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 107] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 108] RUN    20 rpm / arm 1.5  action=feed  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 109] RUN    20 rpm / arm 1.5  - slip: cubes move at 54% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 110] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 12 mV): giving that push up, feeding again (1/2)
+[plan 111] RUN    20 rpm / arm 1.5  action=verdict:23:fed  - the feeder servo did not move (12 V rail dipped 12 mV): giving that push up, feeding again (1/2)
+[plan 112] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 12 mV): giving that push up, feeding again (1/2)
+[plan 113] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 114] RUN    20 rpm / arm 1.5  action=feed  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 115] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 116] RUN    20 rpm / arm 1.5  action=verdict:24:fed  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 117] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 118] RUN    20 rpm / arm 1.5  action=feed  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 119] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 120] RUN    20 rpm / arm 1.5  action=verdict:25:fed  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 121] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 122] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 123] RUN    20 rpm / arm 1.5  action=feed  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 124] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 125] RUN    20 rpm / arm 1.5  action=verdict:26:fed  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 126] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 127] RUN    20 rpm / arm 1.5  action=feed  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 128] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 129] RUN    20 rpm / arm 1.5  action=verdict:27:fed  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 130] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 131] RUN    20 rpm / arm 1.5  action=feed  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 132] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 133] RUN    20 rpm / arm 1.5  action=verdict:28:fed  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 134] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 135] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 136] RUN    20 rpm / arm 1.5  action=feed  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 137] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 138] RUN    20 rpm / arm 1.5  action=verdict:29:fed  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 139] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.0 s per pick
+[plan 140] RUN    20 rpm / arm 1.5  - back to late 1.35: 1.6 gave 11.1 s per pick vs 11.0 s - not tried again for 50 picks
+[plan 141] RUN    20 rpm / arm 1.5  action=feed  - back to late 1.35: 1.6 gave 11.1 s per pick vs 11.0 s - not tried again for 50 picks
+[plan 142] RUN    20 rpm / arm 1.5  - back to late 1.35: 1.6 gave 11.1 s per pick vs 11.0 s - not tried again for 50 picks
+[plan 143] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 6 mV): giving that push up, feeding again (1/2)
+[plan 144] RUN    20 rpm / arm 1.5  action=verdict:30:fed  - the feeder servo did not move (12 V rail dipped 6 mV): giving that push up, feeding again (1/2)
+[plan 145] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 6 mV): giving that push up, feeding again (1/2)
+[plan 146] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 6 mV): giving that push up, feeding again (1/2)
+[plan 147] RUN    20 rpm / arm 1.5  action=feed  - the feeder servo did not move (12 V rail dipped 6 mV): giving that push up, feeding again (1/2)
+[plan 148] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 6 mV): giving that push up, feeding again (1/2)
+[plan 149] RUN    20 rpm / arm 1.5  action=verdict:31:fed  - the feeder servo did not move (12 V rail dipped 6 mV): giving that push up, feeding again (1/2)
+[plan 150] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 6 mV): giving that push up, feeding again (1/2)
+[plan 151] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 152] RUN    22 rpm / arm 1.75  action=feed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 153] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 154] RUN    22 rpm / arm 1.75  action=verdict:32:fed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 155] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 156] RUN    22 rpm / arm 1.75  action=feed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 157] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 158] RUN    22 rpm / arm 1.75  action=verdict:33:fed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 159] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 160] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 161] RUN    22 rpm / arm 1.75  action=feed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 162] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 163] RUN    22 rpm / arm 1.75  action=verdict:34:fed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 164] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 165] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 166] RUN    22 rpm / arm 1.75  action=feed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 167] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 168] RUN    22 rpm / arm 1.75  action=verdict:35:fed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 169] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 170] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 171] RUN    22 rpm / arm 1.75  action=feed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 172] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 173] RUN    22 rpm / arm 1.75  action=verdict:36:fed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 174] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 175] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 176] RUN    22 rpm / arm 1.75  action=feed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 177] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 178] RUN    22 rpm / arm 1.75  action=verdict:37:fed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 179] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 180] RUN    22 rpm / arm 1.75  action=feed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 181] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 182] RUN    22 rpm / arm 1.75  action=verdict:38:fed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 183] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 184] RUN    22 rpm / arm 1.75  action=feed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 185] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 186] RUN    22 rpm / arm 1.75  action=verdict:39:fed  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 187] RUN    22 rpm / arm 1.75  - frontier: trying 22 rpm / arm 1.75 beyond what it has proven (predicted 14.7 s vs 15.6 s per good cube) for 12 cycles - back at the first problem; settings 20/1.5 -> 22/1.75 (frontier trial)
+[plan 188] RUN    22 rpm / arm 1.75  - experiment: gap_mm 60.0 -> 80.0 (mm of free belt between two cubes) for 6 picks; to beat: 11.1 s per pick
+[plan 189] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 190] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 191] RUN    22 rpm / arm 1.75  action=verdict:40:fed  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 192] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 193] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 194] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 195] RUN    22 rpm / arm 1.75  action=verdict:41:fed  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 196] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 197] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 198] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 199] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 200] RUN    22 rpm / arm 1.75  action=verdict:42:fed  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 201] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 461 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 202] RUN    22 rpm / arm 1.75  - frontier 22/1.75 proven (13/13 OK, 12.0 s per cycle): it may use it from now on
+[plan 203] RUN    22 rpm / arm 1.75  action=feed  - frontier 22/1.75 proven (13/13 OK, 12.0 s per cycle): it may use it from now on
+[plan 204] RUN    22 rpm / arm 1.75  - frontier 22/1.75 proven (13/13 OK, 12.0 s per cycle): it may use it from now on
+[plan 205] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped -20 mV): giving that push up, feeding again (1/2)
+[plan 206] RUN    22 rpm / arm 1.75  action=verdict:43:fed  - the feeder servo did not move (12 V rail dipped -20 mV): giving that push up, feeding again (1/2)
+[plan 207] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped -20 mV): giving that push up, feeding again (1/2)
+[plan 208] RUN    22 rpm / arm 1.75  - light on the belt: dark (V 88.2, normal 98; 31.44 % too dark, 0.0 % burnt out): camera not used for decisions
+[plan 209] RUN    22 rpm / arm 1.75  action=feed  - light on the belt: dark (V 88.2, normal 98; 31.44 % too dark, 0.0 % burnt out): camera not used for decisions
+[plan 210] RUN    22 rpm / arm 1.75  - light on the belt: dark (V 88.2, normal 98; 31.44 % too dark, 0.0 % burnt out): camera not used for decisions
+[plan 211] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped -17 mV): giving that push up, feeding again (2/2)
+[plan 212] RUN    22 rpm / arm 1.75  action=verdict:44:empty  - the feeder servo did not move (12 V rail dipped -17 mV): giving that push up, feeding again (2/2)
+[plan 213] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped -17 mV): giving that push up, feeding again (2/2)
+[plan 214] RUN    22 rpm / arm 1.75  - light on the belt ok again: camera back in use
+[plan 215] RUN    22 rpm / arm 1.75  action=flow_drop_oldest  - feed 43: its block should have reached the IR after 7.5 s of belt and has not (140% of the ride): nothing came out, feeding again
+[plan 216] RUN    22 rpm / arm 1.75  - feed 43: its block should have reached the IR after 7.5 s of belt and has not (140% of the ride): nothing came out, feeding again
+[plan 217] RUN    22 rpm / arm 1.75  action=feed  - feed 43: its block should have reached the IR after 7.5 s of belt and has not (140% of the ride): nothing came out, feeding again
+[plan 218] RUN    22 rpm / arm 1.75  - feed 43: its block should have reached the IR after 7.5 s of belt and has not (140% of the ride): nothing came out, feeding again
+[plan 219] ALERT  22 rpm / arm 1.75  action=alarm  - ALARM: the feeder servo does not move (no current, 12 V dip 1 mV, 3 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed 44 during GRIP: servo did not move (-17 mV), no camera, feeder IR cubes => EMPTY
+    I tried / saw:  feed 44 pushed during GRIP: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  cycle 44: OK (10.9 s)
+    I tried / saw:  feed 43 pushed during GRIP: nothing came (given up (optimizer))
+    I tried / saw:  feed for cycle 45: 12 V dip 1 mV (no current: the servo did not move), feeder IR sees cubes
+    so:             the push drew no current (12 V dip 1 mV, a real push dips >= 30) although the feeder IR sees cubes  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 60 s, or 5 s after you touch the feeder
+[plan 220] ALERT  22 rpm / arm 1.75  - ALARM: the feeder servo does not move (no current, 12 V dip 1 mV, 3 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 221] ALERT  22 rpm / arm 1.75  - light on the belt: dark (V 46.5, normal 88; 47.07 % too dark, 0.0 % burnt out): camera not used for decisions
+[plan 222] RUN    22 rpm / arm 1.75  action=resume  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 223] RUN    22 rpm / arm 1.75  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 224] RUN    22 rpm / arm 1.75  action=verdict:0:nudge  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 225] RUN    22 rpm / arm 1.75  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 226] RUN    22 rpm / arm 1.75  action=verdict:0:nudge  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 227] RUN    22 rpm / arm 1.75  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 228] RUN    22 rpm / arm 1.75  action=verdict:0:nudge  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 229] RUN    22 rpm / arm 1.75  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 230] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 462 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 231] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 462 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 232] IDLE   22 rpm / arm 1.75  action=stop_feed  - feeder empty: the feeder IR sees no cube and the push drew no current (4 mV). I carry on by myself as soon as cubes are loaded
+[story] FEEDER EMPTY
+    I tried / saw:  experiment gap_mm 80.0 dropped: not a clean pick (NO_BLOCK, ALERT)
+    I tried / saw:  cycle 45: NO_BLOCK
+    I tried / saw:  feed 45 pushed during TRANSPORT: nothing came (given up (optimizer))
+    I tried / saw:  retry 1: the feeder IR changed
+    I tried / saw:  feed for cycle 46: 12 V dip 4 mV (no current: the servo did not move), feeder IR empty
+    so:             the feeder IR sees no cube, and the push drew no current  ->  there is nothing to push: not a fault
+    next:           I wait. When the feeder IR sees cubes for 5 s I start again by myself
+[plan 233] IDLE   22 rpm / arm 1.75  - feeder empty: the feeder IR sees no cube and the push drew no current (4 mV). I carry on by myself as soon as cubes are loaded
+[plan 234] IDLE   22 rpm / arm 1.75  action=verdict:46:empty  - feeder empty: the feeder IR sees no cube and the push drew no current (4 mV). I carry on by myself as soon as cubes are loaded
+[plan 235] IDLE   22 rpm / arm 1.75  - feeder empty: the feeder IR sees no cube and the push drew no current (4 mV). I carry on by myself as soon as cubes are loaded
+[plan 236] IDLE   22 rpm / arm 1.75  - light on the belt ok again: camera back in use
+[plan 237] IDLE   22 rpm / arm 1.75  action=feed_probe  - resting: probe push 1 (the feeder IR sees cubes) - the camera watches the exit
+[plan 238] IDLE   22 rpm / arm 1.75  - resting: probe push 1 (the feeder IR sees cubes) - the camera watches the exit
+[plan 239] IDLE   22 rpm / arm 1.75  - resting: probe push 1 brought nothing - the feeder is still empty
+[plan 240] IDLE   22 rpm / arm 1.75  action=feed_probe  - resting: probe push 2 (the feeder IR sees cubes) - the camera watches the exit
+[plan 241] IDLE   22 rpm / arm 1.75  - resting: probe push 2 (the feeder IR sees cubes) - the camera watches the exit
+[plan 242] RUN    22 rpm / arm 1.75  action=resume  - feeder retry 1 (cubes loaded): one feed to see if it delivers again
+[plan 243] RUN    22 rpm / arm 1.75  - feeder retry 1 (cubes loaded): one feed to see if it delivers again
+[plan 244] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 1 cube on the belt - 462 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 245] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 462 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 246] ALERT  22 rpm / arm 1.75  action=alarm  - ALARM: the feeder servo does not move (no current, 12 V dip 8 mV, 1 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed 46 pushed during TRANSPORT: nothing came (given up (optimizer))
+    I tried / saw:  feed for cycle 47: 12 V dip 1 mV (no current: the servo did not move), feeder IR empty
+    I tried / saw:  feed for cycle 47: 12 V dip 0 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  retry 1: cubes loaded
+    I tried / saw:  feed for cycle 47: 12 V dip 8 mV (no current: the servo did not move), feeder IR sees cubes
+    so:             the push drew no current (12 V dip 8 mV, a real push dips >= 30) although the feeder IR sees cubes  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 60 s, or 5 s after you touch the feeder
+[plan 247] ALERT  22 rpm / arm 1.75  - ALARM: the feeder servo does not move (no current, 12 V dip 8 mV, 1 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 248] RUN    22 rpm / arm 1.75  action=resume  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 249] RUN    22 rpm / arm 1.75  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 250] RUN    22 rpm / arm 1.75  action=verdict:0:nudge  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 251] RUN    22 rpm / arm 1.75  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 252] RUN    22 rpm / arm 1.75  action=verdict:0:nudge  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 253] RUN    22 rpm / arm 1.75  - feeder retry 1 (the feeder IR changed): one feed to see if it delivers again
+[plan 254] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 462 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 255] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 462 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 256] ALERT  22 rpm / arm 1.75  action=stop_feed  - ALARM: the feeder servo does not move (no current, 12 V dip -24 mV, retry 1): check its D12 plug and its 5 V supply. I try one feed again in 120 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed for cycle 47: 12 V dip 8 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  cycle 47: NO_BLOCK
+    I tried / saw:  feed 47 pushed during TRANSPORT: nothing came (given up (optimizer))
+    I tried / saw:  retry 1: the feeder IR changed
+    I tried / saw:  feed for cycle 48: 12 V dip -24 mV (no current: the servo did not move), feeder IR sees cubes
+    so:             the push drew no current (12 V dip -24 mV, a real push dips >= 30) although the feeder IR sees cubes  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 120 s, or 5 s after you touch the feeder
+[plan 257] ALERT  22 rpm / arm 1.75  - ALARM: the feeder servo does not move (no current, 12 V dip -24 mV, retry 1): check its D12 plug and its 5 V supply. I try one feed again in 120 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 258] RUN    22 rpm / arm 1.75  action=resume  - feeder retry 2 (the feeder IR changed): one feed to see if it delivers again
+[plan 259] RUN    22 rpm / arm 1.75  - feeder retry 2 (the feeder IR changed): one feed to see if it delivers again
+[plan 260] RUN    22 rpm / arm 1.75  action=verdict:0:nudge  - feeder retry 2 (the feeder IR changed): one feed to see if it delivers again
+[plan 261] RUN    22 rpm / arm 1.75  - feeder retry 2 (the feeder IR changed): one feed to see if it delivers again
+[plan 262] RUN    22 rpm / arm 1.75  action=verdict:0:nudge  - feeder retry 2 (the feeder IR changed): one feed to see if it delivers again
+[plan 263] RUN    22 rpm / arm 1.75  - feeder retry 2 (the feeder IR changed): one feed to see if it delivers again
+[plan 264] RUN    22 rpm / arm 1.75  action=verdict:0:nudge  - feeder retry 2 (the feeder IR changed): one feed to see if it delivers again
+[plan 265] RUN    22 rpm / arm 1.75  - feeder retry 2 (the feeder IR changed): one feed to see if it delivers again
+[plan 266] RUN    22 rpm / arm 1.75  action=feed  - feeder retry 2 (the feeder IR changed): one feed to see if it delivers again
+[plan 267] RUN    22 rpm / arm 1.75  - feeder retry 2 (the feeder IR changed): one feed to see if it delivers again
+[plan 268] ALERT  22 rpm / arm 1.75  action=stop_feed  - ALARM: the feeder servo does not move (no current, 12 V dip 5 mV, retry 2): check its D12 plug and its 5 V supply. I try one feed again in 300 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed for cycle 48: 12 V dip -24 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  cycle 48: NO_BLOCK
+    I tried / saw:  feed 48 pushed during TRANSPORT: nothing came (given up (optimizer))
+    I tried / saw:  retry 2: the feeder IR changed
+    I tried / saw:  feed for cycle 49: 12 V dip 5 mV (no current: the servo did not move), feeder IR empty
+    so:             the push drew no current (12 V dip 5 mV, a real push dips >= 30) although the feeder IR cannot tell  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 300 s, or 5 s after you touch the feeder
+[plan 269] ALERT  22 rpm / arm 1.75  - ALARM: the feeder servo does not move (no current, 12 V dip 5 mV, retry 2): check its D12 plug and its 5 V supply. I try one feed again in 300 s (or 5 s after you touch the feeder) and carry on by myself
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

@@ -1,0 +1,29 @@
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/vision/vision_live_tracks.py", line 1824, in main
+    pipeline, profile = start_camera()
+                        ^^^^^^^^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/vision/vision_live_tracks.py", line 1678, in start_camera
+    profile = pipeline.start(config)
+              ^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: No device connected
+=================================================================
+DELTA - Raspberry Pi 4 Object Perception + Spacing + Demand Collection
+=================================================================
+Mode: HSV color detection + RealSense depth + Kalman
+Colours (priority order): white, orange
+Belt axis: u   direction: -1
+Camera streams: 640x480 at 6 FPS
+Demand window: 180 seconds
+Data sample interval: 10 seconds
+History file: delta_demand_history.csv
+Summary file: delta_3min_summary.csv
+Press ESC or Q to exit.
+=================================================================
+
+Starting RealSense D415 at 640x480, 6 FPS...
+
+ERROR: RealSense did not deliver the requested streams.
+Details: No device connected
+
+Check that RealSense Viewer is closed, then try again.
+The standalone test succeeded at 6 FPS, so this error may indicate a stream-startup or device-access issue.

@@ -1,0 +1,14 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+[mqtt] arm connected to localhost:1883: Success
+[mqtt] belt connected to localhost:1883: Success
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261027_191428.csv
+       riff_logs/autoen_sets_20261027_191428.csv
+       riff_logs/autoen_cycles_20261027_191428.csv
+       riff_logs/autoen_thresholds_20261027_191428.csv
+Ctrl+C: stopping (belt coasts, arm holds)
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+ready:   (unparsable RX lines: 0)

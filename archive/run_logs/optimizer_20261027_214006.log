@@ -1,0 +1,17 @@
+orchestrator LIVE  objective=priority  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261027_214012.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[observe] connected to broker: Success
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen running
+[plan 4] RUN    20 rpm / arm 1.5  - autoen running
+[plan 5] IDLE   20 rpm / arm 1.5  action=idle  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 6] IDLE   20 rpm / arm 1.5  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 7] RUN    20 rpm / arm 1.5  action=resume  - feeder IR: cubes loaded
+[plan 8] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 9] ALERT  20 rpm / arm 1.5  action=pause  - cycle 2 BLOCK_STILL_AT_IR: check before resuming (pick may have failed)
+[plan 10] ALERT  20 rpm / arm 1.5  - cycle 2 BLOCK_STILL_AT_IR: check before resuming (pick may have failed)
+[observe] lost the broker: all feeds will go stale
+[observe] connected to broker: Success
+[plan 11] OFF    20 rpm / arm 1.5  - autoen stopped
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

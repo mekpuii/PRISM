@@ -1,0 +1,28 @@
+[arm-analyzer] up. broker localhost:1883, db arm_analyzer.db, thresholds built-in defaults (run --write-thresholds or --calibrate to make the file). Ctrl+C to stop.
+[arm-analyzer] connected to broker: Success
+[21:05:41] NO_DATA    -> CARRYING    (via home)
+[21:05:45] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:05:55] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[21:06:05] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[21:06:15] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[21:06:25] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:06:35] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[21:06:35] CARRYING   -> NO_DATA     (no telemetry for 1.0 s)
+[21:06:45] state=NO_DATA  broker=up  arm/telemetry=9.7 s ago  cycles_ok=0  levels=all OK
+[21:06:55] state=NO_DATA  broker=up  arm/telemetry=19.7 s ago  cycles_ok=0  levels=all OK
+[21:07:05] state=NO_DATA  broker=up  arm/telemetry=29.7 s ago  cycles_ok=0  levels=all OK
+[21:07:15] state=NO_DATA  broker=up  arm/telemetry=39.8 s ago  cycles_ok=0  levels=all OK
+[21:07:25] state=NO_DATA  broker=up  arm/telemetry=49.8 s ago  cycles_ok=0  levels=all OK
+[21:07:35] state=NO_DATA  broker=up  arm/telemetry=59.8 s ago  cycles_ok=0  levels=all OK
+[21:07:45] state=NO_DATA  broker=up  arm/telemetry=69.8 s ago  cycles_ok=0  levels=all OK
+[21:07:55] state=NO_DATA  broker=up  arm/telemetry=79.9 s ago  cycles_ok=0  levels=all OK
+[21:08:05] state=NO_DATA  broker=up  arm/telemetry=89.9 s ago  cycles_ok=0  levels=all OK
+[21:08:15] state=NO_DATA  broker=up  arm/telemetry=99.9 s ago  cycles_ok=0  levels=all OK
+[21:08:25] state=NO_DATA  broker=up  arm/telemetry=109.9 s ago  cycles_ok=0  levels=all OK
+[21:08:35] state=NO_DATA  broker=up  arm/telemetry=120.0 s ago  cycles_ok=0  levels=all OK
+[21:08:45] state=NO_DATA  broker=up  arm/telemetry=130.0 s ago  cycles_ok=0  levels=all OK
+[21:08:55] state=NO_DATA  broker=up  arm/telemetry=140.1 s ago  cycles_ok=0  levels=all OK
+[21:09:05] state=NO_DATA  broker=up  arm/telemetry=150.1 s ago  cycles_ok=0  levels=all OK
+
+[arm-analyzer] stopping
+[arm-analyzer] lost the broker

@@ -1,0 +1,73 @@
+{
+ "_doc": "Camera ETA check + IR position on the image + vision load. Built 2026-10-25 from OLD-unit runs (2026-10-24 14:39-15:52, before the CPR fix) because no new-unit run has camera data. ETA uses camera pixels and camera vu only, so the rpm units do not matter; real rpm = old rpm / 9 is given only as a label. PROVISIONAL: only 11 clean cycles.",
+ "created": "2026-10-25",
+ "status": "provisional_old_data",
+ "camera_moved": {
+  "answer": "no",
+  "how": "operator said the camera never moved; snapshot 2026-10-25 20:36 (vision/snap_roi.png) shows the ROI saved 2026-10-22 in vision/vision_calibration.json still on the belt edges (u 93-608, v 196-281). No reference frame from 10-24 exists."
+ },
+ "source": {
+  "runs": {
+   "run_80rpm": {"real_rpm": 8.9, "arrived": 9, "clean": 1},
+   "run_100rpm": {"real_rpm": 11.1, "arrived": 17, "clean": 7},
+   "run_100rpm_armspd0.7": {"real_rpm": 11.1, "arrived": 10, "clean": 0},
+   "run_100rpm_armspd1.0": {"real_rpm": 11.1, "arrived": 10, "clean": 0},
+   "run_100rpm_armspd1.5": {"real_rpm": 11.1, "arrived": 10, "clean": 0},
+   "run_100rpm_armspd2.0": {"real_rpm": 6.7, "arrived": 7, "clean": 3, "note": "belt really CONV 60 old units"}
+  },
+  "excluded": ["run_20rpm (0 ARRIVED)", "run_100rpm_armspd2.0_attempt1_messy"],
+  "dir": "orchestrator/cal/runs/ (identical to data/raw_archive copies)",
+  "script": {"path": "orchestrator/cal/eta_check.py", "sha256": "f737cfae34919c39ea3786868a29f4701e89dcc7cf350ea2d201ebb063c86bb0"},
+  "output": {"path": "orchestrator/cal/runs/eta_check_oldruns_20261025.json", "sha256": "42c50250922edd1ba804687af1c79ac06738bb0fd567d049ca303c23d68d900f"},
+  "clean_cycle_rule": "arriving cube seen moving (vu < -5 px/s, u < 320) in a camera/perception snapshot <= 0.6 s before belt/event ARRIVED; ARRIVED and arm/ir detected agree within 0.15 s",
+  "split": "clean cycles in time order: even = find u_IR (6), odd = ETA test (5)"
+ },
+ "ir_u_px": {
+  "median": 247.0, "mean": 247.5, "sd": 9.4, "range": [235.3, 258.6], "n": 6,
+  "test_half_median": 238.9,
+  "by_rpm_median": {"6.7": 258.0, "8.9": 248.8, "11.1": 239.5},
+  "note": "u at ARRIVED, extrapolated from the last snapshot with u + vu*dt; belt axis u, dir -1 (cubes move toward smaller u). Slightly lower u at higher rpm = trigger/report latency of ~0.3 s."
+ },
+ "camera_view": {
+  "first_seen_before_IR_s": {"min": 12.6, "median": 13.0, "max": 20.0},
+  "steady_vu_px_s": {"6.7": -17.1, "8.9": -22.8, "11.1": -28.6},
+  "kalman_vu_warmup_s": "about 3 s after a track appears (vu ramps 0 -> steady)"
+ },
+ "eta_error_s": {
+  "definition": "ETA = (u_IR - u) / v, error = ETA - actual time to ARRIVED (+ = predicted late)",
+  "H5s": {
+   "camera_vu": {"n": 5, "mean": -0.18, "sd": 0.48, "max_abs": 0.60, "within_1s": "5/5"},
+   "steady_v": {"n": 5, "mean": -0.17, "sd": 0.46, "max_abs": 0.60, "within_1s": "5/5"},
+   "by_rpm_camera_vu": {"6.7": {"n": 1, "mean": 0.60}, "11.1": {"n": 4, "mean": -0.38, "sd": 0.21}}
+  },
+  "H10s": {
+   "camera_vu": {"n": 5, "mean": 4.85, "sd": 3.04, "max_abs": 9.15, "within_1s": "1/5"},
+   "steady_v": {"n": 5, "mean": 0.07, "sd": 0.34, "max_abs": 0.58, "within_1s": "5/5"},
+   "by_rpm_camera_vu": {"6.7": {"n": 1, "mean": 0.58}, "11.1": {"n": 4, "mean": 5.92, "sd": 2.18}}
+  },
+  "kind": "10 s with camera vu = SYSTEMATIC (cube only just entered the view at u 530-544, Kalman vu still -15..-20 instead of -28.6, ETA too late). 5 s = small, mostly random, slight early bias -0.4 s at 11.1 rpm. A steady/belt-prior speed removes the 10 s bias."
+ },
+ "proposal": {
+  "pass_rule": "|ETA error| <= 1.0 s at 5 s look-ahead; use camera vu only after the track is >= 3 s old (hits >= ~30 at 6 fps), before that use the belt-encoder speed (predict.py prior)",
+  "wake_margin": "rest -> home takes ~36 s but the camera sees a cube only ~13 s (12.6-20) before the IR, so waking from REST on a camera ETA cannot be on time. Waking is only possible from upstream info (feeder event / schedule). Supports O2 = hold home + brake belt. Margin for a short move (e.g. standby -> grip-ready) = move time + 1 s."
+ },
+ "problems_found": [
+  "52 of 63 cubes have no camera track at the IR. In the 3 arm-speed runs the track ends at u ~247 about 3 s (2.9-3.6) BEFORE ARRIVED in every cycle -> most likely vision lag of ~3 s (frames queued). camera/perception ts is the publish time, not the frame capture time, so the lag is not measurable from the logs.",
+  "Fix proposal (needs OK, not done): vision_live_tracks.py publish_perception adds frame capture time (RealSense frame.get_timestamp() / time at wait_for_frames return) as ts_frame, plus processing lag."
+ ],
+ "vision_load": {
+  "source": {"script": "vision/vision_load.py", "data": "vision/vision_load.jsonl", "vision": "vision_live_tracks.py, 640x480, belt still, no cubes"},
+  "cpu_count": 4,
+  "rows": [
+   {"fps_set": 6, "fps_mean": 6.0, "fps_min": 5.7, "cpu_pct_one_core": 37.9, "cpu_pct_max": 46.8, "rss_mb": 126.9, "pi_temp_c": [42.4, 44.3]},
+   {"fps_set": 15, "fps_mean": 14.79, "fps_min": 11.6, "cpu_pct_one_core": 86.7, "cpu_pct_max": 95.5, "rss_mb": 126.9, "pi_temp_c": [52.1, 59.9], "note": "temp still rising at the end"},
+   {"fps_set": 30, "skipped": "15 fps already uses ~87-95 % of one core; 30 cannot keep up and would build the same frame lag"}
+  ],
+  "note": "D415 640x480 supports 6/15/30 fps only; lower than 6 means skipping frames in software. Pi system RAM available ~760 MB of 3.8 GB.",
+  "staging_conclusion": "Keep 6 fps (enough: ETA error at 5 s is within 1 s). Going higher costs ~2.3x CPU and +8-15 C. Dropping/pausing vision while the belt is stopped saves at most ~38 % of one core (~9.5 % of the Pi); worth it only if Pi power matters - Pi power itself was not measured."
+ },
+ "waiting_for_machine": [
+  "New-unit run with vision ON (20 rpm / arm 1.5 and 15 rpm / arm 1.5, >= 10 cycles each) to confirm u_IR and the ETA error at real rpm, with frame-capture timestamps",
+  "Check the ~3 s vision lag during arm motion (is it occlusion or lag?)"
+ ]
+}

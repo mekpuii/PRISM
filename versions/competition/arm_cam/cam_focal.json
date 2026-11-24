@@ -1,0 +1,49 @@
+{
+ "f_px": 957.1731341570777,
+ "offset_mm": 0.0,
+ "block_eq_mm": 34.64101615137755,
+ "points": [
+  [
+   107.0,
+   300.0
+  ],
+  [
+   108.0,
+   312.0
+  ],
+  [
+   110.0,
+   305.2
+  ],
+  [
+   143.0,
+   232.6
+  ]
+ ],
+ "residual_mm": [
+  -3.52,
+  1.73,
+  1.36,
+  0.45
+ ],
+ "dropped_points": [
+  [
+   137.0,
+   225.2,
+   "outlier (8 mm off)"
+  ],
+  [
+   134.0,
+   93.7,
+   "detected the bin"
+  ]
+ ],
+ "cam_to_tip_mm": 110.0,
+ "cam_to_tip_from": "block held at the jaw tip: lens -> block 110 mm (2026-11-12)",
+ "image_size": [
+  1280,
+  720
+ ],
+ "time": "2026-11-11 20:21:46",
+ "note": "lens->block top (mm) = f_px * block_eq_mm / block_eq_px - offset_mm"
+}

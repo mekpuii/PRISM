@@ -1,0 +1,44 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+[mqtt] arm connected to localhost:1883: Success
+[mqtt] belt connected to localhost:1883: Success
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261111_192857.csv
+       riff_logs/autoen_sets_20261111_192857.csv
+       riff_logs/autoen_cycles_20261111_192857.csv
+       riff_logs/autoen_thresholds_20261111_192857.csv
+settings changed from the web page: {'rpm': 6.7, 'arm_speed': 1.0, 'carry_speed': 1.0, 'arrive_timeout': 20.0}
+settings changed from the web page: {'rpm': 6.7, 'arm_speed': 1.0, 'carry_speed': 1.0, 'arrive_timeout': 20.0}
+settings changed from the web page: {'rpm': 20.0, 'arm_speed': 1.5, 'carry_speed': 1.5, 'arrive_timeout': 25.0, 'max_fails': 8, 'sets': 1000, 'cycles_per_set': 1000}
+set 1/1000 cycle 1/6  TIMEOUT_TRANSPORT 25.8s block did not reach the IR within 25 s
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 2/6  OK 19.8s 
+set 1/1000 cycle 3/6  OK 19.8s 
+set 1/1000 cycle 4/6  OK 18.3s 
+set 1/1000 cycle 5/6  OK 18.5s 
+set 1/1000 cycle 6/6  TIMEOUT_TRANSPORT 25.7s block did not reach the IR within 25 s
+Set 1 (19:28:58-19:31:36): J1: temp max 33C, current avg 3 / peak 32 mA; J2: temp max 34C, current avg 8 / peak 110 mA; J3: temp max 34C, current avg 12 / peak 84 mA; J4: temp max 34C, current avg 3 / peak 20 mA; J5: temp max 38C, current avg 2 / peak 26 mA; J6: temp max 35C, current avg 5 / peak 39 mA; Belt: temp max 25C, current avg 82 / peak 311 mA; ARM TOTAL: servo volt min 11.2 V, summed current avg 33 / peak 162 mA
+set 2/1000 cycle 1/1000  NO_BLOCK 0.8s transport aborted: no block on the camera after FEED
+set 2/1000 cycle 2/1000  OK 20.7s 
+set 2/1000 cycle 3/1000  OK 20.8s 
+set 2/1000 cycle 4/1000  NO_BLOCK 1.5s transport aborted: no block on the camera after FEED | DRIFT J1 -78t in phase IDLE
+set 2/1000 cycle 5/1000  NO_BLOCK 0.8s transport aborted: no block on the camera after FEED
+set 2/1000 cycle 6/1000  OK 18.3s 
+set 2/1000 cycle 7/1000  NO_BLOCK 1.7s transport aborted: no block on the camera after FEED
+set 2/1000 cycle 8/1000  NO_BLOCK 1.8s transport aborted: no block on the camera after FEED | DRIFT J3 -171t in phase TRANSPORT
+set 2/1000 cycle 9/1000  NO_BLOCK 0.9s transport aborted: no block on the camera after FEED
+set 2/1000 cycle 10/1000  TIMEOUT_TRANSPORT 25.8s block did not reach the IR within 25 s
+set 2/1000 cycle 11/1000  NO_BLOCK 0.9s transport aborted: no block on the camera after FEED
+set 2/1000 cycle 12/1000  NO_BLOCK 0.9s transport aborted: no block on the camera after FEED
+set 2/1000 cycle 13/1000  NO_BLOCK 0.9s transport aborted: no block on the camera after FEED
+set 2/1000 cycle 14/1000  TIMEOUT_TRANSPORT 25.7s block did not reach the IR within 25 s
+set 2/1000 cycle 15/1000  TIMEOUT_TRANSPORT 25.8s block did not reach the IR within 25 s
+set 2/1000 cycle 16/1000  NO_BLOCK 0.9s transport aborted: no block on the camera after FEED
+set 2/1000 cycle 17/1000  NO_BLOCK 0.8s transport aborted: no block on the camera after FEED
+set 2/1000 cycle 18/1000  TIMEOUT_TRANSPORT 25.8s block did not reach the IR within 25 s
+Set 2 (19:31:36-21:11:14): J1: temp max 34C, current avg 1 / peak 32 mA; J2: temp max 34C, current avg 3 / peak 78 mA; J3: temp max 34C, current avg 6 / peak 104 mA; J4: temp max 35C, current avg 1 / peak 20 mA; J5: temp max 35C, current avg 1 / peak 26 mA; J6: temp max 37C, current avg 4 / peak 26 mA; Belt: temp max 25C, current avg 84 / peak 321 mA; ARM TOTAL: servo volt min 11.9 V, summed current avg 17 / peak 182 mA
+Ctrl+C: stopping (belt coasts, arm holds)
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+paused:   (unparsable RX lines: 0)

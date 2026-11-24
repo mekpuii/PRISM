@@ -1,0 +1,67 @@
+"""sim_mega.py - a fake Mega 2560 (arm firmware + belt module) behind the same serial API autoen_node uses.
+It answers the same text protocol (P / C / X,...), moves the six servos toward their targets at the commanded speed,
+runs the belt, "sees" the block after a delay (ARRIVED), and reports FEED_DONE / G,CLOSED. It is NOT the firmware:
+currents and timing are invented. Use it to try the dashboard and autoen_node without the robot (see sim_cell.py)."""
+import threading, time, queue
+
+class FakeMega:
+    def __init__(self, fast=1.0):
+        self.FAST = fast                         # 1.0 = about the speed the real servos would move; 8 = fast forward
+        self.rx = queue.Queue(); self.out = queue.Queue(); self.lock = threading.Lock()
+        self.pos = {1: 2069, 2: 1478, 3: 2172, 4: 3190, 5: 1230, 6: 2844}
+        self.tgt = dict(self.pos); self.spd = {i: 0 for i in self.pos}
+        self.rpm_set, self.rpm, self.enc, self.ir, self.fault = 0.0, 0.0, 0, False, 0
+        self.arrive_at = None; self.feed_at = None; self.grip_at = None; self.clear_at = None
+        self.temp = {i: 30 + i for i in self.pos}; self.log = []
+        self.running = True; self._buf = b""
+        for l in ("H,SO101_MEGA_V1", "BOOT_DONE", "R,1"): self.out.put((l + "\n").encode())
+        threading.Thread(target=self._loop, daemon=True).start()
+    # ---- pyserial-like API used by Link
+    def readline(self):
+        try: return self.out.get(timeout=0.1)
+        except queue.Empty: return b""
+    def write(self, data):
+        self._buf += data
+        while b"\n" in self._buf:
+            line, self._buf = self._buf.split(b"\n", 1); self._cmd(line.decode().strip())
+    def reset_input_buffer(self): pass
+    def close(self): self.running = False
+    # ---- firmware behaviour
+    def say(self, l): self.out.put((l + "\n").encode())
+    def _cmd(self, l):
+        p = l.split(","); self.log.append(l)
+        if p[0] == "P": self.tgt[int(p[1])] = int(p[2]); self.spd[int(p[1])] = int(p[3])
+        elif p[0] == "H": self.tgt[int(p[1])] = self.pos[int(p[1])]
+        elif p[0] == "C":
+            self.say(f"G,CLOSING,{self.pos[6]}"); self.grip_at = time.monotonic() + 0.5
+        elif p[0] == "X":
+            c = p[1]
+            if c == "HB": return
+            if c == "PING": self.say("X,PONG"); return
+            if c == "FEED": self.feed_at = time.monotonic() + 0.3
+            elif c == "CONV": self.rpm_set = float(p[2]); self.arrive_at = time.monotonic() + 1.2; self.ir = False
+            elif c in ("STOP", "BRAKE"): self.rpm_set = 0.0
+            self.say("X,OK")
+    def _loop(self):
+        last, n = time.monotonic(), 0
+        while self.running:
+            time.sleep(0.04); now = time.monotonic(); dt = now - last; last = now; n += 1
+            with self.lock:
+                for i in self.pos:
+                    d = self.tgt[i] - self.pos[i]; step = self.spd[i] * dt * self.FAST
+                    if abs(d) <= max(step, 1): self.pos[i] = self.tgt[i]; v = 0
+                    else: self.pos[i] += int(step) * (1 if d > 0 else -1); v = int(self.spd[i] * (1 if d > 0 else -1))
+                    self.say(f"T,{i},{self.pos[i]},{v},{abs(v) // 20 + 3}")
+                if n % 25 == 0:
+                    for i in self.pos: self.say(f"TT,{i},{self.temp[i]},{121}")
+                self.rpm += (self.rpm_set - self.rpm) * min(1, dt * 4); self.enc += int(self.rpm * 198 * dt)   # 198 = 11880 counts/rev / 60
+                if self.feed_at and now >= self.feed_at: self.feed_at = None; self.say(f"X,E,FEED_DONE,{int(now*1000)%100000}")
+                if self.arrive_at and now >= self.arrive_at:
+                    self.arrive_at = None; self.rpm_set = 0.0; self.ir = True; self.say(f"X,E,ARRIVED,{int(now*1000)%100000},{self.enc}")
+                if self.grip_at and now >= self.grip_at:
+                    self.grip_at = None; self.pos[6] = self.tgt[6] = 2300; self.say("G,CLOSED,2300"); self.clear_at = now + 0.6
+                if self.clear_at and now >= self.clear_at: self.clear_at = None; self.ir = False
+                if n % 3 == 0:
+                    f = [int(now * 1000) % 100000, self.enc, f"{self.rpm:.2f}", int(abs(self.rpm)), 1, f"{abs(self.rpm) * 3:.1f}",
+                         12000, 0, 0, 0, 0, f"{26.5:.2f}", 1 if self.ir else 0, 0, self.fault, 0, 0]
+                    self.say("X,T," + ",".join(str(x) for x in f))

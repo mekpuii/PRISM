@@ -1,0 +1,68 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261114_130801.csv
+       riff_logs/autoen_sets_20261114_130801.csv
+       riff_logs/autoen_cycles_20261114_130801.csv
+       riff_logs/autoen_thresholds_20261114_130801.csv
+[mqtt] belt connected to localhost:1883: Success
+[mqtt] arm connected to localhost:1883: Success
+settings changed from the web page: {'rpm': 6.7, 'arm_speed': 1.0, 'carry_speed': 1.0, 'arrive_timeout': 20.0}
+settings changed from the web page: {'rpm': 22.0, 'arm_speed': 1.75, 'carry_speed': 1.75, 'arrive_timeout': 22.0, 'max_fails': 8, 'sets': 1000, 'cycles_per_set': 1000}
+settings changed from the web page: {'feeder_push_ms': 850}
+set 1/1000 cycle 1/1000  OK 25.5s settled drop pose 'down': J3 +42t
+settings changed from the web page: {'drop_mode': 'left'}
+set 1/1000 cycle 2/1000  OK 9.6s 
+set 1/1000 cycle 3/1000  OK 12.2s 
+set 1/1000 cycle 4/1000  OK 9.2s 
+set 1/1000 cycle 5/1000  OK 9.7s 
+set 1/1000 cycle 6/1000  OK 10.9s 
+set 1/1000 cycle 7/1000  OK 9.5s 
+set 1/1000 cycle 8/1000  OK 9.5s 
+set 1/1000 cycle 9/1000  OK 9.3s 
+set 1/1000 cycle 10/1000  OK 9.3s DRIFT J1 -72t in phase RELEASE
+set 1/1000 cycle 11/1000  OK 9.7s settled drop pose 'left': J3 +41t
+set 1/1000 cycle 12/1000  OK 10.3s 
+set 1/1000 cycle 13/1000  OK 9.6s 
+set 1/1000 cycle 14/1000  OK 9.2s 
+set 1/1000 cycle 15/1000  OK 9.6s 
+set 1/1000 cycle 16/1000  OK 9.5s 
+set 1/1000 cycle 17/1000  OK 11.0s settled home with block: J3 +43t
+set 1/1000 cycle 18/1000  OK 9.7s settled drop pose 'left': J3 +41t
+set 1/1000 cycle 19/1000  OK 9.4s 
+set 1/1000 cycle 20/1000  OK 9.5s 
+set 1/1000 cycle 21/1000  OK 10.3s 
+set 1/1000 cycle 22/1000  OK 11.3s settled home with block: J3 +43t
+set 1/1000 cycle 23/1000  OK 9.5s settled drop pose 'left': J3 +41t
+set 1/1000 cycle 24/1000  OK 9.3s 
+set 1/1000 cycle 25/1000  OK 9.9s 
+set 1/1000 cycle 26/1000  OK 10.3s 
+set 1/1000 cycle 27/1000  OK 10.2s settled drop pose 'left': J3 +41t
+set 1/1000 cycle 28/1000  OK 9.3s settled drop pose 'left': J3 +41t
+set 1/1000 cycle 29/1000  OK 9.3s 
+set 1/1000 cycle 30/1000  OK 9.6s 
+set 1/1000 cycle 31/1000  OK 10.2s 
+set 1/1000 cycle 32/1000  OK 9.6s settled drop pose 'left': J3 +41t
+set 1/1000 cycle 33/1000  OK 11.0s settled drop pose 'left': J3 +41t
+set 1/1000 cycle 34/1000  OK 9.4s settled drop pose 'left': J3 +41t
+settings changed from the web page: {'drop_mode': 'down'}
+settings changed from the web page: {'drop_mode': 'left'}
+Set 1 (13:08:02-13:14:43): J1: temp max 39C, current avg 7 / peak 32 mA; J2: temp max 39C, current avg 10 / peak 84 mA; J3: temp max 36C, current avg 28 / peak 214 mA; J4: temp max 36C, current avg 3 / peak 32 mA; J5: temp max 38C, current avg 7 / peak 26 mA; J6: temp max 40C, current avg 7 / peak 46 mA; Belt: temp max 25C, current avg 32 / peak 393 mA; ARM TOTAL: servo volt min 11.9 V, summed current avg 61 / peak 234 mA
+[mqtt] arm lost the broker
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 3249, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 3240, in main
+    mq.close()
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 529, in close
+    self.c[key].loop_stop()
+  File "/home/mekkhram/autoen-env/lib/python3.11/site-packages/paho/mqtt/client.py", line 2364, in loop_stop
+    self._thread.join()
+  File "/usr/local/lib/python3.11/threading.py", line 1119, in join
+    self._wait_for_tstate_lock()
+  File "/usr/local/lib/python3.11/threading.py", line 1139, in _wait_for_tstate_lock
+    if lock.acquire(block, timeout):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

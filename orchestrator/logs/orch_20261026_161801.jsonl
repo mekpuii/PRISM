@@ -1,0 +1,11 @@
+{"ts": 1793006281.496, "iso": "2026-10-26T16:18:01", "kind": "start", "shadow": false, "api": "http://127.0.0.1:8781", "idle_brake": true}
+{"ts": 1793006281.515, "iso": "2026-10-26T16:18:01", "kind": "plan", "t": 15389.227172647, "mode": "OFF", "rpm": 20.0, "arm_speed": 1.5, "carry_speed": 1.5, "arrive_timeout": 25.0, "reason": "autoen not reachable", "action": null, "at_boundary": false, "seq": 1, "score": {"t_s": 18.55, "J": 20.8, "p_low": 0.922, "n_live": 0, "ok_live": 0, "cam_seen": "0/0", "cam_trusted": false, "next_probe_s": null}, "shadow": false}
+{"ts": 1793006281.567, "iso": "2026-10-26T16:18:01", "kind": "plan", "t": 15389.277598952, "mode": "OFF", "rpm": 20.0, "arm_speed": 1.5, "carry_speed": 1.5, "arrive_timeout": 25.0, "reason": "autoen ready", "action": null, "at_boundary": false, "seq": 2, "score": {"t_s": 18.55, "J": 20.8, "p_low": 0.922, "n_live": 0, "ok_live": 0, "cam_seen": "0/0", "cam_trusted": false, "next_probe_s": null}, "shadow": false}
+{"ts": 1793006341.535, "iso": "2026-10-26T16:19:01", "kind": "energy", "by_mode": {"OFF": {"belt_J": 2.83, "arm_J": 0.09, "s": 60.02, "belt_s": 59.92, "arm_s": 59.92}}}
+{"ts": 1793006401.563, "iso": "2026-10-26T16:20:01", "kind": "energy", "by_mode": {"OFF": {"belt_J": 2.86, "arm_J": 0.07, "s": 60.03, "belt_s": 60.03, "arm_s": 60.03}}}
+{"ts": 1793006461.577, "iso": "2026-10-26T16:21:01", "kind": "energy", "by_mode": {"OFF": {"belt_J": 2.85, "arm_J": 0.01, "s": 60.01, "belt_s": 60.01, "arm_s": 60.01}}}
+{"ts": 1793006521.604, "iso": "2026-10-26T16:22:01", "kind": "energy", "by_mode": {"OFF": {"belt_J": 2.84, "arm_J": 0.05, "s": 60.03, "belt_s": 60.03, "arm_s": 60.03}}}
+{"ts": 1793006581.633, "iso": "2026-10-26T16:23:01", "kind": "energy", "by_mode": {"OFF": {"belt_J": 2.88, "arm_J": 0.07, "s": 60.03, "belt_s": 60.03, "arm_s": 60.03}}}
+{"ts": 1793006641.676, "iso": "2026-10-26T16:24:01", "kind": "energy", "by_mode": {"OFF": {"belt_J": 2.86, "arm_J": 0.02, "s": 60.04, "belt_s": 60.04, "arm_s": 60.04}}}
+{"ts": 1793006643.323, "iso": "2026-10-26T16:24:03", "kind": "energy", "by_mode": {"OFF": {"belt_J": 0.03, "arm_J": 0.0, "s": 1.61, "belt_s": 0.71, "arm_s": 0.71}}}
+{"ts": 1793006643.497, "iso": "2026-10-26T16:24:03", "kind": "stop", "last_job": "", "last_error": ""}

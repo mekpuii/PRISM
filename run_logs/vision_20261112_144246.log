@@ -1,0 +1,173 @@
+=================================================================
+DELTA - Raspberry Pi 4 Object Perception + Spacing + Demand Collection
+=================================================================
+Mode: HSV color detection + USB camera (no depth) + Kalman
+Colours (priority order): white, orange
+Belt axis: u   direction: +1
+Camera streams: 854x480 at 6 FPS
+Demand window: 180 seconds
+Data sample interval: 10 seconds
+History file: delta_demand_history.csv
+Summary file: delta_3min_summary.csv
+Press ESC or Q to exit.
+=================================================================
+[camera] using /dev/v4l/by-id/usb-QCM_Astro_HD_Camera-video-index0
+
+Starting USB camera /dev/v4l/by-id/usb-QCM_Astro_HD_Camera-video-index0 at 1280x720 -> 854x480, 6 FPS (camera 15 FPS, MJPG)...
+Camera warm-up: 1/3
+Camera warm-up: 2/3
+Camera warm-up: 3/3
+[spacing] USB camera has no depth; gaps will be in pixels only
+[belt] learning the empty belt (reflections are ignored); belt brightness at calibration V=67
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in "/home/mekkhram/prism-env/lib/python3.11/site-packages/cv2/qt/plugins"
+QFontDatabase: Cannot find font directory /home/mekkhram/prism-env/lib/python3.11/site-packages/cv2/qt/fonts.
+Note that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.
+QFontDatabase: Cannot find font directory /home/mekkhram/prism-env/lib/python3.11/site-packages/cv2/qt/fonts.
+Note that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.
+QFontDatabase: Cannot find font directory /home/mekkhram/prism-env/lib/python3.11/site-packages/cv2/qt/fonts.
+Note that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.
+QFontDatabase: Cannot find font directory /home/mekkhram/prism-env/lib/python3.11/site-packages/cv2/qt/fonts.
+Note that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.
+QFontDatabase: Cannot find font directory /home/mekkhram/prism-env/lib/python3.11/site-packages/cv2/qt/fonts.
+Note that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.
+[belt] 3 cube(s) were standing on the belt while it was learned: kept as cubes
+[DATA] Window 1 |   10.1s | +3 {'white': 2, 'orange': 1} (total 3)
+[DATA] Window 1 |   20.3s | +2 {'white': 2} (total 5)
+[DATA] Window 1 |   30.5s | +0 {} (total 5)
+[DATA] Window 1 |   40.6s | +0 {} (total 5)
+[DATA] Window 1 |   50.6s | +0 {} (total 5)
+[DATA] Window 1 |   60.8s | +0 {} (total 5)
+[DATA] Window 1 |   70.8s | +0 {} (total 5)
+[DATA] Window 1 |   80.8s | +0 {} (total 5)
+[DATA] Window 1 |   91.0s | +0 {} (total 5)
+[DATA] Window 1 |  101.0s | +0 {} (total 5)
+[DATA] Window 1 |  111.1s | +1 {'white': 1} (total 6)
+[DATA] Window 1 |  121.3s | +0 {} (total 6)
+[DATA] Window 1 |  131.5s | +0 {} (total 6)
+[DATA] Window 1 |  141.5s | +1 {'white': 1} (total 7)
+[DATA] Window 1 |  151.5s | +1 {'white': 1} (total 8)
+[DATA] Window 1 |  161.6s | +0 {} (total 8)
+[DATA] Window 1 |  171.6s | +0 {} (total 8)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #1 COMPLETE
+Objects : 8   by colour: {'white': 7, 'orange': 1}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 2 |   10.0s | +0 {} (total 0)
+[DATA] Window 2 |   20.2s | +0 {} (total 0)
+[DATA] Window 2 |   30.2s | +0 {} (total 0)
+[DATA] Window 2 |   40.3s | +0 {} (total 0)
+[DATA] Window 2 |   50.5s | +0 {} (total 0)
+[DATA] Window 2 |   60.7s | +0 {} (total 0)
+[DATA] Window 2 |   70.7s | +0 {} (total 0)
+[DATA] Window 2 |   80.8s | +0 {} (total 0)
+[DATA] Window 2 |   90.8s | +0 {} (total 0)
+[DATA] Window 2 |  100.8s | +0 {} (total 0)
+[DATA] Window 2 |  111.0s | +0 {} (total 0)
+[DATA] Window 2 |  121.0s | +0 {} (total 0)
+[DATA] Window 2 |  131.2s | +0 {} (total 0)
+[DATA] Window 2 |  141.2s | +0 {} (total 0)
+[DATA] Window 2 |  151.3s | +0 {} (total 0)
+[DATA] Window 2 |  161.3s | +0 {} (total 0)
+[DATA] Window 2 |  171.3s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #2 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 3 |   10.2s | +0 {} (total 0)
+[DATA] Window 3 |   20.2s | +0 {} (total 0)
+[DATA] Window 3 |   30.2s | +1 {'white': 1} (total 1)
+[DATA] Window 3 |   40.3s | +0 {} (total 1)
+[DATA] Window 3 |   50.5s | +0 {} (total 1)
+[DATA] Window 3 |   60.7s | +0 {} (total 1)
+[DATA] Window 3 |   70.7s | +0 {} (total 1)
+[DATA] Window 3 |   80.8s | +0 {} (total 1)
+[DATA] Window 3 |   91.0s | +0 {} (total 1)
+[DATA] Window 3 |  101.1s | +0 {} (total 1)
+[DATA] Window 3 |  111.2s | +0 {} (total 1)
+[DATA] Window 3 |  121.2s | +0 {} (total 1)
+[DATA] Window 3 |  131.3s | +0 {} (total 1)
+[DATA] Window 3 |  141.5s | +0 {} (total 1)
+[DATA] Window 3 |  151.6s | +3 {'white': 3} (total 4)
+[DATA] Window 3 |  161.6s | +0 {} (total 4)
+[DATA] Window 3 |  171.7s | +0 {} (total 4)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #3 COMPLETE
+Objects : 4   by colour: {'white': 4}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 4 |   10.2s | +1 {'white': 1} (total 1)
+[DATA] Window 4 |   20.3s | +0 {} (total 1)
+[DATA] Window 4 |   30.3s | +0 {} (total 1)
+[DATA] Window 4 |   40.4s | +0 {} (total 1)
+[DATA] Window 4 |   50.5s | +0 {} (total 1)
+[DATA] Window 4 |   60.7s | +0 {} (total 1)
+[DATA] Window 4 |   70.8s | +0 {} (total 1)
+[DATA] Window 4 |   80.8s | +1 {'white': 1} (total 2)
+[DATA] Window 4 |   91.0s | +0 {} (total 2)
+[DATA] Window 4 |  101.0s | +1 {'white': 1} (total 3)
+[DATA] Window 4 |  111.2s | +1 {'white': 1} (total 4)
+[DATA] Window 4 |  121.3s | +2 {'white': 2} (total 6)
+[DATA] Window 4 |  131.5s | +0 {} (total 6)
+[DATA] Window 4 |  141.5s | +0 {} (total 6)
+[DATA] Window 4 |  151.7s | +0 {} (total 6)
+[DATA] Window 4 |  161.8s | +0 {} (total 6)
+[DATA] Window 4 |  171.8s | +1 {'white': 1} (total 7)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #4 COMPLETE
+Objects : 7   by colour: {'white': 7}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 5 |   10.2s | +0 {} (total 0)
+[DATA] Window 5 |   20.2s | +1 {'white': 1} (total 1)
+[DATA] Window 5 |   30.3s | +0 {} (total 1)
+[DATA] Window 5 |   40.3s | +0 {} (total 1)
+[DATA] Window 5 |   50.5s | +0 {} (total 1)
+[DATA] Window 5 |   60.7s | +0 {} (total 1)
+[DATA] Window 5 |   70.8s | +0 {} (total 1)
+[DATA] Window 5 |   81.0s | +0 {} (total 1)
+[DATA] Window 5 |   91.2s | +0 {} (total 1)
+[DATA] Window 5 |  101.3s | +0 {} (total 1)
+[DATA] Window 5 |  111.5s | +0 {} (total 1)
+[DATA] Window 5 |  121.5s | +0 {} (total 1)
+[DATA] Window 5 |  131.7s | +0 {} (total 1)
+[DATA] Window 5 |  141.7s | +0 {} (total 1)
+[DATA] Window 5 |  151.8s | +0 {} (total 1)
+[DATA] Window 5 |  162.0s | +0 {} (total 1)
+[DATA] Window 5 |  172.0s | +0 {} (total 1)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #5 COMPLETE
+Objects : 1   by colour: {'white': 1}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 6 |   10.2s | +0 {} (total 0)
+[DATA] Window 6 |   20.3s | +0 {} (total 0)
+[DATA] Window 6 |   30.3s | +0 {} (total 0)
+[DATA] Window 6 |   40.5s | +0 {} (total 0)
+[DATA] Window 6 |   50.5s | +1 {'white': 1} (total 1)
+[DATA] Window 6 |   60.7s | +0 {} (total 1)
+[DATA] Window 6 |   70.8s | +0 {} (total 1)
+[DATA] Window 6 |   80.8s | +0 {} (total 1)
+[DATA] Window 6 |   91.0s | +0 {} (total 1)
+[DATA] Window 6 |  101.0s | +0 {} (total 1)
+[DATA] Window 6 |  111.2s | +0 {} (total 1)
+[DATA] Window 6 |  121.3s | +0 {} (total 1)
+[DATA] Window 6 |  131.5s | +0 {} (total 1)
+
+Frame timeout/error: camera stopped delivering frames (unplugged?)
+No new frames arrived within the configured timeout.
+
+Stopping camera...
+[ WARN:4@1039.648] global cap_v4l.cpp:804 requestBuffers VIDEOIO(V4L2:/dev/v4l/by-id/usb-QCM_Astro_HD_Camera-video-index0): failed VIDIOC_REQBUFS: errno=19 (No such device)
+Done.

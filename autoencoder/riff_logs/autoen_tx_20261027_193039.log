@@ -1,0 +1,108 @@
+19:30:56.817 ## cycle 0 phase PREPARE
+19:30:56.833 TX X,CPR,11880
+19:30:56.854 TX X,TEMPMAX,60
+19:30:56.874 TX X,OFFSET,0
+19:30:56.905 TX X,FEEDCFG,170,170,400,400
+19:30:56.915 TX X,PID,4.5,13.5,0
+19:30:56.926 TX X,WDT,500
+19:30:56.936 TX X,ZERO
+19:30:56.950 TX X,VER
+19:30:56.962 TX P,6,2492,1200,8
+19:30:56.969 RX X,VER,Oct 27 2026 18:56:16,enc=1,ina=1,temp=1,hz=10000,home=170,on=1111
+19:30:56.972 TX P,1,2069,360,8
+19:30:56.983 TX P,2,1478,360,8
+19:30:56.993 TX P,3,2172,360,8
+19:30:57.003 TX P,4,3190,360,8
+19:30:57.013 TX P,5,1230,360,8
+19:30:57.509 TX H,1
+19:30:57.519 TX H,2
+19:30:57.529 TX H,3
+19:30:57.540 TX H,4
+19:30:57.551 TX H,5
+19:30:57.551 ## cycle 1 phase FEED
+19:30:57.561 TX X,FEED
+19:30:58.376 RX X,E,FEED_DONE,20046
+19:30:58.377 ## cycle 1 phase TRANSPORT
+19:30:58.380 TX P,1,2103,360,8
+19:30:58.390 TX P,2,1662,360,8
+19:30:58.401 TX X,CONV,6.70
+19:30:58.414 TX P,3,2357,360,8
+19:30:58.427 TX P,4,3009,360,8
+19:30:58.438 TX P,5,1239,360,8
+19:30:59.116 TX H,1
+19:30:59.126 TX H,2
+19:30:59.137 TX H,3
+19:30:59.149 TX H,4
+19:30:59.160 TX H,5
+19:31:18.509 TX X,BRAKE
+19:31:18.519 TX X,STOP
+19:31:19.531 ## cycle 2 phase FEED
+19:31:19.544 TX X,FEED
+19:31:20.358 RX X,E,FEED_DONE,41811
+19:31:20.359 ## cycle 2 phase TRANSPORT
+19:31:20.374 TX P,1,2103,540,8
+19:31:20.385 TX X,CONV,20.00
+19:31:20.396 TX P,2,1662,540,8
+19:31:20.406 TX P,3,2357,540,8
+19:31:20.417 TX P,4,3009,540,8
+19:31:20.428 TX P,5,1239,540,8
+19:31:20.439 TX H,1
+19:31:20.450 TX H,2
+19:31:20.464 TX H,3
+19:31:20.476 TX H,4
+19:31:20.490 TX H,5
+19:31:45.487 TX X,BRAKE
+19:31:45.537 TX X,STOP
+19:31:46.863 ## cycle 2 phase TASK_HOLD_POSE
+19:31:46.863 ## task 1 hold_pose {"seconds": 2.0, "pose": "right"}
+19:31:46.886 TX P,1,2069,540,8
+19:31:46.907 TX P,2,1478,540,8
+19:31:46.917 TX P,3,2172,540,8
+19:31:46.928 TX P,4,3190,540,8
+19:31:46.950 TX P,5,1230,540,8
+19:31:47.756 TX H,1
+19:31:47.767 TX H,2
+19:31:47.781 TX H,3
+19:31:47.791 TX H,4
+19:31:47.802 TX H,5
+19:31:49.679 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:31:49.823 ## cycle 2 phase IDLE
+19:31:49.825 ## task 1 done {"belt_rpm": {"n": 15, "mean": 0.0, "std": 0.0}, "belt_mA": {"n": 15, "mean": 3.867, "std": 0.34}, "belt_W": {"n": 15, "mean": 0.047, "std": 0.004}, "arm_mA": {"n": 9, "mean": 2.889, "std": 3.23}, "arm_W": {"n": 9, "mean": 0.035, "std": 0.039}}
+19:31:49.925 ## cycle 2 phase TASK_BELT_RUN
+19:31:49.927 ## task 2 belt_run {"seconds": 1.0, "rpm": 0.5}
+19:31:49.927 TX X,CONV,0.50
+19:31:50.928 ## no reply to X,CONV,0.50: sending it again
+19:31:50.929 TX X,CONV,0.50
+19:31:51.935 ## no reply to X,CONV,0.50: sending it again
+19:31:51.941 TX X,CONV,0.50
+19:31:52.958 TX X,BRAKE
+19:31:53.958 ## no reply to X,BRAKE: sending it again
+19:31:53.959 TX X,BRAKE
+19:31:54.961 ## no reply to X,BRAKE: sending it again
+19:31:54.968 TX X,BRAKE
+19:31:55.969 ## cycle 2 phase IDLE
+19:31:55.969 ## task 2 error {"belt_rpm": {"n": 0, "mean": null, "std": null}, "belt_mA": {"n": 0, "mean": null, "std": null}, "belt_W": {"n": 0, "mean": null, "std": null}, "arm_mA": {"n": 0, "mean": null, "std": null}, "arm_W": {"n": 0, "mean": null, "std": null}} error=TimeoutError: no reply to X,CONV,0.50
+19:31:56.070 ## cycle 3 phase FEED
+19:31:56.070 TX X,FEED
+19:31:57.070 TX X,STOP
+19:31:58.071 ## no reply to X,STOP: sending it again
+19:31:58.071 TX X,STOP
+19:31:59.071 ## no reply to X,STOP: sending it again
+19:31:59.072 TX X,STOP
+19:32:00.073 ## cycle 3 phase IDLE
+19:32:00.081 TX X,STOP
+19:32:01.082 ## no reply to X,STOP: sending it again
+19:32:01.096 TX X,STOP
+19:32:02.097 ## no reply to X,STOP: sending it again
+19:32:02.097 TX X,STOP
+19:32:03.098 TX H,1
+19:32:03.108 TX H,2
+19:32:03.119 TX H,3
+19:32:03.129 TX H,4
+19:32:03.139 TX H,5
+19:32:03.761 TX X,STOP
+19:32:04.762 ## no reply to X,STOP: sending it again
+19:32:04.763 TX X,STOP
+19:32:05.764 ## no reply to X,STOP: sending it again
+19:32:05.764 TX X,STOP
+19:32:08.773 ## end, unparsable RX lines: 0

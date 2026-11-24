@@ -1,0 +1,117 @@
+"""doctor.py — ตรวจความพร้อมทั้งระบบในคำสั่งเดียว (อ่านอย่างเดียว ไม่ขยับแขน)
+ใช้ก่อนเริ่มงานทุกครั้ง / หลังย้ายไป Pi / เวลาอะไรพังแล้วไม่รู้เริ่มดูตรงไหน
+ใช้:  python doctor.py            (--no-arm / --no-cam ข้ามส่วนที่ไม่ได้ต่อ)
+"""
+import os
+import sys
+
+OK, BAD, WARN = "[ok]  ", "[FAIL]", "[warn]"
+fails = 0
+
+
+def say(tag, msg):
+    global fails
+    fails += tag == BAD
+    print(tag, msg)
+
+
+# ---------- 1) Python + ไลบรารี ----------
+print("python", sys.version.split()[0])
+try:
+    import numpy as np
+    import cv2
+    say(OK, f"numpy {np.__version__}, opencv {cv2.__version__}")
+    if int(cv2.__version__.split(".")[0]) >= 5:
+        say(OK, 'OpenCV 5: ส่วนตรวจจับ/homography ทดสอบกับ 5.0.0 แล้ว (ส่วนเปิดกล้อง/หน้าต่างภาพยังต้องลองบนเครื่องจริง)')
+except Exception as e:
+    say(BAD, f"import numpy/cv2 ไม่ได้: {e}  ->  pip install -r requirements.txt")
+    raise SystemExit(1)
+try:
+    import serial
+    say(OK, f"pyserial {serial.__version__}")
+except Exception:
+    say(BAD, "ไม่มี pyserial  ->  pip install pyserial")
+
+import config as C
+import kinematics as K
+
+# ---------- 2) ไฟล์สอบเทียบ ----------
+for k, hint in (("JOINT_ZERO", "calib_zero.py"), ("SCAN_POSE", "teach_scan.py"), ("TABLE_PLANE", "calib_touch.py")):
+    say(OK if C.CALIBRATED[k] else BAD, f"{k} {'อยู่ใน calib.json' if C.CALIBRATED[k] else 'ยังไม่ได้วัด -> ' + hint}")
+say(OK if os.path.exists(C.HOMOGRAPHY_FILE) else BAD,
+    f"{C.HOMOGRAPHY_FILE} {'มี' if os.path.exists(C.HOMOGRAPHY_FILE) else 'ไม่มี -> calib_touch.py'}")
+say(OK if os.path.exists(C.INTRINSICS_FILE) else WARN,
+    f"{C.INTRINSICS_FILE} {'มี (แก้ distortion)' if os.path.exists(C.INTRINSICS_FILE) else 'ไม่มี (ไม่บังคับ; ทำถ้า RMS ของ calib_touch > 2 mm)'}")
+say(OK if C.PLACE_POSE else WARN, "PLACE_POSE " + ("สอนแล้ว" if C.PLACE_POSE else "ยังไม่สอน (ต้องใช้เฉพาะ --place) -> teach_place.py"))
+say(OK if C.GRIP_TICK_RANGE else WARN, "GRIP_TICK_RANGE " + (str(C.GRIP_TICK_RANGE) if C.GRIP_TICK_RANGE else "ยังไม่ตั้ง (ไม่ตรวจว่าหนีบได้บล็อกจริง) -> repeat_test.py"))
+say(OK if C.RAIL else WARN, "RAIL (รางนำสายพาน) " + ("สอนแล้ว: โปรแกรมเลี่ยงรางเอง" if C.RAIL else "ยังไม่สอน = ไม่ตรวจชนราง (ถ้าหยิบบนสายพานที่มีราง ต้องทำ) -> teach_rail.py"))
+say(OK if C.GRIPPER_OPEN_MM else WARN, "GRIPPER_OPEN_MM " + (f"{C.GRIPPER_OPEN_MM} mm" if C.GRIPPER_OPEN_MM else "ยังไม่วัด (หนีบด้านยาว 40 mm ในรางไม่ได้) -> teach_rail.py"))
+
+# ---------- 3) ค่าสอบเทียบสมเหตุสมผลไหม ----------
+for j in K.JOINTS5:
+    dev = (C.JOINT_ZERO[j] - 2048) / C.UNITS_PER_DEG
+    if j == "wrist_roll" and abs(dev) > 12:
+        # roll หมุนได้เกือบรอบ: ท่า L ของแขนนี้อยู่ปลายช่วง SAFE ได้ — IK ใช้คำตอบคู่แฝด +180° เอง (ไม่ใช่ข้อผิดพลาด)
+        lo, hi = C.MEGA_SAFE["wrist_roll"]
+        say(OK, f"JOINT_ZERO[wrist_roll]={C.JOINT_ZERO[j]:.0f} ({dev:+.0f}° จาก 2048) "
+                f"{'อยู่นอก' if not lo + C.LIMIT_MARGIN <= C.JOINT_ZERO[j] <= hi - C.LIMIT_MARGIN else 'ใน'}ช่วง SAFE {lo}-{hi}: "
+                "IK จะใช้ roll+180° เมื่อ q=0 สั่งไม่ได้ (ปกติ) — ก่อนเปิด torque ให้หมุน roll ด้วยมือให้อยู่ในช่วง SAFE")
+    elif abs(dev) > 12:
+        say(WARN, f"JOINT_ZERO[{j}] ห่างจาก 2048 ถึง {dev:+.0f}° — ตรวจท่า L ตอน calib_zero.py")
+a, b, c = C.TABLE_PLANE
+if abs(a) > 25 or abs(b) > 0.08 or abs(c) > 0.08:
+    say(WARN, f"TABLE_PLANE {a:.1f}, {b:.3f}, {c:.3f}: โต๊ะสูง/เอียงผิดปกติตามที่แขนวัด — ตรวจ calib_zero / BASE_Z_MM")
+try:
+    lo = {j: C.JOINT_LIMITS[j][0] for j in K.JOINTS5}
+    bad = [j for j in K.JOINTS5 if not (C.JOINT_LIMITS[j][0] <= C.SCAN_POSE[j] <= C.JOINT_LIMITS[j][1])]
+    say(BAD if bad else OK, f"SCAN_POSE {'นอกช่วง: ' + str(bad) if bad else 'อยู่ในช่วง SAFE'}")
+    n = 0
+    for x in range(100, 231, 10):
+        for y in range(-140, 141, 20):
+            try:
+                tz = K.table_z(x, y)
+                K.ik(x, y, tz + C.Z_GRASP_MM, 0)
+                K.ik(x, y, tz + C.Z_HOVER_MM, 0)
+                n += 1
+            except K.Unreachable:
+                pass
+    say(OK if n > 60 else WARN, f"IK: หยิบได้ {n}/210 จุดทดสอบในโซน x=100-230, y=±140 (ปกติ ~150+; น้อย = ค่าสอบเทียบพาเกินขอบข้อต่อ)")
+except Exception as e:
+    say(BAD, f"ตรวจ IK ไม่ได้: {e}")
+
+# ---------- 4) กล้อง ----------
+if "--no-cam" not in sys.argv:
+    try:
+        import camera
+        cap = camera.open_camera()
+        g = camera.grab(cap)
+        cap.release()
+        if g is None:
+            say(BAD, "เปิดกล้องได้แต่อ่านภาพไม่ได้")
+        else:
+            sharp = cv2.Laplacian(g, cv2.CV_64F).var()
+            say(OK, f"กล้อง {C.CAM_INDEX}: {g.shape[1]}x{g.shape[0]}, สว่างเฉลี่ย {g.mean():.0f}/255, ความคม {sharp:.0f}")
+            if (g.shape[1], g.shape[0]) != (C.CAM_W, C.CAM_H):
+                say(WARN, f"ขนาดภาพไม่ตรง config ({C.CAM_W}x{C.CAM_H}) — homography ใช้ได้กับขนาดเดิมตอนสอบเทียบเท่านั้น")
+            if g.mean() < 25 or g.mean() > 230:
+                say(WARN, "ภาพมืด/สว่างเกิน — ปรับ CAM_EXPOSURE_VAL หรือแสง")
+    except Exception as e:
+        say(BAD, f"กล้อง: {e}")
+
+# ---------- 5) แขน (อ่านอย่างเดียว) ----------
+if "--no-arm" not in sys.argv and C.ARM_BACKEND == "mega":
+    try:
+        from arm_select import make_arm
+        arm = make_arm()
+        arm.connect()
+        try:
+            rows = arm.status()
+        finally:
+            arm.disconnect(hold=False)
+        out = [f"{j}={v}" for j, v, lo, hi, ok in rows if not ok]
+        say(BAD if out else OK, "แขน: " + ("นอกช่วง " + ", ".join(out) + " -> wake_from_rest.py" if out else "ต่อได้ ทุกข้ออยู่ในช่วง"))
+    except Exception as e:
+        say(BAD, f"แขน: {e}")
+
+print("\nสรุป:", "พร้อม" if fails == 0 else f"มี {fails} รายการที่ต้องแก้ก่อน")
+sys.exit(1 if fails else 0)

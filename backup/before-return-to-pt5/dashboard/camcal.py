@@ -1,0 +1,282 @@
+# camcal.py - the dashboard's camera calibration (Control -> Calibrate), 2026-11-12.
+#
+# The operator: "make the calibrate mode in the dashboard in the camera node: label this colour, adjust the light and
+# else, and save". What it does:
+#   - reads / sets the camera's own controls (exposure, white balance, flicker, focus, ...) with v4l2-ctl. Those change
+#     the live picture AT ONCE (it is the camera itself); Save keeps them, vision puts them back at every start.
+#   - saves colour ranges, the cube-shape filter, the empty-belt brightness, the camera controls and the labelled
+#     samples into vision/vision_calibration_usb.json - the old file first goes to backup/vision/ (never deleted).
+#     vision_usb.py sees the new file within ~2 s and uses it without a restart.
+#   - undo = the newest backup comes back (the current file is backed up first, too).
+# Nothing here moves the robot. The ROI, the belt direction and the size are never changed from the dashboard.
+import datetime
+import glob
+import json
+import os
+import subprocess
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+PRISM = os.path.dirname(HERE)
+CALIB = os.path.join(PRISM, "vision", "vision_calibration_usb.json")
+BACKUP_DIR = os.path.join(PRISM, "backup", "vision")
+BACKUP_PREFIX = "vision_calibration_usb.json.before-dashboard-"
+CAMERA_GLOBS = ("/dev/v4l/by-id/*Astro_HD_Camera*-video-index0",       # the same order as vision_usb.py
+                "/dev/v4l/by-id/*H264_USB_Camera*-video-index0",
+                "/dev/v4l/by-id/usb-*-video-index0")
+# the controls the page may set (pan / tilt / zoom are left alone: they would move the picture away from the ROI)
+CONTROLS = ("auto_exposure", "exposure_time_absolute", "exposure_dynamic_framerate", "white_balance_automatic",
+            "white_balance_temperature", "power_line_frequency", "brightness", "contrast", "saturation", "hue",
+            "gamma", "sharpness", "backlight_compensation", "focus_automatic_continuous", "focus_absolute", "gain")
+# the order to apply them in: an "automatic" switch before the value it frees
+APPLY_ORDER = ("auto_exposure", "white_balance_automatic", "focus_automatic_continuous", "exposure_dynamic_framerate")
+SHAPE_KEYS = {"min_h": (5, 200), "min_area": (100, 20000), "exit_zone_u": (0, 854), "exit_min_area": (50, 20000),
+              "aspect_lo": (0.1, 1.0), "aspect_hi": (1.0, 10.0), "fill": (0.1, 0.95)}
+COLOR_NAMES = ("white", "black", "red", "orange", "yellow", "green", "cyan", "blue", "purple")
+
+
+def device():
+    if os.environ.get("VISION_CAMERA"):
+        return os.environ["VISION_CAMERA"]
+    for pat in CAMERA_GLOBS:
+        found = sorted(p for p in glob.glob(pat) if "RealSense" not in p)
+        if found:
+            return found[0]
+    return None
+
+
+def controls():
+    """[{name, type, min, max, step, default, value, inactive, menu: {n: label}}] of the controls the page may set."""
+    dev = device()
+    if not dev:
+        return None, []
+    try:
+        out = subprocess.run(["v4l2-ctl", "-d", dev, "-L"], capture_output=True, text=True, timeout=5).stdout
+    except (OSError, subprocess.TimeoutExpired):
+        return dev, []
+    res, cur = [], None
+    for line in out.splitlines():
+        s = line.strip()
+        if " : " in s and "(" in s:
+            head, _, rest = s.partition(" : ")
+            name, typ = head.split()[0], head[head.index("(") + 1:head.index(")")]
+            kv = {}
+            for tok in rest.split():
+                if "=" in tok:
+                    k, v = tok.split("=", 1)
+                    kv[k] = v
+            cur = None
+            if name in CONTROLS:
+                def num(k):
+                    try:
+                        return int(kv[k])
+                    except (KeyError, ValueError):
+                        return None
+                cur = {"name": name, "type": typ, "min": num("min"), "max": num("max"), "step": num("step"),
+                       "default": num("default"), "value": num("value"), "inactive": "inactive" in kv.get("flags", ""),
+                       "menu": {}}
+                if typ == "bool":
+                    cur["min"], cur["max"] = 0, 1
+                res.append(cur)
+        elif cur is not None and cur["type"] == "menu" and ":" in s and s.split(":")[0].strip().isdigit():
+            n, label = s.split(":", 1)
+            cur["menu"][n.strip()] = label.strip()
+    return dev, res
+
+
+def set_control(name, value):
+    if name not in CONTROLS:
+        raise ValueError(f"{name}: not a control the dashboard may set")
+    dev, cs = controls()
+    c = next((x for x in cs if x["name"] == name), None)
+    if not dev or c is None:
+        raise ValueError(f"{name}: this camera has no such control (or no camera)")
+    value = int(value)
+    if c["min"] is not None and c["max"] is not None:
+        value = max(c["min"], min(c["max"], value))
+    if c["type"] == "menu" and c["menu"] and str(value) not in c["menu"]:
+        raise ValueError(f"{name}: {value} is not one of {list(c['menu'])}")
+    r = subprocess.run(["v4l2-ctl", "-d", dev, "-c", f"{name}={value}"], capture_output=True, text=True, timeout=5)
+    if r.returncode != 0:
+        raise ValueError(f"v4l2-ctl: {(r.stderr or r.stdout).strip()}")
+    return value
+
+
+def read():
+    try:
+        with open(CALIB) as f:
+            data = json.load(f)
+    except (OSError, ValueError) as e:
+        data = {"error": str(e)}
+    dev, cs = controls()
+    return {"calib": data, "device": dev, "controls": cs, "backups": backups()[:10], "file": CALIB}
+
+
+def backups():
+    try:
+        return sorted((f for f in os.listdir(BACKUP_DIR) if f.startswith(BACKUP_PREFIX)), reverse=True)
+    except OSError:
+        return []
+
+
+def _check_colors(colors):
+    out = {}
+    for name, rngs in (colors or {}).items():
+        if name not in COLOR_NAMES:
+            raise ValueError(f"unknown colour {name}")
+        if not isinstance(rngs, list) or not 1 <= len(rngs) <= 2:
+            raise ValueError(f"{name}: one or two ranges")
+        clean = []
+        for lo, hi in rngs:
+            lo, hi = [int(x) for x in lo], [int(x) for x in hi]
+            if len(lo) != 3 or len(hi) != 3:
+                raise ValueError(f"{name}: a range needs [H,S,V] twice")
+            for i, top in enumerate((179, 255, 255)):
+                if not 0 <= lo[i] <= hi[i] <= top:
+                    raise ValueError(f"{name}: lower <= upper inside 0..{top} (got {lo} .. {hi})")
+            clean.append([lo, hi])
+        out[name] = clean
+    return out
+
+
+def _check_shape(shape):
+    out = {}
+    for k, v in (shape or {}).items():
+        if k not in SHAPE_KEYS:
+            raise ValueError(f"shape: unknown {k}")
+        lo, hi = SHAPE_KEYS[k]
+        v = float(v)
+        if not lo <= v <= hi:
+            raise ValueError(f"shape {k}: {v} outside {lo}..{hi}")
+        out[k] = v
+    if out.get("aspect_lo", 0) >= out.get("aspect_hi", 99):
+        raise ValueError("shape: aspect_lo must be below aspect_hi")
+    return out
+
+
+def _diff(old, new, path=""):
+    out = []
+    keys = sorted(set(old) | set(new)) if isinstance(old, dict) and isinstance(new, dict) else None
+    if keys is None:
+        if old != new:
+            out.append(f"{path or '(file)'}: {json.dumps(old)} -> {json.dumps(new)}")
+        return out
+    for k in keys:
+        if k == "samples":                                   # samples only grow: say how many, not every number
+            a, b = old.get(k) or {}, new.get(k) or {}
+            for c in sorted(set(a) | set(b)):
+                if len(a.get(c) or []) != len(b.get(c) or []):
+                    out.append(f"samples {c}: {len(a.get(c) or [])} -> {len(b.get(c) or [])}")
+            continue
+        out += _diff(old.get(k), new.get(k), f"{path}.{k}" if path else k) if isinstance(old.get(k), dict) and isinstance(new.get(k), dict) \
+            else ([f"{path + '.' if path else ''}{k}: {json.dumps(old.get(k))} -> {json.dumps(new.get(k))}"] if old.get(k) != new.get(k) else [])
+    return out
+
+
+def merged(body):
+    """The file as it would be after Save (the ROI, belt, size and enabled colours are kept from the current file)."""
+    with open(CALIB) as f:
+        old = json.load(f)
+    new = json.loads(json.dumps(old))
+    if "colors" in body:
+        new["colors"] = {**(old.get("colors") or {}), **_check_colors(body["colors"])}
+        new.pop("hsv", None) if "white" in body["colors"] else None   # the old v2 "hsv" would override white again
+    if "shape" in body:
+        new["shape"] = _check_shape(body["shape"])
+    if "camera" in body:
+        cam = {}
+        for k, v in (body["camera"] or {}).items():
+            if k not in CONTROLS:
+                raise ValueError(f"camera: {k} may not be saved")
+            cam[k] = int(v)
+        new["camera"] = cam
+    if body.get("belt_v") is not None:
+        bv = float(body["belt_v"])
+        if not 5 <= bv <= 255:
+            raise ValueError("belt_v must be 5..255")
+        new["belt_v"] = round(bv, 1)
+    if "roi" in body:                                        # the working area: 3-8 corners inside the picture, not tiny
+        w, h = (old.get("size") or [854, 480])[:2]
+        pts = [[int(round(float(x))), int(round(float(y)))] for x, y in (body["roi"] or [])]
+        if not 3 <= len(pts) <= 8:
+            raise ValueError("working area: 3 to 8 corners")
+        if any(not (0 <= x <= w and 0 <= y <= h) for x, y in pts):
+            raise ValueError(f"working area: every corner must be inside the picture (0..{w} x 0..{h})")
+        area = abs(sum(pts[i][0] * pts[(i + 1) % len(pts)][1] - pts[(i + 1) % len(pts)][0] * pts[i][1] for i in range(len(pts)))) / 2
+        if area < 0.02 * w * h:
+            raise ValueError("working area: too small (less than 2 % of the picture)")
+        new["roi"] = pts
+    if "samples" in body:
+        s = {}
+        for k, arr in (body["samples"] or {}).items():
+            if k not in COLOR_NAMES + ("light",):
+                raise ValueError(f"samples: unknown label {k}")
+            s[k] = [[int(x) for x in hsv][:3] for hsv in arr][-200:]
+        new["samples"] = s
+    new["saved_by"] = {"by": "dashboard", "at": datetime.datetime.now().isoformat(timespec="seconds")}
+    return old, new
+
+
+def preview(body):
+    old, new = merged(body)
+    return [d for d in _diff(old, new) if not d.startswith("saved_by")]
+
+
+def save(body):
+    old, new = merged(body)
+    os.makedirs(BACKUP_DIR, exist_ok=True)
+    stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    bak = os.path.join(BACKUP_DIR, BACKUP_PREFIX + stamp)
+    with open(bak, "w") as f:
+        json.dump(old, f, indent=1)
+    tmp = CALIB + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump(new, f, indent=1)
+    os.replace(tmp, CALIB)                                   # vision never reads half a file
+    return {"saved": True, "backup": bak, "changes": [d for d in _diff(old, new) if not d.startswith("saved_by")]}
+
+
+def undo():
+    b = backups()
+    if not b:
+        raise ValueError("no dashboard backup to go back to")
+    src = os.path.join(BACKUP_DIR, b[0])
+    with open(src) as f:
+        back = json.load(f)
+    with open(CALIB) as f:
+        cur = json.load(f)
+    stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    with open(os.path.join(BACKUP_DIR, f"vision_calibration_usb.json.before-undo-{stamp}"), "w") as f:
+        json.dump(cur, f, indent=1)
+    tmp = CALIB + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump(back, f, indent=1)
+    os.replace(tmp, CALIB)
+    os.rename(src, src.replace(BACKUP_PREFIX, "vision_calibration_usb.json.restored-dashboard-"))   # kept, not deleted
+    return {"restored": b[0], "changes": _diff(cur, back)}
+
+
+# ---- the empty-workspace picture (2026-11-13): vision compares every frame with it; something big that is not in it (a
+# hand) while the arm is parked = a FAULT (orchestrator/guardian.py). Saved as vision/empty_reference.jpg.
+REF_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vision", "empty_reference.jpg")
+
+
+def reference_info():
+    try:
+        return {"exists": True, "saved": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(os.path.getmtime(REF_PATH)))}
+    except OSError:
+        return {"exists": False}
+
+
+def reference_save(jpeg):
+    if os.path.exists(REF_PATH):                            # the old one is kept (nothing is deleted)
+        os.replace(REF_PATH, REF_PATH + "." + time.strftime("%Y%m%d_%H%M%S") + ".old")
+    with open(REF_PATH, "wb") as fh:
+        fh.write(jpeg)
+    return reference_info()
+
+
+def reference_clear():
+    if os.path.exists(REF_PATH):
+        os.replace(REF_PATH, REF_PATH + "." + time.strftime("%Y%m%d_%H%M%S") + ".old")
+    return reference_info()

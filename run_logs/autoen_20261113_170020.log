@@ -1,0 +1,31 @@
+gripper calibration /home/mekkhram/Desktop/PRISM_mek/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+[mqtt] belt connected to localhost:1883: Success
+[mqtt] arm connected to localhost:1883: Success
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261113_170023.csv
+       riff_logs/autoen_sets_20261113_170023.csv
+       riff_logs/autoen_cycles_20261113_170023.csv
+       riff_logs/autoen_thresholds_20261113_170023.csv
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM_mek/autoencoder/auto_en_new.py", line 3180, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/mekkhram/Desktop/PRISM_mek/autoencoder/auto_en_new.py", line 3169, in main
+    link.close()
+  File "/home/mekkhram/Desktop/PRISM_mek/autoencoder/auto_en_new.py", line 351, in close
+    self.belt_cmd("STOP")                           # never leave the belt running
+    ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM_mek/autoencoder/auto_en_new.py", line 208, in belt_cmd
+    return self._belt_cmd(cmd, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM_mek/autoencoder/auto_en_new.py", line 217, in _belt_cmd
+    r = self.replies.get(timeout=timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/queue.py", line 180, in get
+    self.not_empty.wait(remaining)
+  File "/usr/local/lib/python3.11/threading.py", line 331, in wait
+    gotit = waiter.acquire(True, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

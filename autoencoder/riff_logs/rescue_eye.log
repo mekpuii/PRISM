@@ -1,0 +1,35 @@
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/arm_cam/rescue_eye.py", line 190, in <module>
+    main()
+  File "/home/mekkhram/Desktop/PRISM/arm_cam/rescue_eye.py", line 161, in main
+    line = sys.stdin.readline()                     # line by line (a for-loop over stdin reads ahead in blocks)
+           ^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/arm_cam/rescue_eye.py", line 190, in <module>
+    main()
+  File "/home/mekkhram/Desktop/PRISM/arm_cam/rescue_eye.py", line 161, in main
+    line = sys.stdin.readline()                     # line by line (a for-loop over stdin reads ahead in blocks)
+           ^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/arm_cam/rescue_eye.py", line 190, in <module>
+    main()
+  File "/home/mekkhram/Desktop/PRISM/arm_cam/rescue_eye.py", line 161, in main
+    line = sys.stdin.readline()                     # line by line (a for-loop over stdin reads ahead in blocks)
+           ^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/arm_cam/rescue_eye.py", line 257, in <module>
+    main()
+  File "/home/mekkhram/Desktop/PRISM/arm_cam/rescue_eye.py", line 226, in main
+    line = sys.stdin.readline()                     # line by line (a for-loop over stdin reads ahead in blocks)
+           ^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/arm_cam/rescue_eye.py", line 257, in <module>
+    main()
+  File "/home/mekkhram/Desktop/PRISM/arm_cam/rescue_eye.py", line 226, in main
+    line = sys.stdin.readline()                     # line by line (a for-loop over stdin reads ahead in blocks)
+           ^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

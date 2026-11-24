@@ -1,0 +1,207 @@
+#!/usr/bin/env python3
+"""
+grip_calibrate.py -- teach the gripper (J6) its open / fast-close / contact positions with the keyboard.
+
+  cd ~/Desktop/PRISM/autoencoder && python3.11 grip_calibrate.py        (autoen must NOT be running: it owns the port)
+
+Only J6 moves, and only when you press a key. Joints 1-5 hold where they are.
+  o / c     open / close 10 ticks (~0.9 deg)        O / C   open / close 50 ticks
+  Enter     remember this position for the step     s       skip the step (keep the saved value)
+  g         (fast step only) go to the suggested position = contact + FAST_MARGIN_TICKS
+  q         quit, nothing saved
+
+Steps
+  1. open     as wide as the gripper should open before every grip (must clear a cube with margin)
+  2. contact  hold a cube centred between the jaws, close until both jaws just touch it
+  3. fast     back off to where the jaws are ~3-5 mm from the cube, NOT touching (the fast pre-close
+              move goes here at full speed with no stall protection, so it must never reach the cube)
+
+Touch guard: after every close step, if J6 stays more than TOUCH_TICKS short of its target the jaw is
+pressing on something -- the target is pulled back to where it stopped, so it never keeps squeezing.
+
+Saved to gripper_cal.json next to this file (old values kept in "history"). auto_en_new.py loads it at
+start as the defaults of --open-pos, --grip-fast-to-pos, --grip-pos (= the contact position: the gripper
+closes exactly there) and --grip-contact-min-deg / --grip-contact-max-deg (the command line still wins).
+"""
+import argparse
+import json
+import os
+import select
+import sys
+import termios
+import time
+import tty
+from datetime import datetime
+
+from auto_en_new import Link, find_serial_port
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_FILE = os.path.join(HERE, "gripper_cal.json")
+TICKS_PER_DEG = 4096.0 / 360.0
+J6_MIN, J6_MAX = 1800, 3100            # autoen's limits for open_pos / grip_fast_to_pos (firmware SAFE range is wider)
+MOVE_SPEED = 300                        # ticks/s for the taught moves
+TOUCH_TICKS = 12                        # stuck this far short of the target = touching
+SETTLE_S = 0.4
+FAST_MARGIN_TICKS = 60                  # suggested fast-close stop: ~5 deg before contact
+MIN_FAST_GAP = 30                       # fast-close must stay at least this far above contact
+MIN_OPEN_GAP = 40                       # open must be at least this far above fast-close
+WINDOW_DEG = 5.0                        # block window = contact +- this (clean grips 181.8-182 deg, air grips 165-172)
+AIR_GRIP_MAX_DEG = 150.0                # a window reaching below this would accept air grips. 2026-10-25 re-teach: contact
+                                        # 176.8 deg; user set the window floor to 150 deg (air grips may now fall inside: the IR check guards)
+
+
+def deg(ticks):
+    return ticks / TICKS_PER_DEG
+
+
+class Keys:
+    """Single key presses without Enter (cbreak mode), restored on exit."""
+    def __enter__(self):
+        self.fd = sys.stdin.fileno()
+        self.old = termios.tcgetattr(self.fd)
+        tty.setcbreak(self.fd)
+        return self
+
+    def __exit__(self, *exc):
+        termios.tcsetattr(self.fd, termios.TCSADRAIN, self.old)
+
+    def get(self, timeout=0.2):
+        r, _, _ = select.select([sys.stdin], [], [], timeout)
+        return sys.stdin.read(1) if r else None
+
+
+class Gripper:
+    def __init__(self, link):
+        self.link = link
+        self.target = None
+
+    def pos(self):
+        for _ in range(20):
+            p = self.link.servo_pos(6)
+            if p is not None:
+                return p
+            time.sleep(0.05)
+        raise RuntimeError("no J6 position from the Mega")
+
+    def move(self, target):
+        """Move J6 to target; if it stops short while closing, hold where it stopped. -> (position, touched)"""
+        target = max(J6_MIN, min(J6_MAX, int(target)))
+        start = self.pos()
+        self.link.write(f"P,6,{target},{MOVE_SPEED},8")
+        self.target = target
+        time.sleep(SETTLE_S + abs(target - start) / MOVE_SPEED)
+        p = self.pos()
+        if target < start and p - target > TOUCH_TICKS:    # closing (lower ticks) but blocked
+            self.link.write(f"P,6,{p},{MOVE_SPEED},8")      # stop pushing: hold where it is
+            self.target = p
+            return p, True
+        return p, False
+
+
+def teach(name, text, grip, keys, suggest=None):
+    print(f"\n=== {name}: {text}")
+    if suggest is not None:
+        print(f"    suggested {suggest} ticks ({deg(suggest):.1f} deg): press g to go there")
+    print("    o/c = 10 ticks, O/C = 50, Enter = remember, s = skip, q = quit")
+    step = {"o": 10, "c": -10, "O": 50, "C": -50}
+    p = grip.pos()
+    print(f"    J6 now {p} ticks ({deg(p):.1f} deg)")
+    while True:
+        k = keys.get()
+        if k is None:
+            continue
+        if k == "q":
+            raise KeyboardInterrupt
+        if k == "s":
+            print("    skipped")
+            return None
+        if k in ("\n", "\r"):
+            p = grip.pos()
+            print(f"    remembered {name} = {p} ticks ({deg(p):.1f} deg)")
+            return p
+        if k == "g" and suggest is not None:
+            p, touched = grip.move(suggest)
+        elif k in step:
+            p, touched = grip.move((grip.target if grip.target is not None else grip.pos()) + step[k])
+        else:
+            continue
+        print(f"    J6 {p} ticks ({deg(p):.1f} deg)" + ("   TOUCH - stopped, not squeezing" if touched else ""))
+
+
+def check(cal):
+    """Problems that make the taught values unsafe or useless for autoen."""
+    o, f, c = cal["open_pos"], cal["grip_fast_to_pos"], cal["contact_pos"]
+    bad = []
+    if not f >= c + MIN_FAST_GAP:
+        bad.append(f"fast-close {f} must stay >= {MIN_FAST_GAP} ticks above contact {c} (it has no stall protection)")
+    if not o >= f + MIN_OPEN_GAP:
+        bad.append(f"open {o} must be >= {MIN_OPEN_GAP} ticks above fast-close {f}")
+    if cal["grip_contact_min_deg"] < AIR_GRIP_MAX_DEG:
+        bad.append(f"block window starts at {cal['grip_contact_min_deg']:.1f} deg: below {AIR_GRIP_MAX_DEG} it accepts air grips")
+    return bad
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="teach the gripper open / contact / fast-close positions")
+    ap.add_argument("--port", default=os.environ.get("ARM_SERIAL_PORT"), help="default: auto-detect")
+    ap.add_argument("--file", default=DEFAULT_FILE)
+    a = ap.parse_args(argv)
+
+    old = {}
+    if os.path.exists(a.file):
+        with open(a.file, encoding="utf-8") as f:
+            old = json.load(f)
+        print(f"current calibration ({old.get('measured_at')}): open {old.get('open_pos')}, "
+              f"fast {old.get('grip_fast_to_pos')}, contact {old.get('contact_pos')}")
+    port = a.port or find_serial_port()
+    print(f"Mega port: {port} (opening it resets the Mega; wait ~3 s)")
+    link = Link(port)
+    try:
+        link.wait_ready()
+        grip = Gripper(link)
+        input("Only J6 (gripper) will move, and only on your keys. Hands clear of the jaws? Enter = start: ")
+        with Keys() as keys:
+            got = {
+                "open_pos": teach("open", "open as wide as it should open before every grip", grip, keys),
+                "contact_pos": teach("contact", "hold a cube centred in the jaws, close (c) until both jaws just touch it",
+                                     grip, keys),
+            }
+            c = got["contact_pos"] if got["contact_pos"] is not None else old.get("contact_pos")
+            got["grip_fast_to_pos"] = teach("fast", "open back to ~3-5 mm from the cube on each side, NOT touching",
+                                            grip, keys, suggest=c + FAST_MARGIN_TICKS if c is not None else None)
+    except KeyboardInterrupt:
+        print("\nquit: nothing saved")
+        return 1
+    finally:
+        link.close()
+
+    cal = {k: (v if v is not None else old.get(k)) for k, v in got.items()}
+    if any(v is None for v in cal.values()):
+        print("a step was skipped and there is no saved value for it: nothing saved")
+        return 1
+    cd = deg(cal["contact_pos"])
+    cal.update(grip_pos=cal["contact_pos"],         # autoen closes exactly to here (no stall-crawl)
+               contact_deg=round(cd, 1), grip_contact_min_deg=round(cd - WINDOW_DEG, 1),
+               grip_contact_max_deg=round(cd + WINDOW_DEG, 1), measured_at=datetime.now().isoformat(timespec="seconds"))
+    print(f"\nopen {cal['open_pos']} ({deg(cal['open_pos']):.1f} deg)  fast {cal['grip_fast_to_pos']} "
+          f"({deg(cal['grip_fast_to_pos']):.1f} deg)  contact {cal['contact_pos']} ({cd:.1f} deg)  "
+          f"block window {cal['grip_contact_min_deg']}-{cal['grip_contact_max_deg']} deg")
+    bad = check(cal)
+    for b in bad:
+        print("  NOT SAVED:", b)
+    if bad:
+        return 1
+    history = old.pop("history", [])
+    if old:
+        history.append(old)
+    cal["history"] = history
+    tmp = a.file + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(cal, f, indent=2)
+    os.replace(tmp, a.file)
+    print(f"saved {a.file} -- restart autoen to use it")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,19 @@
+feeder preset fd2: back 165, ready 165 (1000 ms), push 15 (hold 800 ms) - shorter stroke: back 165, push to 15 (2026-11-12 21:45, the operator: 'fd 2 as 15-165')
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+[mqtt] belt connected to localhost:1883: Success
+[mqtt] arm connected to localhost:1883: Success
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261113_010323.csv
+       riff_logs/autoen_sets_20261113_010323.csv
+       riff_logs/autoen_cycles_20261113_010323.csv
+       riff_logs/autoen_thresholds_20261113_010323.csv
+settings changed from the web page: {'rpm': 20.0, 'arm_speed': 1.5, 'carry_speed': 1.5, 'arrive_timeout': 25.0}
+set 1/2 cycle 1/6  OK 29.9s 
+set 1/2 cycle 2/6  OK 52.5s 
+set 1/2 cycle 3/6  NO_BLOCK 75.3s flow: the block fed for this pick never came
+Set 1 (01:03:24-01:08:28): J1: temp max 34C, current avg 1 / peak 26 mA; J2: temp max 34C, current avg 5 / peak 104 mA; J3: temp max 36C, current avg 11 / peak 117 mA; J4: temp max 37C, current avg 4 / peak 20 mA; J5: temp max 37C, current avg 1 / peak 20 mA; J6: temp max 36C, current avg 3 / peak 26 mA; Belt: temp max 26C, current avg 61 / peak 315 mA; ARM TOTAL: servo volt min 12.0 V, summed current avg 24 / peak 182 mA
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+stopped: stopped by the operator  (unparsable RX lines: 0)

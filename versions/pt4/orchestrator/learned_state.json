@@ -1,0 +1,118 @@
+{
+ "_doc": "cycles counted live by optimize.py on top of model.json",
+ "configs": [
+  {
+   "rpm": 8.0,
+   "arm_speed": 1.0,
+   "n": 1,
+   "ok": 0,
+   "j_sum": 0.0,
+   "j_n": 0,
+   "t_sum": 0.0,
+   "t_n": 0
+  },
+  {
+   "rpm": 15.0,
+   "arm_speed": 1.5,
+   "n": 8,
+   "ok": 6,
+   "j_sum": 46.4,
+   "j_n": 2,
+   "t_sum": 0.0,
+   "t_n": 0
+  },
+  {
+   "rpm": 15.0,
+   "arm_speed": 2.0,
+   "n": 1,
+   "ok": 0,
+   "j_sum": 0.0,
+   "j_n": 0,
+   "t_sum": 0.0,
+   "t_n": 0
+  },
+  {
+   "rpm": 20.0,
+   "arm_speed": 1.0,
+   "n": 10,
+   "ok": 7,
+   "j_sum": 62.4,
+   "j_n": 6,
+   "t_sum": 0.0,
+   "t_n": 0
+  },
+  {
+   "rpm": 20.0,
+   "arm_speed": 1.5,
+   "n": 273,
+   "ok": 239,
+   "j_sum": 3416.9,
+   "j_n": 204,
+   "t_sum": 1566.9,
+   "t_n": 97
+  }
+ ],
+ "frontier_bans": {},
+ "feeder": {
+  "moved": 169,
+  "by_phase": {
+   "TRANSPORT": [
+    12,
+    25
+   ],
+   "GRIP": [
+    35,
+    2
+   ],
+   "STANDBY": [
+    1,
+    1
+   ],
+   "IDLE": [
+    1,
+    0
+   ],
+   "RELEASE": [
+    0,
+    2
+   ],
+   "HOME": [
+    3,
+    0
+   ],
+   "CARRY_DOWN": [
+    0,
+    1
+   ]
+  },
+  "push_ms": 800,
+  "push_fail_ms": 300
+ },
+ "tuner": {
+  "champ": {
+   "gap_mm": 60.0,
+   "late": 1.35
+  },
+  "tries": {
+   "gap_mm": {},
+   "late": {}
+  },
+  "history": [],
+  "picks": 9
+ },
+ "camera": {
+  "record": [
+   0,
+   1,
+   1,
+   1,
+   1,
+   1,
+   0,
+   1,
+   0,
+   1
+  ],
+  "saved": 1794468388
+ }
+}

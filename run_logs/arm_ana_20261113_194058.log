@@ -1,0 +1,815 @@
+[arm-analyzer] up. broker localhost:1883, db arm_analyzer.db, thresholds built-in defaults (run --write-thresholds or --calibrate to make the file). Ctrl+C to stop.
+[arm-analyzer] connected to broker: Success
+[19:41:07] NO_DATA    -> IDLE        (at home, gripper holding)
+[19:41:10] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:41:20] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:41:23] IDLE       -> CARRYING    (via home)
+[19:41:24] CARRYING   -> PICKING     (gripper holding)
+[19:41:30] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:41:37] PICKING    -> CARRYING    (passing home, gripper closed)
+[19:41:38] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.5 s, limit 26)
+[19:41:39] CONDITION J1 current 6 mA in CARRYING: WARN -> OK (held 0.5 s, limit 26)
+[19:41:39] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:41:40] state=PLACING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:41:42] PLACING    -> CARRYING    (to right_bin)
+[19:41:45] CARRYING   -> PICKING     (gripper holding)
+[19:41:49] PICKING    -> CARRYING    (via home)
+[19:41:50] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:41:54] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.5 s, limit 26)
+[19:41:55] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:41:55] CONDITION J1 current 0 mA in PLACING: WARN -> OK (held 0.6 s, limit 19.5)
+[19:41:55] CONDITION J5 current 20 mA in PLACING: OK -> WARN (held 0.6 s, limit 19.5)
+[19:41:56] CONDITION J5 current 0 mA in PLACING: WARN -> OK (held 0.51 s, limit 19.5)
+[19:41:58] PLACING    -> CARRYING    (to right_bin)
+[19:42:00] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:42:01] CARRYING   -> PICKING     (gripper holding)
+[19:42:05] PICKING    -> CARRYING    (leaving pick pose)
+[19:42:07] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.5 s, limit 26)
+[19:42:08] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:42:08] CONDITION J1 current 0 mA in PLACING: WARN -> OK (held 0.51 s, limit 19.5)
+[19:42:10] PLACING    -> CARRYING    (to right_bin)
+[19:42:10] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:42:13] CARRYING   -> PICKING     (gripper holding)
+[19:42:17] PICKING    -> CARRYING    (via home)
+[19:42:20] CONDITION J3 current 110 mA in CARRYING: OK -> WARN (held 0.51 s, limit 110.5)
+[19:42:20] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=J3.current=WARN
+[19:42:21] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:42:22] CONDITION J3 current 6 mA in PLACING: WARN -> OK (held 0.51 s, limit 58.5)
+[19:42:24] PLACING    -> CARRYING    (to right_bin)
+[19:42:27] CARRYING   -> PICKING     (gripper holding)
+[19:42:30] PICKING    -> CARRYING    (via home)
+[19:42:30] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:42:33] CARRYING   -> PLACING     (left_bin, gripper closed)
+[19:42:35] PLACING    -> CARRYING    (to left_bin)
+[19:42:38] CARRYING   -> PICKING     (gripper holding)
+[19:42:40] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:42:40] PICKING    -> CARRYING    (via home)
+[19:42:43] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:42:43] CONDITION J3 current 104 mA in PLACING: OK -> ALARM (held 0.5 s, limit 84.5)
+[19:42:44] CONDITION J3 current 6 mA in PLACING: ALARM -> OK (held 0.51 s, limit 84.5)
+[19:42:46] PLACING    -> CARRYING    (to right_bin)
+[19:42:50] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:42:52] CARRYING   -> PICKING     (gripper holding)
+[19:42:55] PICKING    -> CARRYING    (via home)
+[19:42:56] CONDITION J6 current 13 mA in CARRYING: OK -> WARN (held 0.51 s, limit 13)
+[19:42:58] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:42:58] CONDITION J6 current 13 mA in PLACING: WARN -> OK (held 0.5 s, limit 45.5)
+[19:43:00] state=PLACING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:43:00] PLACING    -> CARRYING    (to right_bin)
+[19:43:03] CARRYING   -> PICKING     (gripper holding)
+[19:43:06] PICKING    -> CARRYING    (via home)
+[19:43:07] CONDITION J6 current 13 mA in CARRYING: OK -> WARN (held 0.51 s, limit 13)
+[19:43:08] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.51 s, limit 26)
+[19:43:09] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:43:09] CONDITION J1 current 0 mA in PLACING: WARN -> OK (held 0.51 s, limit 19.5)
+[19:43:09] CONDITION J3 current 91 mA in PLACING: OK -> ALARM (held 0.7 s, limit 84.5)
+[19:43:09] CONDITION J6 current 13 mA in PLACING: WARN -> OK (held 0.7 s, limit 45.5)
+[19:43:10] state=PLACING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=J3.current=ALARM
+[19:43:10] CONDITION J3 current 6 mA in PLACING: ALARM -> OK (held 0.52 s, limit 84.5)
+[19:43:12] PLACING    -> CARRYING    (to right_bin)
+[19:43:15] CARRYING   -> PICKING     (gripper holding)
+[19:43:18] PICKING    -> CARRYING    (via home)
+[19:43:20] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:43:21] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:43:24] PLACING    -> CARRYING    (to right_bin)
+[19:43:27] CARRYING   -> PICKING     (gripper holding)
+[19:43:30] PICKING    -> CARRYING    (via home)
+[19:43:30] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:43:33] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:43:35] PLACING    -> CARRYING    (to right_bin)
+[19:43:39] CARRYING   -> PICKING     (gripper holding)
+[19:43:40] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:43:42] PICKING    -> CARRYING    (via home)
+[19:43:45] CARRYING   -> PLACING     (left_bin, gripper closed)
+[19:43:47] PLACING    -> CARRYING    (to left_bin)
+[19:43:50] CARRYING   -> PICKING     (gripper holding)
+[19:43:50] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:43:53] PICKING    -> CARRYING    (via home)
+[19:43:55] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:43:56] CONDITION J3 current 91 mA in PLACING: OK -> ALARM (held 0.51 s, limit 84.5)
+[19:43:56] CONDITION J3 current 0 mA in PLACING: ALARM -> OK (held 0.51 s, limit 84.5)
+[19:43:58] PLACING    -> CARRYING    (to right_bin)
+[19:44:00] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:44:02] CARRYING   -> PICKING     (gripper holding)
+[19:44:05] PICKING    -> CARRYING    (via home)
+[19:44:06] CARRYING   -> IDLE        (at home, gripper closed)
+[19:44:06] CYCLE PARTIAL 163.0 s -> right_bin  J1 current WARN; J3 current ALARM; J5 current WARN; J6 current WARN
+[19:44:06] IDLE       -> CARRYING    (via home)
+[19:44:08] CARRYING   -> PLACING     (left_bin, gripper closed)
+[19:44:10] PLACING    -> CARRYING    (to left_bin)
+[19:44:10] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:44:13] CARRYING   -> PICKING     (gripper holding)
+[19:44:16] PICKING    -> CARRYING    (via home)
+[19:44:18] CONDITION J6 current 13 mA in CARRYING: OK -> WARN (held 0.5 s, limit 13)
+[19:44:19] CARRYING   -> PLACING     (left_bin, gripper closed)
+[19:44:19] CONDITION J6 current 26 mA in PLACING: WARN -> OK (held 0.51 s, limit 45.5)
+[19:44:21] state=PLACING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:44:21] PLACING    -> CARRYING    (to left_bin)
+[19:44:24] CARRYING   -> PICKING     (gripper holding)
+[19:44:26] PICKING    -> CARRYING    (via home)
+[19:44:29] CARRYING   -> PLACING     (left_bin, gripper closed)
+[19:44:31] state=PLACING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:44:31] PLACING    -> CARRYING    (to left_bin)
+[19:44:34] CARRYING   -> PICKING     (gripper holding)
+[19:44:37] PICKING    -> CARRYING    (via home)
+[19:44:41] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:44:41] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:44:44] PLACING    -> CARRYING    (to right_bin)
+[19:44:47] CARRYING   -> PICKING     (gripper holding)
+[19:44:50] PICKING    -> CARRYING    (via home)
+[19:44:50] CONDITION J6 current 13 mA in CARRYING: OK -> WARN (held 0.5 s, limit 13)
+[19:44:51] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=J6.current=WARN
+[19:44:51] CARRYING   -> IDLE        (at home, gripper closed)
+[19:44:51] CYCLE PARTIAL 44.33 s -> left_bin  J6 current WARN
+[19:44:51] IDLE       -> CARRYING    (via home)
+[19:44:52] CONDITION J6 current 6 mA in CARRYING: WARN -> OK (held 0.51 s, limit 13)
+[19:44:53] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:44:55] PLACING    -> CARRYING    (to right_bin)
+[19:44:59] CARRYING   -> PICKING     (gripper holding)
+[19:45:01] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:45:02] PICKING    -> CARRYING    (via home)
+[19:45:05] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:45:07] PLACING    -> CARRYING    (to right_bin)
+[19:45:11] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:45:11] CARRYING   -> PICKING     (gripper holding)
+[19:45:14] PICKING    -> CARRYING    (leaving pick pose)
+[19:45:15] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.51 s, limit 26)
+[19:45:16] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:45:16] CONDITION J1 current 6 mA in PLACING: WARN -> OK (held 0.51 s, limit 19.5)
+[19:45:16] CONDITION J3 current 84 mA in PLACING: OK -> ALARM (held 0.52 s, limit 84.5)
+[19:45:16] CONDITION J5 current 20 mA in PLACING: OK -> WARN (held 0.52 s, limit 19.5)
+[19:45:17] CONDITION J5 current 0 mA in PLACING: WARN -> OK (held 0.52 s, limit 19.5)
+[19:45:17] CONDITION J3 current 6 mA in PLACING: ALARM -> OK (held 0.6 s, limit 84.5)
+[19:45:19] PLACING    -> CARRYING    (to right_bin)
+[19:45:21] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:45:22] CARRYING   -> PICKING     (gripper holding)
+[19:45:25] PICKING    -> CARRYING    (via home)
+[19:45:27] CARRYING   -> PLACING     (left_bin, gripper closed)
+[19:45:29] PLACING    -> CARRYING    (to left_bin)
+[19:45:31] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:45:32] CARRYING   -> PICKING     (gripper holding)
+[19:45:35] PICKING    -> CARRYING    (via home)
+[19:45:38] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:45:38] CONDITION J3 current 78 mA in PLACING: OK -> WARN (held 0.51 s, limit 58.5)
+[19:45:39] CONDITION J3 current 6 mA in PLACING: WARN -> OK (held 0.51 s, limit 58.5)
+[19:45:40] PLACING    -> CARRYING    (to right_bin)
+[19:45:41] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:45:43] CARRYING   -> PICKING     (gripper holding)
+[19:45:46] PICKING    -> CARRYING    (via home)
+[19:45:48] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.5 s, limit 26)
+[19:45:48] CONDITION J1 current 6 mA in CARRYING: WARN -> OK (held 0.5 s, limit 26)
+[19:45:49] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:45:51] state=PLACING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:45:51] PLACING    -> CARRYING    (to right_bin)
+[19:45:54] CARRYING   -> PICKING     (gripper holding)
+[19:45:57] PICKING    -> CARRYING    (via home)
+[19:45:58] CONDITION J5 current 26 mA in CARRYING: OK -> WARN (held 0.51 s, limit 26)
+[19:45:59] CONDITION J5 current 13 mA in CARRYING: WARN -> OK (held 0.51 s, limit 26)
+[19:46:00] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:46:01] state=PLACING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:46:02] PLACING    -> CARRYING    (to right_bin)
+[19:46:06] CARRYING   -> PICKING     (gripper closing)
+[19:46:08] PICKING    -> CARRYING    (via home)
+[19:46:11] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:46:11] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:46:14] PLACING    -> CARRYING    (to right_bin)
+[19:46:17] CARRYING   -> PICKING     (gripper closing)
+[19:46:19] PICKING    -> CARRYING    (via home)
+[19:46:21] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:46:21] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:46:24] PLACING    -> CARRYING    (to right_bin)
+[19:46:27] CARRYING   -> PICKING     (gripper closing)
+[19:46:28] PICKING    -> CARRYING    (via home)
+[19:46:31] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:46:34] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:46:37] PLACING    -> CARRYING    (to right_bin)
+[19:46:40] CARRYING   -> PICKING     (gripper closing)
+[19:46:41] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:46:42] PICKING    -> CARRYING    (via home)
+[19:46:43] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.51 s, limit 26)
+[19:46:44] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:46:44] CONDITION J1 current 6 mA in PLACING: WARN -> OK (held 0.61 s, limit 19.5)
+[19:46:45] CONDITION J5 current 20 mA in PLACING: OK -> WARN (held 0.5 s, limit 19.5)
+[19:46:45] CONDITION J5 current 0 mA in PLACING: WARN -> OK (held 0.51 s, limit 19.5)
+[19:46:47] PLACING    -> CARRYING    (to right_bin)
+[19:46:50] CARRYING   -> PICKING     (gripper closing)
+[19:46:51] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:46:52] PICKING    -> CARRYING    (via home)
+[19:46:53] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.5 s, limit 26)
+[19:46:54] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:46:54] CONDITION J1 current 6 mA in PLACING: WARN -> OK (held 0.6 s, limit 19.5)
+[19:46:55] CONDITION J3 current 84 mA in PLACING: OK -> ALARM (held 0.51 s, limit 84.5)
+[19:46:55] CONDITION J3 current 0 mA in PLACING: ALARM -> OK (held 0.5 s, limit 84.5)
+[19:46:57] PLACING    -> CARRYING    (to right_bin)
+[19:47:00] CARRYING   -> PICKING     (gripper holding)
+[19:47:01] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:47:02] PICKING    -> CARRYING    (via home)
+[19:47:03] CARRYING   -> IDLE        (at home, gripper closed)
+[19:47:03] CYCLE PARTIAL 132.46 s -> right_bin  J1 current WARN; J3 current ALARM; J5 current WARN
+[19:47:04] IDLE       -> CARRYING    (via home)
+[19:47:05] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:47:08] PLACING    -> CARRYING    (to right_bin)
+[19:47:11] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:47:11] CARRYING   -> PICKING     (gripper holding)
+[19:47:14] PICKING    -> CARRYING    (via home)
+[19:47:15] CONDITION J1 current 32 mA in CARRYING: OK -> WARN (held 0.51 s, limit 26)
+[19:47:16] CONDITION J1 current 6 mA in CARRYING: WARN -> OK (held 0.52 s, limit 26)
+[19:47:17] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:47:20] PLACING    -> CARRYING    (to right_bin)
+[19:47:21] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:47:22] CARRYING   -> PICKING     (gripper holding)
+[19:47:25] PICKING    -> CARRYING    (via home)
+[19:47:28] CARRYING   -> PLACING     (left_bin, gripper closed)
+[19:47:30] PLACING    -> CARRYING    (to left_bin)
+[19:47:31] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:47:33] CARRYING   -> PICKING     (gripper holding)
+[19:47:36] PICKING    -> CARRYING    (via home)
+[19:47:37] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.53 s, limit 26)
+[19:47:38] CONDITION J1 current 0 mA in CARRYING: WARN -> OK (held 0.51 s, limit 26)
+[19:47:40] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:47:41] state=PLACING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:47:42] PLACING    -> CARRYING    (to right_bin)
+[19:47:45] CARRYING   -> PICKING     (gripper holding)
+[19:47:48] PICKING    -> CARRYING    (via home)
+[19:47:49] CARRYING   -> IDLE        (at home, gripper closed)
+[19:47:49] CYCLE PARTIAL 45.82 s -> right_bin  J1 current WARN
+[19:47:50] IDLE       -> CARRYING    (via home)
+[19:47:51] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:47:51] CONDITION J1 current 32 mA in CARRYING: OK -> WARN (held 0.51 s, limit 26)
+[19:47:51] CONDITION J1 current 6 mA in CARRYING: WARN -> OK (held 0.5 s, limit 26)
+[19:47:52] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:47:52] CONDITION J3 current 65 mA in PLACING: OK -> WARN (held 0.6 s, limit 58.5)
+[19:47:53] CONDITION J3 current 6 mA in PLACING: WARN -> OK (held 0.5 s, limit 58.5)
+[19:47:54] PLACING    -> CARRYING    (to right_bin)
+[19:47:57] CARRYING   -> PICKING     (gripper holding)
+[19:48:00] PICKING    -> CARRYING    (via home)
+[19:48:01] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:48:03] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:48:05] PLACING    -> CARRYING    (to right_bin)
+[19:48:08] CARRYING   -> PICKING     (gripper holding)
+[19:48:11] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:48:11] PICKING    -> CARRYING    (via home)
+[19:48:13] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.5 s, limit 26)
+[19:48:14] CONDITION J1 current 6 mA in CARRYING: WARN -> OK (held 0.5 s, limit 26)
+[19:48:14] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:48:17] PLACING    -> CARRYING    (to right_bin)
+[19:48:19] CARRYING   -> PICKING     (gripper closing)
+[19:48:21] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:48:21] PICKING    -> CARRYING    (via home)
+[19:48:24] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:48:27] PLACING    -> CARRYING    (to right_bin)
+[19:48:30] CARRYING   -> PICKING     (gripper closing)
+[19:48:31] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:48:31] PICKING    -> CARRYING    (via home)
+[19:48:34] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:48:37] PLACING    -> CARRYING    (to right_bin)
+[19:48:40] CARRYING   -> PICKING     (gripper closing)
+[19:48:41] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:48:41] PICKING    -> CARRYING    (via home)
+[19:48:42] CARRYING   -> IDLE        (at home, gripper closed)
+[19:48:42] CYCLE PARTIAL 52.44 s -> right_bin  J1 current WARN; J3 current WARN
+[19:48:43] IDLE       -> CARRYING    (via home)
+[19:48:45] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:48:47] PLACING    -> CARRYING    (to right_bin)
+[19:48:50] CARRYING   -> PICKING     (gripper closing)
+[19:48:51] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:48:52] PICKING    -> CARRYING    (leaving pick pose)
+[19:48:54] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:48:57] PLACING    -> CARRYING    (to right_bin)
+[19:49:00] CARRYING   -> PICKING     (gripper closing)
+[19:49:01] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:49:02] PICKING    -> CARRYING    (via home)
+[19:49:04] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:49:07] PLACING    -> CARRYING    (to right_bin)
+[19:49:10] CARRYING   -> PICKING     (gripper closing)
+[19:49:11] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:49:12] PICKING    -> CARRYING    (leaving pick pose)
+[19:49:15] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:49:16] CONDITION J4 current 13 mA in PLACING: OK -> WARN (held 0.6 s, limit 13)
+[19:49:17] CONDITION J4 current 6 mA in PLACING: WARN -> OK (held 0.51 s, limit 13)
+[19:49:17] PLACING    -> CARRYING    (to right_bin)
+[19:49:20] CARRYING   -> PICKING     (gripper closing)
+[19:49:21] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:49:22] PICKING    -> CARRYING    (via home)
+[19:49:24] CONDITION J1 current 26 mA in CARRYING: OK -> WARN (held 0.5 s, limit 26)
+[19:49:24] CONDITION J1 current 6 mA in CARRYING: WARN -> OK (held 0.52 s, limit 26)
+[19:49:25] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:49:27] PLACING    -> CARRYING    (to right_bin)
+[19:49:30] CARRYING   -> PICKING     (gripper holding)
+[19:49:31] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:49:33] PICKING    -> CARRYING    (via home)
+[19:49:36] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:49:36] CONDITION J3 current 91 mA in PLACING: OK -> ALARM (held 0.5 s, limit 84.5)
+[19:49:37] CONDITION J3 current 0 mA in PLACING: ALARM -> OK (held 0.51 s, limit 84.5)
+[19:49:38] PLACING    -> CARRYING    (to right_bin)
+[19:49:41] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:49:42] CARRYING   -> PICKING     (gripper holding)
+[19:49:44] PICKING    -> CARRYING    (via home)
+[19:49:47] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:49:49] PLACING    -> CARRYING    (to right_bin)
+[19:49:51] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:49:52] CARRYING   -> PICKING     (gripper closing)
+[19:49:54] PICKING    -> CARRYING    (via home)
+[19:49:59] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:50:00] PLACING    -> CARRYING    (to right_bin)
+[19:50:01] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:50:03] CARRYING   -> PICKING     (gripper holding)
+[19:50:06] PICKING    -> CARRYING    (via home)
+[19:50:09] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:50:11] state=PLACING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:50:11] PLACING    -> CARRYING    (to right_bin)
+[19:50:17] CARRYING   -> PICKING     (gripper holding)
+[19:50:19] PICKING    -> CARRYING    (via home)
+[19:50:21] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:50:22] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:50:24] PLACING    -> CARRYING    (to right_bin)
+[19:50:27] CARRYING   -> PICKING     (gripper closing)
+[19:50:29] PICKING    -> CARRYING    (via home)
+[19:50:31] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:50:34] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:50:37] PLACING    -> CARRYING    (to right_bin)
+[19:50:40] CARRYING   -> PICKING     (gripper holding)
+[19:50:41] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:50:44] PICKING    -> CARRYING    (via home)
+[19:50:47] CARRYING   -> PLACING     (left_bin, gripper closed)
+[19:50:49] PLACING    -> CARRYING    (to left_bin)
+[19:50:51] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:50:52] CARRYING   -> PICKING     (gripper holding)
+[19:50:56] PICKING    -> CARRYING    (passing home, gripper closed)
+[19:50:59] CARRYING   -> PLACING     (left_bin, gripper closed)
+[19:51:01] PLACING    -> CARRYING    (to left_bin)
+[19:51:01] state=CARRYING  broker=up  arm/telemetry=0.4 s ago  cycles_ok=0  levels=all OK
+[19:51:04] CARRYING   -> PICKING     (gripper holding)
+[19:51:08] PICKING    -> CARRYING    (via home)
+[19:51:11] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:51:12] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:51:14] PLACING    -> CARRYING    (to right_bin)
+[19:51:17] CARRYING   -> PICKING     (gripper holding)
+[19:51:21] PICKING    -> CARRYING    (via home)
+[19:51:21] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:51:23] CONDITION J1 current 32 mA in CARRYING: OK -> WARN (held 0.6 s, limit 26)
+[19:51:24] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:51:23] CONDITION J1 current 0 mA in PLACING: WARN -> OK (held 0.51 s, limit 19.5)
+[19:51:24] CONDITION J3 current 104 mA in PLACING: OK -> ALARM (held 0.6 s, limit 84.5)
+[19:51:25] CONDITION J3 current 6 mA in PLACING: ALARM -> OK (held 0.5 s, limit 84.5)
+[19:51:26] PLACING    -> CARRYING    (to right_bin)
+[19:51:31] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:51:32] CARRYING   -> PICKING     (gripper holding)
+[19:51:41] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:51:47] PICKING    -> CARRYING    (via home)
+[19:51:47] CARRYING   -> IDLE        (at home, gripper holding)
+[19:51:47] CYCLE PARTIAL 184.71 s -> right_bin  J1 current WARN; J3 current ALARM; J4 current WARN
+[19:51:51] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:52:02] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:52:12] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:52:22] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:52:32] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:52:42] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:52:46] IDLE       -> CARRYING    (via home)
+[19:52:47] CARRYING   -> PICKING     (gripper holding)
+[19:52:52] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:53:02] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:53:09] PICKING    -> CARRYING    (via home)
+[19:53:12] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:53:22] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:53:32] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:53:42] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:53:52] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:54:02] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:54:12] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:54:22] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:54:32] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:54:42] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:54:52] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:55:02] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:55:12] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:55:22] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:55:32] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:55:42] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:55:52] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:56:02] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:56:12] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:56:22] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:56:32] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:56:42] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:56:52] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:57:02] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:57:12] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:57:22] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:57:32] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:57:42] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:57:52] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:58:02] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:58:10] CARRYING   -> PICKING     (gripper holding)
+[19:58:12] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:58:22] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:58:25] PICKING    -> CARRYING    (via home)
+[19:58:28] CARRYING   -> PLACING     (right_bin, gripper closed)
+[19:58:31] PLACING    -> CARRYING    (to right_bin)
+[19:58:32] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:58:34] CARRYING   -> PICKING     (gripper holding)
+[19:58:43] state=PICKING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:58:46] PICKING    -> CARRYING    (via home)
+[19:58:46] CARRYING   -> IDLE        (at home, gripper holding)
+[19:58:46] CYCLE PARTIAL 360.09 s -> right_bin
+[19:58:53] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:59:03] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:59:13] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:59:23] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[19:59:33] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:59:43] state=IDLE  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[19:59:45] IDLE       -> CARRYING    (leaving pick pose)
+[19:59:46] CARRYING   -> PICKING     (gripper holding)
+[19:59:53] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[20:00:03] state=PICKING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[20:00:08] PICKING    -> CARRYING    (via home)
+[20:00:13] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[20:00:23] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[20:00:33] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[20:00:43] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[20:00:53] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[20:01:03] state=CARRYING  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=all OK
+[20:01:13] state=CARRYING  broker=up  arm/telemetry=0.1 s ago  cycles_ok=0  levels=all OK
+[20:01:21] CARRYING   -> NO_DATA     (no telemetry for 1.0 s)
+[20:01:21] CYCLE ABORTED 95.79 s -> None
+[20:01:23] state=NO_DATA  broker=up  arm/telemetry=1.8 s ago  cycles_ok=0  levels=all OK
+[20:01:33] state=NO_DATA  broker=up  arm/telemetry=11.9 s ago  cycles_ok=0  levels=all OK
+[20:01:43] state=NO_DATA  broker=up  arm/telemetry=21.9 s ago  cycles_ok=0  levels=all OK
+[20:01:53] state=NO_DATA  broker=up  arm/telemetry=31.9 s ago  cycles_ok=0  levels=all OK
+[20:02:03] state=NO_DATA  broker=up  arm/telemetry=41.9 s ago  cycles_ok=0  levels=all OK
+[20:02:13] state=NO_DATA  broker=up  arm/telemetry=52.0 s ago  cycles_ok=0  levels=all OK
+[20:02:23] state=NO_DATA  broker=up  arm/telemetry=62.0 s ago  cycles_ok=0  levels=all OK
+[20:02:33] state=NO_DATA  broker=up  arm/telemetry=72.0 s ago  cycles_ok=0  levels=all OK
+[20:02:43] state=NO_DATA  broker=up  arm/telemetry=82.1 s ago  cycles_ok=0  levels=all OK
+[20:02:53] state=NO_DATA  broker=up  arm/telemetry=92.1 s ago  cycles_ok=0  levels=all OK
+[20:03:03] state=NO_DATA  broker=up  arm/telemetry=102.1 s ago  cycles_ok=0  levels=all OK
+[20:03:13] state=NO_DATA  broker=up  arm/telemetry=112.1 s ago  cycles_ok=0  levels=all OK
+[20:03:23] state=NO_DATA  broker=up  arm/telemetry=122.1 s ago  cycles_ok=0  levels=all OK
+[20:03:33] state=NO_DATA  broker=up  arm/telemetry=132.2 s ago  cycles_ok=0  levels=all OK
+[20:03:43] state=NO_DATA  broker=up  arm/telemetry=142.2 s ago  cycles_ok=0  levels=all OK
+[20:03:53] state=NO_DATA  broker=up  arm/telemetry=152.2 s ago  cycles_ok=0  levels=all OK
+[20:04:03] state=NO_DATA  broker=up  arm/telemetry=162.2 s ago  cycles_ok=0  levels=all OK
+[20:04:13] state=NO_DATA  broker=up  arm/telemetry=172.2 s ago  cycles_ok=0  levels=all OK
+[20:04:23] state=NO_DATA  broker=up  arm/telemetry=182.2 s ago  cycles_ok=0  levels=all OK
+[20:04:33] state=NO_DATA  broker=up  arm/telemetry=192.3 s ago  cycles_ok=0  levels=all OK
+[20:04:43] state=NO_DATA  broker=up  arm/telemetry=202.3 s ago  cycles_ok=0  levels=all OK
+[20:04:53] state=NO_DATA  broker=up  arm/telemetry=212.3 s ago  cycles_ok=0  levels=all OK
+[20:05:03] state=NO_DATA  broker=up  arm/telemetry=222.4 s ago  cycles_ok=0  levels=all OK
+[20:05:13] state=NO_DATA  broker=up  arm/telemetry=232.4 s ago  cycles_ok=0  levels=all OK
+[20:05:24] state=NO_DATA  broker=up  arm/telemetry=242.4 s ago  cycles_ok=0  levels=all OK
+[20:05:34] state=NO_DATA  broker=up  arm/telemetry=252.4 s ago  cycles_ok=0  levels=all OK
+[20:05:44] state=NO_DATA  broker=up  arm/telemetry=262.5 s ago  cycles_ok=0  levels=all OK
+[20:05:54] state=NO_DATA  broker=up  arm/telemetry=272.5 s ago  cycles_ok=0  levels=all OK
+[20:06:04] state=NO_DATA  broker=up  arm/telemetry=282.5 s ago  cycles_ok=0  levels=all OK
+[20:06:14] state=NO_DATA  broker=up  arm/telemetry=292.6 s ago  cycles_ok=0  levels=all OK
+[20:06:24] state=NO_DATA  broker=up  arm/telemetry=302.6 s ago  cycles_ok=0  levels=all OK
+[20:06:34] state=NO_DATA  broker=up  arm/telemetry=312.6 s ago  cycles_ok=0  levels=all OK
+[20:06:44] state=NO_DATA  broker=up  arm/telemetry=322.6 s ago  cycles_ok=0  levels=all OK
+[20:06:54] state=NO_DATA  broker=up  arm/telemetry=332.7 s ago  cycles_ok=0  levels=all OK
+[20:07:04] state=NO_DATA  broker=up  arm/telemetry=342.7 s ago  cycles_ok=0  levels=all OK
+[20:07:14] state=NO_DATA  broker=up  arm/telemetry=352.7 s ago  cycles_ok=0  levels=all OK
+[20:07:24] state=NO_DATA  broker=up  arm/telemetry=362.7 s ago  cycles_ok=0  levels=all OK
+[20:07:34] state=NO_DATA  broker=up  arm/telemetry=372.7 s ago  cycles_ok=0  levels=all OK
+[20:07:44] state=NO_DATA  broker=up  arm/telemetry=382.8 s ago  cycles_ok=0  levels=all OK
+[20:07:54] state=NO_DATA  broker=up  arm/telemetry=392.8 s ago  cycles_ok=0  levels=all OK
+[20:08:04] state=NO_DATA  broker=up  arm/telemetry=402.8 s ago  cycles_ok=0  levels=all OK
+[20:08:14] state=NO_DATA  broker=up  arm/telemetry=412.9 s ago  cycles_ok=0  levels=all OK
+[20:08:24] state=NO_DATA  broker=up  arm/telemetry=422.9 s ago  cycles_ok=0  levels=all OK
+[20:08:34] state=NO_DATA  broker=up  arm/telemetry=432.9 s ago  cycles_ok=0  levels=all OK
+[20:08:44] state=NO_DATA  broker=up  arm/telemetry=442.9 s ago  cycles_ok=0  levels=all OK
+[20:08:54] state=NO_DATA  broker=up  arm/telemetry=452.9 s ago  cycles_ok=0  levels=all OK
+[20:09:04] state=NO_DATA  broker=up  arm/telemetry=463.0 s ago  cycles_ok=0  levels=all OK
+[20:09:14] state=NO_DATA  broker=up  arm/telemetry=473.0 s ago  cycles_ok=0  levels=all OK
+[20:09:24] state=NO_DATA  broker=up  arm/telemetry=483.0 s ago  cycles_ok=0  levels=all OK
+[20:09:34] state=NO_DATA  broker=up  arm/telemetry=493.1 s ago  cycles_ok=0  levels=all OK
+[20:09:44] state=NO_DATA  broker=up  arm/telemetry=503.1 s ago  cycles_ok=0  levels=all OK
+[20:09:54] state=NO_DATA  broker=up  arm/telemetry=513.1 s ago  cycles_ok=0  levels=all OK
+[20:10:04] state=NO_DATA  broker=up  arm/telemetry=523.1 s ago  cycles_ok=0  levels=all OK
+[20:10:14] state=NO_DATA  broker=up  arm/telemetry=533.2 s ago  cycles_ok=0  levels=all OK
+[20:10:24] state=NO_DATA  broker=up  arm/telemetry=543.2 s ago  cycles_ok=0  levels=all OK
+[20:10:34] state=NO_DATA  broker=up  arm/telemetry=553.2 s ago  cycles_ok=0  levels=all OK
+[20:10:44] state=NO_DATA  broker=up  arm/telemetry=563.2 s ago  cycles_ok=0  levels=all OK
+[20:10:54] state=NO_DATA  broker=up  arm/telemetry=573.2 s ago  cycles_ok=0  levels=all OK
+[20:11:04] state=NO_DATA  broker=up  arm/telemetry=583.3 s ago  cycles_ok=0  levels=all OK
+[20:11:14] state=NO_DATA  broker=up  arm/telemetry=593.3 s ago  cycles_ok=0  levels=all OK
+[20:11:24] state=NO_DATA  broker=up  arm/telemetry=603.3 s ago  cycles_ok=0  levels=all OK
+[20:11:34] state=NO_DATA  broker=up  arm/telemetry=613.3 s ago  cycles_ok=0  levels=all OK
+[20:11:44] state=NO_DATA  broker=up  arm/telemetry=623.3 s ago  cycles_ok=0  levels=all OK
+[20:11:54] state=NO_DATA  broker=up  arm/telemetry=633.3 s ago  cycles_ok=0  levels=all OK
+[20:12:04] state=NO_DATA  broker=up  arm/telemetry=643.3 s ago  cycles_ok=0  levels=all OK
+[20:12:14] state=NO_DATA  broker=up  arm/telemetry=653.3 s ago  cycles_ok=0  levels=all OK
+[20:12:24] state=NO_DATA  broker=up  arm/telemetry=663.4 s ago  cycles_ok=0  levels=all OK
+[20:12:35] state=NO_DATA  broker=up  arm/telemetry=673.4 s ago  cycles_ok=0  levels=all OK
+[20:12:45] state=NO_DATA  broker=up  arm/telemetry=683.4 s ago  cycles_ok=0  levels=all OK
+[20:12:55] state=NO_DATA  broker=up  arm/telemetry=693.5 s ago  cycles_ok=0  levels=all OK
+[20:13:05] state=NO_DATA  broker=up  arm/telemetry=703.5 s ago  cycles_ok=0  levels=all OK
+[20:13:15] state=NO_DATA  broker=up  arm/telemetry=713.5 s ago  cycles_ok=0  levels=all OK
+[20:13:25] state=NO_DATA  broker=up  arm/telemetry=723.5 s ago  cycles_ok=0  levels=all OK
+[20:13:35] state=NO_DATA  broker=up  arm/telemetry=733.5 s ago  cycles_ok=0  levels=all OK
+[20:13:45] state=NO_DATA  broker=up  arm/telemetry=743.6 s ago  cycles_ok=0  levels=all OK
+[20:13:55] state=NO_DATA  broker=up  arm/telemetry=753.6 s ago  cycles_ok=0  levels=all OK
+[20:14:05] state=NO_DATA  broker=up  arm/telemetry=763.6 s ago  cycles_ok=0  levels=all OK
+[20:14:15] state=NO_DATA  broker=up  arm/telemetry=773.6 s ago  cycles_ok=0  levels=all OK
+[20:14:25] state=NO_DATA  broker=up  arm/telemetry=783.7 s ago  cycles_ok=0  levels=all OK
+[20:14:35] state=NO_DATA  broker=up  arm/telemetry=793.7 s ago  cycles_ok=0  levels=all OK
+[20:14:45] state=NO_DATA  broker=up  arm/telemetry=803.7 s ago  cycles_ok=0  levels=all OK
+[20:14:55] state=NO_DATA  broker=up  arm/telemetry=813.8 s ago  cycles_ok=0  levels=all OK
+[20:15:05] state=NO_DATA  broker=up  arm/telemetry=823.8 s ago  cycles_ok=0  levels=all OK
+[20:15:15] state=NO_DATA  broker=up  arm/telemetry=833.8 s ago  cycles_ok=0  levels=all OK
+[20:15:25] state=NO_DATA  broker=up  arm/telemetry=843.9 s ago  cycles_ok=0  levels=all OK
+[20:15:35] state=NO_DATA  broker=up  arm/telemetry=853.9 s ago  cycles_ok=0  levels=all OK
+[20:15:45] state=NO_DATA  broker=up  arm/telemetry=863.9 s ago  cycles_ok=0  levels=all OK
+[20:15:55] state=NO_DATA  broker=up  arm/telemetry=873.9 s ago  cycles_ok=0  levels=all OK
+[20:16:05] state=NO_DATA  broker=up  arm/telemetry=884.0 s ago  cycles_ok=0  levels=all OK
+[20:16:15] state=NO_DATA  broker=up  arm/telemetry=894.0 s ago  cycles_ok=0  levels=all OK
+[20:16:25] state=NO_DATA  broker=up  arm/telemetry=904.0 s ago  cycles_ok=0  levels=all OK
+[20:16:35] state=NO_DATA  broker=up  arm/telemetry=914.0 s ago  cycles_ok=0  levels=all OK
+[20:16:45] state=NO_DATA  broker=up  arm/telemetry=924.0 s ago  cycles_ok=0  levels=all OK
+[20:16:55] state=NO_DATA  broker=up  arm/telemetry=934.1 s ago  cycles_ok=0  levels=all OK
+[20:17:05] state=NO_DATA  broker=up  arm/telemetry=944.1 s ago  cycles_ok=0  levels=all OK
+[20:17:15] state=NO_DATA  broker=up  arm/telemetry=954.1 s ago  cycles_ok=0  levels=all OK
+[20:17:25] state=NO_DATA  broker=up  arm/telemetry=964.2 s ago  cycles_ok=0  levels=all OK
+[20:17:35] state=NO_DATA  broker=up  arm/telemetry=974.2 s ago  cycles_ok=0  levels=all OK
+[20:17:45] state=NO_DATA  broker=up  arm/telemetry=984.3 s ago  cycles_ok=0  levels=all OK
+[20:17:55] state=NO_DATA  broker=up  arm/telemetry=994.3 s ago  cycles_ok=0  levels=all OK
+[20:18:05] state=NO_DATA  broker=up  arm/telemetry=1004.3 s ago  cycles_ok=0  levels=all OK
+[20:18:15] state=NO_DATA  broker=up  arm/telemetry=1014.4 s ago  cycles_ok=0  levels=all OK
+[20:18:26] state=NO_DATA  broker=up  arm/telemetry=1024.4 s ago  cycles_ok=0  levels=all OK
+[20:18:36] state=NO_DATA  broker=up  arm/telemetry=1034.5 s ago  cycles_ok=0  levels=all OK
+[20:18:46] state=NO_DATA  broker=up  arm/telemetry=1044.5 s ago  cycles_ok=0  levels=all OK
+[20:18:56] state=NO_DATA  broker=up  arm/telemetry=1054.5 s ago  cycles_ok=0  levels=all OK
+[20:19:06] state=NO_DATA  broker=up  arm/telemetry=1064.5 s ago  cycles_ok=0  levels=all OK
+[20:19:16] state=NO_DATA  broker=up  arm/telemetry=1074.6 s ago  cycles_ok=0  levels=all OK
+[20:19:26] state=NO_DATA  broker=up  arm/telemetry=1084.6 s ago  cycles_ok=0  levels=all OK
+[20:19:36] state=NO_DATA  broker=up  arm/telemetry=1094.6 s ago  cycles_ok=0  levels=all OK
+[20:19:46] state=NO_DATA  broker=up  arm/telemetry=1104.7 s ago  cycles_ok=0  levels=all OK
+[20:19:56] state=NO_DATA  broker=up  arm/telemetry=1114.7 s ago  cycles_ok=0  levels=all OK
+[20:20:06] state=NO_DATA  broker=up  arm/telemetry=1124.7 s ago  cycles_ok=0  levels=all OK
+[20:20:16] state=NO_DATA  broker=up  arm/telemetry=1134.8 s ago  cycles_ok=0  levels=all OK
+[20:20:26] state=NO_DATA  broker=up  arm/telemetry=1144.8 s ago  cycles_ok=0  levels=all OK
+[20:20:36] state=NO_DATA  broker=up  arm/telemetry=1154.8 s ago  cycles_ok=0  levels=all OK
+[20:20:46] state=NO_DATA  broker=up  arm/telemetry=1164.9 s ago  cycles_ok=0  levels=all OK
+[20:20:56] state=NO_DATA  broker=up  arm/telemetry=1174.9 s ago  cycles_ok=0  levels=all OK
+[20:21:06] state=NO_DATA  broker=up  arm/telemetry=1184.9 s ago  cycles_ok=0  levels=all OK
+[20:21:16] state=NO_DATA  broker=up  arm/telemetry=1195.0 s ago  cycles_ok=0  levels=all OK
+[20:21:26] state=NO_DATA  broker=up  arm/telemetry=1205.0 s ago  cycles_ok=0  levels=all OK
+[20:21:36] state=NO_DATA  broker=up  arm/telemetry=1215.0 s ago  cycles_ok=0  levels=all OK
+[20:21:46] state=NO_DATA  broker=up  arm/telemetry=1225.0 s ago  cycles_ok=0  levels=all OK
+[20:21:56] state=NO_DATA  broker=up  arm/telemetry=1235.1 s ago  cycles_ok=0  levels=all OK
+[20:22:06] state=NO_DATA  broker=up  arm/telemetry=1245.1 s ago  cycles_ok=0  levels=all OK
+[20:22:16] state=NO_DATA  broker=up  arm/telemetry=1255.1 s ago  cycles_ok=0  levels=all OK
+[20:22:26] state=NO_DATA  broker=up  arm/telemetry=1265.2 s ago  cycles_ok=0  levels=all OK
+[20:22:36] state=NO_DATA  broker=up  arm/telemetry=1275.2 s ago  cycles_ok=0  levels=all OK
+[20:22:46] state=NO_DATA  broker=up  arm/telemetry=1285.2 s ago  cycles_ok=0  levels=all OK
+[20:22:56] state=NO_DATA  broker=up  arm/telemetry=1295.3 s ago  cycles_ok=0  levels=all OK
+[20:23:06] state=NO_DATA  broker=up  arm/telemetry=1305.3 s ago  cycles_ok=0  levels=all OK
+[20:23:16] state=NO_DATA  broker=up  arm/telemetry=1315.3 s ago  cycles_ok=0  levels=all OK
+[20:23:26] state=NO_DATA  broker=up  arm/telemetry=1325.4 s ago  cycles_ok=0  levels=all OK
+[20:23:36] state=NO_DATA  broker=up  arm/telemetry=1335.4 s ago  cycles_ok=0  levels=all OK
+[20:23:47] state=NO_DATA  broker=up  arm/telemetry=1345.4 s ago  cycles_ok=0  levels=all OK
+[20:23:57] state=NO_DATA  broker=up  arm/telemetry=1355.5 s ago  cycles_ok=0  levels=all OK
+[20:24:07] state=NO_DATA  broker=up  arm/telemetry=1365.5 s ago  cycles_ok=0  levels=all OK
+[20:24:17] state=NO_DATA  broker=up  arm/telemetry=1375.5 s ago  cycles_ok=0  levels=all OK
+[20:24:27] state=NO_DATA  broker=up  arm/telemetry=1385.6 s ago  cycles_ok=0  levels=all OK
+[20:24:37] state=NO_DATA  broker=up  arm/telemetry=1395.6 s ago  cycles_ok=0  levels=all OK
+[20:24:47] state=NO_DATA  broker=up  arm/telemetry=1405.6 s ago  cycles_ok=0  levels=all OK
+[20:24:57] state=NO_DATA  broker=up  arm/telemetry=1415.6 s ago  cycles_ok=0  levels=all OK
+[20:25:07] state=NO_DATA  broker=up  arm/telemetry=1425.7 s ago  cycles_ok=0  levels=all OK
+[20:25:17] state=NO_DATA  broker=up  arm/telemetry=1435.7 s ago  cycles_ok=0  levels=all OK
+[20:25:27] state=NO_DATA  broker=up  arm/telemetry=1445.7 s ago  cycles_ok=0  levels=all OK
+[20:25:37] state=NO_DATA  broker=up  arm/telemetry=1455.7 s ago  cycles_ok=0  levels=all OK
+[20:25:47] state=NO_DATA  broker=up  arm/telemetry=1465.8 s ago  cycles_ok=0  levels=all OK
+[20:25:57] state=NO_DATA  broker=up  arm/telemetry=1475.8 s ago  cycles_ok=0  levels=all OK
+[20:26:07] state=NO_DATA  broker=up  arm/telemetry=1485.8 s ago  cycles_ok=0  levels=all OK
+[20:26:17] state=NO_DATA  broker=up  arm/telemetry=1495.9 s ago  cycles_ok=0  levels=all OK
+[20:26:27] state=NO_DATA  broker=up  arm/telemetry=1505.9 s ago  cycles_ok=0  levels=all OK
+[20:26:37] state=NO_DATA  broker=up  arm/telemetry=1515.9 s ago  cycles_ok=0  levels=all OK
+[20:26:47] state=NO_DATA  broker=up  arm/telemetry=1526.0 s ago  cycles_ok=0  levels=all OK
+[20:26:57] state=NO_DATA  broker=up  arm/telemetry=1536.0 s ago  cycles_ok=0  levels=all OK
+[20:27:07] state=NO_DATA  broker=up  arm/telemetry=1546.0 s ago  cycles_ok=0  levels=all OK
+[20:27:17] state=NO_DATA  broker=up  arm/telemetry=1556.0 s ago  cycles_ok=0  levels=all OK
+[20:27:27] state=NO_DATA  broker=up  arm/telemetry=1566.1 s ago  cycles_ok=0  levels=all OK
+[20:27:37] state=NO_DATA  broker=up  arm/telemetry=1576.1 s ago  cycles_ok=0  levels=all OK
+[20:27:47] state=NO_DATA  broker=up  arm/telemetry=1586.1 s ago  cycles_ok=0  levels=all OK
+[20:27:57] state=NO_DATA  broker=up  arm/telemetry=1596.1 s ago  cycles_ok=0  levels=all OK
+[20:28:07] state=NO_DATA  broker=up  arm/telemetry=1606.2 s ago  cycles_ok=0  levels=all OK
+[20:28:17] state=NO_DATA  broker=up  arm/telemetry=1616.2 s ago  cycles_ok=0  levels=all OK
+[20:28:27] state=NO_DATA  broker=up  arm/telemetry=1626.2 s ago  cycles_ok=0  levels=all OK
+[20:28:37] state=NO_DATA  broker=up  arm/telemetry=1636.2 s ago  cycles_ok=0  levels=all OK
+[20:28:47] state=NO_DATA  broker=up  arm/telemetry=1646.2 s ago  cycles_ok=0  levels=all OK
+[20:28:57] state=NO_DATA  broker=up  arm/telemetry=1656.2 s ago  cycles_ok=0  levels=all OK
+[20:29:07] state=NO_DATA  broker=up  arm/telemetry=1666.3 s ago  cycles_ok=0  levels=all OK
+[20:29:17] state=NO_DATA  broker=up  arm/telemetry=1676.3 s ago  cycles_ok=0  levels=all OK
+[20:29:27] state=NO_DATA  broker=up  arm/telemetry=1686.3 s ago  cycles_ok=0  levels=all OK
+[20:29:37] state=NO_DATA  broker=up  arm/telemetry=1696.3 s ago  cycles_ok=0  levels=all OK
+[20:29:47] state=NO_DATA  broker=up  arm/telemetry=1706.4 s ago  cycles_ok=0  levels=all OK
+[20:29:58] state=NO_DATA  broker=up  arm/telemetry=1716.4 s ago  cycles_ok=0  levels=all OK
+[20:30:08] state=NO_DATA  broker=up  arm/telemetry=1726.4 s ago  cycles_ok=0  levels=all OK
+[20:30:18] state=NO_DATA  broker=up  arm/telemetry=1736.5 s ago  cycles_ok=0  levels=all OK
+[20:30:28] state=NO_DATA  broker=up  arm/telemetry=1746.5 s ago  cycles_ok=0  levels=all OK
+[20:30:38] state=NO_DATA  broker=up  arm/telemetry=1756.5 s ago  cycles_ok=0  levels=all OK
+[20:30:48] state=NO_DATA  broker=up  arm/telemetry=1766.6 s ago  cycles_ok=0  levels=all OK
+[20:30:58] state=NO_DATA  broker=up  arm/telemetry=1776.6 s ago  cycles_ok=0  levels=all OK
+[20:31:08] state=NO_DATA  broker=up  arm/telemetry=1786.6 s ago  cycles_ok=0  levels=all OK
+[20:31:18] state=NO_DATA  broker=up  arm/telemetry=1796.6 s ago  cycles_ok=0  levels=all OK
+[20:31:28] state=NO_DATA  broker=up  arm/telemetry=1806.6 s ago  cycles_ok=0  levels=all OK
+[20:31:38] state=NO_DATA  broker=up  arm/telemetry=1816.6 s ago  cycles_ok=0  levels=all OK
+[20:31:48] state=NO_DATA  broker=up  arm/telemetry=1826.6 s ago  cycles_ok=0  levels=all OK
+[20:31:58] state=NO_DATA  broker=up  arm/telemetry=1836.7 s ago  cycles_ok=0  levels=all OK
+[20:32:08] state=NO_DATA  broker=up  arm/telemetry=1846.7 s ago  cycles_ok=0  levels=all OK
+[20:32:18] state=NO_DATA  broker=up  arm/telemetry=1856.8 s ago  cycles_ok=0  levels=all OK
+[20:32:28] state=NO_DATA  broker=up  arm/telemetry=1866.8 s ago  cycles_ok=0  levels=all OK
+[20:32:38] state=NO_DATA  broker=up  arm/telemetry=1876.8 s ago  cycles_ok=0  levels=all OK
+[20:32:48] state=NO_DATA  broker=up  arm/telemetry=1886.9 s ago  cycles_ok=0  levels=all OK
+[20:32:58] state=NO_DATA  broker=up  arm/telemetry=1896.9 s ago  cycles_ok=0  levels=all OK
+[20:33:08] state=NO_DATA  broker=up  arm/telemetry=1907.0 s ago  cycles_ok=0  levels=all OK
+[20:33:18] state=NO_DATA  broker=up  arm/telemetry=1917.0 s ago  cycles_ok=0  levels=all OK
+[20:33:28] state=NO_DATA  broker=up  arm/telemetry=1927.0 s ago  cycles_ok=0  levels=all OK
+[20:33:38] state=NO_DATA  broker=up  arm/telemetry=1937.1 s ago  cycles_ok=0  levels=all OK
+[20:33:48] state=NO_DATA  broker=up  arm/telemetry=1947.1 s ago  cycles_ok=0  levels=all OK
+[20:33:58] state=NO_DATA  broker=up  arm/telemetry=1957.1 s ago  cycles_ok=0  levels=all OK
+[20:34:08] state=NO_DATA  broker=up  arm/telemetry=1967.1 s ago  cycles_ok=0  levels=all OK
+[20:34:18] state=NO_DATA  broker=up  arm/telemetry=1977.1 s ago  cycles_ok=0  levels=all OK
+[20:34:28] state=NO_DATA  broker=up  arm/telemetry=1987.2 s ago  cycles_ok=0  levels=all OK
+[20:34:38] state=NO_DATA  broker=up  arm/telemetry=1997.2 s ago  cycles_ok=0  levels=all OK
+[20:34:48] state=NO_DATA  broker=up  arm/telemetry=2007.2 s ago  cycles_ok=0  levels=all OK
+[20:34:58] state=NO_DATA  broker=up  arm/telemetry=2017.2 s ago  cycles_ok=0  levels=all OK
+[20:35:08] state=NO_DATA  broker=up  arm/telemetry=2027.2 s ago  cycles_ok=0  levels=all OK
+[20:35:18] state=NO_DATA  broker=up  arm/telemetry=2037.3 s ago  cycles_ok=0  levels=all OK
+[20:35:28] state=NO_DATA  broker=up  arm/telemetry=2047.3 s ago  cycles_ok=0  levels=all OK
+[20:35:38] state=NO_DATA  broker=up  arm/telemetry=2057.3 s ago  cycles_ok=0  levels=all OK
+[20:35:48] state=NO_DATA  broker=up  arm/telemetry=2067.4 s ago  cycles_ok=0  levels=all OK
+[20:35:59] state=NO_DATA  broker=up  arm/telemetry=2077.4 s ago  cycles_ok=0  levels=all OK
+[20:36:09] state=NO_DATA  broker=up  arm/telemetry=2087.4 s ago  cycles_ok=0  levels=all OK
+[20:36:19] state=NO_DATA  broker=up  arm/telemetry=2097.5 s ago  cycles_ok=0  levels=all OK
+[20:36:29] state=NO_DATA  broker=up  arm/telemetry=2107.5 s ago  cycles_ok=0  levels=all OK
+[20:36:39] state=NO_DATA  broker=up  arm/telemetry=2117.5 s ago  cycles_ok=0  levels=all OK
+[20:36:49] state=NO_DATA  broker=up  arm/telemetry=2127.5 s ago  cycles_ok=0  levels=all OK
+[20:36:59] state=NO_DATA  broker=up  arm/telemetry=2137.6 s ago  cycles_ok=0  levels=all OK
+[20:37:09] state=NO_DATA  broker=up  arm/telemetry=2147.6 s ago  cycles_ok=0  levels=all OK
+[20:37:19] state=NO_DATA  broker=up  arm/telemetry=2157.6 s ago  cycles_ok=0  levels=all OK
+[20:37:29] state=NO_DATA  broker=up  arm/telemetry=2167.7 s ago  cycles_ok=0  levels=all OK
+[20:37:39] state=NO_DATA  broker=up  arm/telemetry=2177.7 s ago  cycles_ok=0  levels=all OK
+[20:37:49] state=NO_DATA  broker=up  arm/telemetry=2187.7 s ago  cycles_ok=0  levels=all OK
+[20:37:59] state=NO_DATA  broker=up  arm/telemetry=2197.8 s ago  cycles_ok=0  levels=all OK
+[20:38:09] state=NO_DATA  broker=up  arm/telemetry=2207.8 s ago  cycles_ok=0  levels=all OK
+[20:38:19] state=NO_DATA  broker=up  arm/telemetry=2217.8 s ago  cycles_ok=0  levels=all OK
+[20:38:29] state=NO_DATA  broker=up  arm/telemetry=2227.8 s ago  cycles_ok=0  levels=all OK
+[20:38:39] state=NO_DATA  broker=up  arm/telemetry=2237.9 s ago  cycles_ok=0  levels=all OK
+[20:38:49] state=NO_DATA  broker=up  arm/telemetry=2247.9 s ago  cycles_ok=0  levels=all OK
+[20:38:59] state=NO_DATA  broker=up  arm/telemetry=2257.9 s ago  cycles_ok=0  levels=all OK
+[20:39:09] state=NO_DATA  broker=up  arm/telemetry=2267.9 s ago  cycles_ok=0  levels=all OK
+[20:39:19] state=NO_DATA  broker=up  arm/telemetry=2278.0 s ago  cycles_ok=0  levels=all OK
+[20:39:29] state=NO_DATA  broker=up  arm/telemetry=2288.0 s ago  cycles_ok=0  levels=all OK
+[20:39:39] state=NO_DATA  broker=up  arm/telemetry=2298.0 s ago  cycles_ok=0  levels=all OK
+[20:39:49] state=NO_DATA  broker=up  arm/telemetry=2308.0 s ago  cycles_ok=0  levels=all OK
+[20:39:59] state=NO_DATA  broker=up  arm/telemetry=2318.0 s ago  cycles_ok=0  levels=all OK
+[20:40:09] state=NO_DATA  broker=up  arm/telemetry=2328.1 s ago  cycles_ok=0  levels=all OK
+[20:40:19] state=NO_DATA  broker=up  arm/telemetry=2338.1 s ago  cycles_ok=0  levels=all OK
+[20:40:29] state=NO_DATA  broker=up  arm/telemetry=2348.1 s ago  cycles_ok=0  levels=all OK
+[20:40:39] state=NO_DATA  broker=up  arm/telemetry=2358.1 s ago  cycles_ok=0  levels=all OK
+[20:40:49] state=NO_DATA  broker=up  arm/telemetry=2368.2 s ago  cycles_ok=0  levels=all OK
+[20:40:59] state=NO_DATA  broker=up  arm/telemetry=2378.2 s ago  cycles_ok=0  levels=all OK
+[20:41:09] state=NO_DATA  broker=up  arm/telemetry=2388.2 s ago  cycles_ok=0  levels=all OK
+[20:41:19] state=NO_DATA  broker=up  arm/telemetry=2398.2 s ago  cycles_ok=0  levels=all OK
+[20:41:29] state=NO_DATA  broker=up  arm/telemetry=2408.2 s ago  cycles_ok=0  levels=all OK
+[20:41:39] state=NO_DATA  broker=up  arm/telemetry=2418.2 s ago  cycles_ok=0  levels=all OK
+[20:41:49] state=NO_DATA  broker=up  arm/telemetry=2428.3 s ago  cycles_ok=0  levels=all OK
+[20:41:59] state=NO_DATA  broker=up  arm/telemetry=2438.3 s ago  cycles_ok=0  levels=all OK
+[20:42:09] state=NO_DATA  broker=up  arm/telemetry=2448.4 s ago  cycles_ok=0  levels=all OK
+[20:42:19] state=NO_DATA  broker=up  arm/telemetry=2458.4 s ago  cycles_ok=0  levels=all OK
+[20:42:30] state=NO_DATA  broker=up  arm/telemetry=2468.4 s ago  cycles_ok=0  levels=all OK
+[20:42:40] state=NO_DATA  broker=up  arm/telemetry=2478.5 s ago  cycles_ok=0  levels=all OK
+[20:42:50] state=NO_DATA  broker=up  arm/telemetry=2488.5 s ago  cycles_ok=0  levels=all OK
+[20:43:00] state=NO_DATA  broker=up  arm/telemetry=2498.5 s ago  cycles_ok=0  levels=all OK
+[20:43:10] state=NO_DATA  broker=up  arm/telemetry=2508.5 s ago  cycles_ok=0  levels=all OK
+[20:43:20] state=NO_DATA  broker=up  arm/telemetry=2518.5 s ago  cycles_ok=0  levels=all OK
+[20:43:30] state=NO_DATA  broker=up  arm/telemetry=2528.6 s ago  cycles_ok=0  levels=all OK
+[20:43:40] state=NO_DATA  broker=up  arm/telemetry=2538.6 s ago  cycles_ok=0  levels=all OK
+[20:43:50] state=NO_DATA  broker=up  arm/telemetry=2548.6 s ago  cycles_ok=0  levels=all OK
+[20:44:00] state=NO_DATA  broker=up  arm/telemetry=2558.7 s ago  cycles_ok=0  levels=all OK
+[20:44:10] state=NO_DATA  broker=up  arm/telemetry=2568.7 s ago  cycles_ok=0  levels=all OK
+[20:44:20] state=NO_DATA  broker=up  arm/telemetry=2578.7 s ago  cycles_ok=0  levels=all OK
+[20:44:30] state=NO_DATA  broker=up  arm/telemetry=2588.8 s ago  cycles_ok=0  levels=all OK
+[20:44:40] state=NO_DATA  broker=up  arm/telemetry=2598.8 s ago  cycles_ok=0  levels=all OK
+[20:44:50] state=NO_DATA  broker=up  arm/telemetry=2608.8 s ago  cycles_ok=0  levels=all OK
+[20:45:00] state=NO_DATA  broker=up  arm/telemetry=2618.8 s ago  cycles_ok=0  levels=all OK
+[20:45:10] state=NO_DATA  broker=up  arm/telemetry=2628.9 s ago  cycles_ok=0  levels=all OK
+[20:45:20] state=NO_DATA  broker=up  arm/telemetry=2638.9 s ago  cycles_ok=0  levels=all OK
+[20:45:30] state=NO_DATA  broker=up  arm/telemetry=2648.9 s ago  cycles_ok=0  levels=all OK
+[20:45:40] state=NO_DATA  broker=up  arm/telemetry=2658.9 s ago  cycles_ok=0  levels=all OK
+[20:45:50] state=NO_DATA  broker=up  arm/telemetry=2669.0 s ago  cycles_ok=0  levels=all OK
+[20:46:00] state=NO_DATA  broker=up  arm/telemetry=2679.0 s ago  cycles_ok=0  levels=all OK
+[20:46:10] state=NO_DATA  broker=up  arm/telemetry=2689.1 s ago  cycles_ok=0  levels=all OK
+[20:46:20] state=NO_DATA  broker=up  arm/telemetry=2699.1 s ago  cycles_ok=0  levels=all OK
+[20:46:30] state=NO_DATA  broker=up  arm/telemetry=2709.1 s ago  cycles_ok=0  levels=all OK
+[20:46:40] state=NO_DATA  broker=up  arm/telemetry=2719.1 s ago  cycles_ok=0  levels=all OK
+[20:46:50] state=NO_DATA  broker=up  arm/telemetry=2729.1 s ago  cycles_ok=0  levels=all OK
+[20:47:00] state=NO_DATA  broker=up  arm/telemetry=2739.2 s ago  cycles_ok=0  levels=all OK
+[20:47:10] state=NO_DATA  broker=up  arm/telemetry=2749.2 s ago  cycles_ok=0  levels=all OK
+[20:47:20] state=NO_DATA  broker=up  arm/telemetry=2759.3 s ago  cycles_ok=0  levels=all OK
+[20:47:30] state=NO_DATA  broker=up  arm/telemetry=2769.3 s ago  cycles_ok=0  levels=all OK
+[20:47:40] state=NO_DATA  broker=up  arm/telemetry=2779.3 s ago  cycles_ok=0  levels=all OK
+[20:47:50] state=NO_DATA  broker=up  arm/telemetry=2789.3 s ago  cycles_ok=0  levels=all OK
+[20:48:00] state=NO_DATA  broker=up  arm/telemetry=2799.3 s ago  cycles_ok=0  levels=all OK
+[20:48:10] state=NO_DATA  broker=up  arm/telemetry=2809.4 s ago  cycles_ok=0  levels=all OK
+[20:48:21] state=NO_DATA  broker=up  arm/telemetry=2819.4 s ago  cycles_ok=0  levels=all OK
+[20:48:31] state=NO_DATA  broker=up  arm/telemetry=2829.4 s ago  cycles_ok=0  levels=all OK
+[20:48:41] state=NO_DATA  broker=up  arm/telemetry=2839.5 s ago  cycles_ok=0  levels=all OK
+[20:48:51] state=NO_DATA  broker=up  arm/telemetry=2849.5 s ago  cycles_ok=0  levels=all OK
+[20:49:01] state=NO_DATA  broker=up  arm/telemetry=2859.5 s ago  cycles_ok=0  levels=all OK
+[20:49:11] state=NO_DATA  broker=up  arm/telemetry=2869.5 s ago  cycles_ok=0  levels=all OK
+[20:49:21] state=NO_DATA  broker=up  arm/telemetry=2879.6 s ago  cycles_ok=0  levels=all OK
+[20:49:31] state=NO_DATA  broker=up  arm/telemetry=2889.6 s ago  cycles_ok=0  levels=all OK
+[20:49:41] state=NO_DATA  broker=up  arm/telemetry=2899.6 s ago  cycles_ok=0  levels=all OK
+[20:49:51] state=NO_DATA  broker=up  arm/telemetry=2909.7 s ago  cycles_ok=0  levels=all OK
+[20:50:01] state=NO_DATA  broker=up  arm/telemetry=2919.7 s ago  cycles_ok=0  levels=all OK
+[20:50:11] state=NO_DATA  broker=up  arm/telemetry=2929.7 s ago  cycles_ok=0  levels=all OK
+[20:50:21] state=NO_DATA  broker=up  arm/telemetry=2939.7 s ago  cycles_ok=0  levels=all OK
+[20:50:31] state=NO_DATA  broker=up  arm/telemetry=2949.8 s ago  cycles_ok=0  levels=all OK
+[20:50:41] state=NO_DATA  broker=up  arm/telemetry=2959.8 s ago  cycles_ok=0  levels=all OK
+[20:50:51] state=NO_DATA  broker=up  arm/telemetry=2969.8 s ago  cycles_ok=0  levels=all OK
+[20:51:01] state=NO_DATA  broker=up  arm/telemetry=2979.8 s ago  cycles_ok=0  levels=all OK
+[20:51:11] state=NO_DATA  broker=up  arm/telemetry=2989.9 s ago  cycles_ok=0  levels=all OK
+[20:51:21] state=NO_DATA  broker=up  arm/telemetry=2999.9 s ago  cycles_ok=0  levels=all OK
+[20:51:31] state=NO_DATA  broker=up  arm/telemetry=3009.9 s ago  cycles_ok=0  levels=all OK
+[20:51:41] state=NO_DATA  broker=up  arm/telemetry=3019.9 s ago  cycles_ok=0  levels=all OK
+[20:51:51] state=NO_DATA  broker=up  arm/telemetry=3030.0 s ago  cycles_ok=0  levels=all OK
+[20:52:01] state=NO_DATA  broker=up  arm/telemetry=3040.0 s ago  cycles_ok=0  levels=all OK
+[20:52:11] state=NO_DATA  broker=up  arm/telemetry=3050.0 s ago  cycles_ok=0  levels=all OK
+[20:52:21] state=NO_DATA  broker=up  arm/telemetry=3060.0 s ago  cycles_ok=0  levels=all OK
+[20:52:31] state=NO_DATA  broker=up  arm/telemetry=3070.1 s ago  cycles_ok=0  levels=all OK
+[20:52:41] state=NO_DATA  broker=up  arm/telemetry=3080.1 s ago  cycles_ok=0  levels=all OK
+[20:52:51] state=NO_DATA  broker=up  arm/telemetry=3090.1 s ago  cycles_ok=0  levels=all OK
+[20:53:01] state=NO_DATA  broker=up  arm/telemetry=3100.1 s ago  cycles_ok=0  levels=all OK
+[20:53:11] state=NO_DATA  broker=up  arm/telemetry=3110.1 s ago  cycles_ok=0  levels=all OK
+[20:53:21] state=NO_DATA  broker=up  arm/telemetry=3120.2 s ago  cycles_ok=0  levels=all OK
+[20:53:31] state=NO_DATA  broker=up  arm/telemetry=3130.2 s ago  cycles_ok=0  levels=all OK
+[20:53:41] state=NO_DATA  broker=up  arm/telemetry=3140.2 s ago  cycles_ok=0  levels=all OK
+[20:53:51] state=NO_DATA  broker=up  arm/telemetry=3150.3 s ago  cycles_ok=0  levels=all OK
+[20:54:01] state=NO_DATA  broker=up  arm/telemetry=3160.3 s ago  cycles_ok=0  levels=all OK
+[20:54:11] state=NO_DATA  broker=up  arm/telemetry=3170.3 s ago  cycles_ok=0  levels=all OK
+[20:54:21] state=NO_DATA  broker=up  arm/telemetry=3180.3 s ago  cycles_ok=0  levels=all OK
+[20:54:31] state=NO_DATA  broker=up  arm/telemetry=3190.4 s ago  cycles_ok=0  levels=all OK
+[20:54:41] state=NO_DATA  broker=up  arm/telemetry=3200.4 s ago  cycles_ok=0  levels=all OK
+[20:54:52] state=NO_DATA  broker=up  arm/telemetry=3210.4 s ago  cycles_ok=0  levels=all OK
+[20:55:02] state=NO_DATA  broker=up  arm/telemetry=3220.5 s ago  cycles_ok=0  levels=all OK
+[20:55:12] state=NO_DATA  broker=up  arm/telemetry=3230.5 s ago  cycles_ok=0  levels=all OK
+[20:55:22] state=NO_DATA  broker=up  arm/telemetry=3240.5 s ago  cycles_ok=0  levels=all OK
+[20:55:32] state=NO_DATA  broker=up  arm/telemetry=3250.6 s ago  cycles_ok=0  levels=all OK
+[20:55:42] state=NO_DATA  broker=up  arm/telemetry=3260.6 s ago  cycles_ok=0  levels=all OK
+[20:55:52] state=NO_DATA  broker=up  arm/telemetry=3270.6 s ago  cycles_ok=0  levels=all OK
+[20:56:02] state=NO_DATA  broker=up  arm/telemetry=3280.7 s ago  cycles_ok=0  levels=all OK
+[20:56:12] state=NO_DATA  broker=up  arm/telemetry=3290.7 s ago  cycles_ok=0  levels=all OK
+[20:56:22] state=NO_DATA  broker=up  arm/telemetry=3300.7 s ago  cycles_ok=0  levels=all OK
+[20:56:32] state=NO_DATA  broker=up  arm/telemetry=3310.8 s ago  cycles_ok=0  levels=all OK
+[20:56:42] state=NO_DATA  broker=up  arm/telemetry=3320.8 s ago  cycles_ok=0  levels=all OK
+[20:56:52] state=NO_DATA  broker=up  arm/telemetry=3330.8 s ago  cycles_ok=0  levels=all OK
+[20:57:02] state=NO_DATA  broker=up  arm/telemetry=3340.8 s ago  cycles_ok=0  levels=all OK
+[20:57:12] state=NO_DATA  broker=up  arm/telemetry=3350.8 s ago  cycles_ok=0  levels=all OK
+[20:57:22] state=NO_DATA  broker=up  arm/telemetry=3360.9 s ago  cycles_ok=0  levels=all OK
+[20:57:32] state=NO_DATA  broker=up  arm/telemetry=3370.9 s ago  cycles_ok=0  levels=all OK
+[20:57:42] state=NO_DATA  broker=up  arm/telemetry=3380.9 s ago  cycles_ok=0  levels=all OK
+[20:57:52] state=NO_DATA  broker=up  arm/telemetry=3391.0 s ago  cycles_ok=0  levels=all OK
+[20:58:02] state=NO_DATA  broker=up  arm/telemetry=3401.0 s ago  cycles_ok=0  levels=all OK
+[20:58:12] state=NO_DATA  broker=up  arm/telemetry=3411.1 s ago  cycles_ok=0  levels=all OK
+[20:58:22] state=NO_DATA  broker=up  arm/telemetry=3421.1 s ago  cycles_ok=0  levels=all OK
+[20:58:32] state=NO_DATA  broker=up  arm/telemetry=3431.1 s ago  cycles_ok=0  levels=all OK
+[20:58:42] state=NO_DATA  broker=up  arm/telemetry=3441.2 s ago  cycles_ok=0  levels=all OK
+[20:58:52] state=NO_DATA  broker=up  arm/telemetry=3451.2 s ago  cycles_ok=0  levels=all OK
+[20:59:02] state=NO_DATA  broker=up  arm/telemetry=3461.2 s ago  cycles_ok=0  levels=all OK
+[20:59:12] state=NO_DATA  broker=up  arm/telemetry=3471.2 s ago  cycles_ok=0  levels=all OK
+[20:59:22] state=NO_DATA  broker=up  arm/telemetry=3481.2 s ago  cycles_ok=0  levels=all OK
+[20:59:32] state=NO_DATA  broker=up  arm/telemetry=3491.2 s ago  cycles_ok=0  levels=all OK
+[20:59:42] state=NO_DATA  broker=up  arm/telemetry=3501.2 s ago  cycles_ok=0  levels=all OK
+[20:59:52] state=NO_DATA  broker=up  arm/telemetry=3511.3 s ago  cycles_ok=0  levels=all OK
+[21:00:02] state=NO_DATA  broker=up  arm/telemetry=3521.3 s ago  cycles_ok=0  levels=all OK
+[21:00:12] state=NO_DATA  broker=up  arm/telemetry=3531.3 s ago  cycles_ok=0  levels=all OK
+[21:00:22] state=NO_DATA  broker=up  arm/telemetry=3541.4 s ago  cycles_ok=0  levels=all OK
+[21:00:33] state=NO_DATA  broker=up  arm/telemetry=3551.4 s ago  cycles_ok=0  levels=all OK
+[21:00:43] state=NO_DATA  broker=up  arm/telemetry=3561.4 s ago  cycles_ok=0  levels=all OK
+[21:00:53] state=NO_DATA  broker=up  arm/telemetry=3571.4 s ago  cycles_ok=0  levels=all OK
+[21:01:03] state=NO_DATA  broker=up  arm/telemetry=3581.5 s ago  cycles_ok=0  levels=all OK
+[21:01:13] state=NO_DATA  broker=up  arm/telemetry=3591.5 s ago  cycles_ok=0  levels=all OK
+[21:01:23] state=NO_DATA  broker=up  arm/telemetry=3601.5 s ago  cycles_ok=0  levels=all OK
+[21:01:33] state=NO_DATA  broker=up  arm/telemetry=3611.5 s ago  cycles_ok=0  levels=all OK
+[21:01:43] state=NO_DATA  broker=up  arm/telemetry=3621.6 s ago  cycles_ok=0  levels=all OK
+[21:01:53] state=NO_DATA  broker=up  arm/telemetry=3631.6 s ago  cycles_ok=0  levels=all OK
+[21:02:03] state=NO_DATA  broker=up  arm/telemetry=3641.6 s ago  cycles_ok=0  levels=all OK
+[21:02:13] state=NO_DATA  broker=up  arm/telemetry=3651.6 s ago  cycles_ok=0  levels=all OK
+[21:02:23] state=NO_DATA  broker=up  arm/telemetry=3661.7 s ago  cycles_ok=0  levels=all OK
+[21:02:33] state=NO_DATA  broker=up  arm/telemetry=3671.7 s ago  cycles_ok=0  levels=all OK
+[21:02:43] state=NO_DATA  broker=up  arm/telemetry=3681.7 s ago  cycles_ok=0  levels=all OK
+[21:02:53] state=NO_DATA  broker=up  arm/telemetry=3691.7 s ago  cycles_ok=0  levels=all OK
+[21:03:03] state=NO_DATA  broker=up  arm/telemetry=3701.8 s ago  cycles_ok=0  levels=all OK
+[21:03:13] state=NO_DATA  broker=up  arm/telemetry=3711.8 s ago  cycles_ok=0  levels=all OK
+[21:03:23] state=NO_DATA  broker=up  arm/telemetry=3721.8 s ago  cycles_ok=0  levels=all OK
+[21:03:33] state=NO_DATA  broker=up  arm/telemetry=3731.8 s ago  cycles_ok=0  levels=all OK
+[21:03:43] state=NO_DATA  broker=up  arm/telemetry=3741.9 s ago  cycles_ok=0  levels=all OK
+[21:03:53] state=NO_DATA  broker=up  arm/telemetry=3751.9 s ago  cycles_ok=0  levels=all OK
+[21:04:03] state=NO_DATA  broker=up  arm/telemetry=3761.9 s ago  cycles_ok=0  levels=all OK
+[21:04:13] state=NO_DATA  broker=up  arm/telemetry=3771.9 s ago  cycles_ok=0  levels=all OK
+[21:04:23] state=NO_DATA  broker=up  arm/telemetry=3782.0 s ago  cycles_ok=0  levels=all OK
+
+[arm-analyzer] stopping
+[arm-analyzer] lost the broker

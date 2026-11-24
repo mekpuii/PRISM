@@ -1,0 +1,92 @@
+{
+ "_doc": "cycles counted live by optimize.py on top of model.json",
+ "configs": [
+  {
+   "rpm": 8.0,
+   "arm_speed": 1.0,
+   "n": 1,
+   "ok": 0,
+   "j_sum": 0.0,
+   "j_n": 0,
+   "t_sum": 0.0,
+   "t_n": 0
+  },
+  {
+   "rpm": 15.0,
+   "arm_speed": 1.5,
+   "n": 8,
+   "ok": 6,
+   "j_sum": 46.4,
+   "j_n": 2,
+   "t_sum": 0.0,
+   "t_n": 0
+  },
+  {
+   "rpm": 15.0,
+   "arm_speed": 2.0,
+   "n": 1,
+   "ok": 0,
+   "j_sum": 0.0,
+   "j_n": 0,
+   "t_sum": 0.0,
+   "t_n": 0
+  },
+  {
+   "rpm": 20.0,
+   "arm_speed": 1.0,
+   "n": 10,
+   "ok": 7,
+   "j_sum": 62.4,
+   "j_n": 6,
+   "t_sum": 0.0,
+   "t_n": 0
+  },
+  {
+   "rpm": 20.0,
+   "arm_speed": 1.5,
+   "n": 251,
+   "ok": 220,
+   "j_sum": 3276.7,
+   "j_n": 195,
+   "t_sum": 1461.3,
+   "t_n": 88
+  }
+ ],
+ "frontier_bans": {},
+ "feeder": {
+  "moved": 157,
+  "by_phase": {
+   "TRANSPORT": [
+    3,
+    3
+   ],
+   "GRIP": [
+    26,
+    0
+   ],
+   "STANDBY": [
+    1,
+    0
+   ],
+   "IDLE": [
+    1,
+    0
+   ]
+  }
+ },
+ "camera": {
+  "record": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0
+  ],
+  "saved": 1794421002
+ }
+}

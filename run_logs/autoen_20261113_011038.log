@@ -1,0 +1,21 @@
+feeder preset fd1: back 170, ready 170 (1000 ms), push 10 (hold 800 ms) - pt4/pt5 feeder: back 170, push to 10 (2026-11-12 ~15:00)
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+[mqtt] arm connected to localhost:1883: Success
+[mqtt] belt connected to localhost:1883: Success
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261113_011042.csv
+       riff_logs/autoen_sets_20261113_011042.csv
+       riff_logs/autoen_cycles_20261113_011042.csv
+       riff_logs/autoen_thresholds_20261113_011042.csv
+settings changed from the web page: {'rpm': 20.0, 'arm_speed': 1.5, 'carry_speed': 1.5, 'arrive_timeout': 25.0, 'sets': 1, 'cycles_per_set': 100, 'pause_before_set': 0, 'enable_f': 0, 'enable_b': 0, 'enable_c': 0}
+set 1/1 cycle 1/100  OK 20.2s 
+set 1/1 cycle 2/100  TIMEOUT_TRANSPORT 27.4s block did not reach the IR within 25 s | DRIFT J5 -134t in phase TRANSPORT
+set 1/1 cycle 3/100  TIMEOUT_TRANSPORT 27.5s block did not reach the IR within 25 s
+set 1/1 cycle 4/100  OK 21.3s DRIFT J3 -73t in phase RELEASE
+set 1/1 cycle 5/100  OK 19.9s 
+Set 1 (01:10:43-01:13:13): J1: temp max 35C, current avg 2 / peak 26 mA; J2: temp max 35C, current avg 6 / peak 91 mA; J3: temp max 35C, current avg 9 / peak 130 mA; J4: temp max 34C, current avg 2 / peak 13 mA; J5: temp max 36C, current avg 3 / peak 26 mA; J6: temp max 35C, current avg 4 / peak 26 mA; Belt: temp max 26C, current avg 72 / peak 316 mA; ARM TOTAL: servo volt min 12.0 V, summed current avg 24 / peak 202 mA
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+stopped: stopped by the operator  (unparsable RX lines: 0)

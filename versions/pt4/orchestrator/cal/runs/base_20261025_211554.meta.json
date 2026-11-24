@@ -1,0 +1,110 @@
+{
+ "run_id": "base_20261025_211554",
+ "kind": "base",
+ "start": "2026-10-25T21:15:54",
+ "end": "2026-10-25T21:17:45",
+ "status": "error",
+ "rpm_units": "output_rpm_cpr11880",
+ "operator_note": "B1c rest torque-off J2/J3/J5",
+ "cube_set": "none",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "2331163618d6ef6c9d2fbe05b403008786a88c731c7b45608871148d7bde780c",
+  "mtime": "2026-10-25T14:56:43"
+ },
+ "experiment_sha256": "f1832e33bb6f36d1e8d62125c80e8956155daf864402c4302e370057af053af5",
+ "config_snapshots": [],
+ "tasks": [
+  {
+   "id": 1,
+   "status": "error",
+   "kind": "rest",
+   "seconds": 70.0,
+   "settle_s": 3.0,
+   "torque_off": true,
+   "t_start": 1792937823.6787593,
+   "t_end": 1792937865.4024415,
+   "arrived": false,
+   "error": "RuntimeError: torque off not confirmed for J[2, 3, 5]: torque left ON",
+   "stats": {
+    "belt_rpm": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    },
+    "belt_mA": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    },
+    "belt_W": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    },
+    "arm_mA": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    },
+    "arm_W": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    }
+   }
+  }
+ ],
+ "blocks": [],
+ "baseline": {
+  "kind": "rest",
+  "seconds": 70.0,
+  "settle_s": 3.0,
+  "torque_off": true
+ },
+ "rounds": [
+  {
+   "round": 1,
+   "rest": {
+    "id": 1,
+    "status": "error",
+    "kind": "rest",
+    "seconds": 70.0,
+    "settle_s": 3.0,
+    "torque_off": true,
+    "t_start": 1792937823.6787593,
+    "t_end": 1792937865.4024415,
+    "arrived": false,
+    "error": "RuntimeError: torque off not confirmed for J[2, 3, 5]: torque left ON",
+    "stats": {
+     "belt_rpm": {
+      "n": 0,
+      "mean": null,
+      "std": null
+     },
+     "belt_mA": {
+      "n": 0,
+      "mean": null,
+      "std": null
+     },
+     "belt_W": {
+      "n": 0,
+      "mean": null,
+      "std": null
+     },
+     "arm_mA": {
+      "n": 0,
+      "mean": null,
+      "std": null
+     },
+     "arm_W": {
+      "n": 0,
+      "mean": null,
+      "std": null
+     }
+    }
+   }
+  }
+ ],
+ "error": "rest task failed: RuntimeError: torque off not confirmed for J[2, 3, 5]: torque left ON"
+}

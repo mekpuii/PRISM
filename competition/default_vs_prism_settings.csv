@@ -1,0 +1,17 @@
+group,parameter,normal_mode_autoen_defaults,manual_best_autoen_by_hand,prism_optimizer,source
+setting,belt rpm (real output rpm),6.7,20,20 (chosen from 8-20; 15 when warm),auto_en_new.py --rpm; optimize.py SAFE/GENTLE
+setting,arm speed,1.0,1.5,1.5 (chosen from 1.0-2.0),auto_en_new.py --arm-speed; optimize.py
+setting,carry speed,1.0,1.5,1.5,auto_en_new.py --carry-speed; HOW_TO_USE_PRISM.md
+setting,gap between cycles (s),1.0,1.0,1.0,auto_en_new.py --gap
+setting,arrive timeout (s),20,25,2.7 x belt ride (~25 at 20 rpm),auto_en_new.py --arrive-timeout; optimize.py ARRIVE_FACTOR
+setting,stop after N failed cycles,3,3,never stops on an empty feed (NO_BLOCK not counted),auto_en_new.py --max-fails
+behaviour,empty feeder,runs belt ~25 s x 3 cycles then stops with error,same,aborts after ~6 s then IDLE,OPTIMIZER_ROADMAP.md
+behaviour,idle state,belt not braked; arm holds,same,arm home + belt braked,OPTIMIZER_ROADMAP.md
+behaviour,after refill,never restarts by itself,same,forecast-timed probe or feeder IR restarts it,forecast.py / main.py --auto-resume
+behaviour,setting choice,fixed,fixed,priority: safety > energy > speed; re-checked every cycle,optimize.py
+result,seconds per cube,35.3 (ESTIMATE from model.json),19.1 (measured),19.1 (measured; live 3.1-3.2 cubes/min),model.json; baselines_summary.json
+result,cubes per minute,1.7 (ESTIMATE),3.14 (measured),3.12-3.24 (measured live 2026-10-26),baselines_summary.json; OPTIMIZER_ROADMAP.md
+result,energy per good cube (J),~23-24 (ESTIMATE; 8 rpm/1.0 measured 22.9),20.8 (measured),21.9-22.0 (measured live),baselines_summary.json; OPTIMIZER_ROADMAP.md
+result,energy per empty feeder (J),~150 (3 empty cycles x 49.5),~150,11.0 (measured; -93 %),OPTIMIZER_ROADMAP.md 2026-10-26 13:33
+result,time from empty feed to idle (s),~98 then stopped with error,~98,12.7 (measured),OPTIMIZER_ROADMAP.md
+result,idle power (W),~0.13 (belt not braked 0.048 + arm home 0.084) - NOT measured as one run,same,0.082 arm + 0.0003 belt (measured),OPTIMIZER_DATA.md; OPTIMIZER_ROADMAP.md

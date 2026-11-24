@@ -1,0 +1,63 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+[mqtt] belt connected to localhost:1883: Success
+[mqtt] arm connected to localhost:1883: Success
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261111_220818.csv
+       riff_logs/autoen_sets_20261111_220818.csv
+       riff_logs/autoen_cycles_20261111_220818.csv
+       riff_logs/autoen_thresholds_20261111_220818.csv
+settings changed from the web page: {'rpm': 6.7, 'arm_speed': 1.0, 'carry_speed': 1.0, 'arrive_timeout': 20.0}
+settings changed from the web page: {'rpm': 20.0, 'arm_speed': 1.5, 'carry_speed': 1.5, 'arrive_timeout': 25.0, 'max_fails': 8, 'sets': 1000, 'cycles_per_set': 1000}
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 1/1000  OK 11.2s 
+set 1/1000 cycle 2/1000  OK 17.2s 
+set 1/1000 cycle 3/1000  OK 21.9s 
+set 1/1000 cycle 4/1000  OK 18.5s 
+set 1/1000 cycle 5/1000  OK 18.6s 
+set 1/1000 cycle 6/1000  OK 20.1s 
+set 1/1000 cycle 7/1000  OK 19.2s DRIFT J2 -91t in phase TRANSPORT
+set 1/1000 cycle 8/1000  OK 18.8s DRIFT J2 -69t in phase IDLE
+set 1/1000 cycle 9/1000  OK 18.2s 
+set 1/1000 cycle 10/1000  OK 18.7s 
+set 1/1000 cycle 11/1000  OK 18.7s 
+set 1/1000 cycle 12/1000  OK 21.7s 
+set 1/1000 cycle 13/1000  TIMEOUT_TRANSPORT 25.9s block did not reach the IR within 25 s
+set 1/1000 cycle 14/1000  TIMEOUT_TRANSPORT 26.0s block did not reach the IR within 25 s
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 2099, in run
+    raise RuntimeError(f"recovery after {result} failed ({recovery_error}) - stopping instead of gripping blind")
+^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 1764, in wait_if_paused
+    self.hold_tick()
+    ^^^^^^^^^^^^^^^
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/mekkhram/autoen-env/lib/python3.11/site-packages/serial/serialposix.py", line 621, in write
+    n = os.write(self.fd, d)
+        ^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 5] Input/output error
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 2786, in <module>
+    link.note(f"## end, unparsable RX lines: {link.bad_rx}")
+                 ^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 2766, in main
+    webbrowser.open(f"http://127.0.0.1:{args.web_port}")
+^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 2115, in run
+    self.link.belt_cmd("STOP")                  # belt coasts, fault cleared
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 185, in write
+    self.ser.write((line + "\n").encode("ascii"))
+  File "/home/mekkhram/autoen-env/lib/python3.11/site-packages/serial/serialposix.py", line 655, in write
+    raise SerialException('write failed: {}'.format(e))
+serial.serialutil.SerialException: write failed: [Errno 5] Input/output error

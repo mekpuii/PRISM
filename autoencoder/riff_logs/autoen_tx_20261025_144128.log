@@ -1,0 +1,50 @@
+14:41:53.583 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+14:41:54.206 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:54.518 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:54.831 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:55.143 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:55.455 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:55.765 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:56.080 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:56.391 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:57.014 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:57.328 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+14:41:57.638 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:57.951 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:58.263 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:58.576 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:58.888 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:59.199 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:59.510 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:41:59.826 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:42:00.552 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+14:43:16.443 ## RX GAP 0.32s - the Mega sent nothing (its loop was blocked?)
+14:43:20.680 ## RX GAP 0.41s - the Mega sent nothing (its loop was blocked?)
+14:43:21.302 ## RX GAP 0.51s - the Mega sent nothing (its loop was blocked?)
+14:43:24.401 ## RX GAP 0.32s - the Mega sent nothing (its loop was blocked?)
+14:44:45.337 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:44:45.509 ## cycle 0 phase PREPARE
+14:44:45.512 TX X,CPR,11880
+14:44:45.556 TX X,TEMPMAX,60
+14:44:45.640 TX X,OFFSET,0
+14:44:45.952 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:44:45.954 TX X,FEEDCFG,170,0,400,400
+14:44:46.262 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:44:46.267 TX X,PID,4.5,13.5,0
+14:44:46.579 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:44:46.890 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:44:47.202 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:44:47.268 ## cycle 0 phase IDLE
+14:44:47.269 TX X,STOP
+14:44:47.514 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:44:47.828 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+14:44:48.139 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:44:48.270 TX H,1
+14:44:48.280 TX H,2
+14:44:48.291 TX H,3
+14:44:48.301 TX H,4
+14:44:48.312 TX H,5
+14:44:49.035 TX X,STOP
+14:44:49.473 ## RX GAP 1.02s - the Mega sent nothing (its loop was blocked?)
+14:44:49.785 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+14:44:52.067 ## end, unparsable RX lines: 0

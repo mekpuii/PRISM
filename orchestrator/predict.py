@@ -1,0 +1,276 @@
+# predict.py - Module 2 of the orchestrator (PRISM, Raspberry Pi 4).
+#
+# WHAT THIS MODULE DOES
+#   Keeps one 1-D Kalman filter per cube, along the belt, in MILLIMETRES.
+#   Input : WorldState from observe.py (camera snapshot + belt telemetry)
+#   Output: PredictOutput (cube estimates, belt speed, edge gaps in mm)
+#
+# WHY 1-D
+#   The belt moves in one direction. Across-belt motion is not needed for the pick,
+#   so the filter tracks only the along-belt coordinate.
+#
+# WHY A PRIOR FROM THE BELT ENCODER
+#   The camera sends 2 Hz and can blink. The belt encoder gives a continuous speed.
+#   A cube sitting on the belt moves at belt speed, so while the camera cannot see
+#   it, the filter's velocity relaxes toward the belt speed and the position keeps moving.
+#
+# UNITS
+#   Position mm, velocity mm/s, time s (monotonic clock). Only this file converts px -> mm.
+
+import math
+from dataclasses import dataclass
+from typing import Optional
+
+from observe import WorldState
+
+# ============================================================
+# CALIBRATION CONSTANTS  (measured - see notes)
+# ============================================================
+
+CUBE_EDGE_MM = 40.0               # measured with calipers
+import camgeo      # noqa: E402
+MM_PER_PX = camgeo.MM_PER_PX   # D415: 0.95 (w 43 px = 40 mm; depth 0.59 m). Changed only by camera_geometry.json
+PULLEY_CIRC_MM = 165.0            # measured with string
+BELT_MM_S_PER_RPM = 2.81   # MEASURED: 1800 mm in 57.57 s at 11.11 real rpm (CPR 11880) = 31.27 mm/s; string theory 165/60 = 2.75
+BELT_SIGN = +1                    # +1 if positive rpm means "toward the IR". CHECK on the real belt.
+BELT_LENGTH_MM = 300.0            # measured: 30 cm conveyor
+
+# ============================================================
+# FILTER TUNING  (starting values - tune on recorded data)
+# ============================================================
+
+TAU_BELT_S = 2.0                  # how fast a cube's velocity relaxes toward belt speed (s)
+Q_POS = 4.0                       # process noise, position (mm^2 per s)
+Q_VEL = 900.0                     # process noise, velocity ((mm/s)^2 per s)
+R_POS = 4.0                       # measurement noise, position (mm^2) ~ 2 mm sigma
+R_VEL = 225.0                     # measurement noise, velocity ((mm/s)^2) ~ 15 mm/s sigma
+MIN_HITS = 6                      # camera confirms a track after 6 frames (= CONFIRM_FRAMES)
+COAST_MAX_S = 2.0                 # drop a cube not seen by the camera for longer than this
+
+
+# ============================================================
+# 2x2 MATRIX HELPERS
+# Plain lists, no numpy: the state has only two numbers, and this keeps it easy to read.
+# ============================================================
+
+def _mul(a, b):
+    """Multiply two 2x2 matrices."""
+    return [[a[0][0] * b[0][0] + a[0][1] * b[1][0], a[0][0] * b[0][1] + a[0][1] * b[1][1]],
+            [a[1][0] * b[0][0] + a[1][1] * b[1][0], a[1][0] * b[0][1] + a[1][1] * b[1][1]]]
+
+
+def _transpose(a):
+    return [[a[0][0], a[1][0]], [a[0][1], a[1][1]]]
+
+
+def _add(a, b):
+    return [[a[0][0] + b[0][0], a[0][1] + b[0][1]], [a[1][0] + b[1][0], a[1][1] + b[1][1]]]
+
+
+def _inv(a):
+    """Inverse of a 2x2 matrix. Raises if it is singular (should never happen with R > 0)."""
+    det = a[0][0] * a[1][1] - a[0][1] * a[1][0]
+    if abs(det) < 1e-12:
+        raise ValueError("singular 2x2 matrix")
+    return [[a[1][1] / det, -a[0][1] / det], [-a[1][0] / det, a[0][0] / det]]
+
+
+# ============================================================
+# ONE CUBE = ONE FILTER
+# ============================================================
+
+class CubeFilter:
+    """Kalman filter for one cube. State x = [position_mm, velocity_mm_s]."""
+
+    def __init__(self, cube_id, color, pos_mm, vel_mm_s, t):
+        self.id = cube_id
+        self.color = color
+        self.t = t                               # time the state refers to
+        self.x = [pos_mm, vel_mm_s]
+        self.P = [[R_POS, 0.0], [0.0, R_VEL]]    # initial uncertainty = measurement noise
+        self.last_obs_t = t                      # last time the camera confirmed this cube
+        self.seen_latest = True                  # was it in the latest camera snapshot?
+
+    def predict(self, t, v_belt):
+        """Advance the state from self.t to t. Velocity relaxes toward the belt speed."""
+        dt = t - self.t
+        if dt <= 0.0:
+            return
+        decay = math.exp(-dt / TAU_BELT_S)      # how much of the old velocity survives dt
+        p, v = self.x
+
+        # Motion model: position integrates velocity; velocity relaxes toward belt speed.
+        self.x = [p + v * dt, decay * v + (1.0 - decay) * v_belt]
+
+        # Linearised model F (exact, because the model is linear in x):
+        #   [ 1   dt    ]
+        #   [ 0   decay ]
+        F = [[1.0, dt], [0.0, decay]]
+        Q = [[Q_POS * dt, 0.0], [0.0, Q_VEL * dt]]   # uncertainty grows while coasting
+        self.P = _add(_mul(_mul(F, self.P), _transpose(F)), Q)
+        self.t = t
+
+    def update(self, pos_mm, vel_mm_s, t):
+        """Correct with a camera measurement. Both position and velocity are measured (H = I)."""
+        R = [[R_POS, 0.0], [0.0, R_VEL]]
+        S = _add(self.P, R)                      # innovation covariance
+        K = _mul(self.P, _inv(S))                # Kalman gain
+
+        innovation = [pos_mm - self.x[0], vel_mm_s - self.x[1]]
+        self.x = [
+            self.x[0] + K[0][0] * innovation[0] + K[0][1] * innovation[1],
+            self.x[1] + K[1][0] * innovation[0] + K[1][1] * innovation[1],
+        ]
+
+        I_minus_K = [[1.0 - K[0][0], -K[0][1]], [-K[1][0], 1.0 - K[1][1]]]
+        self.P = _mul(I_minus_K, self.P)
+        self.t = t
+        self.last_obs_t = t
+
+
+# ============================================================
+# OUTPUT TYPES  (what optimize.py and actuate.py receive)
+# ============================================================
+
+@dataclass
+class CubeEstimate:
+    id: int
+    color: str
+    t: float                 # time this estimate refers to
+    pos_mm: float            # along-belt position, larger = further downstream
+    vel_mm_s: float          # along-belt velocity
+    sigma_mm: float          # 1-sigma position uncertainty (grows while coasting)
+    coasting: bool           # True = camera did not see it in the latest snapshot
+    age_s: float             # seconds since the camera last confirmed it
+
+
+@dataclass
+class PredictOutput:
+    t: float
+    cubes: list              # list of CubeEstimate
+    belt_mm_s: float         # belt speed used for the prior
+    belt_ok: bool            # False = belt telemetry stale or faulted (prior is old)
+    gaps: list               # edge gaps between neighbouring LIVE cubes, mm
+
+
+def position_at(est, t_future):
+    """Where a cube will be at t_future, assuming it keeps its current velocity.
+    Only for short horizons (under about 1 s): the velocity is not guaranteed to hold longer."""
+    return est.pos_mm + est.vel_mm_s * (t_future - est.t)
+
+
+# ============================================================
+# MODULE
+# ============================================================
+
+class Predict:
+    """Owns one CubeFilter per camera track id and advances them every tick."""
+
+    def __init__(self):
+        self.filters = {}        # camera track id -> CubeFilter
+        self.last_seq = None     # last camera snapshot we used
+        self.v_belt = 0.0        # belt speed prior, mm/s
+        self.belt_ok = False
+        self.dropped = 0         # cubes removed (coasted too long, or left the belt)
+
+    def step(self, state: WorldState) -> PredictOutput:
+        """Run one tick. Order matters: predict to 'now' first, then correct with the camera."""
+        t = state.t
+        self._belt(state)
+
+        # 1. Move every filter forward to the current time (no measurement yet).
+        for f in self.filters.values():
+            f.predict(t, self.v_belt)
+
+        # 2. If the camera sent a NEW snapshot, correct the filters with it.
+        self._camera(state, t)
+
+        # 3. Remove cubes that disappeared for too long or left the belt.
+        self._prune(t)
+
+        estimates = [
+            CubeEstimate(
+                id=f.id,
+                color=f.color,
+                t=f.t,
+                pos_mm=f.x[0],
+                vel_mm_s=f.x[1],
+                sigma_mm=math.sqrt(max(0.0, f.P[0][0])),
+                coasting=not f.seen_latest,
+                age_s=t - f.last_obs_t,
+            )
+            for f in self.filters.values()
+        ]
+        return PredictOutput(
+            t=t,
+            cubes=estimates,
+            belt_mm_s=self.v_belt,
+            belt_ok=self.belt_ok,
+            gaps=self._gaps(estimates),
+        )
+
+    # ----- belt prior -----
+
+    def _belt(self, state):
+        """Turn belt rpm into mm/s. Keep the last value only as a fallback, and say so."""
+        b = state.belt
+        if b.fault:
+            self.v_belt, self.belt_ok = 0.0, False       # a faulted belt is not moving on purpose
+        elif state.belt_fresh and b.rpm is not None:
+            self.v_belt = BELT_SIGN * b.rpm * BELT_MM_S_PER_RPM
+            self.belt_ok = True
+        else:
+            self.belt_ok = False                         # keep v_belt, but flag it as old
+
+    # ----- camera correction -----
+
+    def _camera(self, state, t):
+        """Use each NEW snapshot exactly once. The camera publishes at 2 Hz, the tick runs at 20 Hz."""
+        if state.cam_seq == self.last_seq or not state.camera_fresh:
+            return
+        self.last_seq = state.cam_seq
+
+        seen = set()
+        for c in state.cubes:
+            if c.hits < MIN_HITS:                    # unconfirmed blob: ignore it
+                continue
+            pos = c.along_px * MM_PER_PX
+            vel = c.along_vel_px_s * MM_PER_PX
+
+            f = self.filters.get(c.id)
+            if f is None:
+                # First time we see this track: start the filter from the measurement.
+                self.filters[c.id] = CubeFilter(c.id, c.color, pos, vel, t)
+            else:
+                f.update(pos, vel, t)
+            seen.add(c.id)
+
+        # Mark which cubes the latest snapshot contained (the others are coasting).
+        for cid, f in self.filters.items():
+            f.seen_latest = cid in seen
+
+    # ----- housekeeping -----
+
+    def _prune(self, t):
+        """Delete cubes we have not seen for too long, or that have left the belt."""
+        for cid in list(self.filters):
+            f = self.filters[cid]
+            too_old = (t - f.last_obs_t) > COAST_MAX_S
+            off_belt = BELT_LENGTH_MM is not None and f.x[0] > BELT_LENGTH_MM
+            if too_old or off_belt:
+                del self.filters[cid]
+                self.dropped += 1
+
+    def _gaps(self, estimates):
+        """Edge gap between neighbouring cubes, in mm. Only cubes the camera currently sees count."""
+        live = [e for e in estimates if not e.coasting]
+        live.sort(key=lambda e: e.pos_mm, reverse=True)     # leader (furthest downstream) first
+        return [
+            {
+                "ahead": lead.id,
+                "behind": follow.id,
+                # centre-to-centre distance minus one cube width = free space between the edges
+                "edge_gap_mm": round((lead.pos_mm - follow.pos_mm) - CUBE_EDGE_MM, 1),
+            }
+            for lead, follow in zip(live, live[1:])
+        ]

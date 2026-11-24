@@ -1,0 +1,37 @@
+[health] watching arm, camera, logger_arm, logger_camera via localhost:1883. Ctrl+C to stop.
+[health] connected to broker: Success
+[19:07:06] CAMERA        UNKNOWN -> OFFLINE   (camera/status says offline (last will or clean exit))
+[19:07:07] LOGGER_ARM    UNKNOWN -> OK
+[19:07:07] LOGGER_CAMERA UNKNOWN -> OK
+[19:07:13] ARM           UNKNOWN -> OK
+[19:07:16] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:07:26] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:07:36] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:07:46] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:07:56] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:08:06] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:08:16] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:08:26] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:08:27] LOGGER_ARM    OK -> STALE   (logger/arm/heartbeat silent 6.3 s)
+[19:08:29] LOGGER_ARM    STALE -> RECOVERED
+[19:08:32] LOGGER_ARM    RECOVERED -> OK
+[19:08:36] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:08:46] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:08:56] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:09:06] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:09:16] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:09:26] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:09:36] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:09:46] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:09:56] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:10:06] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:10:16] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:10:26] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:10:36] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:10:46] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:10:56] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:11:06] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:11:16] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:11:26] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[19:11:36] arm=OK  camera=OFFLINE  logger_arm=OK  logger_camera=OK
+[health] lost the broker: health is UNKNOWN until it is back

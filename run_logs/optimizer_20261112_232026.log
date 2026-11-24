@@ -1,0 +1,71 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261112_232040.jsonl
+[plan 1] OFF    22 rpm / arm 1.75  - autoen not reachable
+[plan 2] OFF    22 rpm / arm 1.75  - autoen ready
+[plan 3] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 4] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 5] OFF    22 rpm / arm 1.75  - autoen stopped
+[plan 6] OFF    22 rpm / arm 1.75  - autoen not reachable
+[plan 7] OFF    22 rpm / arm 1.75  - autoen ready
+[plan 8] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 9] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 10] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 11] RUN    22 rpm / arm 1.75  action=verdict:1:nudge  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 12] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 13] RUN    22 rpm / arm 1.75  action=verdict:1:fed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 14] RUN    22 rpm / arm 1.75  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 15] RUN    22 rpm / arm 1.75  action=feed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 16] RUN    22 rpm / arm 1.75  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 17] RUN    22 rpm / arm 1.75  action=verdict:2:nudge  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 18] RUN    22 rpm / arm 1.75  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 19] RUN    22 rpm / arm 1.75  action=verdict:2:fed  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 20] RUN    22 rpm / arm 1.75  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 21] RUN    22 rpm / arm 1.75  action=feed  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 22] RUN    22 rpm / arm 1.75  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 23] RUN    22 rpm / arm 1.75  action=verdict:3:fed  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 24] RUN    22 rpm / arm 1.75  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 25] RUN    22 rpm / arm 1.75  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 26] RUN    22 rpm / arm 1.75  action=feed  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 27] RUN    22 rpm / arm 1.75  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 28] RUN    22 rpm / arm 1.75  action=verdict:4:fed  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 29] RUN    22 rpm / arm 1.75  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 30] RUN    22 rpm / arm 1.75  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 31] RUN    22 rpm / arm 1.75  action=feed  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 32] RUN    22 rpm / arm 1.75  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 33] RUN    22 rpm / arm 1.75  action=verdict:5:nudge  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 34] RUN    22 rpm / arm 1.75  - feed 2: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 35] RUN    22 rpm / arm 1.75  action=verdict:5:fed  - feed 5: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 36] RUN    22 rpm / arm 1.75  - feed 5: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 37] RUN    22 rpm / arm 1.75  action=flow_drop_oldest  - feed 5: its block should have reached the IR after 7.6 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 38] RUN    22 rpm / arm 1.75  - feed 5: its block should have reached the IR after 7.6 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 39] RUN    22 rpm / arm 1.75  action=feed  - feed 5: its block should have reached the IR after 7.6 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 40] RUN    22 rpm / arm 1.75  - feed 5: its block should have reached the IR after 7.6 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 41] RUN    22 rpm / arm 1.75  action=verdict:6:fed  - feed 5: its block should have reached the IR after 7.6 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 42] RUN    22 rpm / arm 1.75  - feed 5: its block should have reached the IR after 7.6 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 43] RUN    22 rpm / arm 1.75  - feed 5: its block should have reached the IR after 7.6 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 44] RUN    22 rpm / arm 1.75  action=feed  - feed 5: its block should have reached the IR after 7.6 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 45] RUN    22 rpm / arm 1.75  - feed 5: its block should have reached the IR after 7.6 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 46] RUN    22 rpm / arm 1.75  action=verdict:7:fed  - feed 5: its block should have reached the IR after 7.6 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 47] RUN    22 rpm / arm 1.75  - feed 5: its block should have reached the IR after 7.6 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 48] RUN    22 rpm / arm 1.75  - feed 5: its block should have reached the IR after 7.6 s of belt and has not (139% of the ride): nothing came out, feeding again
+[plan 49] RUN    22 rpm / arm 1.75  action=flow_drop_oldest  - feed 7: its block should have reached the IR after 7.6 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 50] RUN    22 rpm / arm 1.75  - feed 7: its block should have reached the IR after 7.6 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 51] RUN    22 rpm / arm 1.75  action=feed  - feed 7: its block should have reached the IR after 7.6 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 52] RUN    22 rpm / arm 1.75  - feed 7: its block should have reached the IR after 7.6 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 53] RUN    22 rpm / arm 1.75  action=verdict:8:nudge  - feed 7: its block should have reached the IR after 7.6 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 54] RUN    22 rpm / arm 1.75  - feed 7: its block should have reached the IR after 7.6 s of belt and has not (136% of the ride): nothing came out, feeding again
+[plan 55] RUN    22 rpm / arm 1.75  action=verdict:8:fed  - feed 8: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 56] RUN    22 rpm / arm 1.75  - feed 8: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 57] RUN    22 rpm / arm 1.75  action=flow_drop_oldest  - feed 8: its block should have reached the IR after 7.6 s of belt and has not (140% of the ride): nothing came out, feeding again
+[plan 58] RUN    22 rpm / arm 1.75  - feed 8: its block should have reached the IR after 7.6 s of belt and has not (140% of the ride): nothing came out, feeding again
+[plan 59] RUN    22 rpm / arm 1.75  action=feed  - feed 8: its block should have reached the IR after 7.6 s of belt and has not (140% of the ride): nothing came out, feeding again
+[plan 60] RUN    22 rpm / arm 1.75  - feed 8: its block should have reached the IR after 7.6 s of belt and has not (140% of the ride): nothing came out, feeding again
+[plan 61] RUN    22 rpm / arm 1.75  action=verdict:9:nudge  - feed 8: its block should have reached the IR after 7.6 s of belt and has not (140% of the ride): nothing came out, feeding again
+[plan 62] RUN    22 rpm / arm 1.75  - feed 8: its block should have reached the IR after 7.6 s of belt and has not (140% of the ride): nothing came out, feeding again
+[plan 63] RUN    22 rpm / arm 1.75  action=verdict:9:fed  - feed 9: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 64] RUN    22 rpm / arm 1.75  - feed 9: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 65] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 66] OFF    22 rpm / arm 1.75  - autoen stopped
+[plan 67] OFF    22 rpm / arm 1.75  - autoen not reachable
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

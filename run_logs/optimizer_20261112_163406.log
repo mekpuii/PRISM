@@ -1,0 +1,160 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261112_163417.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 5] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 6] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 7] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 8] RUN    20 rpm / arm 1.5  action=verdict:1:fed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 9] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 10] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 11] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 12] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 13] RUN    20 rpm / arm 1.5  action=verdict:2:fed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 14] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 15] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 16] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 17] RUN    20 rpm / arm 1.5  action=verdict:3:fed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 18] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 19] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 20] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 21] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 22] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 23] RUN    20 rpm / arm 1.5  action=verdict:4:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 24] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 25] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 26] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 27] RUN    20 rpm / arm 1.5  action=verdict:5:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 28] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 29] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 30] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 31] RUN    20 rpm / arm 1.5  action=verdict:6:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 32] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 33] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 34] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 35] RUN    20 rpm / arm 1.5  action=verdict:7:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 36] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 37] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 38] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 39] RUN    20 rpm / arm 1.5  action=verdict:8:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 40] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 41] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 42] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 43] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 44] RUN    20 rpm / arm 1.5  action=verdict:9:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 45] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 46] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 47] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 48] RUN    20 rpm / arm 1.5  action=verdict:10:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 49] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 50] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 51] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 52] RUN    20 rpm / arm 1.5  action=verdict:11:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 53] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 54] RUN    20 rpm / arm 1.5  - experiment: gap_mm 60.0 -> 80.0 (mm of free belt between two cubes) for 6 picks; to beat: 13.1 s per pick
+[plan 55] RUN    20 rpm / arm 1.5  - experiment: gap_mm 60.0 -> 80.0 (mm of free belt between two cubes) for 6 picks; to beat: 13.1 s per pick
+[plan 56] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 3 cubes on the belt - 404 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 57] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 404 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 58] RUN    20 rpm / arm 1.5  action=verdict:12:fed  - flow: I keep up to 3 cubes on the belt - 404 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 59] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 404 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 60] RUN    20 rpm / arm 1.5  - slip: cubes move at 52% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 61] RUN    20 rpm / arm 1.5  - slip: cubes move at 52% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 62] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 63] RUN    20 rpm / arm 1.5  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 64] RUN    20 rpm / arm 1.5  action=verdict:13:fed  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 65] RUN    20 rpm / arm 1.5  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 66] RUN    20 rpm / arm 1.5  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 67] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 68] RUN    20 rpm / arm 1.5  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 69] RUN    20 rpm / arm 1.5  action=verdict:14:fed  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 70] RUN    20 rpm / arm 1.5  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 71] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 72] RUN    20 rpm / arm 1.5  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 73] RUN    20 rpm / arm 1.5  action=verdict:15:fed  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 74] RUN    20 rpm / arm 1.5  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 75] RUN    20 rpm / arm 1.5  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 76] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 77] RUN    20 rpm / arm 1.5  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 78] RUN    20 rpm / arm 1.5  action=verdict:16:fed  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 79] RUN    20 rpm / arm 1.5  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 80] RUN    20 rpm / arm 1.5  - flow: I keep up to 2 cubes on the belt - 338 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 81] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 1 cube on the belt - 231 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 82] RUN    20 rpm / arm 1.5  - flow: I keep up to 1 cube on the belt - 231 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 83] RUN    20 rpm / arm 1.5  action=verdict:17:fed  - flow: I keep up to 1 cube on the belt - 231 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 84] RUN    20 rpm / arm 1.5  - flow: I keep up to 1 cube on the belt - 231 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 85] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 101 mV: I don't use the dip check until I see clear pushes again
+[plan 86] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 101 mV: I don't use the dip check until I see clear pushes again
+[plan 87] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 101 mV: I don't use the dip check until I see clear pushes again
+[plan 88] RUN    20 rpm / arm 1.5  action=verdict:18:fed  - the feeder pushed after all although the 12 V rail dipped only 101 mV: I don't use the dip check until I see clear pushes again
+[plan 89] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 101 mV: I don't use the dip check until I see clear pushes again
+[plan 90] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 101 mV: I don't use the dip check until I see clear pushes again
+[plan 91] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 101 mV: I don't use the dip check until I see clear pushes again
+[plan 92] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 101 mV: I don't use the dip check until I see clear pushes again
+[plan 93] RUN    20 rpm / arm 1.5  action=verdict:19:fed  - the feeder pushed after all although the 12 V rail dipped only 101 mV: I don't use the dip check until I see clear pushes again
+[plan 94] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 101 mV: I don't use the dip check until I see clear pushes again
+[plan 95] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 96] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 97] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 98] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 99] RUN    20 rpm / arm 1.5  action=verdict:20:fed  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 100] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 101] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 102] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 103] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 104] RUN    20 rpm / arm 1.5  action=verdict:21:nudge  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 105] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 106] RUN    20 rpm / arm 1.5  action=verdict:21:empty  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 107] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 16 mV: I don't use the dip check until I see clear pushes again
+[plan 108] OFF    20 rpm / arm 1.5  - autoen stopped
+[plan 109] OFF    20 rpm / arm 1.5  - autoen not reachable
+[actuate] autoen restarted (cycle 19 -> 0): cycle hand-over starts again
+[plan 110] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 111] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 112] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 113] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 114] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 115] RUN    20 rpm / arm 1.5  action=verdict:1:nudge  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 116] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 117] RUN    20 rpm / arm 1.5  action=verdict:1:empty  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 118] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 119] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 120] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 121] RUN    20 rpm / arm 1.5  action=verdict:2:nudge  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 122] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 123] RUN    20 rpm / arm 1.5  action=verdict:2:empty  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 124] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 125] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 126] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 127] RUN    20 rpm / arm 1.5  action=verdict:3:nudge  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 128] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 129] RUN    20 rpm / arm 1.5  action=verdict:3:empty  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 130] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 131] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 2: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 2 during TRANSPORT: servo unknown, camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  feed 3: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 3 during TRANSPORT: servo unknown, camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  cycle 1: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 132] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 133] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 2 during TRANSPORT: servo unknown, camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  feed 3: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 3 during TRANSPORT: servo unknown, camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  cycle 1: NO_BLOCK
+    I tried / saw:  cycle 2: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 134] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 135] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 136] OFF    20 rpm / arm 1.5  - autoen stopped
+[plan 137] OFF    20 rpm / arm 1.5  - autoen not reachable
+[actuate] autoen restarted (cycle 2 -> 0): cycle hand-over starts again
+[plan 138] OFF    20 rpm / arm 1.5  - autoen ready
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

@@ -1,0 +1,8 @@
+device,what,temp_start_c,temp_avg_c,temp_max_c,temp_rise_c,temp_level,current_avg_ma,current_peak_ma,volt_min_v,volt_avg_v,power_avg_w,power_peak_w,energy_j
+J1,base (shoulder pan),34.0,34.0,34.0,0.0,ok,1,26,12.0,12.09,0.013,0.31,2.1
+J2,shoulder lift,34.0,34.0,34.0,0.0,ok,5,104,12.1,12.19,0.063,1.27,10.7
+J3,elbow,35.0,35.0,36.0,1.0,ok,11,117,12.0,12.1,0.135,1.4,23.0
+J4,wrist flex,34.0,34.0,37.0,3.0,ok,4,20,12.1,12.19,0.044,0.24,7.5
+J5,wrist roll,34.0,34.1,37.0,3.0,ok,1,20,12.0,12.1,0.009,0.24,1.6
+J6,gripper,35.0,35.4,36.0,1.0,ok,3,26,12.0,12.15,0.032,0.31,5.5
+Belt,belt motor + 12 V rail,26.4,26.3,26.4,0.0,ok,61,315,12.11,12.18,0.74,3.82,126.4

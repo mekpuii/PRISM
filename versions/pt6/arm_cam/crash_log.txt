@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "c:\Users\User\Desktop\so101_pick_v2\so101_pick\follow_block.py", line 753, in main
+    if grip_now(arm, cap, "follow block (Esc = quit)"):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\User\Desktop\so101_pick_v2\so101_pick\follow_block.py", line 376, in grip_now
+    pos = _grip_motion(arm, td, j0, down, dur, phase)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\User\Desktop\so101_pick_v2\so101_pick\follow_block.py", line 411, in _grip_motion
+    arm.move_smooth({n: j0[n] for n in GRIP_J}, duration=dur, fine=True)
+  File "c:\Users\User\Desktop\so101_pick_v2\so101_pick\arm_mega.py", line 177, in move_smooth
+    cur = self.read()
+          ^^^^^^^^^^^
+  File "c:\Users\User\Desktop\so101_pick_v2\so101_pick\arm_mega.py", line 116, in read
+    raise ArmError(f"ไม่มีค่าตำแหน่งสดของ {j} (ID {self.ids[j]}) — สาย/ไฟเลี้ยงหรือ Mega หลุด?")
+arm_mega.ArmError: ไม่มีค่าตำแหน่งสดของ wrist_flex (ID 4) — สาย/ไฟเลี้ยงหรือ Mega หลุด?

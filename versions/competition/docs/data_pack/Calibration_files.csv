@@ -1,0 +1,48 @@
+file,key,value
+"camera calibration (colours, working area, light)",size,"[854, 480]"
+"camera calibration (colours, working area, light)",roi,"[[46, 192], [849, 199], [850, 269], [46, 266]]"
+"camera calibration (colours, working area, light)",line,
+"camera calibration (colours, working area, light)",colors.white,"[[[0, 0, 144], [179, 43, 226]]]"
+"camera calibration (colours, working area, light)",colors.orange,"[[[2, 156, 180], [10, 255, 255]]]"
+"camera calibration (colours, working area, light)",enabled,"[""white"", ""orange""]"
+"camera calibration (colours, working area, light)",belt.axis,u
+"camera calibration (colours, working area, light)",belt.dir,1
+"camera calibration (colours, working area, light)",belt_v,62.0
+"camera calibration (colours, working area, light)",hsv.s_max,43
+"camera calibration (colours, working area, light)",hsv.v_min,144
+"camera geometry (belt in pixels, ride)",ir_along,805.0
+"camera geometry (belt in pixels, ride)",entry_along,65.0
+"camera geometry (belt in pixels, ride)",mm_per_px,0.64
+"camera geometry (belt in pixels, ride)",note,"ACTIVE since 2026-11-12 (pt3, the operator's OK). Astro HD camera (0408:2090), 1280x720 -> 854x480, belt left -> right (dir +1). measured 2026-11-12 night. entry 65 px: new cubes first seen at 60-85 px (01:07 run) and 63-74 px (03:55 run). mm_per_px 0.64: cube width 62 px mid-belt for a 40 mm cube (0.645) and the steady belt speed 88 px/s at 20 rpm = 56.2 mm/s (0.639). ir 805 px: one direct sighting 812 px (03:55) and ride 8.37 s x 56.2 mm/s = 470 mm from the exit = 799 px; the arm at Standby hides the IR spot, so confirm with one cube placed at the IR (pick IR reads blocked) before trusting it to +-20 px."
+gripper calibration,open_pos,2492
+gripper calibration,contact_pos,2012
+gripper calibration,grip_fast_to_pos,2323
+gripper calibration,grip_pos,2012
+gripper calibration,contact_deg,176.8
+gripper calibration,grip_contact_min_deg,150.0
+gripper calibration,grip_contact_max_deg,181.8
+gripper calibration,measured_at,2026-10-25T18:20:00
+gripper calibration,source,"user: grip at 176.8 deg (taught with grip_calibrate, not saved because of the 173 deg check) and window down to 160 deg; open 2492 / fast 2323 kept from 2026-10-24 (fast is 311 ticks above contact: safe, a bit slower close); 2026-10-25: window floor 160 -> 155 deg on user request; window floor 155 -> 150 deg on user request"
+gripper calibration,history,"[{""open_pos"": 2492, ""contact_pos"": 2084, ""grip_fast_to_pos"": 2323, ""contact_deg"": 183.2, ""grip_contact_min_deg"": 178.2, ""grip_contact_max_deg"": 188.2, ""measured_at"": ""2026-10-24T23:34:07"", ""source"": ""from logs, not taught: contact moved 2037 -> 2084 at the 22:46 crunch, so the old open 2445 / fast 2276 were shifted +47 to keep the same physical opening. Re-teach with grip_calibrate.py. grip_pos 2111 = J6 position the user set by hand on 2026-10-24 23:4x (read from the servo)"", ""grip_pos"": 2111}, {""open_pos"": 2492, ""contact_pos"": 2084, ""grip_fast_to_pos"": 2323, ""contact_deg"": 183.2, ""grip_contact_min_deg"": 178.2, ""grip_contact_max_deg"": 188.2, ""measured_at"": ""2026-10-24T23:53:35"", ""source"": ""grip_pos 2101 = 184.7 deg set by the user (was 2111 = 185.5 deg); open/fast/window unchanged from the log-derived calibration"", ""grip_pos"": 2101}]"
+feeder presets,_about,"Feeder angle presets (2026-11-12). autoen uses the 'active' one at start (command-line / dashboard values still win). Angles in degrees: home = blade back, ready = where it waits ready_ms before the push, push = the end of the push. Try one alone: ~/autoen-env/bin/python feeder_test.py --preset fd2 | 2026-11-13: active = fd1 again: the angles of the 200-cube run (170 / 10); fd2 never ran on the real cell."
+feeder presets,active,fd1
+feeder presets,fd1.note,"pt4/pt5 feeder: back 170, push to 10 (2026-11-12 ~15:00)"
+feeder presets,fd1.feeder_home,170
+feeder presets,fd1.feeder_ready,170
+feeder presets,fd1.feeder_push,10
+feeder presets,fd1.feeder_ready_ms,1000
+feeder presets,fd1.feeder_ramp_ms,0
+feeder presets,fd1.feeder_push_ms,800
+feeder presets,fd1.feeder_return_ms,300
+feeder presets,fd2.note,"shorter stroke: back 165, push to 15 (2026-11-12 21:45, the operator: 'fd 2 as 15-165')"
+feeder presets,fd2.feeder_home,165
+feeder presets,fd2.feeder_ready,165
+feeder presets,fd2.feeder_push,15
+feeder presets,fd2.feeder_ready_ms,1000
+feeder presets,fd2.feeder_ramp_ms,0
+feeder presets,fd2.feeder_push_ms,800
+feeder presets,fd2.feeder_return_ms,300
+sorting bins,white,right
+sorting bins,orange,left
+arm rest state,rest_state,awake
+arm rest state,since,2026-11-13T19:41:06

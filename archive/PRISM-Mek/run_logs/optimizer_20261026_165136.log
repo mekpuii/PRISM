@@ -1,0 +1,10 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=priority  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261026_165143.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen running
+[plan 4] ALERT  20 rpm / arm 1.5  action=pause  - cycle 2 BLOCK_STILL_AT_IR: check before resuming (pick may have failed | settled up (standby): J3 -43t)
+[plan 5] ALERT  20 rpm / arm 1.5  - cycle 2 BLOCK_STILL_AT_IR: check before resuming (pick may have failed | settled up (standby): J3 -43t)
+[plan 6] OFF    20 rpm / arm 1.5  - autoen stopped
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

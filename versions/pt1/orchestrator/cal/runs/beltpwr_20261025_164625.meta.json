@@ -1,0 +1,549 @@
+{
+ "run_id": "beltpwr_20261025_164625",
+ "kind": "belt_power",
+ "start": "2026-10-25T16:46:25",
+ "end": "2026-10-25T17:01:41",
+ "status": "finished",
+ "rpm_units": "output_rpm_cpr11880",
+ "operator_note": "belt only, arm broken",
+ "cube_set": "none (empty belt)",
+ "power_formula": "W = |belt INA260 mA| x belt INA260 bus mV / 1e6 (belt motor supply), as autoen belt_run",
+ "plan": {
+  "path": "/home/mekkhram/Desktop/PRISM/orchestrator/cal/plans/belt_power_v1.json",
+  "sha256": "a6cf0b60b829a8a7fc32766268afb7ffd61603118c2d85cfa3cd11ad5bc04f7d",
+  "seconds": 70.0,
+  "settle_s": 10.0
+ },
+ "script_sha256": "d9d38efaa81c8de3ff494c2e8f6a02c792dd840d6c369816141ca39208a594a5",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "2331163618d6ef6c9d2fbe05b403008786a88c731c7b45608871148d7bde780c",
+  "used_for": "Link + belt defaults"
+ },
+ "belt_settings_sent": [
+  "CPR,11880",
+  "TEMPMAX,60",
+  "PID,4.5,13.5,0",
+  "WDT,500"
+ ],
+ "arm": "not used (autoen not running; servos not commanded)",
+ "steps": [
+  {
+   "step": 1,
+   "round": 1,
+   "rpm_set": 0.0,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:46:29",
+   "end": "2026-10-25T16:47:39",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 561,
+     "mean": 0.0,
+     "std": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "mA": {
+     "n": 561,
+     "mean": 0.0053,
+     "std": 0.0729,
+     "min": 0.0,
+     "max": 1.0
+    },
+    "mV": {
+     "n": 561,
+     "mean": 12184.656,
+     "std": 2.7298,
+     "min": 12180.0,
+     "max": 12194.0
+    },
+    "W": {
+     "n": 561,
+     "mean": 0.0001,
+     "std": 0.0009,
+     "min": 0.0,
+     "max": 0.0122
+    },
+    "pwm": {
+     "n": 561,
+     "mean": 0.0,
+     "std": 0.0,
+     "min": 0,
+     "max": 0
+    },
+    "W_first_half_mean": 0.0,
+    "W_second_half_mean": 0.0001,
+    "n_settle_skipped": 100
+   }
+  },
+  {
+   "step": 2,
+   "round": 1,
+   "rpm_set": 15.0,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:47:41",
+   "end": "2026-10-25T16:48:51",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 561,
+     "mean": 14.9959,
+     "std": 0.0937,
+     "min": 14.8,
+     "max": 15.2
+    },
+    "mA": {
+     "n": 561,
+     "mean": 80.385,
+     "std": 4.136,
+     "min": 70.0,
+     "max": 91.0
+    },
+    "mV": {
+     "n": 561,
+     "mean": 12179.5276,
+     "std": 1.3925,
+     "min": 12174.0,
+     "max": 12184.0
+    },
+    "W": {
+     "n": 561,
+     "mean": 0.9791,
+     "std": 0.0504,
+     "min": 0.8525,
+     "max": 1.1085
+    },
+    "pwm": {
+     "n": 561,
+     "mean": 112.6435,
+     "std": 0.9121,
+     "min": 111,
+     "max": 115
+    },
+    "W_first_half_mean": 0.9877,
+    "W_second_half_mean": 0.9704,
+    "n_settle_skipped": 94
+   }
+  },
+  {
+   "step": 3,
+   "round": 1,
+   "rpm_set": 8.0,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:49:29",
+   "end": "2026-10-25T16:50:39",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 561,
+     "mean": 7.9989,
+     "std": 0.0667,
+     "min": 7.8,
+     "max": 8.1
+    },
+    "mA": {
+     "n": 561,
+     "mean": 41.1836,
+     "std": 2.347,
+     "min": 35.0,
+     "max": 48.0
+    },
+    "mV": {
+     "n": 561,
+     "mean": 12182.1444,
+     "std": 2.8961,
+     "min": 12148.0,
+     "max": 12190.0
+    },
+    "W": {
+     "n": 561,
+     "mean": 0.5017,
+     "std": 0.0286,
+     "min": 0.4264,
+     "max": 0.5847
+    },
+    "pwm": {
+     "n": 561,
+     "mean": 65.7843,
+     "std": 0.8703,
+     "min": 64,
+     "max": 67
+    },
+    "W_first_half_mean": 0.4994,
+    "W_second_half_mean": 0.504,
+    "n_settle_skipped": 93
+   }
+  },
+  {
+   "step": 4,
+   "round": 1,
+   "rpm_set": 20.0,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:50:41",
+   "end": "2026-10-25T16:51:51",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 558,
+     "mean": 19.9993,
+     "std": 0.1033,
+     "min": 19.7,
+     "max": 20.3
+    },
+    "mA": {
+     "n": 558,
+     "mean": 109.552,
+     "std": 4.8829,
+     "min": 99.0,
+     "max": 123.0
+    },
+    "mV": {
+     "n": 558,
+     "mean": 12179.3781,
+     "std": 2.7673,
+     "min": 12163.0,
+     "max": 12186.0
+    },
+    "W": {
+     "n": 558,
+     "mean": 1.3343,
+     "std": 0.0595,
+     "min": 1.2056,
+     "max": 1.4983
+    },
+    "pwm": {
+     "n": 558,
+     "mean": 143.5108,
+     "std": 1.0871,
+     "min": 141,
+     "max": 146
+    },
+    "W_first_half_mean": 1.3487,
+    "W_second_half_mean": 1.3198,
+    "n_settle_skipped": 93
+   }
+  },
+  {
+   "step": 5,
+   "round": 1,
+   "rpm_set": 11.1,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:54:11",
+   "end": "2026-10-25T16:55:21",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 565,
+     "mean": 11.1023,
+     "std": 0.0795,
+     "min": 10.9,
+     "max": 11.3
+    },
+    "mA": {
+     "n": 565,
+     "mean": 55.7062,
+     "std": 2.9278,
+     "min": 49.0,
+     "max": 63.0
+    },
+    "mV": {
+     "n": 565,
+     "mean": 12192.2973,
+     "std": 3.0812,
+     "min": 12143.0,
+     "max": 12196.0
+    },
+    "W": {
+     "n": 565,
+     "mean": 0.6792,
+     "std": 0.0357,
+     "min": 0.5974,
+     "max": 0.768
+    },
+    "pwm": {
+     "n": 565,
+     "mean": 85.3239,
+     "std": 0.8802,
+     "min": 84,
+     "max": 87
+    },
+    "W_first_half_mean": 0.6825,
+    "W_second_half_mean": 0.6759,
+    "n_settle_skipped": 96
+   }
+  },
+  {
+   "step": 6,
+   "round": 2,
+   "rpm_set": 11.1,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:55:23",
+   "end": "2026-10-25T16:56:33",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 558,
+     "mean": 11.0978,
+     "std": 0.0792,
+     "min": 10.9,
+     "max": 11.3
+    },
+    "mA": {
+     "n": 558,
+     "mean": 55.4319,
+     "std": 3.0926,
+     "min": 48.0,
+     "max": 63.0
+    },
+    "mV": {
+     "n": 558,
+     "mean": 12189.8907,
+     "std": 3.965,
+     "min": 12156.0,
+     "max": 12195.0
+    },
+    "W": {
+     "n": 558,
+     "mean": 0.6757,
+     "std": 0.0377,
+     "min": 0.5853,
+     "max": 0.768
+    },
+    "pwm": {
+     "n": 558,
+     "mean": 85.276,
+     "std": 0.8935,
+     "min": 84,
+     "max": 87
+    },
+    "W_first_half_mean": 0.6816,
+    "W_second_half_mean": 0.6698,
+    "n_settle_skipped": 97
+   }
+  },
+  {
+   "step": 7,
+   "round": 2,
+   "rpm_set": 20.0,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:56:35",
+   "end": "2026-10-25T16:57:45",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 557,
+     "mean": 20.0,
+     "std": 0.1017,
+     "min": 19.8,
+     "max": 20.2
+    },
+    "mA": {
+     "n": 557,
+     "mean": 105.1077,
+     "std": 4.7398,
+     "min": 93.0,
+     "max": 116.0
+    },
+    "mV": {
+     "n": 557,
+     "mean": 12177.4363,
+     "std": 5.5094,
+     "min": 12124.0,
+     "max": 12183.0
+    },
+    "W": {
+     "n": 557,
+     "mean": 1.2799,
+     "std": 0.0578,
+     "min": 1.1327,
+     "max": 1.4128
+    },
+    "pwm": {
+     "n": 557,
+     "mean": 141.93,
+     "std": 0.9344,
+     "min": 140,
+     "max": 144
+    },
+    "W_first_half_mean": 1.2933,
+    "W_second_half_mean": 1.2667,
+    "n_settle_skipped": 100
+   }
+  },
+  {
+   "step": 8,
+   "round": 2,
+   "rpm_set": 8.0,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:58:02",
+   "end": "2026-10-25T16:59:12",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 562,
+     "mean": 7.9957,
+     "std": 0.0684,
+     "min": 7.8,
+     "max": 8.2
+    },
+    "mA": {
+     "n": 562,
+     "mean": 39.7349,
+     "std": 2.583,
+     "min": 34.0,
+     "max": 46.0
+    },
+    "mV": {
+     "n": 562,
+     "mean": 12185.7776,
+     "std": 7.3889,
+     "min": 12125.0,
+     "max": 12196.0
+    },
+    "W": {
+     "n": 562,
+     "mean": 0.4842,
+     "std": 0.0315,
+     "min": 0.4143,
+     "max": 0.5609
+    },
+    "pwm": {
+     "n": 562,
+     "mean": 64.5712,
+     "std": 0.9925,
+     "min": 63,
+     "max": 67
+    },
+    "W_first_half_mean": 0.4808,
+    "W_second_half_mean": 0.4876,
+    "n_settle_skipped": 100
+   }
+  },
+  {
+   "step": 9,
+   "round": 2,
+   "rpm_set": 15.0,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:59:18",
+   "end": "2026-10-25T17:00:28",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 565,
+     "mean": 14.995,
+     "std": 0.0913,
+     "min": 14.7,
+     "max": 15.2
+    },
+    "mA": {
+     "n": 565,
+     "mean": 75.9558,
+     "std": 4.0823,
+     "min": 65.0,
+     "max": 89.0
+    },
+    "mV": {
+     "n": 565,
+     "mean": 12180.2442,
+     "std": 5.4159,
+     "min": 12128.0,
+     "max": 12191.0
+    },
+    "W": {
+     "n": 565,
+     "mean": 0.9252,
+     "std": 0.0497,
+     "min": 0.7924,
+     "max": 1.0805
+    },
+    "pwm": {
+     "n": 565,
+     "mean": 110.8088,
+     "std": 0.9017,
+     "min": 109,
+     "max": 113
+    },
+    "W_first_half_mean": 0.9325,
+    "W_second_half_mean": 0.9178,
+    "n_settle_skipped": 96
+   }
+  },
+  {
+   "step": 10,
+   "round": 2,
+   "rpm_set": 0.0,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T17:00:31",
+   "end": "2026-10-25T17:01:41",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 561,
+     "mean": 0.0,
+     "std": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "mA": {
+     "n": 561,
+     "mean": 0.0125,
+     "std": 0.111,
+     "min": 0.0,
+     "max": 1.0
+    },
+    "mV": {
+     "n": 561,
+     "mean": 12188.9002,
+     "std": 4.2666,
+     "min": 12169.0,
+     "max": 12198.0
+    },
+    "W": {
+     "n": 561,
+     "mean": 0.0002,
+     "std": 0.0014,
+     "min": 0.0,
+     "max": 0.0122
+    },
+    "pwm": {
+     "n": 561,
+     "mean": 0.0,
+     "std": 0.0,
+     "min": 0,
+     "max": 0
+    },
+    "W_first_half_mean": 0.0,
+    "W_second_half_mean": 0.0003,
+    "n_settle_skipped": 96
+   }
+  }
+ ],
+ "mega_boot_lines": [
+  "S,4,0,3115",
+  "S,5,0,2065",
+  "S,6,0,1801",
+  "R,1",
+  "BOOT_DONE"
+ ]
+}

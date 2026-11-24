@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# stop_cell.sh - stop the PRISM cell: autoen run -> optimizer -> autoen -> (vision + helpers with --all).
+#
+#   ./stop_cell.sh          stop the run, the optimizer and autoen; vision keeps running
+#   ./stop_cell.sh --all    also stop vision, health, the loggers, the analyzers and the dashboard
+#
+# The arm holds where it is (autoen's own Stop); the belt coasts.
+set -u
+API="http://127.0.0.1:8781"
+
+opt_pids() {     # every main.py running in PRISM/orchestrator, however it was started
+  local pid
+  for pid in $(pgrep -f "main.py"); do
+    [ "$(readlink "/proc/$pid/cwd" 2>/dev/null)" = "$HOME/Desktop/PRISM/orchestrator" ] && echo "$pid"
+  done
+}
+
+stop_prog() {   # Ctrl+C (SIGINT) so each program closes its files cleanly; wait up to 10 s
+  local pat="$1" name="$2"
+  if ! pgrep -f "$pat" >/dev/null; then
+    echo "$name: not running"
+    return
+  fi
+  pkill -INT -f "$pat"
+  for _ in $(seq 1 20); do
+    pgrep -f "$pat" >/dev/null || { echo "$name: stopped"; return; }
+    sleep 0.5
+  done
+  echo "$name: still running after 10 s - stop it by hand (Ctrl+C in its window, or: pkill -f '$pat')"
+}
+
+if curl -s -m 2 -X POST "$API/api/stop" >/dev/null; then
+  echo "autoen run: Stop sent (arm holds, belt coasts)"
+  sleep 2
+fi
+pids=$(opt_pids)
+if [ -z "$pids" ]; then
+  echo "optimizer: not running"
+else
+  kill -INT $pids
+  for _ in $(seq 1 20); do
+    [ -z "$(opt_pids)" ] && break
+    sleep 0.5
+  done
+  [ -z "$(opt_pids)" ] && echo "optimizer: stopped" || echo "optimizer: still running - Ctrl+C in its window"
+fi
+stop_prog "auto_en_new.py" "autoen"
+if [ "${1:-}" = "--all" ]; then
+  stop_prog "vision_live_tracks\.py|vision_usb\.py" "vision"
+  # the passive helpers of start_cell.sh step 0 (dashboard first: it reads the others' databases)
+  stop_prog "dashboard_node\.py" "dashboard"
+  stop_prog "arms_ana\.py" "arm analyzer"
+  stop_prog "conv_ana\.py" "belt analyzer"
+  stop_prog "logger\.py.*--topics arm( |$)" "logger arm"
+  stop_prog "logger\.py.*--topics camera( |$)" "logger camera"
+  stop_prog "health\.py" "health"
+fi

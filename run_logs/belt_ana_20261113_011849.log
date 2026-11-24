@@ -1,0 +1,165 @@
+[belt-analyzer] up. broker localhost:1883, db belt_analyzer.db, thresholds built-in defaults (run --write-thresholds to edit them). Ctrl+C to stop.
+[belt-analyzer] connected to broker: Success
+[01:18:58] NO_DATA  -> STOPPED   (not moving)
+[01:19:00] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[01:19:10] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[01:19:14] STOPPED  -> STARTING  (REVERSE, 12 rpm and rising)
+[01:19:15] STARTING -> RUNNING   (REVERSE, 11 rpm)
+[01:19:15] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:19:16] STOPPING -> STARTING  (REVERSE, 15 rpm and rising)  UNEXPECTED
+[01:19:17] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:19:21] state=RUNNING  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[01:19:31] state=RUNNING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[01:19:32] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:19:32] STOPPING -> STOPPED   (not moving)
+[01:19:32] RUN ANOMALY 18.58 s, 5.604 rev, steady 111.1 mA @ 19.9 rpm  STOPPING->STARTING, reverse
+[01:19:38] STOPPED  -> STARTING  (REVERSE, 13 rpm and rising)
+[01:19:39] STARTING -> RUNNING   (REVERSE, 18 rpm)
+[01:19:41] state=RUNNING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/1  levels={'current': 'OK', 'temp': 'OK'}
+[01:19:47] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:19:47] STOPPING -> STOPPED   (not moving)
+[01:19:47] RUN ANOMALY 9.33 s, 2.777 rev, steady 108.1 mA @ 19.8 rpm  reverse
+[01:19:51] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/2  levels={'current': 'OK', 'temp': 'OK'}
+[01:19:51] STOPPED  -> STARTING  (REVERSE, 12 rpm and rising)
+[01:19:52] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:19:56] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:19:56] STOPPING -> STOPPED   (not moving)
+[01:19:56] RUN ANOMALY 5.93 s, 1.686 rev, steady 102.9 mA @ 19.5 rpm  reverse
+[01:19:57] STOPPED  -> STARTING  (REVERSE, 12 rpm and rising)
+[01:19:58] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:20:01] state=RUNNING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/3  levels={'current': 'OK', 'temp': 'OK'}
+[01:20:01] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:20:01] STOPPING -> STOPPED   (not moving)
+[01:20:01] RUN ANOMALY 4.22 s, 1.119 rev, steady 97.7 mA @ 19.3 rpm  reverse
+[01:20:04] STOPPED  -> STARTING  (REVERSE, 13 rpm and rising)
+[01:20:05] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:20:09] RUNNING  -> STOPPING  (REVERSE, 5 rpm and falling)
+[01:20:10] STOPPING -> STOPPED   (not moving)
+[01:20:10] RUN ANOMALY 5.93 s, 1.691 rev, steady 105.9 mA @ 19.8 rpm  reverse
+[01:20:10] STOPPED  -> STARTING  (REVERSE, 12 rpm and rising)
+[01:20:11] state=STARTING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/5  levels={'current': 'OK', 'temp': 'OK'}
+[01:20:11] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:20:14] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:20:14] STOPPING -> STOPPED   (not moving)
+[01:20:14] RUN ANOMALY 4.21 s, 1.104 rev, steady 103.2 mA @ 19.5 rpm  reverse
+[01:20:18] STOPPED  -> STARTING  (REVERSE, 13 rpm and rising)
+[01:20:19] STARTING -> RUNNING   (REVERSE, 12 rpm)
+[01:20:19] RUNNING  -> STOPPING  (REVERSE, 4 rpm and falling)
+[01:20:20] STOPPING -> STOPPED   (not moving)
+[01:20:20] RUN ANOMALY 1.71 s, 0.355 rev, steady None mA @ None rpm  reverse
+[01:20:20] STOPPED  -> STARTING  (REVERSE, 12 rpm and rising)
+[01:20:21] state=STARTING  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[01:20:21] STARTING -> RUNNING   (REVERSE, 18 rpm)
+[01:20:23] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[01:20:23] STOPPING -> STOPPED   (not moving)
+[01:20:23] RUN ANOMALY 3.22 s, 0.841 rev, steady 99.4 mA @ 19.1 rpm  reverse
+[01:20:24] STOPPED  -> STARTING  (REVERSE, 12 rpm and rising)
+[01:20:25] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:20:31] state=RUNNING  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/8  levels={'current': 'OK', 'temp': 'OK'}
+[01:20:32] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:20:33] STOPPING -> STOPPED   (not moving)
+[01:20:33] RUN ANOMALY 9.03 s, 2.702 rev, steady 106.7 mA @ 19.8 rpm  reverse
+[01:20:40] STOPPED  -> STARTING  (REVERSE, 10 rpm and rising)
+[01:20:41] state=STARTING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/9  levels={'current': 'OK', 'temp': 'OK'}
+[01:20:41] STARTING -> RUNNING   (REVERSE, 16 rpm)
+[01:20:41] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:20:41] STOPPING -> STARTING  (REVERSE, 15 rpm and rising)  UNEXPECTED
+[01:20:42] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:20:51] state=RUNNING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/9  levels={'current': 'OK', 'temp': 'OK'}
+[01:20:52] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:20:53] STOPPING -> STOPPED   (not moving)
+[01:20:53] RUN ANOMALY 13.05 s, 3.765 rev, steady 107.1 mA @ 19.9 rpm  STOPPING->STARTING, reverse
+[01:20:58] STOPPED  -> STARTING  (REVERSE, 13 rpm and rising)
+[01:20:59] STARTING -> RUNNING   (REVERSE, 18 rpm)
+[01:21:01] state=RUNNING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/10  levels={'current': 'OK', 'temp': 'OK'}
+[01:21:07] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:21:08] STOPPING -> STOPPED   (not moving)
+[01:21:08] RUN ANOMALY 9.49 s, 2.812 rev, steady 107.2 mA @ 19.9 rpm  reverse
+[01:21:10] STOPPED  -> STARTING  (REVERSE, 13 rpm and rising)
+[01:21:11] state=STARTING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/11  levels={'current': 'OK', 'temp': 'OK'}
+[01:21:11] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:21:16] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[01:21:16] STOPPING -> STOPPED   (not moving)
+[01:21:16] RUN ANOMALY 6.62 s, 1.951 rev, steady 106.3 mA @ 19.7 rpm  reverse
+[01:21:17] STOPPED  -> STARTING  (REVERSE, 11 rpm and rising)
+[01:21:18] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:21:20] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[01:21:20] STOPPING -> STOPPED   (not moving)
+[01:21:20] RUN ANOMALY 3.52 s, 0.919 rev, steady 99.2 mA @ 19.3 rpm  reverse
+[01:21:21] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/13  levels={'current': 'OK', 'temp': 'OK'}
+[01:21:23] STOPPED  -> STARTING  (REVERSE, 10 rpm and rising)
+[01:21:24] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:21:29] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:21:29] STOPPING -> STOPPED   (not moving)
+[01:21:29] RUN ANOMALY 6.32 s, 1.806 rev, steady 104.5 mA @ 19.7 rpm  reverse
+[01:21:29] STOPPED  -> STARTING  (REVERSE, 13 rpm and rising)
+[01:21:31] state=STARTING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/14  levels={'current': 'OK', 'temp': 'OK'}
+[01:21:31] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:21:33] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[01:21:33] STOPPING -> STOPPED   (not moving)
+[01:21:33] RUN ANOMALY 3.71 s, 0.967 rev, steady 99.7 mA @ 19.4 rpm  reverse
+[01:21:41] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/15  levels={'current': 'OK', 'temp': 'OK'}
+[01:21:41] STOPPED  -> STARTING  (REVERSE, 10 rpm and rising)
+[01:21:42] STARTING -> RUNNING   (REVERSE, 18 rpm)
+[01:21:48] RUNNING  -> STOPPING  (REVERSE, 3 rpm and falling)
+[01:21:48] STOPPING -> STOPPED   (not moving)
+[01:21:48] RUN ANOMALY 7.43 s, 2.189 rev, steady 106.8 mA @ 19.7 rpm  reverse
+[01:21:49] STOPPED  -> STARTING  (REVERSE, 11 rpm and rising)
+[01:21:50] STARTING -> RUNNING   (REVERSE, 18 rpm)
+[01:21:51] state=RUNNING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/16  levels={'current': 'OK', 'temp': 'OK'}
+[01:21:51] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[01:21:51] STOPPING -> STOPPED   (not moving)
+[01:21:51] RUN ANOMALY 2.82 s, 0.65 rev, steady 86.0 mA @ 18.2 rpm  reverse
+[01:21:54] STOPPED  -> STARTING  (REVERSE, 10 rpm and rising)
+[01:21:55] STARTING -> RUNNING   (REVERSE, 17 rpm)
+[01:22:01] state=RUNNING  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/17  levels={'current': 'OK', 'temp': 'OK'}
+[01:22:01] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:22:01] STOPPING -> STOPPED   (not moving)
+[01:22:01] RUN ANOMALY 7.15 s, 2.059 rev, steady 105.6 mA @ 19.7 rpm  reverse
+[01:22:02] STOPPED  -> STARTING  (REVERSE, 12 rpm and rising)
+[01:22:03] STARTING -> RUNNING   (REVERSE, 18 rpm)
+[01:22:04] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[01:22:05] STOPPING -> STOPPED   (not moving)
+[01:22:05] RUN ANOMALY 3.17 s, 0.732 rev, steady 83.1 mA @ 18.4 rpm  reverse
+[01:22:09] STOPPED  -> STARTING  (REVERSE, 13 rpm and rising)
+[01:22:10] STARTING -> RUNNING   (REVERSE, 16 rpm)
+[01:22:10] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[01:22:10] STOPPING -> STOPPED   (not moving)
+[01:22:10] RUN ANOMALY 1.51 s, 0.23 rev, steady None mA @ None rpm  reverse
+[01:22:11] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/20  levels={'current': 'OK', 'temp': 'OK'}
+[01:22:20] STOPPED  -> STARTING  (REVERSE, 10 rpm and rising)
+[01:22:21] state=STARTING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/20  levels={'current': 'OK', 'temp': 'OK'}
+[01:22:21] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:22:29] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:22:29] STOPPING -> STOPPED   (not moving)
+[01:22:29] RUN ANOMALY 9.34 s, 2.789 rev, steady 106.8 mA @ 19.8 rpm  reverse
+[01:22:31] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/21  levels={'current': 'OK', 'temp': 'OK'}
+[01:22:32] STOPPED  -> STARTING  (REVERSE, 13 rpm and rising)
+[01:22:33] STARTING -> RUNNING   (REVERSE, 18 rpm)
+[01:22:38] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:22:38] STOPPING -> STOPPED   (not moving)
+[01:22:38] RUN ANOMALY 6.44 s, 1.859 rev, steady 104.6 mA @ 19.8 rpm  reverse
+[01:22:38] STOPPED  -> STARTING  (REVERSE, 12 rpm and rising)
+[01:22:40] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[01:22:41] state=RUNNING  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/22  levels={'current': 'OK', 'temp': 'OK'}
+[01:22:42] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:22:42] STOPPING -> STOPPED   (not moving)
+[01:22:42] RUN ANOMALY 3.55 s, 0.888 rev, steady 98.5 mA @ 19.1 rpm  reverse
+[01:22:44] STOPPED  -> STARTING  (REVERSE, 10 rpm and rising)
+[01:22:45] STARTING -> RUNNING   (REVERSE, 17 rpm)
+[01:22:46] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[01:22:46] STOPPING -> STOPPED   (not moving)
+[01:22:46] RUN ANOMALY 1.94 s, 0.306 rev, steady None mA @ None rpm  reverse
+[01:22:46] STOPPED  -> NO_DATA   (no telemetry for 1.5 s)
+[01:22:51] state=NO_DATA  broker=up  belt/telemetry=4.7 s ago  runs_ok=0/24  levels={'current': 'OK', 'temp': 'OK'}
+[01:22:53] NO_DATA  -> STOPPED   (not moving)
+[01:23:01] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/24  levels={'current': 'OK', 'temp': 'OK'}
+[01:23:05] STOPPED  -> NO_DATA   (no telemetry for 1.5 s)
+[01:23:11] state=NO_DATA  broker=up  belt/telemetry=6.5 s ago  runs_ok=0/24  levels={'current': 'OK', 'temp': 'OK'}
+[01:23:21] state=NO_DATA  broker=up  belt/telemetry=16.5 s ago  runs_ok=0/24  levels={'current': 'OK', 'temp': 'OK'}
+[01:23:31] state=NO_DATA  broker=up  belt/telemetry=26.6 s ago  runs_ok=0/24  levels={'current': 'OK', 'temp': 'OK'}
+[01:23:41] state=NO_DATA  broker=up  belt/telemetry=36.6 s ago  runs_ok=0/24  levels={'current': 'OK', 'temp': 'OK'}
+[01:23:51] state=NO_DATA  broker=up  belt/telemetry=46.6 s ago  runs_ok=0/24  levels={'current': 'OK', 'temp': 'OK'}
+
+[belt-analyzer] stopping
+[belt-analyzer] lost the broker

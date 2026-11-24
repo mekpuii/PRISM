@@ -1,0 +1,4 @@
+# PRISM: the Mega (CH340 clone, USB id 1a86) always gets /dev/prism-mega, plus /dev/ttyACM0 so scripts
+# that hard-code the genuine-Mega port still work. Install:
+#   sudo cp 99-prism-mega.rules /etc/udev/rules.d/ && sudo udevadm control --reload && sudo udevadm trigger
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", SYMLINK+="prism-mega ttyACM0", GROUP="dialout", MODE="0660"

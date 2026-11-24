@@ -1,0 +1,111 @@
+{
+ "run_id": "base_20261025_145750",
+ "kind": "base",
+ "start": "2026-10-25T14:57:50",
+ "end": "2026-10-25T15:00:55",
+ "status": "interrupted",
+ "rpm_units": "output_rpm_cpr11880",
+ "operator_note": "",
+ "cube_set": "none",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "2331163618d6ef6c9d2fbe05b403008786a88c731c7b45608871148d7bde780c",
+  "mtime": "2026-10-25T14:56:43"
+ },
+ "experiment_sha256": "f1832e33bb6f36d1e8d62125c80e8956155daf864402c4302e370057af053af5",
+ "config_snapshots": [],
+ "tasks": [
+  {
+   "id": 1,
+   "status": "done",
+   "kind": "rest",
+   "seconds": 60.0,
+   "settle_s": 3.0,
+   "torque_off": false,
+   "t_start": 1792915078.156903,
+   "t_end": 1792915165.174762,
+   "arrived": false,
+   "error": null,
+   "stats": {
+    "belt_rpm": {
+     "n": 525,
+     "mean": 0.0,
+     "std": 0.0
+    },
+    "belt_mA": {
+     "n": 525,
+     "mean": 3.85,
+     "std": 0.358
+    },
+    "belt_W": {
+     "n": 525,
+     "mean": 0.047,
+     "std": 0.004
+    },
+    "arm_mA": {
+     "n": 280,
+     "mean": 18.038,
+     "std": 8.025
+    },
+    "arm_W": {
+     "n": 280,
+     "mean": 0.22,
+     "std": 0.098
+    }
+   },
+   "move_s": 26.96
+  }
+ ],
+ "blocks": [],
+ "baseline": {
+  "kind": "rest",
+  "seconds": 60.0,
+  "settle_s": 3.0,
+  "torque_off": false
+ },
+ "rounds": [
+  {
+   "round": 1,
+   "rest": {
+    "id": 1,
+    "status": "done",
+    "kind": "rest",
+    "seconds": 60.0,
+    "settle_s": 3.0,
+    "torque_off": false,
+    "t_start": 1792915078.156903,
+    "t_end": 1792915165.174762,
+    "arrived": false,
+    "error": null,
+    "stats": {
+     "belt_rpm": {
+      "n": 525,
+      "mean": 0.0,
+      "std": 0.0
+     },
+     "belt_mA": {
+      "n": 525,
+      "mean": 3.85,
+      "std": 0.358
+     },
+     "belt_W": {
+      "n": 525,
+      "mean": 0.047,
+      "std": 0.004
+     },
+     "arm_mA": {
+      "n": 280,
+      "mean": 18.038,
+      "std": 8.025
+     },
+     "arm_W": {
+      "n": 280,
+      "mean": 0.22,
+      "std": 0.098
+     }
+    },
+    "move_s": 26.96
+   }
+  }
+ ]
+}

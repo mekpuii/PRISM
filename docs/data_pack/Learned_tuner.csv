@@ -1,0 +1,20 @@
+item,value
+champion,"{""gap_mm"": 60.0, ""late"": 1.6}"
+feeder moved pushes,459
+feeder push_ms learned,850
+feeder push_fail_ms,800
+tuner try 1,"{""knob"": ""gap_mm"", ""value"": 80.0, ""old"": 60.0, ""mean"": 11.87, ""base"": 13.11, ""fails"": 0, ""kept"": true, ""pick"": 30}"
+tuner try 2,"{""knob"": ""gap_mm"", ""value"": 60.0, ""old"": 80.0, ""mean"": 13.12, ""base"": 14.54, ""fails"": 0, ""kept"": true, ""pick"": 57}"
+tuner try 3,"{""knob"": ""gap_mm"", ""value"": 100.0, ""old"": 60.0, ""mean"": 16.22, ""base"": 14.53, ""fails"": 0, ""kept"": false, ""pick"": 77}"
+tuner try 4,"{""knob"": ""late"", ""value"": 1.6, ""old"": 1.35, ""mean"": 11.15, ""base"": 12.17, ""fails"": 0, ""kept"": true, ""pick"": 107}"
+tuner try 5,"{""knob"": ""late"", ""value"": 1.35, ""old"": 1.6, ""mean"": 11.82, ""base"": 11.04, ""fails"": 0, ""kept"": false, ""pick"": 123}"
+tuner try 6,"{""knob"": ""gap_mm"", ""value"": 100.0, ""old"": 60.0, ""mean"": 12.2, ""base"": 12.27, ""fails"": 0, ""kept"": false, ""pick"": 154}"
+tuner try 7,"{""knob"": ""late"", ""value"": 1.25, ""old"": 1.6, ""mean"": 11.07, ""base"": 11.85, ""fails"": 0, ""kept"": true, ""pick"": 170}"
+tuner try 8,"{""knob"": ""late"", ""value"": 1.35, ""old"": 1.25, ""mean"": 11.23, ""base"": 11.31, ""fails"": 0, ""kept"": false, ""pick"": 186}"
+tuner try 9,"{""knob"": ""late"", ""value"": 1.6, ""old"": 1.25, ""mean"": 11.38, ""base"": 11.71, ""fails"": 0, ""kept"": false, ""pick"": 202}"
+tuner try 10,"{""knob"": ""gap_mm"", ""value"": 80.0, ""old"": 60.0, ""mean"": 11.1, ""base"": 11.82, ""fails"": 0, ""kept"": true, ""pick"": 218}"
+tuner try 11,"{""knob"": ""gap_mm"", ""value"": 60.0, ""old"": 80.0, ""mean"": 11.0, ""base"": 11.91, ""fails"": 0, ""kept"": true, ""pick"": 234}"
+tuner try 12,"{""knob"": ""gap_mm"", ""value"": 100.0, ""old"": 60.0, ""mean"": 11.42, ""base"": 11.67, ""fails"": 0, ""kept"": false, ""pick"": 250}"
+tuner try 13,"{""knob"": ""late"", ""value"": 1.6, ""old"": 1.25, ""mean"": 11.55, ""base"": 12.44, ""fails"": 0, ""kept"": true, ""pick"": 287}"
+tuner try 14,"{""knob"": ""late"", ""value"": 1.25, ""old"": 1.6, ""mean"": 11.22, ""base"": 11.09, ""fails"": 0, ""kept"": false, ""pick"": 303}"
+tuner try 15,"{""knob"": ""gap_mm"", ""value"": 80.0, ""old"": 60.0, ""mean"": 11.67, ""base"": 10.43, ""fails"": 0, ""kept"": false, ""pick"": 319}"

@@ -1,0 +1,31 @@
+[health] watching arm, camera, logger_arm, logger_camera via localhost:1883. Ctrl+C to stop.
+[health] connected to broker: Success
+[21:24:08] ARM           UNKNOWN -> OFFLINE   (arm/status says offline (last will or clean exit))
+[21:24:08] CAMERA        UNKNOWN -> OFFLINE   (camera/status says offline (last will or clean exit))
+[21:24:08] LOGGER_CAMERA UNKNOWN -> OFFLINE   (logger/camera/status says offline (last will or clean exit))
+[21:24:09] LOGGER_ARM    UNKNOWN -> OK
+[21:24:09] LOGGER_CAMERA OFFLINE -> UNKNOWN   (logger/camera/heartbeat: no message yet)
+[21:24:10] LOGGER_CAMERA UNKNOWN -> OK
+[21:24:14] CAMERA        OFFLINE -> UNKNOWN   (camera/perception: no message yet)
+[21:24:15] ARM           OFFLINE -> UNKNOWN   (arm/state: no message yet)
+[21:24:16] ARM           UNKNOWN -> OK
+[21:24:18] arm=OK  camera=UNKNOWN  logger_arm=OK  logger_camera=OK
+[21:24:23] CAMERA        UNKNOWN -> OFFLINE   (camera/demand: never seen)
+[21:24:25] CAMERA        OFFLINE -> RECOVERED
+[21:24:28] CAMERA        RECOVERED -> OK
+[21:24:28] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:24:38] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:24:48] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:24:58] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:25:08] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:25:18] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:25:28] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:25:38] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:25:48] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:25:58] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:26:08] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:26:18] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:26:28] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:26:38] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[21:26:41] ARM           OK -> OFFLINE   (arm/status says offline (last will or clean exit))
+[health] lost the broker: health is UNKNOWN until it is back

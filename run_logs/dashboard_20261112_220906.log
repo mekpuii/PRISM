@@ -1,0 +1,311 @@
+[dashboard] optimizer trace: 319 records from its last log
+[dashboard] connected to the broker: Success
+[dashboard] page: http://127.0.0.1:8080   broker localhost:1883   autoen http://127.0.0.1:8781   data /home/mekkhram/Desktop/PRISM/dashboard/data
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success
+[dashboard] no MQTT message for 20 s: reconnecting
+[dashboard] connected to the broker: Success

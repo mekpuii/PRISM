@@ -1,0 +1,34 @@
+{
+ "f_px": 925.4087657219375,
+ "offset_mm": 0.0,
+ "block_eq_mm": 34.64101615137755,
+ "points": [
+  [
+   143.0,
+   232.6
+  ],
+  [
+   137.0,
+   225.2
+  ]
+ ],
+ "residual_mm": [
+  5.179277730008607,
+  -5.349467140319717
+ ],
+ "dropped_points": [
+  [
+   134.0,
+   93.7,
+   "outlier: probably detected the bin, not the block"
+  ]
+ ],
+ "cam_to_tip_mm": 50.17597141581061,
+ "cam_to_tip_from": "user measured jaw tip -> block = 93 mm while block = 223.9 px",
+ "image_size": [
+  1280,
+  720
+ ],
+ "time": "2026-11-11 16:22:38",
+ "note": "lens->block top (mm) = f_px * block_eq_mm / block_eq_px - offset_mm"
+}

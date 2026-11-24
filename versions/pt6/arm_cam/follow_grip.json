@@ -1,0 +1,26 @@
+{
+ "delta_joints": {
+  "shoulder_pan": 1,
+  "shoulder_lift": 145,
+  "elbow_flex": 89,
+  "wrist_flex": -31,
+  "wrist_roll": 0
+ },
+ "follow_joints": {
+  "shoulder_pan": 1997,
+  "shoulder_lift": 1540,
+  "elbow_flex": 2283,
+  "wrist_flex": 3068,
+  "wrist_roll": 1186
+ },
+ "grip_joints": {
+  "shoulder_pan": 1998,
+  "shoulder_lift": 1685,
+  "elbow_flex": 2372,
+  "wrist_flex": 3037,
+  "wrist_roll": 1186
+ },
+ "grip_z_mm": 70.05141506190537,
+ "drop_mm": 51.30406758689922,
+ "time": "2026-11-12 16:02:40"
+}

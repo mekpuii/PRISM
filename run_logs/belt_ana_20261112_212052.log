@@ -1,0 +1,58 @@
+[belt-analyzer] up. broker localhost:1883, db belt_analyzer.db, thresholds built-in defaults (run --write-thresholds to edit them). Ctrl+C to stop.
+[belt-analyzer] connected to broker: Success
+[21:21:00] NO_DATA  -> STOPPED   (not moving)
+[21:21:03] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[21:21:13] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[21:21:23] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[21:21:33] state=STOPPED  broker=up  belt/telemetry=0.2 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[21:21:35] STOPPED  -> STARTING  (REVERSE, 10 rpm and rising)
+[21:21:36] STARTING -> RUNNING   (REVERSE, 6 rpm)
+[21:21:36] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[21:21:37] STOPPING -> STARTING  (REVERSE, 14 rpm and rising)  UNEXPECTED
+[21:21:38] STARTING -> RUNNING   (REVERSE, 12 rpm)
+[21:21:38] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[21:21:38] STOPPING -> STOPPED   (not moving)
+[21:21:38] RUN ANOMALY 2.64 s, 0.377 rev, steady None mA @ None rpm  STOPPING->STARTING, reverse
+[21:21:43] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/1  levels={'current': 'OK', 'temp': 'OK'}
+[21:21:44] STOPPED  -> STARTING  (REVERSE, 12 rpm and rising)
+[21:21:45] STARTING -> RUNNING   (REVERSE, 10 rpm)
+[21:21:45] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[21:21:46] STOPPING -> STOPPED   (not moving)
+[21:21:46] RUN ANOMALY 2.2 s, 0.286 rev, steady None mA @ None rpm  reverse
+[21:21:49] STOPPED  -> STARTING  (REVERSE, 13 rpm and rising)
+[21:21:50] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[21:21:53] state=RUNNING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/2  levels={'current': 'OK', 'temp': 'OK'}
+[21:21:55] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[21:21:55] STOPPING -> STOPPED   (not moving)
+[21:21:55] RUN ANOMALY 5.93 s, 1.686 rev, steady 118.1 mA @ 19.6 rpm  reverse
+[21:21:57] STOPPED  -> STARTING  (REVERSE, 14 rpm and rising)
+[21:21:58] STARTING -> RUNNING   (REVERSE, 18 rpm)
+[21:21:58] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[21:21:59] STOPPING -> STOPPED   (not moving)
+[21:21:59] RUN ANOMALY 1.92 s, 0.382 rev, steady None mA @ None rpm  reverse
+[21:22:03] STOPPED  -> STARTING  (REVERSE, 12 rpm and rising)
+[21:22:03] state=STARTING  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/4  levels={'current': 'OK', 'temp': 'OK'}
+[21:22:04] STARTING -> RUNNING   (REVERSE, 14 rpm)
+[21:22:04] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[21:22:04] STOPPING -> RUNNING   (REVERSE, 12 rpm)  UNEXPECTED
+[21:22:04] RUNNING  -> STARTING  (REVERSE, 16 rpm and rising)  UNEXPECTED
+[21:22:05] STARTING -> RUNNING   (REVERSE, 18 rpm)
+[21:22:07] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[21:22:07] STOPPING -> STOPPED   (not moving)
+[21:22:07] RUN ANOMALY 4.83 s, 1.145 rev, steady 110.3 mA @ 19.0 rpm  STOPPING->RUNNING, RUNNING->STARTING, reverse
+[21:22:08] STOPPED  -> STARTING  (REVERSE, 13 rpm and rising)
+[21:22:09] STARTING -> RUNNING   (REVERSE, 18 rpm)
+[21:22:13] state=RUNNING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/5  levels={'current': 'OK', 'temp': 'OK'}
+[21:22:19] RUNNING  -> STOPPING  (REVERSE, 3 rpm and falling)
+[21:22:20] STOPPING -> STOPPED   (not moving)
+[21:22:20] RUN ANOMALY 12.18 s, 3.691 rev, steady 122.4 mA @ 19.9 rpm  reverse
+[21:22:23] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/6  levels={'current': 'OK', 'temp': 'OK'}
+[21:22:27] STOPPED  -> STARTING  (REVERSE, 10 rpm and rising)
+[21:22:28] STARTING -> RUNNING   (REVERSE, 15 rpm)
+[21:22:28] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[21:22:29] STOPPING -> STARTING  (REVERSE, 15 rpm and rising)  UNEXPECTED
+[21:22:30] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[21:22:33] state=RUNNING  broker=up  belt/telemetry=0.2 s ago  runs_ok=0/6  levels={'current': 'OK', 'temp': 'OK'}
+
+[belt-analyzer] stopping
+[belt-analyzer] lost the broker

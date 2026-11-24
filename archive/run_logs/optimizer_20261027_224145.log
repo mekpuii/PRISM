@@ -1,0 +1,22 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=priority  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261027_224152.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen starting
+[plan 3] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 4] OFF    20 rpm / arm 1.5  - autoen preparing
+[plan 5] RUN    20 rpm / arm 1.5  - autoen running
+[plan 6] RUN    20 rpm / arm 1.5  - autoen running
+[plan 7] RUN    20 rpm / arm 1.5  - autoen running
+[plan 8] RECOVER 20 rpm / arm 1.5  action=pause  - cycle 4 BLOCK_STILL_AT_IR: auto response 'retry' (try 1/2, learned success 50%)
+[plan 9] RECOVER 20 rpm / arm 1.5  - cycle 4 BLOCK_STILL_AT_IR: auto response 'retry' (try 1/2, learned success 50%)
+[plan 10] RUN    20 rpm / arm 1.5  action=resume  - auto response 'retry': running again
+[plan 11] RUN    20 rpm / arm 1.5  - auto response 'retry': running again
+[plan 12] RECOVER 8 rpm / arm 1  action=pause  - cycle 5 BLOCK_STILL_AT_IR: auto response 'gentle' (try 2/2, learned success 50%); settings 20/1.5 -> 8/1 (incident response 'gentle': slowest safe setting)
+[plan 13] RECOVER 8 rpm / arm 1  - cycle 5 BLOCK_STILL_AT_IR: auto response 'gentle' (try 2/2, learned success 50%); settings 20/1.5 -> 8/1 (incident response 'gentle': slowest safe setting)
+[plan 14] RUN    8 rpm / arm 1  action=resume  - auto response 'gentle': running again on 8/1 for 5 cycles
+[plan 15] RUN    8 rpm / arm 1  - auto response 'gentle': running again on 8/1 for 5 cycles
+[plan 16] ALERT  8 rpm / arm 1  action=pause  - cycle 6 BLOCK_STILL_AT_IR: check before resuming (pick may have failed) - BLOCK_STILL_AT_IR: tried retry, gentle, still failing
+[plan 17] ALERT  8 rpm / arm 1  - cycle 6 BLOCK_STILL_AT_IR: check before resuming (pick may have failed) - BLOCK_STILL_AT_IR: tried retry, gentle, still failing
+[plan 18] OFF    8 rpm / arm 1  - autoen stopped
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

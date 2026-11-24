@@ -1,0 +1,90 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261113_011901.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 2] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 3] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 5] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 6] RUN    20 rpm / arm 1.5  action=verdict:1:nudge  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 7] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 8] RUN    20 rpm / arm 1.5  action=verdict:1:fed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 9] RUN    20 rpm / arm 1.5  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 10] RUN    20 rpm / arm 1.5  action=feed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 11] RUN    20 rpm / arm 1.5  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 12] RUN    20 rpm / arm 1.5  action=verdict:2:fed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 13] RUN    20 rpm / arm 1.5  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 14] RUN    20 rpm / arm 1.5  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 15] RUN    20 rpm / arm 1.5  action=feed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 16] RUN    20 rpm / arm 1.5  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 17] RUN    20 rpm / arm 1.5  action=verdict:3:fed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 18] RUN    20 rpm / arm 1.5  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 19] RUN    20 rpm / arm 1.5  action=feed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 20] RUN    20 rpm / arm 1.5  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 21] RUN    20 rpm / arm 1.5  action=verdict:4:fed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 22] RUN    20 rpm / arm 1.5  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 23] RUN    20 rpm / arm 1.5  action=feed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 24] RUN    20 rpm / arm 1.5  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 25] RUN    20 rpm / arm 1.5  action=verdict:5:nudge  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 26] RUN    20 rpm / arm 1.5  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 27] RUN    20 rpm / arm 1.5  action=verdict:5:fed  - feed 5: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 28] RUN    20 rpm / arm 1.5  - feed 5: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 29] RUN    20 rpm / arm 1.5  action=flow_drop_oldest  - feed 5: its block should have reached the IR after 8.1 s of belt and has not (137% of the ride): nothing came out, feeding again
+[plan 30] RUN    20 rpm / arm 1.5  - feed 5: its block should have reached the IR after 8.1 s of belt and has not (137% of the ride): nothing came out, feeding again
+[plan 31] RUN    20 rpm / arm 1.5  action=feed  - feed 5: its block should have reached the IR after 8.1 s of belt and has not (137% of the ride): nothing came out, feeding again
+[plan 32] RUN    20 rpm / arm 1.5  - feed 5: its block should have reached the IR after 8.1 s of belt and has not (137% of the ride): nothing came out, feeding again
+[plan 33] RUN    20 rpm / arm 1.5  action=verdict:6:nudge  - feed 5: its block should have reached the IR after 8.1 s of belt and has not (137% of the ride): nothing came out, feeding again
+[plan 34] RUN    20 rpm / arm 1.5  - feed 5: its block should have reached the IR after 8.1 s of belt and has not (137% of the ride): nothing came out, feeding again
+[plan 35] RUN    20 rpm / arm 1.5  action=verdict:6:fed  - feed 6: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 36] RUN    20 rpm / arm 1.5  - feed 6: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 37] RUN    20 rpm / arm 1.5  action=flow_drop_oldest  - feed 6: its block should have reached the IR after 8.1 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 38] RUN    20 rpm / arm 1.5  - feed 6: its block should have reached the IR after 8.1 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 39] RUN    20 rpm / arm 1.5  action=feed  - feed 6: its block should have reached the IR after 8.1 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 40] RUN    20 rpm / arm 1.5  - feed 6: its block should have reached the IR after 8.1 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 41] RUN    20 rpm / arm 1.5  action=verdict:7:fed  - feed 6: its block should have reached the IR after 8.1 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 42] RUN    20 rpm / arm 1.5  - feed 6: its block should have reached the IR after 8.1 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 43] RUN    20 rpm / arm 1.5  action=feed  - feed 6: its block should have reached the IR after 8.1 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 44] RUN    20 rpm / arm 1.5  - feed 6: its block should have reached the IR after 8.1 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 45] RUN    20 rpm / arm 1.5  action=verdict:8:fed  - feed 6: its block should have reached the IR after 8.1 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 46] RUN    20 rpm / arm 1.5  - feed 6: its block should have reached the IR after 8.1 s of belt and has not (138% of the ride): nothing came out, feeding again
+[plan 47] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 48] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 49] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 50] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 51] RUN    20 rpm / arm 1.5  action=verdict:9:fed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 52] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 53] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 54] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 55] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 56] RUN    20 rpm / arm 1.5  action=verdict:10:fed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 57] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 58] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 59] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 60] RUN    20 rpm / arm 1.5  action=verdict:11:fed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 61] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 62] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 63] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 64] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 65] RUN    20 rpm / arm 1.5  action=verdict:12:nudge  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 66] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 67] RUN    20 rpm / arm 1.5  action=verdict:12:empty  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 68] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 69] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 70] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 71] RUN    20 rpm / arm 1.5  action=verdict:13:fed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 72] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 73] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 74] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 75] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 76] RUN    20 rpm / arm 1.5  action=verdict:14:fed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 77] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 78] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 79] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 80] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 81] RUN    20 rpm / arm 1.5  action=verdict:15:fed  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 82] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 50 mV: I don't use the dip check until I see clear pushes again
+[plan 83] OFF    20 rpm / arm 1.5  - autoen stopped
+[plan 84] OFF    20 rpm / arm 1.5  - autoen not reachable
+[actuate] autoen restarted (cycle 9 -> 0): cycle hand-over starts again
+[plan 85] OFF    20 rpm / arm 1.5  - autoen ready
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

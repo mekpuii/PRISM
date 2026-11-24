@@ -1,0 +1,206 @@
+# prism_switch.py - the dashboard's PRISM ON / OFF button and the normal-vs-PRISM meter (2026-11-12).
+#
+# The operator: "first we run the automation in the normal mode (no PRISM), then a cloud button 'PRISM ON': the
+# optimizer wakes up, tells what it is going to do and how much it saves".
+#   NORMAL  autoen alone, the normal cycle (feed -> belt -> pick, one cube at a time), no optimizer
+#   PRISM   the optimizer runs and autoen is in flow (enable_f = 1): every push planned and verified, the belt filled
+# ON : switch autoen to flow at the end of the current pick (pause -> enable_f 1 -> resume), then start the optimizer.
+# OFF: stop the optimizer (Ctrl+C), then switch autoen back to the normal cycle the same way.
+# Nothing new moves: the switch happens between two picks; the operator presses the button.
+#
+# Meter: energy (belt 12 V rail + the six arm joints, integrated from MQTT telemetry) and picks, kept apart for the
+# two modes, so the page can say "PRISM: -37 % time per cube, -36 % energy per cube" against this session's normal run.
+
+import json
+import os
+import signal
+import subprocess
+import threading
+import time
+
+PRISM_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ORCH_DIR = os.path.join(PRISM_DIR, "orchestrator")
+LOG_DIR = os.path.join(PRISM_DIR, "run_logs")
+ORCH_PY = os.path.expanduser("~/orch-env/bin/python")
+PAUSE_WAIT_S = 120.0          # the pause lands at the end of the current pick
+MIN_CUBES = 3                 # cubes in each mode before a saving is shown
+
+
+def optimizer_pids():
+    """Every main.py running in PRISM/orchestrator (read from /proc: never matches this process)."""
+    out = []
+    for pid in os.listdir("/proc"):
+        if not pid.isdigit():
+            continue
+        try:
+            with open(f"/proc/{pid}/cmdline", "rb") as f:
+                cmd = f.read().split(b"\0")
+            if any(c.endswith(b"main.py") for c in cmd[:3]) and os.readlink(f"/proc/{pid}/cwd") == ORCH_DIR:
+                out.append(int(pid))
+        except (OSError, ValueError):
+            continue
+    return out
+
+
+class Meter:
+    """Energy and picks per mode, from MQTT (belt/telemetry, arm/telemetry, autoen/cycle)."""
+
+    def __init__(self, mode_fn):
+        self.mode_fn = mode_fn              # () -> "normal" | "prism"
+        self.lock = threading.Lock()
+        self.reset()
+
+    def reset(self):
+        with getattr(self, "lock", threading.Lock()):
+            self.m = {k: {"J": 0.0, "secs": 0.0, "picks": 0, "ok": 0, "since": time.time()} for k in ("normal", "prism")}
+            self.belt_w = self.arm_w = 0.0
+            self.t = None
+
+    def feed(self, topic, payload):
+        if topic not in ("belt/telemetry", "arm/telemetry", "autoen/cycle"):
+            return
+        try:
+            d = json.loads(payload)
+        except ValueError:
+            return
+        with self.lock:
+            now = time.time()
+            if self.t is not None:
+                self.m[self.mode_fn()]["J"] += (self.belt_w + self.arm_w) * min(1.0, max(0.0, now - self.t))
+            self.t = now
+            if topic == "belt/telemetry":
+                i, v = d.get("current"), d.get("voltage")
+                if isinstance(i, (int, float)) and isinstance(v, (int, float)) and i == i and v == v:
+                    self.belt_w = abs(i) * v / 1000.0
+            elif topic == "arm/telemetry":
+                w = 0.0
+                for j in (d.get("joints") or {}).values():
+                    i, v = j.get("cur"), j.get("volt")
+                    if isinstance(i, (int, float)) and isinstance(v, (int, float)):
+                        w += abs(i) * v / 1000.0
+                self.arm_w = w
+            else:                                           # one finished pick
+                m = self.m[self.mode_fn()]
+                m["picks"] += 1
+                m["ok"] += d.get("result") == "OK"
+                m["secs"] += float(d.get("secs") or 0)
+
+    def status(self):
+        with self.lock:
+            out = {}
+            for k, m in self.m.items():
+                ok = m["ok"]
+                out[k] = {"picks": m["picks"], "ok": ok, "s_per_cube": round(m["secs"] / ok, 1) if ok else None,
+                          "J_per_cube": round(m["J"] / ok, 1) if ok else None, "J": round(m["J"], 1)}
+            n, p = out["normal"], out["prism"]
+            if n["ok"] >= MIN_CUBES and p["ok"] >= MIN_CUBES:
+                out["saving"] = {"time_pct": round(100 * (1 - p["s_per_cube"] / n["s_per_cube"])),
+                                 "energy_pct": round(100 * (1 - p["J_per_cube"] / n["J_per_cube"]))}
+            return out
+
+
+class PrismSwitch:
+    def __init__(self, autoen_call, on_event=None):
+        self.call = autoen_call             # (path, body or None) -> (http code, dict); body None = GET
+        self.on_event = on_event or (lambda level, text: None)
+        self.busy = None                    # what the switch is doing right now (shown in the cloud)
+        self.error = None
+        self.lock = threading.Lock()
+        self._on = bool(optimizer_pids())
+        threading.Thread(target=self._watch, daemon=True).start()
+
+    def _watch(self):
+        while True:                         # the optimizer may also be started / stopped by start_cell / stop_cell
+            self._on = bool(optimizer_pids())
+            time.sleep(2.0)
+
+    @property
+    def on(self):
+        return self._on                     # cached (the meter asks on every telemetry message)
+
+    def status(self):
+        return {"on": self.on, "busy": self.busy, "error": self.error}
+
+    def request(self, on):
+        with self.lock:
+            if self.busy:
+                raise ValueError(f"busy: {self.busy}")
+            self.busy, self.error = ("PRISM is waking up" if on else "PRISM is going to sleep"), None
+        threading.Thread(target=self._run, args=(bool(on),), daemon=True).start()
+        return self.status()
+
+    # ----- the steps -----
+    def _run(self, on):
+        try:
+            if on:
+                self._set_flow(True)
+                if not optimizer_pids():
+                    self._start_optimizer()
+                self.on_event("info", "PRISM ON: the optimizer is awake and in charge")
+            else:
+                self._stop_optimizer()
+                self._set_flow(False)
+                self.on_event("info", "PRISM OFF: back to the normal cycle")
+        except Exception as e:                              # noqa: BLE001 - shown on the page
+            self.error = str(e)
+            self._on = bool(optimizer_pids())
+            self.on_event("warn", f"PRISM {'ON' if on else 'OFF'} failed: {e}")
+        finally:
+            self._on = bool(optimizer_pids())
+            self.busy = None
+
+    def _state(self):
+        code, st = self.call("/api/state", None)
+        if code != 200:
+            raise RuntimeError(f"autoen not reachable ({code})")
+        return st
+
+    def _set_flow(self, on):
+        st = self._state()
+        if bool((st.get("config") or {}).get("enable_f")) == on:
+            return
+        if st.get("status") in ("running", "paused"):
+            if not st.get("paused"):
+                self.busy = "finishing the current pick first" if on else "PRISM is going to sleep: finishing this pick"
+                self.call("/api/pause", {})
+            end = time.time() + PAUSE_WAIT_S
+            while self._state().get("status") != "paused":
+                if time.time() > end:
+                    raise RuntimeError("the pause did not land (still in a pick?)")
+                time.sleep(0.5)
+            code, out = self.call("/api/config", {"enable_f": 1 if on else 0})
+            if code != 200:
+                raise RuntimeError(f"autoen refused the mode switch: {out.get('error', code)}")
+            self.call("/api/pause", {})                     # toggle: resume - the switch happens here
+        else:
+            code, out = self.call("/api/config", {"enable_f": 1 if on else 0})   # for the next Start
+            if code != 200:
+                raise RuntimeError(f"autoen refused the mode switch: {out.get('error', code)}")
+
+    def _start_optimizer(self):
+        self.busy = "waking the optimizer"
+        os.makedirs(LOG_DIR, exist_ok=True)
+        log = open(os.path.join(LOG_DIR, time.strftime("optimizer_%Y%m%d_%H%M%S.log")), "w")
+        subprocess.Popen([ORCH_PY, "main.py", "--auto-resume"], cwd=ORCH_DIR, stdout=log, stderr=subprocess.STDOUT,
+                         start_new_session=True)       # its own session: it survives a dashboard restart
+        end = time.time() + 20
+        while not optimizer_pids():
+            if time.time() > end:
+                raise RuntimeError("the optimizer did not start (look at run_logs/optimizer_*.log)")
+            time.sleep(0.3)
+
+    def _stop_optimizer(self):
+        pids = optimizer_pids()
+        if not pids:
+            return
+        self.busy = "the optimizer is closing its files"
+        for p in pids:
+            try:
+                os.kill(p, signal.SIGINT)                   # Ctrl+C: it closes its files and leaves autoen as it is
+            except OSError:
+                pass
+        end = time.time() + 15
+        while optimizer_pids():
+            if time.time() > end:
+                raise RuntimeError("the optimizer did not stop")
+            time.sleep(0.3)

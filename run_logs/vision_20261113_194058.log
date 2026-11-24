@@ -1,0 +1,699 @@
+=================================================================
+DELTA - Raspberry Pi 4 Object Perception + Spacing + Demand Collection
+=================================================================
+Mode: HSV color detection + USB camera (no depth) + Kalman
+Colours (priority order): white, orange
+Belt axis: u   direction: +1
+Camera streams: 854x480 at 6 FPS
+Demand window: 180 seconds
+Data sample interval: 10 seconds
+History file: delta_demand_history.csv
+Summary file: delta_3min_summary.csv
+Press ESC or Q to exit.
+=================================================================
+[camera] using /dev/v4l/by-id/usb-QCM_Astro_HD_Camera-video-index0
+
+Starting USB camera /dev/v4l/by-id/usb-QCM_Astro_HD_Camera-video-index0 at 1280x720 -> 854x480, 6 FPS (camera 15 FPS, MJPG)...
+Camera warm-up: 1/3
+Camera warm-up: 2/3
+Camera warm-up: 3/3
+[spacing] USB camera has no depth; gaps will be in pixels only
+[belt] learning the empty belt (reflections are ignored); belt brightness at calibration V=62
+[belt] 3 cube(s) were standing on the belt while it was learned: kept as cubes
+[DATA] Window 1 |   10.1s | +2 {'white': 2} (total 2)
+[DATA] Window 1 |   20.3s | +0 {} (total 2)
+[DATA] Window 1 |   30.4s | +2 {'white': 2} (total 4)
+[DATA] Window 1 |   40.4s | +1 {'white': 1} (total 5)
+[DATA] Window 1 |   50.6s | +2 {'white': 2} (total 7)
+[DATA] Window 1 |   60.6s | +2 {'white': 1, 'orange': 1} (total 9)
+[DATA] Window 1 |   70.8s | +3 {'white': 2, 'orange': 1} (total 12)
+[DATA] Window 1 |   80.9s | +1 {'white': 1} (total 13)
+[DATA] Window 1 |   90.9s | +1 {'white': 1} (total 14)
+[DATA] Window 1 |  101.1s | +3 {'white': 3} (total 17)
+[DATA] Window 1 |  111.3s | +1 {'white': 1} (total 18)
+[DATA] Window 1 |  121.3s | +1 {'white': 1} (total 19)
+[DATA] Window 1 |  131.4s | +1 {'orange': 1} (total 20)
+[DATA] Window 1 |  141.4s | +1 {'orange': 1} (total 21)
+[DATA] Window 1 |  151.4s | +1 {'white': 1} (total 22)
+[DATA] Window 1 |  161.6s | +2 {'white': 1, 'orange': 1} (total 24)
+[DATA] Window 1 |  171.8s | +3 {'white': 2, 'orange': 1} (total 27)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #1 COMPLETE
+Objects : 28   by colour: {'white': 22, 'orange': 6}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 2 |   10.0s | +2 {'orange': 1, 'white': 1} (total 2)
+[DATA] Window 2 |   20.2s | +1 {'white': 1} (total 3)
+[DATA] Window 2 |   30.2s | +1 {'white': 1} (total 4)
+[DATA] Window 2 |   40.3s | +2 {'white': 2} (total 6)
+[DATA] Window 2 |   50.5s | +2 {'orange': 1, 'white': 1} (total 8)
+[DATA] Window 2 |   60.5s | +2 {'white': 1, 'orange': 1} (total 10)
+[DATA] Window 2 |   70.7s | +0 {} (total 10)
+[DATA] Window 2 |   80.8s | +3 {'white': 3} (total 13)
+[DATA] Window 2 |   90.8s | +2 {'white': 2} (total 15)
+[DATA] Window 2 |  101.0s | +1 {'white': 1} (total 16)
+[DATA] Window 2 |  111.0s | +1 {'orange': 1} (total 17)
+[DATA] Window 2 |  121.2s | +2 {'white': 2} (total 19)
+[DATA] Window 2 |  131.3s | +1 {'white': 1} (total 20)
+[DATA] Window 2 |  141.3s | +2 {'orange': 1, 'white': 1} (total 22)
+[DATA] Window 2 |  151.5s | +2 {'orange': 2} (total 24)
+[DATA] Window 2 |  161.5s | +3 {'white': 3} (total 27)
+[DATA] Window 2 |  171.5s | +1 {'orange': 1} (total 28)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #2 COMPLETE
+Objects : 30   by colour: {'orange': 9, 'white': 21}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 3 |   10.2s | +1 {'white': 1} (total 1)
+[DATA] Window 3 |   20.3s | +1 {'white': 1} (total 2)
+[DATA] Window 3 |   30.3s | +3 {'orange': 1, 'white': 2} (total 5)
+[DATA] Window 3 |   40.5s | +1 {'orange': 1} (total 6)
+[DATA] Window 3 |   50.5s | +0 {} (total 6)
+[DATA] Window 3 |   60.7s | +2 {'white': 2} (total 8)
+[DATA] Window 3 |   70.8s | +2 {'orange': 2} (total 10)
+[DATA] Window 3 |   80.8s | +1 {'white': 1} (total 11)
+[DATA] Window 3 |   91.0s | +0 {} (total 11)
+[DATA] Window 3 |  101.2s | +1 {'white': 1} (total 12)
+[DATA] Window 3 |  111.2s | +0 {} (total 12)
+[DATA] Window 3 |  121.3s | +1 {'white': 1} (total 13)
+[DATA] Window 3 |  131.5s | +2 {'white': 2} (total 15)
+[DATA] Window 3 |  141.5s | +1 {'white': 1} (total 16)
+[DATA] Window 3 |  151.7s | +2 {'white': 2} (total 18)
+[DATA] Window 3 |  161.8s | +1 {'white': 1} (total 19)
+[DATA] Window 3 |  172.0s | +1 {'white': 1} (total 20)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #3 COMPLETE
+Objects : 21   by colour: {'white': 16, 'orange': 5}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 4 |   10.0s | +0 {} (total 0)
+[DATA] Window 4 |   20.2s | +2 {'orange': 1, 'white': 1} (total 2)
+[DATA] Window 4 |   30.2s | +2 {'white': 2} (total 4)
+[DATA] Window 4 |   40.2s | +2 {'orange': 1, 'white': 1} (total 6)
+[DATA] Window 4 |   50.3s | +2 {'white': 2} (total 8)
+[DATA] Window 4 |   60.3s | +0 {} (total 8)
+[DATA] Window 4 |   70.3s | +0 {} (total 8)
+[DATA] Window 4 |   80.3s | +2 {'white': 2} (total 10)
+[DATA] Window 4 |   90.5s | +0 {} (total 10)
+[DATA] Window 4 |  100.7s | +1 {'white': 1} (total 11)
+[DATA] Window 4 |  110.8s | +0 {} (total 11)
+[DATA] Window 4 |  120.8s | +0 {} (total 11)
+[DATA] Window 4 |  130.8s | +0 {} (total 11)
+[DATA] Window 4 |  141.0s | +0 {} (total 11)
+[DATA] Window 4 |  151.0s | +0 {} (total 11)
+[DATA] Window 4 |  161.2s | +0 {} (total 11)
+[DATA] Window 4 |  171.3s | +0 {} (total 11)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #4 COMPLETE
+Objects : 11   by colour: {'orange': 2, 'white': 9}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 5 |   10.2s | +1 {'white': 1} (total 1)
+[DATA] Window 5 |   20.2s | +0 {} (total 1)
+[DATA] Window 5 |   30.3s | +0 {} (total 1)
+[DATA] Window 5 |   40.5s | +0 {} (total 1)
+[DATA] Window 5 |   50.7s | +0 {} (total 1)
+[DATA] Window 5 |   60.7s | +0 {} (total 1)
+[DATA] Window 5 |   70.8s | +0 {} (total 1)
+[DATA] Window 5 |   81.0s | +0 {} (total 1)
+[DATA] Window 5 |   91.0s | +0 {} (total 1)
+[DATA] Window 5 |  101.2s | +0 {} (total 1)
+[DATA] Window 5 |  111.2s | +0 {} (total 1)
+[DATA] Window 5 |  121.3s | +0 {} (total 1)
+[DATA] Window 5 |  131.5s | +1 {'white': 1} (total 2)
+[belt] light changed (100% of the belt different at once): learning the empty belt again
+[belt] light changed (77% of the belt different at once): learning the empty belt again
+[DATA] Window 5 |  141.7s | +0 {} (total 2)
+[DATA] Window 5 |  151.7s | +0 {} (total 2)
+[DATA] Window 5 |  161.8s | +0 {} (total 2)
+[DATA] Window 5 |  172.0s | +0 {} (total 2)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #5 COMPLETE
+Objects : 2   by colour: {'white': 2}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 6 |   10.0s | +0 {} (total 0)
+[DATA] Window 6 |   20.2s | +0 {} (total 0)
+[DATA] Window 6 |   30.2s | +0 {} (total 0)
+[DATA] Window 6 |   40.3s | +0 {} (total 0)
+[DATA] Window 6 |   50.5s | +0 {} (total 0)
+[DATA] Window 6 |   60.5s | +0 {} (total 0)
+[DATA] Window 6 |   70.5s | +0 {} (total 0)
+[DATA] Window 6 |   80.7s | +0 {} (total 0)
+[DATA] Window 6 |   90.7s | +0 {} (total 0)
+[DATA] Window 6 |  100.7s | +0 {} (total 0)
+[DATA] Window 6 |  110.7s | +0 {} (total 0)
+[DATA] Window 6 |  120.8s | +0 {} (total 0)
+[DATA] Window 6 |  131.0s | +1 {'white': 1} (total 1)
+[DATA] Window 6 |  141.0s | +0 {} (total 1)
+[DATA] Window 6 |  151.2s | +0 {} (total 1)
+[DATA] Window 6 |  161.2s | +0 {} (total 1)
+[DATA] Window 6 |  171.3s | +0 {} (total 1)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #6 COMPLETE
+Objects : 1   by colour: {'white': 1}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 7 |   10.0s | +0 {} (total 0)
+[DATA] Window 7 |   20.2s | +0 {} (total 0)
+[DATA] Window 7 |   30.3s | +0 {} (total 0)
+[DATA] Window 7 |   40.3s | +0 {} (total 0)
+[DATA] Window 7 |   50.5s | +0 {} (total 0)
+[DATA] Window 7 |   60.5s | +0 {} (total 0)
+[DATA] Window 7 |   70.7s | +1 {'white': 1} (total 1)
+[DATA] Window 7 |   80.7s | +0 {} (total 1)
+[DATA] Window 7 |   90.8s | +0 {} (total 1)
+[DATA] Window 7 |  100.8s | +0 {} (total 1)
+[DATA] Window 7 |  111.0s | +0 {} (total 1)
+[DATA] Window 7 |  121.2s | +0 {} (total 1)
+[DATA] Window 7 |  131.2s | +0 {} (total 1)
+[DATA] Window 7 |  141.2s | +0 {} (total 1)
+[DATA] Window 7 |  151.2s | +0 {} (total 1)
+[DATA] Window 7 |  161.3s | +0 {} (total 1)
+[belt] light changed (63% of the belt different at once): learning the empty belt again
+[belt] light changed (56% of the belt different at once): learning the empty belt again
+[DATA] Window 7 |  171.5s | +0 {} (total 1)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #7 COMPLETE
+Objects : 1   by colour: {'white': 1}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[belt] light changed (70% of the belt different at once): learning the empty belt again
+[DATA] Window 8 |   10.0s | +0 {} (total 0)
+[DATA] Window 8 |   20.0s | +0 {} (total 0)
+[DATA] Window 8 |   30.2s | +0 {} (total 0)
+[DATA] Window 8 |   40.2s | +0 {} (total 0)
+[DATA] Window 8 |   50.3s | +0 {} (total 0)
+[DATA] Window 8 |   60.3s | +0 {} (total 0)
+[DATA] Window 8 |   70.3s | +0 {} (total 0)
+[DATA] Window 8 |   80.3s | +0 {} (total 0)
+[DATA] Window 8 |   90.3s | +0 {} (total 0)
+[DATA] Window 8 |  100.5s | +0 {} (total 0)
+[DATA] Window 8 |  110.7s | +0 {} (total 0)
+[DATA] Window 8 |  120.8s | +0 {} (total 0)
+[DATA] Window 8 |  130.8s | +0 {} (total 0)
+[DATA] Window 8 |  141.0s | +0 {} (total 0)
+[DATA] Window 8 |  151.2s | +0 {} (total 0)
+[DATA] Window 8 |  161.2s | +0 {} (total 0)
+[DATA] Window 8 |  171.2s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #8 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 9 |   10.2s | +0 {} (total 0)
+[DATA] Window 9 |   20.2s | +0 {} (total 0)
+[DATA] Window 9 |   30.3s | +0 {} (total 0)
+[DATA] Window 9 |   40.3s | +0 {} (total 0)
+[DATA] Window 9 |   50.5s | +0 {} (total 0)
+[DATA] Window 9 |   60.5s | +0 {} (total 0)
+[DATA] Window 9 |   70.6s | +0 {} (total 0)
+[DATA] Window 9 |   80.8s | +0 {} (total 0)
+[DATA] Window 9 |   90.9s | +0 {} (total 0)
+[DATA] Window 9 |  100.9s | +0 {} (total 0)
+[DATA] Window 9 |  110.9s | +0 {} (total 0)
+[DATA] Window 9 |  121.3s | +0 {} (total 0)
+[DATA] Window 9 |  131.5s | +0 {} (total 0)
+[DATA] Window 9 |  141.6s | +0 {} (total 0)
+[DATA] Window 9 |  151.6s | +0 {} (total 0)
+[DATA] Window 9 |  161.7s | +0 {} (total 0)
+[DATA] Window 9 |  171.7s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #9 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 10 |   10.2s | +0 {} (total 0)
+[DATA] Window 10 |   20.3s | +0 {} (total 0)
+[DATA] Window 10 |   30.5s | +0 {} (total 0)
+[DATA] Window 10 |   40.5s | +0 {} (total 0)
+[DATA] Window 10 |   50.6s | +0 {} (total 0)
+[DATA] Window 10 |   60.7s | +0 {} (total 0)
+[DATA] Window 10 |   70.7s | +0 {} (total 0)
+[DATA] Window 10 |   80.8s | +0 {} (total 0)
+[DATA] Window 10 |   90.8s | +0 {} (total 0)
+[DATA] Window 10 |  100.8s | +0 {} (total 0)
+[DATA] Window 10 |  111.0s | +0 {} (total 0)
+[DATA] Window 10 |  121.0s | +0 {} (total 0)
+[DATA] Window 10 |  131.2s | +0 {} (total 0)
+[DATA] Window 10 |  141.3s | +0 {} (total 0)
+[DATA] Window 10 |  151.5s | +0 {} (total 0)
+[DATA] Window 10 |  161.5s | +0 {} (total 0)
+[DATA] Window 10 |  171.5s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #10 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 11 |   10.0s | +0 {} (total 0)
+[DATA] Window 11 |   20.2s | +0 {} (total 0)
+[DATA] Window 11 |   30.2s | +0 {} (total 0)
+[DATA] Window 11 |   40.2s | +0 {} (total 0)
+[DATA] Window 11 |   50.3s | +0 {} (total 0)
+[DATA] Window 11 |   60.3s | +0 {} (total 0)
+[DATA] Window 11 |   70.5s | +0 {} (total 0)
+[DATA] Window 11 |   80.7s | +0 {} (total 0)
+[DATA] Window 11 |   90.8s | +0 {} (total 0)
+[DATA] Window 11 |  101.0s | +0 {} (total 0)
+[DATA] Window 11 |  111.0s | +0 {} (total 0)
+[DATA] Window 11 |  121.2s | +0 {} (total 0)
+[DATA] Window 11 |  131.3s | +0 {} (total 0)
+[DATA] Window 11 |  141.3s | +0 {} (total 0)
+[DATA] Window 11 |  151.5s | +0 {} (total 0)
+[DATA] Window 11 |  161.7s | +0 {} (total 0)
+[DATA] Window 11 |  171.7s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #11 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 12 |   10.2s | +0 {} (total 0)
+[DATA] Window 12 |   20.2s | +0 {} (total 0)
+[DATA] Window 12 |   30.3s | +0 {} (total 0)
+[belt] light changed (99% of the belt different at once): learning the empty belt again
+[DATA] Window 12 |   40.3s | +0 {} (total 0)
+[belt] light changed (81% of the belt different at once): learning the empty belt again
+[belt] light changed (62% of the belt different at once): learning the empty belt again
+[belt] light changed (83% of the belt different at once): learning the empty belt again
+[belt] light changed (99% of the belt different at once): learning the empty belt again
+[belt] light changed (73% of the belt different at once): learning the empty belt again
+[DATA] Window 12 |   50.5s | +0 {} (total 0)
+[DATA] Window 12 |   60.7s | +0 {} (total 0)
+[DATA] Window 12 |   70.8s | +0 {} (total 0)
+[DATA] Window 12 |   80.8s | +0 {} (total 0)
+[DATA] Window 12 |   91.0s | +0 {} (total 0)
+[DATA] Window 12 |  101.0s | +0 {} (total 0)
+[DATA] Window 12 |  111.0s | +0 {} (total 0)
+[DATA] Window 12 |  121.1s | +0 {} (total 0)
+[DATA] Window 12 |  131.1s | +0 {} (total 0)
+[DATA] Window 12 |  141.3s | +0 {} (total 0)
+[DATA] Window 12 |  151.3s | +0 {} (total 0)
+[DATA] Window 12 |  161.5s | +0 {} (total 0)
+[DATA] Window 12 |  171.6s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #12 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 13 |   10.0s | +0 {} (total 0)
+[DATA] Window 13 |   20.0s | +0 {} (total 0)
+[DATA] Window 13 |   30.2s | +0 {} (total 0)
+[DATA] Window 13 |   40.3s | +0 {} (total 0)
+[DATA] Window 13 |   50.3s | +0 {} (total 0)
+[DATA] Window 13 |   60.5s | +0 {} (total 0)
+[DATA] Window 13 |   70.7s | +0 {} (total 0)
+[DATA] Window 13 |   80.7s | +0 {} (total 0)
+[DATA] Window 13 |   90.7s | +0 {} (total 0)
+[DATA] Window 13 |  100.8s | +0 {} (total 0)
+[DATA] Window 13 |  110.8s | +0 {} (total 0)
+[DATA] Window 13 |  120.8s | +0 {} (total 0)
+[DATA] Window 13 |  131.0s | +0 {} (total 0)
+[DATA] Window 13 |  141.2s | +0 {} (total 0)
+[DATA] Window 13 |  151.3s | +0 {} (total 0)
+[DATA] Window 13 |  161.5s | +0 {} (total 0)
+[DATA] Window 13 |  171.5s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #13 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 14 |   10.2s | +0 {} (total 0)
+[DATA] Window 14 |   20.2s | +0 {} (total 0)
+[DATA] Window 14 |   30.3s | +0 {} (total 0)
+[DATA] Window 14 |   40.5s | +0 {} (total 0)
+[DATA] Window 14 |   50.7s | +0 {} (total 0)
+[DATA] Window 14 |   60.8s | +0 {} (total 0)
+[DATA] Window 14 |   71.0s | +0 {} (total 0)
+[DATA] Window 14 |   81.0s | +0 {} (total 0)
+[DATA] Window 14 |   91.0s | +0 {} (total 0)
+[DATA] Window 14 |  101.2s | +0 {} (total 0)
+[DATA] Window 14 |  111.2s | +0 {} (total 0)
+[DATA] Window 14 |  121.3s | +0 {} (total 0)
+[DATA] Window 14 |  131.5s | +0 {} (total 0)
+[DATA] Window 14 |  141.5s | +0 {} (total 0)
+[DATA] Window 14 |  151.7s | +0 {} (total 0)
+[DATA] Window 14 |  161.8s | +0 {} (total 0)
+[DATA] Window 14 |  171.8s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #14 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 15 |   10.2s | +0 {} (total 0)
+[DATA] Window 15 |   20.2s | +0 {} (total 0)
+[DATA] Window 15 |   30.3s | +0 {} (total 0)
+[DATA] Window 15 |   40.3s | +0 {} (total 0)
+[DATA] Window 15 |   50.5s | +0 {} (total 0)
+[DATA] Window 15 |   60.5s | +0 {} (total 0)
+[DATA] Window 15 |   70.7s | +0 {} (total 0)
+[DATA] Window 15 |   80.7s | +0 {} (total 0)
+[DATA] Window 15 |   90.8s | +0 {} (total 0)
+[DATA] Window 15 |  100.8s | +0 {} (total 0)
+[DATA] Window 15 |  111.0s | +0 {} (total 0)
+[DATA] Window 15 |  121.0s | +0 {} (total 0)
+[DATA] Window 15 |  131.2s | +0 {} (total 0)
+[DATA] Window 15 |  141.2s | +0 {} (total 0)
+[DATA] Window 15 |  151.3s | +0 {} (total 0)
+[DATA] Window 15 |  161.5s | +0 {} (total 0)
+[DATA] Window 15 |  171.5s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #15 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 16 |   10.2s | +0 {} (total 0)
+[DATA] Window 16 |   20.3s | +0 {} (total 0)
+[DATA] Window 16 |   30.3s | +0 {} (total 0)
+[DATA] Window 16 |   40.5s | +0 {} (total 0)
+[DATA] Window 16 |   50.5s | +0 {} (total 0)
+[DATA] Window 16 |   60.7s | +0 {} (total 0)
+[DATA] Window 16 |   70.8s | +0 {} (total 0)
+[DATA] Window 16 |   80.8s | +0 {} (total 0)
+[DATA] Window 16 |   91.0s | +0 {} (total 0)
+[DATA] Window 16 |  101.2s | +0 {} (total 0)
+[DATA] Window 16 |  111.2s | +0 {} (total 0)
+[DATA] Window 16 |  121.3s | +0 {} (total 0)
+[DATA] Window 16 |  131.3s | +0 {} (total 0)
+[DATA] Window 16 |  141.5s | +0 {} (total 0)
+[DATA] Window 16 |  151.7s | +0 {} (total 0)
+[DATA] Window 16 |  161.8s | +0 {} (total 0)
+[DATA] Window 16 |  171.8s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #16 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 17 |   10.0s | +0 {} (total 0)
+[DATA] Window 17 |   20.0s | +0 {} (total 0)
+[DATA] Window 17 |   30.0s | +0 {} (total 0)
+[DATA] Window 17 |   40.2s | +0 {} (total 0)
+[DATA] Window 17 |   50.2s | +0 {} (total 0)
+[DATA] Window 17 |   60.3s | +0 {} (total 0)
+[DATA] Window 17 |   70.3s | +0 {} (total 0)
+[DATA] Window 17 |   80.3s | +0 {} (total 0)
+[DATA] Window 17 |   90.5s | +0 {} (total 0)
+[DATA] Window 17 |  100.7s | +0 {} (total 0)
+[DATA] Window 17 |  110.8s | +0 {} (total 0)
+[DATA] Window 17 |  120.8s | +0 {} (total 0)
+[DATA] Window 17 |  130.8s | +0 {} (total 0)
+[DATA] Window 17 |  141.0s | +0 {} (total 0)
+[DATA] Window 17 |  151.2s | +0 {} (total 0)
+[DATA] Window 17 |  161.3s | +0 {} (total 0)
+[DATA] Window 17 |  171.3s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #17 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 18 |   10.2s | +0 {} (total 0)
+[DATA] Window 18 |   20.2s | +0 {} (total 0)
+[DATA] Window 18 |   30.2s | +0 {} (total 0)
+[DATA] Window 18 |   40.3s | +0 {} (total 0)
+[DATA] Window 18 |   50.3s | +0 {} (total 0)
+[DATA] Window 18 |   60.5s | +0 {} (total 0)
+[DATA] Window 18 |   70.7s | +0 {} (total 0)
+[DATA] Window 18 |   80.7s | +0 {} (total 0)
+[DATA] Window 18 |   90.8s | +0 {} (total 0)
+[DATA] Window 18 |  100.8s | +0 {} (total 0)
+[DATA] Window 18 |  111.0s | +0 {} (total 0)
+[DATA] Window 18 |  121.2s | +0 {} (total 0)
+[DATA] Window 18 |  131.3s | +0 {} (total 0)
+[DATA] Window 18 |  141.3s | +0 {} (total 0)
+[DATA] Window 18 |  151.5s | +0 {} (total 0)
+[DATA] Window 18 |  161.7s | +0 {} (total 0)
+[DATA] Window 18 |  171.7s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #18 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 19 |   10.2s | +0 {} (total 0)
+[DATA] Window 19 |   20.2s | +0 {} (total 0)
+[DATA] Window 19 |   30.3s | +0 {} (total 0)
+[DATA] Window 19 |   40.5s | +0 {} (total 0)
+[DATA] Window 19 |   50.5s | +0 {} (total 0)
+[DATA] Window 19 |   60.7s | +0 {} (total 0)
+[DATA] Window 19 |   70.8s | +0 {} (total 0)
+[DATA] Window 19 |   81.0s | +0 {} (total 0)
+[DATA] Window 19 |   91.0s | +0 {} (total 0)
+[DATA] Window 19 |  101.2s | +0 {} (total 0)
+[DATA] Window 19 |  111.2s | +0 {} (total 0)
+[DATA] Window 19 |  121.3s | +0 {} (total 0)
+[DATA] Window 19 |  131.3s | +0 {} (total 0)
+[DATA] Window 19 |  141.5s | +0 {} (total 0)
+[DATA] Window 19 |  151.7s | +0 {} (total 0)
+[DATA] Window 19 |  161.8s | +0 {} (total 0)
+[DATA] Window 19 |  171.8s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #19 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 20 |   10.2s | +0 {} (total 0)
+[DATA] Window 20 |   20.3s | +0 {} (total 0)
+[DATA] Window 20 |   30.3s | +0 {} (total 0)
+[DATA] Window 20 |   40.5s | +0 {} (total 0)
+[DATA] Window 20 |   50.5s | +0 {} (total 0)
+[DATA] Window 20 |   60.7s | +0 {} (total 0)
+[DATA] Window 20 |   70.8s | +0 {} (total 0)
+[DATA] Window 20 |   80.8s | +0 {} (total 0)
+[DATA] Window 20 |   91.0s | +0 {} (total 0)
+[DATA] Window 20 |  101.2s | +0 {} (total 0)
+[DATA] Window 20 |  111.2s | +0 {} (total 0)
+[DATA] Window 20 |  121.3s | +0 {} (total 0)
+[DATA] Window 20 |  131.5s | +0 {} (total 0)
+[DATA] Window 20 |  141.5s | +0 {} (total 0)
+[DATA] Window 20 |  151.7s | +0 {} (total 0)
+[DATA] Window 20 |  161.7s | +0 {} (total 0)
+[DATA] Window 20 |  171.8s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #20 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 21 |   10.2s | +0 {} (total 0)
+[DATA] Window 21 |   20.2s | +0 {} (total 0)
+[DATA] Window 21 |   30.3s | +0 {} (total 0)
+[DATA] Window 21 |   40.5s | +0 {} (total 0)
+[DATA] Window 21 |   50.5s | +0 {} (total 0)
+[DATA] Window 21 |   60.7s | +0 {} (total 0)
+[DATA] Window 21 |   70.8s | +0 {} (total 0)
+[DATA] Window 21 |   80.8s | +0 {} (total 0)
+[DATA] Window 21 |   91.0s | +0 {} (total 0)
+[DATA] Window 21 |  101.0s | +0 {} (total 0)
+[DATA] Window 21 |  111.2s | +0 {} (total 0)
+[DATA] Window 21 |  121.3s | +0 {} (total 0)
+[DATA] Window 21 |  131.5s | +0 {} (total 0)
+[DATA] Window 21 |  141.5s | +0 {} (total 0)
+[DATA] Window 21 |  151.7s | +0 {} (total 0)
+[DATA] Window 21 |  161.7s | +0 {} (total 0)
+[DATA] Window 21 |  171.8s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #21 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 22 |   10.0s | +0 {} (total 0)
+[DATA] Window 22 |   20.2s | +0 {} (total 0)
+[DATA] Window 22 |   30.2s | +0 {} (total 0)
+[DATA] Window 22 |   40.3s | +0 {} (total 0)
+[DATA] Window 22 |   50.3s | +0 {} (total 0)
+[DATA] Window 22 |   60.5s | +0 {} (total 0)
+[DATA] Window 22 |   70.5s | +0 {} (total 0)
+[DATA] Window 22 |   80.7s | +0 {} (total 0)
+[DATA] Window 22 |   90.8s | +0 {} (total 0)
+[DATA] Window 22 |  101.0s | +0 {} (total 0)
+[DATA] Window 22 |  111.0s | +0 {} (total 0)
+[DATA] Window 22 |  121.2s | +0 {} (total 0)
+[DATA] Window 22 |  131.2s | +0 {} (total 0)
+[DATA] Window 22 |  141.3s | +0 {} (total 0)
+[DATA] Window 22 |  151.5s | +0 {} (total 0)
+[DATA] Window 22 |  161.7s | +0 {} (total 0)
+[DATA] Window 22 |  171.7s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #22 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 23 |   10.2s | +0 {} (total 0)
+[DATA] Window 23 |   20.3s | +0 {} (total 0)
+[DATA] Window 23 |   30.5s | +0 {} (total 0)
+[DATA] Window 23 |   40.5s | +0 {} (total 0)
+[DATA] Window 23 |   50.7s | +0 {} (total 0)
+[DATA] Window 23 |   60.8s | +0 {} (total 0)
+[DATA] Window 23 |   70.8s | +0 {} (total 0)
+[DATA] Window 23 |   81.0s | +0 {} (total 0)
+[DATA] Window 23 |   91.2s | +0 {} (total 0)
+[DATA] Window 23 |  101.2s | +0 {} (total 0)
+[DATA] Window 23 |  111.3s | +0 {} (total 0)
+[DATA] Window 23 |  121.5s | +0 {} (total 0)
+[DATA] Window 23 |  131.7s | +0 {} (total 0)
+[DATA] Window 23 |  141.7s | +0 {} (total 0)
+[DATA] Window 23 |  151.8s | +0 {} (total 0)
+[DATA] Window 23 |  161.8s | +0 {} (total 0)
+[DATA] Window 23 |  172.0s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #23 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 24 |   10.2s | +0 {} (total 0)
+[DATA] Window 24 |   20.2s | +0 {} (total 0)
+[DATA] Window 24 |   30.3s | +0 {} (total 0)
+[DATA] Window 24 |   40.3s | +0 {} (total 0)
+[DATA] Window 24 |   50.5s | +0 {} (total 0)
+[DATA] Window 24 |   60.5s | +0 {} (total 0)
+[DATA] Window 24 |   70.7s | +0 {} (total 0)
+[DATA] Window 24 |   80.7s | +0 {} (total 0)
+[DATA] Window 24 |   90.8s | +0 {} (total 0)
+[DATA] Window 24 |  100.8s | +0 {} (total 0)
+[DATA] Window 24 |  110.8s | +0 {} (total 0)
+[DATA] Window 24 |  121.0s | +0 {} (total 0)
+[DATA] Window 24 |  131.2s | +0 {} (total 0)
+[DATA] Window 24 |  141.2s | +0 {} (total 0)
+[DATA] Window 24 |  151.3s | +0 {} (total 0)
+[DATA] Window 24 |  161.3s | +0 {} (total 0)
+[DATA] Window 24 |  171.5s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #24 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 25 |   10.2s | +0 {} (total 0)
+[DATA] Window 25 |   20.2s | +0 {} (total 0)
+[DATA] Window 25 |   30.2s | +0 {} (total 0)
+[DATA] Window 25 |   40.2s | +0 {} (total 0)
+[DATA] Window 25 |   50.3s | +0 {} (total 0)
+[DATA] Window 25 |   60.5s | +0 {} (total 0)
+[DATA] Window 25 |   70.7s | +0 {} (total 0)
+[DATA] Window 25 |   80.7s | +0 {} (total 0)
+[DATA] Window 25 |   90.7s | +0 {} (total 0)
+[DATA] Window 25 |  100.8s | +0 {} (total 0)
+[DATA] Window 25 |  110.8s | +0 {} (total 0)
+[DATA] Window 25 |  121.0s | +0 {} (total 0)
+[DATA] Window 25 |  131.0s | +0 {} (total 0)
+[DATA] Window 25 |  141.0s | +0 {} (total 0)
+[DATA] Window 25 |  151.2s | +0 {} (total 0)
+[DATA] Window 25 |  161.3s | +0 {} (total 0)
+[DATA] Window 25 |  171.3s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #25 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 26 |   10.0s | +0 {} (total 0)
+[DATA] Window 26 |   20.2s | +0 {} (total 0)
+[DATA] Window 26 |   30.3s | +0 {} (total 0)
+[DATA] Window 26 |   40.5s | +0 {} (total 0)
+[DATA] Window 26 |   50.5s | +0 {} (total 0)
+[DATA] Window 26 |   60.7s | +0 {} (total 0)
+[DATA] Window 26 |   70.7s | +0 {} (total 0)
+[DATA] Window 26 |   80.8s | +0 {} (total 0)
+[DATA] Window 26 |   91.0s | +0 {} (total 0)
+[DATA] Window 26 |  101.2s | +0 {} (total 0)
+[DATA] Window 26 |  111.2s | +0 {} (total 0)
+[DATA] Window 26 |  121.3s | +0 {} (total 0)
+[DATA] Window 26 |  131.5s | +0 {} (total 0)
+[DATA] Window 26 |  141.5s | +0 {} (total 0)
+[DATA] Window 26 |  151.7s | +0 {} (total 0)
+[DATA] Window 26 |  161.7s | +0 {} (total 0)
+[DATA] Window 26 |  171.7s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #26 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 27 |   10.0s | +0 {} (total 0)
+[DATA] Window 27 |   20.0s | +0 {} (total 0)
+[DATA] Window 27 |   30.2s | +0 {} (total 0)
+[DATA] Window 27 |   40.2s | +0 {} (total 0)
+[DATA] Window 27 |   50.3s | +0 {} (total 0)
+[DATA] Window 27 |   60.3s | +0 {} (total 0)
+[DATA] Window 27 |   70.5s | +0 {} (total 0)
+[DATA] Window 27 |   80.7s | +0 {} (total 0)
+[DATA] Window 27 |   90.7s | +0 {} (total 0)
+[DATA] Window 27 |  100.7s | +0 {} (total 0)
+[DATA] Window 27 |  110.8s | +0 {} (total 0)
+[DATA] Window 27 |  121.0s | +0 {} (total 0)
+[DATA] Window 27 |  131.2s | +0 {} (total 0)
+[DATA] Window 27 |  141.2s | +0 {} (total 0)
+[DATA] Window 27 |  151.3s | +0 {} (total 0)
+[DATA] Window 27 |  161.3s | +0 {} (total 0)
+[DATA] Window 27 |  171.5s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #27 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 28 |   10.2s | +0 {} (total 0)
+[DATA] Window 28 |   20.3s | +0 {} (total 0)
+[DATA] Window 28 |   30.3s | +0 {} (total 0)
+[DATA] Window 28 |   40.5s | +0 {} (total 0)
+[DATA] Window 28 |   50.7s | +0 {} (total 0)
+[DATA] Window 28 |   60.8s | +0 {} (total 0)
+[DATA] Window 28 |   70.8s | +0 {} (total 0)
+[DATA] Window 28 |   81.0s | +0 {} (total 0)
+[DATA] Window 28 |   91.0s | +0 {} (total 0)
+[DATA] Window 28 |  101.2s | +0 {} (total 0)
+[DATA] Window 28 |  111.2s | +0 {} (total 0)
+[DATA] Window 28 |  121.3s | +0 {} (total 0)
+[DATA] Window 28 |  131.5s | +0 {} (total 0)
+
+Stopping...
+
+Stopping camera...
+Done.

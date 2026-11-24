@@ -1,0 +1,53 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+[mqtt] belt connected to localhost:1883: Success
+[mqtt] arm connected to localhost:1883: Success
+files: riff_logs/autoen_raw_20261027_223116.csv
+       riff_logs/autoen_sets_20261027_223116.csv
+       riff_logs/autoen_cycles_20261027_223116.csv
+       riff_logs/autoen_thresholds_20261027_223116.csv
+settings changed from the web page: {'sets': 1, 'cycles_per_set': 100, 'arm_speed': 8.8, 'carry_speed': 8.8, 'rpm': 30.0, 'offset': 0, 'drop_mode': 'alternate', 'first_drop': 'left', 'gap': 1.0, 'hz': 5.0, 'acc': 150, 'gripper_speed': 1200, 'open_pos': 2490, 'enable_b': 1, 'enable_a': 1, 'grip_fast_to_pos': 2320, 'grip_pos': 2012, 'grip_pos_speed': 400, 'grip_fast_speed': 1800, 'grip_fast_acc': 70, 'grip_fast_timeout': 2.0, 'enable_d': 1, 'grip_hold_preload': 150, 'grip_hold_torque_limit': 150, 'dwell_standby': 0.0, 'dwell_grip': 0.0, 'dwell_drop': 0.0, 'dwell_home': 0.0, 'feed_timeout': 5.0, 'arrive_timeout': 20.0, 'grip_timeout': 12.0, 'clear_timeout': 3.0, 'standby_timeout': 45.0, 'move_timeout': 40.0, 'pose_tol': 40, 'grip_tol': 25, 'hold_tol': 60, 'settle_tol': 100, 'max_fails': 3, 'temp_max': 60.0, 'belt_wdt_ms': 500, 'kp': 4.5, 'ki': 13.5, 'kd': 0.0, 'feeder_home': 180, 'feeder_push': 0, 'feeder_push_ms': 300, 'feeder_return_ms': 300, 'enable_verify': 1, 'grip_contact_min_deg': 150.0, 'grip_contact_max_deg': 181.5, 'grip_carry_min_ma': 0.0, 'grip_slip_max_deg': 2.1, 'enable_recover': 1, 'recover_conv_s': 7.0, 'enable_c': 1, 'arrival_guard': 1, 'arrival_margin_s': 0.5, 'queue_split': 0.5}
+settings changed from the web page: {'sets': 1, 'cycles_per_set': 100, 'arm_speed': 8.8, 'carry_speed': 8.8, 'rpm': 30.0, 'offset': 0, 'drop_mode': 'alternate', 'first_drop': 'left', 'gap': 1.0, 'hz': 5.0, 'acc': 150, 'gripper_speed': 1200, 'open_pos': 2490, 'enable_b': 1, 'enable_a': 1, 'grip_fast_to_pos': 2320, 'grip_pos': 2012, 'grip_pos_speed': 400, 'grip_fast_speed': 1800, 'grip_fast_acc': 70, 'grip_fast_timeout': 2.0, 'enable_d': 1, 'grip_hold_preload': 150, 'grip_hold_torque_limit': 150, 'dwell_standby': 0.0, 'dwell_grip': 0.0, 'dwell_drop': 0.0, 'dwell_home': 0.0, 'feed_timeout': 5.0, 'arrive_timeout': 20.0, 'grip_timeout': 12.0, 'clear_timeout': 3.0, 'standby_timeout': 45.0, 'move_timeout': 40.0, 'pose_tol': 40, 'grip_tol': 25, 'hold_tol': 60, 'settle_tol': 100, 'max_fails': 3, 'temp_max': 60.0, 'belt_wdt_ms': 500, 'kp': 4.5, 'ki': 13.5, 'kd': 0.0, 'feeder_home': 180, 'feeder_push': 0, 'feeder_push_ms': 300, 'feeder_return_ms': 300, 'enable_verify': 1, 'grip_contact_min_deg': 150.0, 'grip_contact_max_deg': 181.5, 'grip_carry_min_ma': 0.0, 'grip_slip_max_deg': 2.1, 'enable_recover': 1, 'recover_conv_s': 7.0, 'enable_c': 1, 'arrival_guard': 1, 'arrival_margin_s': 0.5, 'queue_split': 0.5}
+set 1/1 cycle 1/100  OK 8.1s 
+settings changed from the web page: {'rpm': 20.0, 'arm_speed': 1.5, 'carry_speed': 1.5, 'arrive_timeout': 25.0}
+set 1/1 cycle 2/100  OK 10.8s 
+set 1/1 cycle 3/100  OK 8.9s 
+set 1/1 cycle 4/100  OK 10.9s 
+set 1/1 cycle 5/100  OK 7.8s 
+set 1/1 cycle 6/100  OK 10.9s 
+set 1/1 cycle 7/100  OK 7.6s 
+set 1/1 cycle 8/100  OK 11.4s 
+set 1/1 cycle 9/100  OK 8.1s 
+set 1/1 cycle 10/100  OK 11.3s 
+set 1/1 cycle 11/100  OK 9.2s 
+set 1/1 cycle 12/100  OK 8.9s 
+set 1/1 cycle 13/100  GRIP_MISS 3.6s gripper stopped at 182.1 deg, outside the block window 150-181.5 deg - no block caught | gripper stopped +60t short of grip_pos 2012: holding at 2062 (block wider than taught); recovery: after GRIP_MISS: belt brought the waiting block to the IR
+set 1/1 cycle 14/100  NO_BLOCK_AT_IR 1.8s no block at the IR when GRIP was due - not closing on air | recovery: after NO_BLOCK_AT_IR: belt brought the waiting block to the IR
+set 1/1 cycle 15/100  OK 9.0s 
+set 1/1 cycle 16/100  OK 10.1s 
+set 1/1 cycle 17/100  OK 10.4s 
+set 1/1 cycle 18/100  OK 9.2s 
+set 1/1 cycle 19/100  OK 9.5s 
+set 1/1 cycle 20/100  OK 11.2s 
+set 1/1 cycle 21/100  TIMEOUT_TRANSPORT 35.4s block n+1 did not reach the IR within 25 s | recovery: after TIMEOUT_TRANSPORT: belt brought the waiting block to the IR
+set 1/1 cycle 22/100  OK 8.5s 
+set 1/1 cycle 23/100  OK 8.6s 
+set 1/1 cycle 24/100  OK 10.2s 
+set 1/1 cycle 25/100  OK 8.8s 
+set 1/1 cycle 26/100  OK 9.7s 
+set 1/1 cycle 27/100  OK 9.3s 
+set 1/1 cycle 28/100  OK 9.4s 
+set 1/1 cycle 29/100  OK 8.6s 
+set 1/1 cycle 30/100  OK 7.9s 
+set 1/1 cycle 31/100  OK 7.9s 
+set 1/1 cycle 32/100  OK 8.1s 
+set 1/1 cycle 33/100  OK 7.7s 
+set 1/1 cycle 34/100  OK 9.8s 
+set 1/1 cycle 35/100  OK 10.4s 
+set 1/1 cycle 36/100  GRIP_MISS 3.6s gripper stopped at 184.2 deg, outside the block window 150-181.5 deg - no block caught | gripper stopped +84t short of grip_pos 2012: holding at 2086 (block wider than taught); recovery: after GRIP_MISS: block already at the IR
+Set 1 (22:31:17-22:41:40): J1: temp max 35C, current avg 7 / peak 247 mA; J2: temp max 35C, current avg 8 / peak 266 mA; J3: temp max 36C, current avg 14 / peak 214 mA; J4: temp max 35C, current avg 3 / peak 32 mA; J5: temp max 40C, current avg 5 / peak 240 mA; J6: temp max 37C, current avg 8 / peak 416 mA; Belt: temp max 27C, current avg 36 / peak 370 mA; ARM TOTAL: servo volt min 11.1 V, summed current avg 45 / peak 533 mA
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+stopped: stopped by the operator  (unparsable RX lines: 0)

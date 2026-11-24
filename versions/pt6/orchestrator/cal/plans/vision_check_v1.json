@@ -1,0 +1,12 @@
+{
+ "name": "vision_check_v1",
+ "_doc": "Step 3 (2026-10-25): vision ON, after the arm repair + gripper re-cal 176.8 deg. Checks u_IR / ETA error at real rpm, the vision lag (ts_frame) and the arm INA260, and re-checks the cycle-time model. arrive_timeout ~2.6x the median feed->IR time of exp_20261025_005038 (20 rpm 8.8 s, 15 rpm 11.5 s). Watch block 1 for grip misses.",
+ "seed": 20261025,
+ "order": "as_listed",
+ "repeats": 1,
+ "defaults": {"n_cycles": 12},
+ "configs": [
+  {"label": "r20_a1.5", "rpm": 20, "arm_speed": 1.5, "carry_speed": 1.5, "set": {"arrive_timeout": 25}},
+  {"label": "r15_a1.5", "rpm": 15, "arm_speed": 1.5, "carry_speed": 1.5, "set": {"arrive_timeout": 30}}
+ ]
+}

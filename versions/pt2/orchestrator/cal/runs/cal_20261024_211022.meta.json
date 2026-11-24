@@ -1,0 +1,31 @@
+{
+ "run_id": "cal_20261024_211022",
+ "kind": "cal",
+ "start": "2026-10-24T21:10:22",
+ "end": "2026-10-24T21:10:22",
+ "status": "error",
+ "rpm_units": "output_rpm_cpr11880",
+ "operator_note": "",
+ "cube_set": "none (empty belt)",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "01ce1ea10ea4ffb846b15ceea0c0b02b7547b5d41aed269551ad156bb5961aa6",
+  "mtime": "2026-10-24T21:03:59"
+ },
+ "experiment_sha256": "ec0a8ef556d504dcd305e3a2aa80971fa616813d7387cceed67742280fe9358c",
+ "config_snapshots": [],
+ "tasks": [],
+ "blocks": [],
+ "rpms": [
+  5.0,
+  8.0,
+  11.1,
+  15.0,
+  20.0,
+  25.0
+ ],
+ "seconds": 30.0,
+ "belt_ref_file": "/home/mekkhram/Desktop/PRISM/orchestrator/cal/belt_ref.json",
+ "error": "autoen status is 'paused' (): restart auto_en_new.py for a fresh run",
+ "belt_ref_after": {}
+}

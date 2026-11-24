@@ -1,0 +1,141 @@
+{
+ "run_id": "beltpwr_20261025_161820",
+ "kind": "belt_power",
+ "start": "2026-10-25T16:18:20",
+ "end": "2026-10-25T16:22:21",
+ "status": "quit",
+ "rpm_units": "output_rpm_cpr11880",
+ "operator_note": "belt only, arm broken",
+ "cube_set": "none (empty belt)",
+ "power_formula": "W = |belt INA260 mA| x belt INA260 bus mV / 1e6 (belt motor supply), as autoen belt_run",
+ "plan": {
+  "path": "/home/mekkhram/Desktop/PRISM/orchestrator/cal/plans/belt_power_v1.json",
+  "sha256": "a6cf0b60b829a8a7fc32766268afb7ffd61603118c2d85cfa3cd11ad5bc04f7d",
+  "seconds": 70.0,
+  "settle_s": 10.0
+ },
+ "script_sha256": "7759f8c00aad18bfae58761b0ead4db33ab948d172c047df407b72833a019444",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "2331163618d6ef6c9d2fbe05b403008786a88c731c7b45608871148d7bde780c",
+  "used_for": "Link + belt defaults"
+ },
+ "belt_settings_sent": [
+  "CPR,11880",
+  "TEMPMAX,60",
+  "PID,4.5,13.5,0",
+  "WDT,500"
+ ],
+ "arm": "not used (autoen not running; servos not commanded)",
+ "steps": [
+  {
+   "step": 1,
+   "round": 1,
+   "rpm_set": 0.0,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:19:00",
+   "end": "2026-10-25T16:20:10",
+   "status": "done",
+   "abort_reason": null,
+   "stats": {
+    "rpm": {
+     "n": 584,
+     "mean": 0.0,
+     "std": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "mA": {
+     "n": 584,
+     "mean": 0.0137,
+     "std": 0.1162,
+     "min": 0.0,
+     "max": 1.0
+    },
+    "mV": {
+     "n": 584,
+     "mean": 12180.0856,
+     "std": 0.4677,
+     "min": 12179.0,
+     "max": 12181.0
+    },
+    "W": {
+     "n": 584,
+     "mean": 0.0002,
+     "std": 0.0014,
+     "min": 0.0,
+     "max": 0.0122
+    },
+    "pwm": {
+     "n": 584,
+     "mean": 0.0,
+     "std": 0.0,
+     "min": 0,
+     "max": 0
+    },
+    "W_first_half_mean": 0.0003,
+    "W_second_half_mean": 0.0001,
+    "n_settle_skipped": 96
+   }
+  },
+  {
+   "step": 2,
+   "round": 1,
+   "rpm_set": 15.0,
+   "seconds": 70.0,
+   "settle_s": 10.0,
+   "start": "2026-10-25T16:20:23",
+   "end": "2026-10-25T16:20:23",
+   "status": "aborted",
+   "abort_reason": "FAULT_3",
+   "stats": {
+    "rpm": {
+     "n": 0,
+     "mean": null,
+     "std": null,
+     "min": null,
+     "max": null
+    },
+    "mA": {
+     "n": 0,
+     "mean": null,
+     "std": null,
+     "min": null,
+     "max": null
+    },
+    "mV": {
+     "n": 0,
+     "mean": null,
+     "std": null,
+     "min": null,
+     "max": null
+    },
+    "W": {
+     "n": 0,
+     "mean": null,
+     "std": null,
+     "min": null,
+     "max": null
+    },
+    "pwm": {
+     "n": 0,
+     "mean": null,
+     "std": null,
+     "min": null,
+     "max": null
+    },
+    "W_first_half_mean": null,
+    "W_second_half_mean": null,
+    "n_settle_skipped": 1
+   }
+  }
+ ],
+ "mega_boot_lines": [
+  "S,4,-1,-1",
+  "S,5,-1,-1",
+  "S,6,-1,-1",
+  "R,0",
+  "BOOT_DONE"
+ ]
+}

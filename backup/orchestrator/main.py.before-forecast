@@ -1,0 +1,69 @@
+# main.py - the orchestrator: one process, one tick loop (PRISM, Raspberry Pi 4).
+#   observe (MQTT -> WorldState) -> predict (cube Kalman) -> optimize (Plan) -> actuate (autoen HTTP + MQTT)
+#
+# USAGE  (orch-env, from orchestrator/)
+#   python3 main.py --shadow                 compute + log plans, send NOTHING to autoen (Phase D step 1)
+#   python3 main.py                          optimizer in control (operator watching, Ctrl+C ready)
+#   python3 main.py --objective energy       fewest J per cube instead of most cubes per minute
+#   python3 main.py --probe-s 120            when IDLE, try one feed every 120 s (default: wait for the operator)
+#
+# autoen must already be started by the operator (arm awake, Start pressed, pause_before_set = 0).
+# Operator commands while it runs:  mosquitto_pub -t orchestrator/cmd -m resume   (or park / wake)
+# Ctrl+C stops the orchestrator only: autoen keeps whatever state it has (running or paused).
+import argparse
+import signal
+import sys
+import time
+
+from actuate import Actuate
+from observe import Observe
+from optimize import Optimize
+from predict import Predict
+
+TICK_S = 0.05  # 20 Hz control tick
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="PRISM orchestrator: observe -> predict -> optimize -> actuate")
+    ap.add_argument("--shadow", action="store_true", help="compute and log plans, send nothing to autoen")
+    ap.add_argument("--objective", choices=("throughput", "energy", "balanced"), default="throughput")
+    ap.add_argument("--lam", type=float, default=0.5, help="balanced: J per second of cycle time")
+    ap.add_argument("--j-limit", type=float, default=None, help="only configs with at most this many J per cube")
+    ap.add_argument("--probe-s", type=float, default=None, help="IDLE: resume to try a feed after this many seconds")
+    ap.add_argument("--no-brake", action="store_true", help="IDLE: leave the belt coasting (the brake saves ~0.05 W)")
+    ap.add_argument("--max-s", type=float, default=None, help="stop after this many seconds (tests)")
+    a = ap.parse_args(argv)
+
+    optimize = Optimize(objective=a.objective, lam=a.lam, j_limit=a.j_limit, probe_s=a.probe_s)
+    for w in optimize.warnings:
+        print("WARNING:", w, flush=True)
+    observe = Observe()                # owns the MQTT client and the cube state store
+    predict = Predict()                # owns the Kalman filter(s)
+    actuate = Actuate(shadow=a.shadow, idle_brake=not a.no_brake)
+    print(f"orchestrator {'SHADOW (sends nothing)' if a.shadow else 'LIVE'}  objective={a.objective}  "
+          f"log={actuate.log_path}", flush=True)
+
+    stop = {"now": False}
+    signal.signal(signal.SIGTERM, lambda *_: stop.update(now=True))
+    t_start = time.monotonic()
+    try:
+        while not stop["now"] and (a.max_s is None or time.monotonic() - t_start < a.max_s):
+            t0 = time.monotonic()
+
+            state = observe.step()                                      # 1. drain inbound messages, snapshot
+            pred = predict.step(state)                                  # 2. forecast cube positions
+            plan = optimize.step(state, pred, actuate.view(), actuate.commands())   # 3. mode + settings
+            actuate.step(plan)                                          # 4. send at the boundary, publish
+
+            time.sleep(max(0.0, TICK_S - (time.monotonic() - t0)))
+    except KeyboardInterrupt:
+        pass
+    finally:
+        print("stopping: autoen is left as it is", flush=True)
+        actuate.stop()
+        observe.shutdown()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

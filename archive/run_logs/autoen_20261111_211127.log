@@ -1,0 +1,77 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+[mqtt] arm connected to localhost:1883: Success
+[mqtt] belt connected to localhost:1883: Success
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261111_211134.csv
+       riff_logs/autoen_sets_20261111_211134.csv
+       riff_logs/autoen_cycles_20261111_211134.csv
+       riff_logs/autoen_thresholds_20261111_211134.csv
+settings changed from the web page: {'rpm': 6.7, 'arm_speed': 1.0, 'carry_speed': 1.0, 'arrive_timeout': 20.0}
+settings changed from the web page: {'rpm': 20.0, 'arm_speed': 1.5, 'carry_speed': 1.5, 'arrive_timeout': 25.0, 'max_fails': 8, 'sets': 1000, 'cycles_per_set': 1000}
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 1/1000  OK 18.7s 
+set 1/1000 cycle 2/1000  OK 19.4s 
+set 1/1000 cycle 3/1000  OK 19.3s DRIFT J4 -79t in phase IDLE
+set 1/1000 cycle 4/1000  TIMEOUT_TRANSPORT 25.9s block did not reach the IR within 25 s | DRIFT J4 -71t in phase IDLE
+set 1/1000 cycle 5/1000  OK 18.5s 
+set 1/1000 cycle 6/1000  TIMEOUT_TRANSPORT 25.9s block did not reach the IR within 25 s
+set 1/1000 cycle 7/1000  OK 19.2s 
+set 1/1000 cycle 8/1000  TIMEOUT_TRANSPORT 25.9s block did not reach the IR within 25 s
+set 1/1000 cycle 9/1000  NO_BLOCK 1.1s transport aborted: no block on the camera after FEED
+set 1/1000 cycle 10/1000  NO_BLOCK 1.7s transport aborted: no block on the camera after FEED
+set 1/1000 cycle 11/1000  OK 18.4s 
+set 1/1000 cycle 12/1000  NO_BLOCK 1.6s transport aborted: no block on the camera after FEED
+set 1/1000 cycle 13/1000  NO_BLOCK 1.0s transport aborted: no block on the camera after FEED
+set 1/1000 cycle 14/1000  NO_BLOCK 1.1s transport aborted: no block on the camera after FEED
+set 1/1000 cycle 15/1000  OK 18.6s 
+set 1/1000 cycle 16/1000  NO_BLOCK 1.7s transport aborted: no block on the camera after FEED
+set 1/1000 cycle 17/1000  NO_BLOCK 1.6s transport aborted: no block on the camera after FEED
+set 1/1000 cycle 18/1000  OK 18.7s 
+set 1/1000 cycle 19/1000  NO_BLOCK 1.6s transport aborted: no block on the camera after FEED
+set 1/1000 cycle 20/1000  NO_BLOCK 1.1s transport aborted: no block on the camera after FEED
+set 1/1000 cycle 21/1000  NO_BLOCK 1.3s transport aborted: no block on the camera after FEED
+set 1/1000 cycle 22/1000  TIMEOUT_TRANSPORT 26.0s block did not reach the IR within 25 s | DRIFT J1 -61t in phase TRANSPORT; DRIFT J5 -75t in phase TRANSPORT
+set 1/1000 cycle 23/1000  OK 18.3s 
+set 1/1000 cycle 24/1000  OK 18.5s 
+set 1/1000 cycle 25/1000  OK 18.2s 
+set 1/1000 cycle 26/1000  OK 18.5s 
+set 1/1000 cycle 27/1000  TIMEOUT_TRANSPORT 26.0s block did not reach the IR within 25 s
+set 1/1000 cycle 28/1000  TIMEOUT_TRANSPORT 26.0s block did not reach the IR within 25 s
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 2055, in run
+    # put arm + belt back to "open at Standby, block at the IR" (need_prepare: the prepare
+^^^^^^^^^^^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 1727, in wait_if_paused
+    self.rest_state = "resting_torque_off"
+    ^^^^^^^^^^^^^^^
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/mekkhram/autoen-env/lib/python3.11/site-packages/serial/serialposix.py", line 621, in write
+    n = os.write(self.fd, d)
+        ^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 5] Input/output error
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 2741, in <module>
+    print(f"boot banner seen: {link.boot_seen}")
+                     ^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 2721, in main
+    # arm's busiest moves; --enable-b 0 keeps the exact firmware default (500), unchanged.
+    ^^^^^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 2071, in run
+    self.phase_times[self._phase] = self.phase_times.get(self._phase, 0.0) + now_t - self._phase_t0
+^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py", line 185, in write
+    self.ser.write((line + "\n").encode("ascii"))
+  File "/home/mekkhram/autoen-env/lib/python3.11/site-packages/serial/serialposix.py", line 655, in write
+    raise SerialException('write failed: {}'.format(e))
+serial.serialutil.SerialException: write failed: [Errno 5] Input/output error

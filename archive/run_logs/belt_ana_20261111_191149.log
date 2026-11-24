@@ -1,0 +1,134 @@
+[belt-analyzer] up. broker localhost:1883, db belt_analyzer.db, thresholds built-in defaults (run --write-thresholds to edit them). Ctrl+C to stop.
+[belt-analyzer] connected to broker: Success
+[19:11:57] NO_DATA  -> STOPPED   (not moving)
+[19:12:01] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[19:12:11] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[19:12:21] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[19:12:31] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[19:12:41] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[19:12:51] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[19:13:01] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/0  levels={'current': 'OK', 'temp': 'OK'}
+[19:13:05] STOPPED  -> STARTING  (REVERSE, 8 rpm and rising)
+[19:13:07] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[19:13:08] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[19:13:09] STOPPING -> STOPPED   (not moving)
+[19:13:09] RUN ANOMALY 3.45 s, 0.886 rev, steady 122.9 mA @ 19.3 rpm  reverse
+[19:13:11] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/1  levels={'current': 'OK', 'temp': 'OK'}
+[19:13:19] STOPPED  -> STARTING  (REVERSE, 6 rpm and rising)
+[19:13:20] STARTING -> STOPPED   (not moving)  UNEXPECTED
+[19:13:20] RUN PARTIAL 0.69 s, 0.042 rev, steady None mA @ None rpm  STARTING->STOPPED
+[19:13:21] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/2  levels={'current': 'OK', 'temp': 'OK'}
+[19:13:22] STOPPED  -> STARTING  (REVERSE, 9 rpm and rising)
+[19:13:23] STARTING -> STOPPED   (not moving)  UNEXPECTED
+[19:13:23] RUN PARTIAL 0.85 s, 0.053 rev, steady None mA @ None rpm  STARTING->STOPPED, reverse
+[19:13:24] STOPPED  -> STARTING  (REVERSE, 6 rpm and rising)
+[19:13:25] STARTING -> STOPPED   (not moving)  UNEXPECTED
+[19:13:25] RUN PARTIAL 1.14 s, 0.136 rev, steady None mA @ None rpm  STARTING->STOPPED, reverse
+[19:13:31] state=STOPPED  broker=up  belt/telemetry=0.2 s ago  runs_ok=0/4  levels={'current': 'OK', 'temp': 'OK'}
+[19:13:40] STOPPED  -> STARTING  (REVERSE, 12 rpm and rising)
+[19:13:41] state=STARTING  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/4  levels={'current': 'OK', 'temp': 'OK'}
+[19:13:41] STARTING -> RUNNING   (REVERSE, 19 rpm)
+[19:13:42] RUNNING  -> STOPPING  (REVERSE, 1 rpm and falling)
+[19:13:42] STOPPING -> STOPPED   (not moving)
+[19:13:42] RUN ANOMALY 2.4 s, 0.496 rev, steady 40.0 mA @ 15.3 rpm  reverse
+[19:13:51] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/5  levels={'current': 'OK', 'temp': 'OK'}
+[19:13:52] STOPPED  -> STARTING  (REVERSE, 3 rpm and rising)
+[19:13:53] STARTING -> STOPPED   (not moving)  UNEXPECTED
+[19:13:53] RUN PARTIAL 0.7 s, 0.035 rev, steady None mA @ None rpm  STARTING->STOPPED
+[19:13:55] STOPPED  -> STARTING  (REVERSE, 12 rpm and rising)
+[19:13:56] STARTING -> RUNNING   (REVERSE, 12 rpm)
+[19:13:56] RUNNING  -> STOPPING  (REVERSE, 2 rpm and falling)
+[19:13:56] STOPPING -> STOPPED   (not moving)
+[19:13:56] RUN ANOMALY 1.41 s, 0.232 rev, steady None mA @ None rpm  reverse
+[19:14:01] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:14:11] state=STOPPED  broker=up  belt/telemetry=0.2 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:14:21] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:14:31] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:14:41] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:14:51] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:15:01] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:15:11] state=STOPPED  broker=up  belt/telemetry=0.2 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:15:21] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:15:31] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:15:41] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:15:51] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:16:01] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:16:11] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:16:21] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:16:31] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:16:41] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:16:52] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:17:02] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:17:12] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:17:22] state=STOPPED  broker=up  belt/telemetry=0.2 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:17:32] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:17:42] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:17:52] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:18:02] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:18:12] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:18:22] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:18:32] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:18:42] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:18:52] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:19:02] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:19:12] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:19:22] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:19:32] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:19:42] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:19:52] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:20:02] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:20:12] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:20:22] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:20:32] state=STOPPED  broker=up  belt/telemetry=0.2 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:20:42] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:20:52] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:21:02] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:21:12] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:21:22] state=STOPPED  broker=up  belt/telemetry=0.2 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:21:32] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:21:42] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:21:52] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:22:02] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:22:12] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:22:22] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:22:32] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:22:42] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:22:52] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:23:02] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:23:12] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:23:23] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:23:33] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:23:43] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:23:53] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:24:03] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:24:13] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:24:23] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:24:33] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:24:43] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:24:53] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:25:03] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:25:13] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:25:23] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:25:33] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:25:43] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:25:53] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:26:03] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:26:13] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:26:23] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:26:33] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:26:43] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:26:53] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:27:03] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:27:13] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:27:23] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:27:33] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:27:43] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:27:53] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:28:03] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:28:13] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:28:23] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:28:33] state=STOPPED  broker=up  belt/telemetry=0.1 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+[19:28:43] state=STOPPED  broker=up  belt/telemetry=0.0 s ago  runs_ok=0/7  levels={'current': 'OK', 'temp': 'OK'}
+
+[belt-analyzer] stopping
+[belt-analyzer] lost the broker

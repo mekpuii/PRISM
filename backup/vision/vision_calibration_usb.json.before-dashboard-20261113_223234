@@ -1,0 +1,128 @@
+{
+ "size": [
+  854,
+  480
+ ],
+ "roi": [
+  [
+   49,
+   230
+  ],
+  [
+   819,
+   230
+  ],
+  [
+   819,
+   295
+  ],
+  [
+   49,
+   295
+  ]
+ ],
+ "line": null,
+ "colors": {
+  "white": [
+   [
+    [
+     0,
+     0,
+     208
+    ],
+    [
+     179,
+     35,
+     255
+    ]
+   ]
+  ],
+  "orange": [
+   [
+    [
+     2,
+     156,
+     180
+    ],
+    [
+     10,
+     255,
+     255
+    ]
+   ]
+  ]
+ },
+ "enabled": [
+  "white",
+  "orange"
+ ],
+ "belt": {
+  "axis": "u",
+  "dir": 1
+ },
+ "belt_v": 62.0,
+ "saved_by": {
+  "by": "dashboard",
+  "at": "2026-11-13T22:32:22"
+ },
+ "shape": {
+  "min_h": 38.0,
+  "min_area": 1700.0,
+  "exit_zone_u": 160.0,
+  "exit_min_area": 900.0,
+  "aspect_lo": 0.4,
+  "aspect_hi": 3.0,
+  "fill": 0.55
+ },
+ "camera": {
+  "brightness": -7,
+  "contrast": 6,
+  "saturation": 30,
+  "hue": 0,
+  "white_balance_automatic": 1,
+  "gamma": 7,
+  "power_line_frequency": 0,
+  "white_balance_temperature": 6500,
+  "sharpness": 3,
+  "backlight_compensation": 1,
+  "auto_exposure": 3,
+  "exposure_time_absolute": 18,
+  "exposure_dynamic_framerate": 1,
+  "focus_absolute": 1,
+  "focus_automatic_continuous": 1
+ },
+ "samples": {
+  "white": [
+   [
+    26,
+    16,
+    232
+   ],
+   [
+    19,
+    23,
+    234
+   ],
+   [
+    43,
+    15,
+    241
+   ],
+   [
+    30,
+    2,
+    226
+   ],
+   [
+    26,
+    22,
+    232
+   ],
+   [
+    42,
+    6,
+    228
+   ]
+  ]
+ }
+}

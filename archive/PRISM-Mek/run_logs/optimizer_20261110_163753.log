@@ -1,0 +1,21 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261110_163759.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] OFF    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - autoen running
+[plan 5] RUN    20 rpm / arm 1.5  - autoen running
+[plan 6] IDLE   20 rpm / arm 1.5  action=idle  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 7] IDLE   20 rpm / arm 1.5  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 8] IDLE   20 rpm / arm 1.5  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 9] IDLE   20 rpm / arm 1.5  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 10] RUN    20 rpm / arm 1.5  - autoen running again
+[plan 11] IDLE   20 rpm / arm 1.5  action=idle  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 12] IDLE   20 rpm / arm 1.5  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 13] RUN    20 rpm / arm 1.5  - autoen running again
+[plan 14] IDLE   20 rpm / arm 1.5  action=idle  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 15] IDLE   20 rpm / arm 1.5  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 16] OFF    20 rpm / arm 1.5  - autoen stopped
+[plan 17] OFF    20 rpm / arm 1.5  - autoen not reachable
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

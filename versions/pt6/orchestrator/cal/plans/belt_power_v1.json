@@ -1,0 +1,18 @@
+{
+ "_doc": "Step 3 only: empty-belt power at 0, 8, 11.1, 15, 20 rpm (no 25). experiment.py has no plan mode for baseline, so each step is ONE 'baseline' command = one new session (meta has rpm_units output_rpm_cpr11880). 0 rpm = '--kind idle' (belt_run accepts only 0.5..37 rpm); the belt stays braked and its INA260 is still logged. 70 s per step: 10 s settle (not counted) + 60 s counted. 2 rounds, alternating order, round 2 reversed. The operator presses Enter before every step. Created 2026-10-25.",
+ "rpm_units": "output_rpm_cpr11880",
+ "seconds": 70,
+ "settle_s": 10,
+ "steps": [
+  {"step": 1,  "round": 1, "rpm": 0},
+  {"step": 2,  "round": 1, "rpm": 15},
+  {"step": 3,  "round": 1, "rpm": 8},
+  {"step": 4,  "round": 1, "rpm": 20},
+  {"step": 5,  "round": 1, "rpm": 11.1},
+  {"step": 6,  "round": 2, "rpm": 11.1},
+  {"step": 7,  "round": 2, "rpm": 20},
+  {"step": 8,  "round": 2, "rpm": 8},
+  {"step": 9,  "round": 2, "rpm": 15},
+  {"step": 10, "round": 2, "rpm": 0}
+ ]
+}

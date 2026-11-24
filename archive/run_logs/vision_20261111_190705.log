@@ -1,0 +1,31 @@
+=================================================================
+DELTA - Raspberry Pi 4 Object Perception + Spacing + Demand Collection
+=================================================================
+Mode: HSV color detection + USB camera (no depth) + Kalman
+Colours (priority order): white, orange
+Belt axis: u   direction: +1
+Camera streams: 640x480 at 6 FPS
+Demand window: 180 seconds
+Data sample interval: 10 seconds
+History file: delta_demand_history.csv
+Summary file: delta_3min_summary.csv
+Press ESC or Q to exit.
+=================================================================
+
+Starting USB camera /dev/v4l/by-id/usb-H264_USB_Camera_H264_USB_Camera_2020032801-video-index0 at 640x480, 6 FPS (camera 15 FPS, MJPG)...
+[ WARN:0@0.680] global cap.cpp:212 open VIDEOIO(V4L2): backend is generally available but can't be used to capture by name
+
+ERROR: the USB camera did not deliver frames.
+Details: cannot open /dev/v4l/by-id/usb-H264_USB_Camera_H264_USB_Camera_2020032801-video-index0 (in use by another program?)
+
+Check that the camera is plugged in and that no other program (ffplay, VLC, another vision node) has it open, then try again.
+Traceback (most recent call last):
+  File "/home/mekkhram/Desktop/PRISM/vision/vision_usb.py", line 1898, in main
+    pipeline = start_camera()
+               ^^^^^^^^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/vision/vision_usb.py", line 1761, in start_camera
+    camera = UsbCamera(device)
+             ^^^^^^^^^^^^^^^^^
+  File "/home/mekkhram/Desktop/PRISM/vision/vision_usb.py", line 1677, in __init__
+    raise RuntimeError(f"cannot open {device} (in use by another program?)")
+RuntimeError: cannot open /dev/v4l/by-id/usb-H264_USB_Camera_H264_USB_Camera_2020032801-video-index0 (in use by another program?)

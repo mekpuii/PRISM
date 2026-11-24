@@ -1,0 +1,196 @@
+21:11:01.338 ## cycle 0 phase PREPARE
+21:11:01.339 TX X,CPR,11880
+21:11:01.349 TX X,TEMPMAX,60
+21:11:01.359 TX X,OFFSET,0
+21:11:01.370 TX X,FEEDCFG,170,0,400,400
+21:11:01.380 TX X,PID,4.5,13.5,0
+21:11:01.390 TX X,WDT,500
+21:11:01.402 TX X,ZERO
+21:11:01.412 TX X,VER
+21:11:01.423 RX X,VER,Oct 23 2026 19:20:39,enc=1,ina=1,temp=1,hz=10000,home=170,on=1111
+21:11:01.424 TX P,6,2445,1200,8
+21:11:01.434 TX P,1,2069,360,8
+21:11:01.444 TX P,2,1478,360,8
+21:11:01.455 TX P,3,2172,360,8
+21:11:01.465 TX P,4,3190,360,8
+21:11:01.475 TX P,5,1230,360,8
+21:11:01.496 TX H,1
+21:11:01.506 TX H,2
+21:11:01.516 TX H,3
+21:11:01.527 TX H,4
+21:11:01.537 TX H,5
+21:11:55.112 ## cycle 0 phase TASK_BELT_RUN
+21:11:55.115 ## task 1 belt_run {"seconds": 30.0, "rpm": 5.0}
+21:11:55.128 TX X,CONV,5.00
+21:12:25.153 TX X,BRAKE
+21:12:25.158 ## cycle 0 phase IDLE
+21:12:25.169 ## task 1 done {"belt_rpm": {"n": 251, "mean": 4.992, "std": 0.063}, "belt_mA": {"n": 251, "mean": 28.219, "std": 2.432}, "belt_W": {"n": 251, "mean": 0.344, "std": 0.03}, "arm_mA": {"n": 130, "mean": 8.95, "std": 4.435}, "arm_W": {"n": 130, "mean": 0.109, "std": 0.054}}
+21:12:30.186 ## cycle 0 phase TASK_BELT_RUN
+21:12:30.187 ## task 2 belt_run {"seconds": 30.0, "rpm": 8.0}
+21:12:30.187 TX X,CONV,8.00
+21:13:00.226 TX X,BRAKE
+21:13:00.230 ## cycle 0 phase IDLE
+21:13:00.234 ## task 2 done {"belt_rpm": {"n": 252, "mean": 7.996, "std": 0.058}, "belt_mA": {"n": 252, "mean": 41.373, "std": 2.021}, "belt_W": {"n": 252, "mean": 0.505, "std": 0.025}, "arm_mA": {"n": 130, "mean": 9.7, "std": 5.715}, "arm_W": {"n": 130, "mean": 0.118, "std": 0.07}}
+21:13:02.540 ## cycle 0 phase TASK_BELT_RUN
+21:13:02.541 ## task 3 belt_run {"seconds": 30.0, "rpm": 11.1}
+21:13:02.541 TX X,CONV,11.10
+21:13:32.609 TX X,BRAKE
+21:13:32.612 ## cycle 0 phase IDLE
+21:13:32.619 ## task 3 done {"belt_rpm": {"n": 249, "mean": 11.101, "std": 0.063}, "belt_mA": {"n": 249, "mean": 57.193, "std": 2.41}, "belt_W": {"n": 249, "mean": 0.697, "std": 0.029}, "arm_mA": {"n": 133, "mean": 9.286, "std": 4.387}, "arm_W": {"n": 133, "mean": 0.113, "std": 0.053}}
+21:13:35.225 ## cycle 0 phase TASK_BELT_RUN
+21:13:35.225 ## task 4 belt_run {"seconds": 30.0, "rpm": 15.0}
+21:13:35.245 TX X,CONV,15.00
+21:14:05.277 TX X,BRAKE
+21:14:05.283 ## cycle 0 phase IDLE
+21:14:05.287 ## task 4 done {"belt_rpm": {"n": 250, "mean": 15.001, "std": 0.078}, "belt_mA": {"n": 250, "mean": 79.496, "std": 3.192}, "belt_W": {"n": 250, "mean": 0.969, "std": 0.039}, "arm_mA": {"n": 130, "mean": 8.95, "std": 5.364}, "arm_W": {"n": 130, "mean": 0.109, "std": 0.065}}
+21:14:09.197 ## cycle 0 phase TASK_BELT_RUN
+21:14:09.197 ## task 5 belt_run {"seconds": 30.0, "rpm": 20.0}
+21:14:09.223 TX X,CONV,20.00
+21:14:39.247 TX X,BRAKE
+21:14:39.252 ## cycle 0 phase IDLE
+21:14:39.259 ## task 5 done {"belt_rpm": {"n": 258, "mean": 19.999, "std": 0.099}, "belt_mA": {"n": 258, "mean": 109.202, "std": 4.199}, "belt_W": {"n": 258, "mean": 1.331, "std": 0.051}, "arm_mA": {"n": 131, "mean": 8.634, "std": 4.283}, "arm_W": {"n": 131, "mean": 0.105, "std": 0.052}}
+21:14:57.799 ## cycle 0 phase TASK_BELT_RUN
+21:14:57.799 ## task 6 belt_run {"seconds": 30.0, "rpm": 25.0}
+21:14:57.800 TX X,CONV,25.00
+21:15:27.822 TX X,BRAKE
+21:15:27.826 ## cycle 0 phase IDLE
+21:15:27.830 ## task 6 done {"belt_rpm": {"n": 259, "mean": 25.003, "std": 0.103}, "belt_mA": {"n": 259, "mean": 141.463, "std": 5.405}, "belt_W": {"n": 259, "mean": 1.724, "std": 0.066}, "arm_mA": {"n": 135, "mean": 9.148, "std": 4.133}, "arm_W": {"n": 135, "mean": 0.111, "std": 0.05}}
+21:31:04.700 ## RX GAP 0.33s - the Mega sent nothing (its loop was blocked?)
+21:31:05.043 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:05.358 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:05.671 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:06.018 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:06.328 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:06.642 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:06.988 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:07.303 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:07.611 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:07.957 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:08.269 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:08.582 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:08.926 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:09.240 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:09.550 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:09.897 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:10.207 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:10.521 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:10.866 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:11.180 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:11.490 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:11.837 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:12.148 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:12.459 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:12.803 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:13.320 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:13.870 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:14.387 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:14.937 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:31:15.454 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:16.004 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:31:18.066 ## RX GAP 0.33s - the Mega sent nothing (its loop was blocked?)
+21:32:36.537 ## RX GAP 0.33s - the Mega sent nothing (its loop was blocked?)
+21:32:36.848 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:32:37.161 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+21:32:37.508 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:34:10.014 ## RX GAP 0.34s - the Mega sent nothing (its loop was blocked?)
+21:34:10.413 ## RX GAP 0.36s - the Mega sent nothing (its loop was blocked?)
+21:34:26.063 ## DRIFT J1 -1501t in phase IDLE
+21:34:26.064 TX P,1,2069,360,8
+21:34:26.643 ## RX GAP 0.65s - the Mega sent nothing (its loop was blocked?)
+21:34:27.066 TX P,1,2069,360,8
+21:34:27.166 ## DRIFT J3 -1604t in phase IDLE
+21:34:27.167 TX P,3,2172,360,8
+21:34:27.762 ## RX GAP 0.65s - the Mega sent nothing (its loop was blocked?)
+21:34:28.169 TX P,3,2172,360,8
+21:34:28.369 ## DRIFT J5 -662t in phase IDLE
+21:34:28.369 TX P,5,1230,360,8
+21:34:28.941 ## RX GAP 0.65s - the Mega sent nothing (its loop was blocked?)
+21:34:29.373 TX P,5,1230,360,8
+21:34:29.473 TX P,1,2069,360,8
+21:34:30.062 ## RX GAP 0.65s - the Mega sent nothing (its loop was blocked?)
+21:34:30.480 TX P,1,2069,360,8
+21:34:30.740 ## RX GAP 0.64s - the Mega sent nothing (its loop was blocked?)
+21:34:31.400 ## RX GAP 0.65s - the Mega sent nothing (its loop was blocked?)
+21:34:32.078 ## RX GAP 0.64s - the Mega sent nothing (its loop was blocked?)
+21:34:32.739 ## RX GAP 0.65s - the Mega sent nothing (its loop was blocked?)
+21:34:33.417 ## RX GAP 0.64s - the Mega sent nothing (its loop was blocked?)
+21:34:34.077 ## RX GAP 0.65s - the Mega sent nothing (its loop was blocked?)
+21:34:34.079 RX X,ERR,unknown_cmd
+21:34:34.775 ## RX GAP 0.66s - the Mega sent nothing (its loop was blocked?)
+21:34:35.396 ## RX GAP 0.36s - the Mega sent nothing (its loop was blocked?)
+21:34:35.715 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+21:34:35.989 ## DRIFT J2 -910t in phase IDLE
+21:34:35.990 TX P,2,1478,360,8
+21:34:36.636 ## RX GAP 0.66s - the Mega sent nothing (its loop was blocked?)
+21:34:36.993 TX P,2,1478,360,8
+21:34:37.194 ## DRIFT J4 -2622t in phase IDLE
+21:34:37.220 TX P,4,3190,360,8
+21:34:37.754 ## RX GAP 0.65s - the Mega sent nothing (its loop was blocked?)
+21:34:38.266 TX P,4,3190,360,8
+21:34:38.714 ## RX GAP 0.66s - the Mega sent nothing (its loop was blocked?)
+21:36:04.616 ## cycle 0 phase TASK_BELT_RUN
+21:36:04.617 ## task 7 belt_run {"seconds": 30.0, "rpm": 11.1}
+21:36:04.618 TX X,CONV,11.10
+21:36:34.645 TX X,BRAKE
+21:36:34.652 ## cycle 0 phase IDLE
+21:36:34.656 ## task 7 done {"belt_rpm": {"n": 250, "mean": 11.102, "std": 0.061}, "belt_mA": {"n": 250, "mean": 56.372, "std": 2.244}, "belt_W": {"n": 250, "mean": 0.686, "std": 0.027}, "arm_mA": {"n": 131, "mean": 74.676, "std": 8.046}, "arm_W": {"n": 131, "mean": 0.904, "std": 0.097}}
+21:36:34.857 ## cycle 1 phase FEED
+21:36:34.898 TX X,FEED
+21:36:35.814 RX X,E,FEED_DONE,1534222
+21:36:35.815 ## cycle 1 phase TRANSPORT
+21:36:35.816 TX P,1,2103,720,8
+21:36:35.826 TX X,CONV,11.10
+21:36:35.836 TX P,2,1662,720,8
+21:36:35.846 TX P,3,2357,720,8
+21:36:35.857 TX P,4,3009,720,8
+21:36:35.867 TX P,5,1239,720,8
+21:36:36.595 TX H,1
+21:36:36.606 TX H,2
+21:36:36.616 TX H,3
+21:36:36.626 TX H,4
+21:36:36.636 TX H,5
+21:36:38.630 RX X,E,ARRIVED,1537008,559389
+21:36:38.631 ## cycle 1 phase GRIP
+21:36:38.732 TX P,6,2276,1800,70
+21:36:39.138 TX C,6,150,180
+21:36:39.146 RX G,CLOSING,2286
+21:36:40.237 RX G,CLOSED,1931,180
+21:36:40.238 ## cycle 1 phase RECOVER
+21:36:40.239 TX P,6,2445,1200,8
+21:36:41.256 TX P,6,2445,1200,8
+21:36:42.272 TX P,6,2445,1200,8
+21:36:42.374 TX P,1,2069,720,8
+21:36:42.384 TX P,2,1478,720,8
+21:36:42.394 TX P,3,2172,720,8
+21:36:42.405 TX P,4,3190,720,8
+21:36:42.415 TX P,5,1230,720,8
+21:36:43.298 TX H,1
+21:36:43.309 TX H,2
+21:36:43.319 TX H,3
+21:36:43.329 TX H,4
+21:36:43.340 TX H,5
+21:36:43.350 TX X,STOP
+21:36:44.364 ## cycle 2 phase FEED
+21:36:44.364 TX X,FEED
+21:36:45.295 RX X,E,FEED_DONE,1543609
+21:36:45.295 ## cycle 2 phase TRANSPORT
+21:36:45.296 TX P,1,2103,720,8
+21:36:45.306 TX X,CONV,11.10
+21:36:45.316 TX P,2,1662,720,8
+21:36:45.326 TX P,3,2357,720,8
+21:36:45.367 TX P,4,3009,720,8
+21:36:45.387 TX P,5,1239,720,8
+21:36:46.095 TX H,1
+21:36:46.105 TX H,2
+21:36:46.115 TX H,3
+21:36:46.125 TX H,4
+21:36:46.135 TX H,5
+21:36:52.755 ## cycle 2 phase IDLE
+21:36:52.767 TX X,STOP
+21:36:52.788 TX H,1
+21:36:52.798 TX H,2
+21:36:52.811 TX H,3
+21:36:52.821 TX H,4
+21:36:52.833 TX H,5
+21:36:53.462 TX X,STOP
+21:36:55.485 ## end, unparsable RX lines: 0

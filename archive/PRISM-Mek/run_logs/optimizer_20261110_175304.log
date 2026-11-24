@@ -1,0 +1,50 @@
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261110_175310.jsonl
+[observe] connected to broker: Success
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen starting
+[plan 3] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 4] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 5] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 6] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 7] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 8] RUN    20 rpm / arm 1.5  action=refeed  - the feeder servo did not move (12 V rail dipped 1 mV, a real push takes >= 30): feeding again (1/2)
+[plan 9] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 1 mV, a real push takes >= 30): feeding again (1/2)
+[plan 10] RUN    20 rpm / arm 1.5  action=refeed  - the feeder servo did not move (12 V rail dipped 0 mV, a real push takes >= 30): feeding again (2/2)
+[plan 11] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 0 mV, a real push takes >= 30): feeding again (2/2)
+[plan 12] ALERT  20 rpm / arm 1.5  action=abort  - the feeder servo did not move on 3 pushes in a row (no current draw): check its plug and its 5 V supply, then resume
+[plan 13] ALERT  20 rpm / arm 1.5  - the feeder servo did not move on 3 pushes in a row (no current draw): check its plug and its 5 V supply, then resume
+[plan 14] RUN    20 rpm / arm 1.5  - autoen running again (resumed by the operator)
+[plan 15] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 16] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 17] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 18] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 19] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 20] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 21] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 22] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 23] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 24] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 25] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 26] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 27] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 28] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 29] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 30] IDLE   20 rpm / arm 1.5  action=idle  - 2 feeds in a row did not reach the IR (camera not trusted yet): feeder empty, or check the belt
+[plan 31] IDLE   20 rpm / arm 1.5  - 2 feeds in a row did not reach the IR (camera not trusted yet): feeder empty, or check the belt
+[plan 32] RUN    20 rpm / arm 1.5  action=resume  - probe: try one feed after 60 s idle
+[plan 33] RUN    20 rpm / arm 1.5  - probe: try one feed after 60 s idle
+[plan 34] IDLE   20 rpm / arm 1.5  action=idle  - 2 feeds in a row did not reach the IR (camera not trusted yet): feeder empty, or check the belt
+[plan 35] IDLE   20 rpm / arm 1.5  - 2 feeds in a row did not reach the IR (camera not trusted yet): feeder empty, or check the belt
+[plan 36] RUN    20 rpm / arm 1.5  action=resume  - probe: try one feed after 255 s idle
+[plan 37] RUN    20 rpm / arm 1.5  - probe: try one feed after 255 s idle
+[plan 38] IDLE   20 rpm / arm 1.5  action=idle  - 2 feeds in a row did not reach the IR (camera not trusted yet): feeder empty, or check the belt
+[plan 39] IDLE   20 rpm / arm 1.5  - 2 feeds in a row did not reach the IR (camera not trusted yet): feeder empty, or check the belt
+[plan 40] RUN    20 rpm / arm 1.5  action=resume  - probe: try one feed after 462 s idle
+[plan 41] ALERT  20 rpm / arm 1.5  action=pause  - cycle 33 SerialException: check before resuming (write failed: [Errno 5] Input/output error) - SerialException: never answered automatically (the USB link to the Mega is lost: check the cable / power, then restart the cell) - a person checks first
+[plan 42] ALERT  20 rpm / arm 1.5  - cycle 33 SerialException: check before resuming (write failed: [Errno 5] Input/output error) - SerialException: never answered automatically (the USB link to the Mega is lost: check the cable / power, then restart the cell) - a person checks first
+[observe] lost the broker: all feeds will go stale
+[observe] connected to broker: Success
+[observe] lost the broker: all feeds will go stale
+[observe] cannot reach the broker at localhost:1883 - retrying
+[observe] cannot reach the broker at localhost:1883 - retrying
+stopping: autoen is left as it is

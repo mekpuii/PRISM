@@ -1,0 +1,110 @@
+{
+ "run_id": "base_20261025_144555",
+ "kind": "base",
+ "start": "2026-10-25T14:45:55",
+ "end": "2026-10-25T14:48:42",
+ "status": "error",
+ "rpm_units": "output_rpm_cpr11880",
+ "operator_note": "",
+ "cube_set": "none",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "c36f331c3e18ab54ca1f1311852f420b1553773c69ffb2e28712de6a280eedbf",
+  "mtime": "2026-10-25T13:19:18"
+ },
+ "experiment_sha256": "f1832e33bb6f36d1e8d62125c80e8956155daf864402c4302e370057af053af5",
+ "config_snapshots": [],
+ "tasks": [
+  {
+   "id": 1,
+   "status": "error",
+   "kind": "rest",
+   "seconds": 60.0,
+   "settle_s": 3.0,
+   "torque_off": false,
+   "t_start": 1792914512.1735024,
+   "t_end": 1792914522.405195,
+   "arrived": false,
+   "error": "RuntimeError: servo feedback lost",
+   "stats": {
+    "belt_rpm": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    },
+    "belt_mA": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    },
+    "belt_W": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    },
+    "arm_mA": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    },
+    "arm_W": {
+     "n": 0,
+     "mean": null,
+     "std": null
+    }
+   }
+  }
+ ],
+ "blocks": [],
+ "baseline": {
+  "kind": "rest",
+  "seconds": 60.0,
+  "settle_s": 3.0,
+  "torque_off": false
+ },
+ "rounds": [
+  {
+   "round": 1,
+   "rest": {
+    "id": 1,
+    "status": "error",
+    "kind": "rest",
+    "seconds": 60.0,
+    "settle_s": 3.0,
+    "torque_off": false,
+    "t_start": 1792914512.1735024,
+    "t_end": 1792914522.405195,
+    "arrived": false,
+    "error": "RuntimeError: servo feedback lost",
+    "stats": {
+     "belt_rpm": {
+      "n": 0,
+      "mean": null,
+      "std": null
+     },
+     "belt_mA": {
+      "n": 0,
+      "mean": null,
+      "std": null
+     },
+     "belt_W": {
+      "n": 0,
+      "mean": null,
+      "std": null
+     },
+     "arm_mA": {
+      "n": 0,
+      "mean": null,
+      "std": null
+     },
+     "arm_W": {
+      "n": 0,
+      "mean": null,
+      "std": null
+     }
+    }
+   }
+  }
+ ],
+ "error": "rest task failed: RuntimeError: servo feedback lost"
+}

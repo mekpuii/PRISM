@@ -1,0 +1,236 @@
+"""calib_touch.py — สอบเทียบ pixel -> mm โดย "ให้แขนเป็นไม้บรรทัดเอง" (ไม่ต้องวัดพิกัดด้วยมือ)
+
+หลักการ: วางบล็อกทีละตำแหน่ง -> กล้องที่ท่า scan หาจุดกลางบล็อกเป็น pixel -> คุณจับปลาย jaw ไปแตะกลางหน้าบนของบล็อก
+-> อ่าน tick -> FK ได้ (x, y, z) ในพิกัดของแขน  ทำ >= 6 ตำแหน่ง แล้วคำนวณ
+  * homography.npy  : pixel -> (x, y) mm บนระนาบหน้าบนบล็อก (สูง 20 mm)
+  * TABLE_PLANE     : ระดับโต๊ะตามที่แขนวัดเอง (ใช้กำหนดความสูงตอนหยิบ)
+ทำไมแม่นกว่าวัดด้วยไม้บรรทัด: พิกัดมาจาก FK ชุดเดียวกับที่ IK ใช้ตอนหยิบ ความคลาดของ JOINT_ZERO/ขนาดลิงก์ส่วนใหญ่จึง "หักล้างกันเอง"
+(ความแม่นยำสุดท้ายขึ้นกับความ "ทำซ้ำได้" ของแขน ไม่ใช่ความถูกต้องสัมบูรณ์)
+
+จุดที่ใช้แตะ = "มุมด้านในของปลาย jaw ตัวที่ไม่ขยับ" (jaw ที่เป็นชิ้นเดียวกับตัว gripper) — ถือ gripper ให้นิ้วชี้ลงดิ่งตอนแตะ
+ต้องทำหลัง calib_zero.py และ teach_scan.py  |  ทำใหม่ทุกครั้งที่ท่า scan/ตำแหน่งกล้อง/ฐานแขนเปลี่ยน
+
+ใช้:  python calib_touch.py [จำนวนจุด=6]      (ต้องมีหน้าจอ: รันบน PC)
+"""
+import json as _json
+import os as _os
+import statistics
+import sys
+import time
+import traceback
+
+import cv2
+import numpy as np
+
+import camera
+import config as C
+import detect_block as D
+import kinematics as K
+from arm_select import make_arm
+
+if C.ARM_BACKEND != "mega":
+    raise SystemExit("สคริปต์นี้สำหรับ ARM_BACKEND='mega' เท่านั้น")
+N = int(sys.argv[1]) if len(sys.argv) > 1 else 6
+if N < 4:
+    raise SystemExit("ต้องอย่างน้อย 4 จุด (แนะนำ 6-9 กระจายทั่วโซนหยิบ)")
+
+cap = camera.open_camera()
+arm = make_arm()
+arm.connect()
+px, world = [], []
+click = {}
+POINTS_FILE = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "calib_touch_points.json")
+ERROR_FILE = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "calib_touch_error.txt")
+if _os.path.exists(POINTS_FILE) and "--fresh" not in sys.argv:       # กู้จุดที่ทำไว้ก่อนโปรแกรมล้ม (ใช้ --fresh เพื่อเริ่มใหม่)
+    with open(POINTS_FILE, encoding="utf-8") as _f:
+        _d = _json.load(_f)
+    px = [tuple(p) for p in _d["px"]]
+    world = [tuple(w) for w in _d["world"]]
+    print(f"กู้ {len(px)} จุดจาก {POINTS_FILE} (ใช้ --fresh ถ้าจะเริ่มใหม่)")
+
+
+def save_points():
+    with open(POINTS_FILE, "w", encoding="utf-8") as f:
+        _json.dump({"px": px, "world": world}, f)
+
+
+def on_mouse(event, mx, my, flags, param):
+    """คลิกซ้าย = กำหนดจุดกลางบล็อกเอง (ใช้เมื่อหาอัตโนมัติผิด)"""
+    if event == cv2.EVENT_LBUTTONDOWN:
+        click["p"] = (float(mx), float(my))
+
+
+def wait_enter(msg, live=True):
+    """รอ Enter โดยแสดงภาพสดในหน้าต่างไปด้วย (ไม่ให้หน้าต่าง "Not Responding") — กด Enter ที่ terminal หรือที่หน้าต่างภาพก็ได้
+    ช่วยให้เห็นตอนวางบล็อกว่าอยู่ตรงไหนของภาพ; บนระบบที่ไม่มี msvcrt ใช้ input() ธรรมดา"""
+    import pi_env
+    print(msg, end="", flush=True)
+    while True:
+        if live:
+            g = camera.grab(cap)
+            if g is not None:
+                cv2.imshow("calib touch", g)
+        k = cv2.waitKey(30) & 0xFF
+        if k in (13, 10):
+            break
+        if pi_env.enter_pressed():
+            break
+    print()
+
+
+POSE_TOL = 25        # tick: ถือว่า "อยู่ท่า scan" เมื่อทุกข้อคลาดไม่เกินนี้ (~2°) — กล้องมองต่างจากตอนสอนถ้าเกินนี้
+
+def pose_error():
+    """คลาดจากท่า scan รายข้อ (tick) — อ่านค่าสดจริง ไม่เชื่อว่าสั่งไปแล้วถึง"""
+    cur = {j: arm.read_joint(j) for j in K.JOINTS5}
+    return {j: cur[j] - C.SCAN_POSE[j] for j in K.JOINTS5}
+
+
+def ensure_scan_pose():
+    """ไปท่า scan แล้ว "ตรวจว่าถึงจริง" (ข้อเดียวที่ไม่ตามทำให้ข้อมือ/gripper เข้ามาบังภาพ และ homography ใช้ไม่ได้)
+    ไม่ถึง -> เปิด torque ซ้ำแล้วลองใหม่ได้ 3 รอบ -> ยังไม่ถึง = บอกข้อที่เพี้ยนแล้วให้คุณจัดมือ/ตัดสินใจ"""
+    for attempt in range(3):
+        try:
+            arm.move_smooth(C.SCAN_POSE, duration=3.0 + attempt, fine=True)
+        except Exception as e:
+            print(f"   ! ไปท่า scan ไม่สำเร็จ ({type(e).__name__}: {e})")
+        try:
+            err = pose_error()
+        except Exception as e:
+            print(f"   ! อ่านตำแหน่งตรวจท่าไม่ได้ ({e})")
+            err = None
+        if err is not None and max(abs(v) for v in err.values()) <= POSE_TOL:
+            return
+        bad = {j: v for j, v in (err or {}).items() if abs(v) > POSE_TOL}
+        print(f"   ! ยังไม่ถึงท่า scan (รอบ {attempt + 1}/3): ข้อที่คลาด {bad} — เปิด torque ซ้ำแล้วลองใหม่")
+        arm.torque_on(ids=(1, 2, 3, 4, 5, 6))
+        time.sleep(1.0)
+    wait_enter("   !! ท่า scan ไม่ถึงหลังลอง 3 รอบ — ถ้าข้อมือ/gripper บังภาพ อย่าเก็บจุดนี้ "
+               "ให้ Ctrl+C แล้วรัน python servo_health.py --retorque <ID ข้อที่คลาด> และ python go_scan.py (จุดเก่าเก็บไว้แล้ว) กด Enter เพื่อไปต่อเอง ")
+
+
+def read_touch():
+    """ค่ากลาง tick ของ 5 ข้อ (10 ตัวอย่าง) -> FK ของจุดแตะ"""
+    m = {}
+    for j in K.JOINTS5:
+        vals = []
+        for _ in range(10):
+            vals.append(arm.read_joint(j))
+            time.sleep(0.03)
+        m[j] = statistics.median(vals)
+    return K.fk(m, "touch")
+
+
+try:
+    arm.open_gripper()
+    cv2.namedWindow("calib touch")
+    cv2.setMouseCallback("calib touch", on_mouse)
+    i = len(px)
+    while i < N:
+        # ---- 1) กลับท่า scan แล้วถ่าย ----
+        ensure_scan_pose()
+        wait_enter(f"\nจุดที่ {i + 1}/{N}: วางบล็อกตำแหน่งใหม่ในภาพ (กระจายให้ทั่ว ใกล้/ไกล/ซ้าย/ขวา) เอามือออก แล้วกด Enter (ที่ terminal หรือหน้าต่างภาพ) ")
+        time.sleep(0.5)
+        try:
+            _e = pose_error()
+            if max(abs(v) for v in _e.values()) > POSE_TOL:
+                print(f"   ! แขนขยับออกจากท่า scan ระหว่างวางบล็อก: {_e} — กลับท่าให้ใหม่")
+                ensure_scan_pose()
+        except Exception as _ex:
+            print(f"   ! ตรวจท่าก่อนถ่ายไม่ได้ ({_ex})")
+        frames = [f for f in (camera.grab(cap) for _ in range(5)) if f is not None]
+        g = np.mean(frames, axis=0).astype(np.uint8)
+        blob = D.find_blob_px(g)
+        click.clear()
+        print("   หน้าต่างภาพ: Enter = ใช้จุดสีเขียว | คลิก = กำหนดจุดกลางบล็อกเอง | r = ถ่ายใหม่ | q = จบ (ใช้จุดที่มีอยู่)")
+        choice = None
+        while choice is None:
+            vis = cv2.cvtColor(g, cv2.COLOR_GRAY2BGR)
+            p = click.get("p") or (blob[:2] if blob else None)
+            if blob is not None and "p" not in click:
+                cv2.polylines(vis, [blob[2].astype(np.int32)], True, (0, 255, 0), 2)
+            if p is not None:
+                cv2.drawMarker(vis, (int(p[0]), int(p[1])), (0, 255, 0), cv2.MARKER_CROSS, 24, 2)
+            else:
+                cv2.putText(vis, "block not found - click its centre", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+            cv2.imshow("calib touch", vis)
+            k = cv2.waitKey(30) & 0xFF
+            if k in (13, 10) and p is not None:
+                choice = p
+            elif k == ord("r"):
+                choice = "retake"
+            elif k == ord("q"):
+                choice = "quit"
+        if choice == "retake":
+            continue
+        if choice == "quit":
+            break
+
+        # ---- 2) ปล่อยแขน ให้เอาปลาย jaw ไปแตะ ----
+        wait_enter("   ประคองแขน แล้วกด Enter (ข้อ 1-5 จะอ่อน) ")
+        arm.torque_off(ids=(1, 2, 3, 4, 5))
+        wait_enter("   เอา 'มุมด้านในของปลาย jaw ตัวที่ไม่ขยับ' แตะ 'กลางหน้าบนของบล็อก' นิ้วชี้ลงดิ่ง ถือนิ่ง แล้วกด Enter ")
+        for attempt in range(3):                       # อ่านไม่สำเร็จ (ค่าตำแหน่งขาดชั่วคราว) -> ให้ลองใหม่ ไม่ล้มทั้งโปรแกรม
+            try:
+                x, y, z, pitch, _ = read_touch()
+                break
+            except Exception as e:
+                print(f"   ! อ่านตำแหน่งไม่สำเร็จ ({type(e).__name__}: {e})")
+                if attempt == 2:
+                    raise
+                wait_enter("   ถือแขนนิ่งที่จุดแตะไว้ แล้วกด Enter เพื่ออ่านใหม่ ")
+        print(f"   แขนอ่านได้ x={x:.1f} y={y:.1f} z={z:.1f} mm (นิ้วก้ม {pitch:.0f}°; ดิ่ง = -90)")
+        if pitch > -70:
+            print("   ! นิ้วเอียงจากแนวดิ่งเกิน 20° — จุดนี้อาจคลาด ถ้าไม่ตั้งใจให้ทำจุดนี้ใหม่")
+        keep = input("   ใช้จุดนี้? Enter = ใช้, n = ทิ้ง: ").strip().lower() != "n"
+        wait_enter("   ยกแขนขึ้นให้พ้นบล็อก ~10 cm ถือไว้ แล้วกด Enter (torque จะกลับมา) ")
+        arm.torque_on(ids=(1, 2, 3, 4, 5))
+        time.sleep(0.5)
+        if keep:
+            px.append(choice)
+            world.append((x, y, z))
+            save_points()
+            i += 1
+except Exception:
+    tb = traceback.format_exc()
+    print(tb)
+    with open(ERROR_FILE, "w", encoding="utf-8") as _f:
+        _f.write(tb)
+    print(f"!! โปรแกรมล้ม — บันทึก traceback ที่ {ERROR_FILE} และเก็บจุดที่ทำแล้วไว้ ({len(px)} จุด) รันใหม่จะทำต่อจากเดิม")
+finally:
+    try:
+        arm.torque_on(ids=(1, 2, 3, 4, 5))
+    finally:
+        arm.disconnect()
+        cap.release()
+        cv2.destroyAllWindows()
+
+if len(px) < 4:
+    raise SystemExit(f"ได้แค่ {len(px)} จุด (ต้อง >= 4) — ไม่บันทึก")
+
+# ---- homography: pixel -> (x, y) บนระนาบหน้าบนบล็อก ----
+pix = np.array(px, dtype=np.float32)
+w3 = np.array(world, dtype=np.float64)
+H, _ = cv2.findHomography(pix, w3[:, :2].astype(np.float32), method=0)
+pred = cv2.perspectiveTransform(pix[None], H)[0]
+err = np.linalg.norm(pred - w3[:, :2], axis=1)
+print("\nความคลาดรายจุด (mm):", np.round(err, 2))
+print(f"RMS = {np.sqrt((err ** 2).mean()):.2f} mm  (เป้า < 2 mm; ถ้าจุดไหนโดดให้ทำใหม่ — มักเกิดจากแตะไม่ตรงกลาง/แขนไม่กลับท่า scan เดิม)")
+
+# ---- ระนาบโต๊ะ: z_แตะ = หน้าบนบล็อก -> ลบความสูงบล็อก ----
+A = np.c_[np.ones(len(w3)), w3[:, 0], w3[:, 1]]
+if len(w3) >= 6:
+    coef = np.linalg.lstsq(A, w3[:, 2] - C.BLOCK_H_MM, rcond=None)[0]      # a + b*x + c*y (เอียงได้)
+else:
+    coef = np.array([float(np.mean(w3[:, 2]) - C.BLOCK_H_MM), 0.0, 0.0])   # จุดน้อย: ใช้ค่าเฉลี่ย (ระนาบราบ)
+zres = (w3[:, 2] - C.BLOCK_H_MM) - A @ coef
+print(f"ระดับโต๊ะตามแขน: z = {coef[0]:.1f} + {coef[1]:.4f}*x + {coef[2]:.4f}*y mm  (ส่วนเหลือ ±{np.abs(zres).max():.1f} mm)")
+if abs(coef[0]) > 25:
+    print("! ระดับโต๊ะห่างจาก 0 เกิน 25 mm — ตรวจ BASE_Z_MM / JOINT_ZERO (calib_zero.py) อีกครั้ง")
+
+if input("บันทึก homography.npy + TABLE_PLANE? พิมพ์ y: ").strip().lower() == "y":
+    np.save(C.HOMOGRAPHY_FILE, H)
+    C.save_calib(TABLE_PLANE=[float(v) for v in coef])
+    if _os.path.exists(POINTS_FILE):
+        _os.remove(POINTS_FILE)                      # บันทึกสำเร็จแล้ว: รอบหน้าเริ่มใหม่
+    print("บันทึกแล้ว -> ทดสอบต่อด้วย  python pick_block.py --dry-run")

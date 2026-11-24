@@ -1,0 +1,173 @@
+# test_rescue_sim.py - run: ~/db-env/bin/python test/test_rescue_sim.py   (needs pyserial + paho: db-env; ~/armcam-env)
+# EMERGENCY GRIP (2026-11-12, the operator): a missed grip (the gripper says empty) with the cube still at the IR ->
+# no feed, no belt; the hand camera (arm_cam/rescue_eye.py --fake: a cube right under the jaws) finds it, the arm
+# grips it with the taught grip, goes home, to the bin of its colour, then back to normal. 2 tries; then home, the
+# gripper opens/closes 3 times and the run pauses. The real auto_en_new.py in FLOW + the optimizer, on the real belt.
+#   A  the first grip misses -> emergency grip catches it on try 1 -> all cubes picked, no feed / belt meanwhile
+#   B  every grip misses -> 2 emergency tries -> home, 3 signals, paused, RESCUE_FAILED
+import glob
+import os
+import sys
+import tempfile
+import threading
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+os.environ["PRISM_CAMGEO"] = os.path.join(os.path.dirname(HERE), "camera_geometry.json")
+sys.path.insert(0, HERE)
+
+import test_orch_sim as T                                   # noqa: E402  (also sets up sys.path)
+import test_verify_sim as V                                 # noqa: E402
+import test_fill_sim as FL                                  # noqa: E402
+import camgeo                                               # noqa: E402
+import forecast as F                                        # noqa: E402
+import optimize as O                                        # noqa: E402
+from actuate import Actuate, ApiError                       # noqa: E402
+from predict import PredictOutput                           # noqa: E402
+
+F.PRIOR_RATE_H, F.MIN_DELAY_S, F.MIN_DELAY_BLIND_S = 2000.0, 3.0, 3.0
+O.ARRIVE_MIN_S, O.ARRIVE_FACTOR = 20.0, 2.7
+OK_TICKS, MISS_TICKS = 2070, 2300                           # 181.9 deg (inside 178-186) / 202 deg (nothing caught)
+
+
+class RescueMega(FL.FillMega):
+    misses = 1                                              # the first N grips miss (and leave the cube at the IR)
+
+    def __init__(self, *a, **k):
+        self.n_close, self._suppress, self._clear_at = 0, False, None
+        super().__init__(*a, **k)
+
+    @property
+    def clear_at(self):
+        return self._clear_at
+
+    @clear_at.setter
+    def clear_at(self, v):
+        if v is not None and self._suppress:                # a missed grip: the cube stays at the IR
+            self._suppress = False
+            return
+        self._clear_at = v
+
+    def _cmd(self, line):
+        if line.startswith("C,"):
+            self.n_close += 1
+            self._suppress = self.n_close <= self.misses
+        super()._cmd(line)
+
+    def say(self, l):
+        if l.startswith("G,CLOSED,"):
+            l = f"G,CLOSED,{MISS_TICKS if self._suppress else OK_TICKS}"
+        super().say(l)
+
+    def world(self, t, seq):
+        w = super().world(t, seq)
+        w.cubes[:] = [c for c in w.cubes if c.id != 7]
+        return w
+
+
+def run(misses, cubes, fake_eye=True):
+    T.TMP = tempfile.mkdtemp(prefix=f"prism_rescue_sim_{misses}_")
+    V.EXIT0, V.SPAN = camgeo.ENTRY_ALONG, camgeo.ENTRY_DIST
+    fake = RescueMega(fast=8.0)
+    fake.misses = misses
+    fake.cubes_left = cubes
+    api = T.start_autoen(fake, extra=["--rescue-fake", "1" if fake_eye else "0"])
+    phase = [""]
+    fake.parked = lambda: phase[0] in ("TRANSPORT", "IDLE", "")
+    api.post("/api/start", {"clear": True, "config": {"sets": 1000, "cycles_per_set": 1000, "pause_before_set": 0,
+                                                      "enable_f": 1, "enable_b": 0, "enable_c": 0, "rpm": 20.0,
+                                                      "arm_speed": 1.5, "carry_speed": 1.5, "arrive_timeout": 25.0,
+                                                      "enable_verify": 1}})
+    opt = O.Optimize(forecast=F.Forecast(path=os.path.join(T.TMP, "forecast.json")), auto_resume=True,
+                     learned_path=os.path.join(T.TMP, "learned.json"))
+    opt.feed_moved = 10
+    act = Actuate(api=api, mqtt_enabled=False, log_path=os.path.join(T.TMP, "orch.jsonl"))
+    stop = threading.Event()
+
+    def loop():
+        seq, last = 0, 0.0
+        while not stop.is_set():
+            t = time.monotonic()
+            if t - last >= 0.17:
+                seq, last = seq + 1, t
+            v = act.view()
+            phase[0] = v.phase or ""
+            act.step(opt.step(fake.world(t, seq), PredictOutput(t=t, cubes=[], belt_mm_s=0, belt_ok=False, gaps=[]),
+                              v, act.commands()))
+            time.sleep(0.05)
+    th = threading.Thread(target=loop, daemon=True)
+    th.start()
+
+    def wait(pred, timeout, what):
+        end = time.monotonic() + timeout
+        while time.monotonic() < end:
+            st = api.state()
+            if pred(st):
+                return st
+            if st["status"] in ("error", "stopped", "finished"):
+                raise AssertionError(f"autoen ended while waiting for {what}: {st['status']} {st['message']}")
+            time.sleep(0.2)
+        raise AssertionError(f"timed out waiting for {what}: mode {opt.mode} ({opt.reason}) | picked {fake.picked} "
+                             f"| phase {api.state().get('phase')} | closes {fake.n_close}")
+    try:
+        if not fake_eye:                                    # no camera: the normal recovery grips it next cycle
+            wait(lambda s: fake.picked >= 1 and any(c["result"] == "GRIP_MISS" for c in s["cycles"]), 300,
+                 "the missed grip, then the cube picked by the normal retry")
+        elif misses == 1:
+            wait(lambda s: fake.picked >= cubes, 400, f"{cubes} cubes picked")
+        else:
+            wait(lambda s: any(c["result"] == "RESCUE_FAILED" for c in s["cycles"]) and s["status"] == "paused",
+                 300, "RESCUE_FAILED + paused")
+        tx = open(sorted(glob.glob(os.path.join(T.TMP, "riff", "autoen_tx_*.log")))[-1]).read().splitlines()
+        return api.state(), tx, fake
+    finally:
+        stop.set()
+        th.join(2)
+        act.stop()
+        try:
+            api.post("/api/stop")
+        except ApiError:
+            pass
+
+
+def window(tx, start, end):
+    i = next(k for k, l in enumerate(tx) if start in l)
+    j = next((k for k, l in enumerate(tx) if k > i and end in l), len(tx))
+    return tx[i:j]
+
+
+def main():
+    st, tx, fake = run(1, 4)
+    held = [l for l in tx if "emergency grip: cube held after try 1" in l]
+    assert held, "the emergency grip never held the cube"
+    w = window(tx, "EMERGENCY GRIP", "cube placed - back to normal")
+    bad = [l for l in w if "TX X,FEED" in l or ("TX X,CONV," in l and float(l.split("CONV,")[1]) >= 1.0)]
+    assert not bad, f"feed / belt during the emergency: {bad}"
+    print(f"A  missed grip, cube at the IR -> emergency grip held it on try 1; no feed and no belt until it was "
+          f"placed ({len(w)} log lines)   OK")
+    print(f"   all {fake.picked} cubes picked, then normal work   OK")
+
+    st, tx, fake = run(99, 2)
+    res = [c for c in st["cycles"] if c["result"] == "RESCUE_FAILED"]
+    shut = [l for l in tx if "signal: close" in l or ("TX P,6," in l)]
+    sig = [l for l in tx if "signal: close" in l]
+    tries = [l for l in tx if "## emergency grip try" in l]
+    assert res and st["status"] == "paused", (st["status"], [c["result"] for c in st["cycles"]])
+    assert len(tries) == 2, tries
+    k = next(i for i, l in enumerate(tx) if "phase RESCUE_FAILED" in l)
+    g = [int(l.split("P,6,")[1].split(",")[0]) for l in tx[k:] if "TX P,6," in l][:6]
+    assert len(g) == 6 and g[0] < g[1] and g[2] < g[3] and g[4] < g[5], f"the 3x close/open signal: {g}"
+    print(f"B  every grip missed -> {len(tries)} emergency tries -> home, gripper close/open x3 {g}, paused, "
+          "RESCUE_FAILED   OK")
+    print(f"   ({res[-1].get('notes', '')[:110]})")
+
+    os.environ["SO101_CAM"] = "/dev/no-such-wrist-camera"   # the eye starts, but its camera can not open
+    st, tx, fake = run(1, 3, fake_eye=False)
+    assert any("emergency grip not possible" in l for l in tx), "no fallback note"
+    assert not any(c["result"] == "RESCUE_FAILED" for c in st["cycles"]), "paused although the camera was missing"
+    print("C  no hand camera -> the normal recovery: GRIP_MISS, the next cycle gripped it again; no RESCUE_FAILED   OK")
+    print("\nall rescue sim tests passed")
+
+
+if __name__ == "__main__":
+    main()

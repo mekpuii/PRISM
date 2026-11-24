@@ -1,0 +1,7 @@
+19:16:16.321 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:17:29.515 TX X,STOP
+19:17:30.516 ## no reply to X,STOP: sending it again
+19:17:30.516 TX X,STOP
+19:17:31.517 ## no reply to X,STOP: sending it again
+19:17:31.517 TX X,STOP
+19:17:34.537 ## end, unparsable RX lines: 0

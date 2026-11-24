@@ -1,0 +1,463 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261112_131548.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 5] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 6] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 7] RUN    20 rpm / arm 1.5  action=verdict:1:fed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 8] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 9] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 10] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 11] RUN    20 rpm / arm 1.5  action=verdict:2:fed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 12] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 13] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 14] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 15] RUN    20 rpm / arm 1.5  action=verdict:3:nudge  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 16] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 17] RUN    20 rpm / arm 1.5  action=verdict:3:empty  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 18] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 19] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 20] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 21] RUN    20 rpm / arm 1.5  action=verdict:4:nudge  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 22] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 23] RUN    20 rpm / arm 1.5  action=verdict:4:empty  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 24] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 25] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 26] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 27] RUN    20 rpm / arm 1.5  action=verdict:5:nudge  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 28] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 29] RUN    20 rpm / arm 1.5  action=verdict:5:empty  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 30] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 31] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 32] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 33] RUN    20 rpm / arm 1.5  action=verdict:6:nudge  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 34] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 35] RUN    20 rpm / arm 1.5  action=verdict:6:empty  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 5.0 s, so the next one is there when the gripper is
+[plan 36] ALERT  20 rpm / arm 1.5  action=alarm  - ALARM: the feeder servo does not move (no current, 12 V dip 2 mV, 3 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed 5 during RELEASE: servo did not move (8 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  feed 5 pushed during RELEASE: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 3: 12 V dip 2 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  feed 6: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 6 during TRANSPORT: servo did not move (2 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    so:             the push drew no current (12 V dip 2 mV, a real push dips >= 30) although the feeder IR sees cubes  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 60 s, or 5 s after you touch the feeder
+[plan 37] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 2 mV, 3 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 38] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 39] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 40] RUN    20 rpm / arm 1.5  action=feed  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 41] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 42] RUN    20 rpm / arm 1.5  action=verdict:7:nudge  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 43] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 44] RUN    20 rpm / arm 1.5  action=verdict:7:empty  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 45] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 46] RUN    20 rpm / arm 1.5  action=feed  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 47] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 48] RUN    20 rpm / arm 1.5  action=verdict:8:nudge  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 49] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 50] RUN    20 rpm / arm 1.5  action=verdict:8:empty  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 51] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 52] RUN    20 rpm / arm 1.5  action=feed  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 53] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 54] RUN    20 rpm / arm 1.5  action=verdict:9:nudge  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 55] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 56] RUN    20 rpm / arm 1.5  action=verdict:9:empty  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 57] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 58] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 8 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 4: 12 V dip 5 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  feed 9: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 9 during TRANSPORT: servo did not move (5 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  cycle 4: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 59] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 60] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 4: 12 V dip 5 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  feed 9: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 9 during TRANSPORT: servo did not move (5 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  cycle 4: NO_BLOCK
+    I tried / saw:  cycle 5: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 61] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 62] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 63] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 64] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 65] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 66] RUN    20 rpm / arm 1.5  action=verdict:10:nudge  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 67] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 68] RUN    20 rpm / arm 1.5  action=verdict:10:empty  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 69] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 70] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 71] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 72] RUN    20 rpm / arm 1.5  action=verdict:11:nudge  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 73] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 74] RUN    20 rpm / arm 1.5  action=verdict:11:empty  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 75] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 76] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 77] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 78] RUN    20 rpm / arm 1.5  action=verdict:12:nudge  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 79] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 80] RUN    20 rpm / arm 1.5  action=verdict:12:empty  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 81] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.2 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 82] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 11 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 6: 12 V dip 4 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  feed 12: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 12 during TRANSPORT: servo did not move (4 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  cycle 6: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 83] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 84] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 6: 12 V dip 4 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  feed 12: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 12 during TRANSPORT: servo did not move (4 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  cycle 6: NO_BLOCK
+    I tried / saw:  cycle 7: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 85] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 86] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 87] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 88] RUN    20 rpm / arm 1.5  action=feed  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 89] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 90] RUN    20 rpm / arm 1.5  action=verdict:13:nudge  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 91] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 92] RUN    20 rpm / arm 1.5  action=verdict:13:empty  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 93] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 94] RUN    20 rpm / arm 1.5  action=feed  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 95] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 96] RUN    20 rpm / arm 1.5  action=verdict:14:nudge  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 97] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 98] RUN    20 rpm / arm 1.5  action=verdict:14:empty  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 99] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 100] RUN    20 rpm / arm 1.5  action=feed  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 101] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 102] RUN    20 rpm / arm 1.5  action=verdict:15:nudge  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 103] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 104] RUN    20 rpm / arm 1.5  action=verdict:15:empty  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 105] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 14 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 8: 12 V dip 6 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  feed 15: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 15 during TRANSPORT: servo did not move (6 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  cycle 8: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 106] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 107] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 8: 12 V dip 6 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  feed 15: servo unknown, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 15 during TRANSPORT: servo did not move (6 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  cycle 8: NO_BLOCK
+    I tried / saw:  cycle 9: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 108] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 109] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 110] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 111] RUN    20 rpm / arm 1.5  action=feed  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 112] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 113] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 67 mV): carrying on by myself
+[story] SOLVED: THE FEEDER PUSHES AGAIN
+    I tried / saw:  cycle 8: NO_BLOCK
+    I tried / saw:  cycle 9: NO_BLOCK
+    I tried / saw:  feed 15 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  retry 1: after 60 s
+    I tried / saw:  feed for cycle 10: 12 V dip 67 mV (the servo moved), feeder IR empty
+    so:             the retry push drew current (67 mV)  ->  the servo works again
+    next:           carrying on by myself, no Resume needed
+[plan 114] RUN    20 rpm / arm 1.5  action=verdict:16:fed  - the feeder servo pushes again (12 V rail dipped 67 mV): carrying on by myself
+[plan 115] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 67 mV): carrying on by myself
+[plan 116] RUN    20 rpm / arm 1.5  action=feed  - the feeder servo pushes again (12 V rail dipped 67 mV): carrying on by myself
+[plan 117] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 67 mV): carrying on by myself
+[plan 118] RUN    20 rpm / arm 1.5  action=verdict:17:fed  - the feeder servo pushes again (12 V rail dipped 67 mV): carrying on by myself
+[plan 119] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 67 mV): carrying on by myself
+[plan 120] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 121] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 122] RUN    20 rpm / arm 1.5  action=verdict:18:nudge  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 123] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 124] RUN    20 rpm / arm 1.5  action=verdict:18:empty  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 125] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 126] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 127] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 128] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 4 mV): giving that push up, feeding again (1/2)
+[plan 129] RUN    20 rpm / arm 1.5  action=verdict:19:empty  - the feeder servo did not move (12 V rail dipped 4 mV): giving that push up, feeding again (1/2)
+[plan 130] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 4 mV): giving that push up, feeding again (1/2)
+[plan 131] RUN    20 rpm / arm 1.5  action=feed  - the feeder servo did not move (12 V rail dipped 4 mV): giving that push up, feeding again (1/2)
+[plan 132] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 4 mV): giving that push up, feeding again (1/2)
+[plan 133] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 5 mV): giving that push up, feeding again (2/2)
+[plan 134] RUN    20 rpm / arm 1.5  action=verdict:20:empty  - the feeder servo did not move (12 V rail dipped 5 mV): giving that push up, feeding again (2/2)
+[plan 135] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 5 mV): giving that push up, feeding again (2/2)
+[plan 136] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: the last 3 feeds brought nothing
+[story] FEEDER EMPTY
+    I tried / saw:  feed 19 during TRANSPORT: servo did not move (4 mV), camera: no new block, feeder IR cubes => EMPTY
+    I tried / saw:  feed 19 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 12: 12 V dip 5 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  feed 20 during TRANSPORT: servo did not move (5 mV), camera: no new block, feeder IR cubes => EMPTY
+    I tried / saw:  feed 20 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    so:             3 feeds in a row brought no block to the IR (feed 18 during TRANSPORT, feed 19 during TRANSPORT, feed 20 during TRANSPORT)  ->  the feeder has no cubes left (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 137] IDLE   20 rpm / arm 1.5  - feeder empty: the last 3 feeds brought nothing
+[plan 138] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 19 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 12: 12 V dip 5 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  feed 20 during TRANSPORT: servo did not move (5 mV), camera: no new block, feeder IR cubes => EMPTY
+    I tried / saw:  feed 20 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  cycle 12: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 139] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 140] RUN    20 rpm / arm 1.5  action=resume  - probe: try one feed after 60 s idle
+[plan 141] RUN    20 rpm / arm 1.5  - probe: try one feed after 60 s idle
+[plan 142] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 143] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 144] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 3 mV): giving that push up, feeding again (1/2)
+[plan 145] RUN    20 rpm / arm 1.5  action=verdict:21:empty  - the feeder servo did not move (12 V rail dipped 3 mV): giving that push up, feeding again (1/2)
+[plan 146] ALERT  20 rpm / arm 1.5  action=alarm  - ALARM: the feeder servo does not move (no current, 12 V dip 3 mV, 3 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed 20 during TRANSPORT: servo did not move (5 mV), camera: no new block, feeder IR cubes => EMPTY
+    I tried / saw:  feed 20 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  cycle 12: NO_BLOCK
+    I tried / saw:  feed for cycle 13: 12 V dip 3 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  feed 21 during TRANSPORT: servo did not move (3 mV), camera: no new block, feeder IR cubes => EMPTY
+    so:             the push drew no current (12 V dip 3 mV, a real push dips >= 30) although the feeder IR sees cubes  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 60 s, or 5 s after you touch the feeder
+[plan 147] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 3 mV, 3 pushes in a row): check its D12 plug and its 5 V supply. I try one feed again in 60 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 148] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 149] RUN    20 rpm / arm 1.5  - feeder retry 1 (after 60 s): one feed to see if it delivers again
+[plan 150] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 151] RUN    20 rpm / arm 1.5  - flow: I keep 2 blocks in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 152] ALERT  20 rpm / arm 1.5  action=stop_feed  - ALARM: the feeder servo does not move (no current, 12 V dip 2 mV, retry 1): check its D12 plug and its 5 V supply. I try one feed again in 120 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed 21 during TRANSPORT: servo did not move (3 mV), camera: no new block, feeder IR cubes => EMPTY
+    I tried / saw:  cycle 13: NO_BLOCK
+    I tried / saw:  feed 21 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  retry 1: after 60 s
+    I tried / saw:  feed for cycle 14: 12 V dip 2 mV (no current: the servo did not move), feeder IR sees cubes
+    so:             the push drew no current (12 V dip 2 mV, a real push dips >= 30) although the feeder IR sees cubes  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 120 s, or 5 s after you touch the feeder
+[plan 153] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 2 mV, retry 1): check its D12 plug and its 5 V supply. I try one feed again in 120 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 154] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 2 (after 120 s): one feed to see if it delivers again
+[plan 155] RUN    20 rpm / arm 1.5  - feeder retry 2 (after 120 s): one feed to see if it delivers again
+[plan 156] RUN    20 rpm / arm 1.5  action=feed  - feeder retry 2 (after 120 s): one feed to see if it delivers again
+[plan 157] RUN    20 rpm / arm 1.5  - feeder retry 2 (after 120 s): one feed to see if it delivers again
+[plan 158] ALERT  20 rpm / arm 1.5  action=stop_feed  - ALARM: the feeder servo does not move (no current, 12 V dip 4 mV, retry 2): check its D12 plug and its 5 V supply. I try one feed again in 300 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed for cycle 14: 12 V dip 2 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  cycle 14: NO_BLOCK
+    I tried / saw:  feed 22 pushed during STANDBY: nothing came (given up (optimizer))
+    I tried / saw:  retry 2: after 120 s
+    I tried / saw:  feed for cycle 15: 12 V dip 4 mV (no current: the servo did not move), feeder IR sees cubes
+    so:             the push drew no current (12 V dip 4 mV, a real push dips >= 30) although the feeder IR sees cubes  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 300 s, or 5 s after you touch the feeder
+[plan 159] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 4 mV, retry 2): check its D12 plug and its 5 V supply. I try one feed again in 300 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 160] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 3 (after 300 s): one feed to see if it delivers again
+[plan 161] RUN    20 rpm / arm 1.5  - feeder retry 3 (after 300 s): one feed to see if it delivers again
+[plan 162] RUN    20 rpm / arm 1.5  action=feed  - feeder retry 3 (after 300 s): one feed to see if it delivers again
+[plan 163] RUN    20 rpm / arm 1.5  - feeder retry 3 (after 300 s): one feed to see if it delivers again
+[plan 164] ALERT  20 rpm / arm 1.5  action=stop_feed  - ALARM: the feeder servo does not move (no current, 12 V dip 1 mV, retry 3): check its D12 plug and its 5 V supply. I try one feed again in 600 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed for cycle 15: 12 V dip 4 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  cycle 15: NO_BLOCK
+    I tried / saw:  feed 23 pushed during TRANSPORT: nothing came (given up (optimizer))
+    I tried / saw:  retry 3: after 300 s
+    I tried / saw:  feed for cycle 16: 12 V dip 1 mV (no current: the servo did not move), feeder IR sees cubes
+    so:             the push drew no current (12 V dip 1 mV, a real push dips >= 30) although the feeder IR sees cubes  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 600 s, or 5 s after you touch the feeder
+[plan 165] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 1 mV, retry 3): check its D12 plug and its 5 V supply. I try one feed again in 600 s (or 5 s after you touch the feeder) and carry on by myself
+[observe] lost the broker: all feeds will go stale
+[observe] connected to broker: Success
+[plan 166] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 4 (after 600 s): one feed to see if it delivers again
+[plan 167] RUN    20 rpm / arm 1.5  - feeder retry 4 (after 600 s): one feed to see if it delivers again
+[plan 168] RUN    20 rpm / arm 1.5  action=feed  - feeder retry 4 (after 600 s): one feed to see if it delivers again
+[plan 169] RUN    20 rpm / arm 1.5  - feeder retry 4 (after 600 s): one feed to see if it delivers again
+[plan 170] ALERT  20 rpm / arm 1.5  action=stop_feed  - ALARM: the feeder servo does not move (no current, 12 V dip 3 mV, retry 4): check its D12 plug and its 5 V supply. I try one feed again in 600 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed for cycle 16: 12 V dip 1 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  cycle 16: NO_BLOCK
+    I tried / saw:  feed 24 pushed during TRANSPORT: nothing came (given up (optimizer))
+    I tried / saw:  retry 4: after 600 s
+    I tried / saw:  feed for cycle 17: 12 V dip 3 mV (no current: the servo did not move), feeder IR sees cubes
+    so:             the push drew no current (12 V dip 3 mV, a real push dips >= 30) although the feeder IR sees cubes  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 600 s, or 5 s after you touch the feeder
+[plan 171] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 3 mV, retry 4): check its D12 plug and its 5 V supply. I try one feed again in 600 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 172] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 5 (after 600 s): one feed to see if it delivers again
+[plan 173] RUN    20 rpm / arm 1.5  - feeder retry 5 (after 600 s): one feed to see if it delivers again
+[plan 174] RUN    20 rpm / arm 1.5  action=feed  - feeder retry 5 (after 600 s): one feed to see if it delivers again
+[plan 175] RUN    20 rpm / arm 1.5  - feeder retry 5 (after 600 s): one feed to see if it delivers again
+[plan 176] ALERT  20 rpm / arm 1.5  action=stop_feed  - ALARM: the feeder servo does not move (no current, 12 V dip 3 mV, retry 5): check its D12 plug and its 5 V supply. I try one feed again in 600 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed for cycle 17: 12 V dip 3 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  cycle 17: NO_BLOCK
+    I tried / saw:  feed 25 pushed during TRANSPORT: nothing came (given up (optimizer))
+    I tried / saw:  retry 5: after 600 s
+    I tried / saw:  feed for cycle 18: 12 V dip 3 mV (no current: the servo did not move), feeder IR sees cubes
+    so:             the push drew no current (12 V dip 3 mV, a real push dips >= 30) although the feeder IR sees cubes  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 600 s, or 5 s after you touch the feeder
+[plan 177] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 3 mV, retry 5): check its D12 plug and its 5 V supply. I try one feed again in 600 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 178] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 6 (after 600 s): one feed to see if it delivers again
+[plan 179] RUN    20 rpm / arm 1.5  - feeder retry 6 (after 600 s): one feed to see if it delivers again
+[plan 180] RUN    20 rpm / arm 1.5  action=feed  - feeder retry 6 (after 600 s): one feed to see if it delivers again
+[plan 181] RUN    20 rpm / arm 1.5  - feeder retry 6 (after 600 s): one feed to see if it delivers again
+[plan 182] ALERT  20 rpm / arm 1.5  action=stop_feed  - ALARM: the feeder servo does not move (no current, 12 V dip 4 mV, retry 6): check its D12 plug and its 5 V supply. I try one feed again in 600 s (or 5 s after you touch the feeder) and carry on by myself
+[story] FEEDER SERVO DOES NOT MOVE
+    I tried / saw:  feed for cycle 18: 12 V dip 3 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  cycle 18: NO_BLOCK
+    I tried / saw:  feed 26 pushed during TRANSPORT: nothing came (given up (optimizer))
+    I tried / saw:  retry 6: after 600 s
+    I tried / saw:  feed for cycle 19: 12 V dip 4 mV (no current: the servo did not move), feeder IR sees cubes
+    so:             the push drew no current (12 V dip 4 mV, a real push dips >= 30) although the feeder IR sees cubes  ->  the servo itself is not moving: no power or no signal (D12 plug, 5 V supply), or it is blocked
+    next:           I pause and shake the arm once. I try one feed again by myself in 600 s, or 5 s after you touch the feeder
+[plan 183] ALERT  20 rpm / arm 1.5  - ALARM: the feeder servo does not move (no current, 12 V dip 4 mV, retry 6): check its D12 plug and its 5 V supply. I try one feed again in 600 s (or 5 s after you touch the feeder) and carry on by myself
+[plan 184] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 7 (the feeder IR changed): one feed to see if it delivers again
+[plan 185] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 186] RECOVER 20 rpm / arm 1.5  action=pause  - cycle 20 RuntimeError: auto response 'retry' (try 1/1, learned success 33%)
+[plan 187] RECOVER 20 rpm / arm 1.5  - cycle 20 RuntimeError: auto response 'retry' (try 1/1, learned success 33%)
+[plan 188] ALERT  20 rpm / arm 1.5  action=pause  - cycle 21 RuntimeError: check before resuming (servo feedback lost) - RuntimeError: tried retry, still failing
+[plan 189] ALERT  20 rpm / arm 1.5  - cycle 21 RuntimeError: check before resuming (servo feedback lost) - RuntimeError: tried retry, still failing
+[observe] lost the broker: all feeds will go stale
+[observe] connected to broker: Success
+[plan 190] ALERT  20 rpm / arm 1.5  - light on the belt: glare (V 121.8, normal 115; 0.0 % too dark, 8.06 % burnt out): camera not used for decisions
+[plan 191] ALERT  20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 192] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 7 (the feeder IR changed): one feed to see if it delivers again
+[plan 193] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 194] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 195] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 196] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[story] SOLVED: THE FEEDER PUSHES AGAIN
+    I tried / saw:  retry 7: the feeder IR changed
+    I tried / saw:  cycle 20: RuntimeError
+    I tried / saw:  cycle 21: RuntimeError
+    I tried / saw:  retry 7: the feeder IR changed
+    I tried / saw:  feed for cycle 22: 12 V dip 131 mV (the servo moved), feeder IR empty
+    so:             the retry push drew current (131 mV)  ->  the servo works again
+    next:           carrying on by myself, no Resume needed
+[plan 197] RUN    20 rpm / arm 1.5  action=verdict:28:nudge  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 198] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 199] RUN    20 rpm / arm 1.5  action=verdict:28:empty  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 200] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 201] RUN    20 rpm / arm 1.5  action=feed  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 202] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 203] RUN    20 rpm / arm 1.5  action=verdict:29:nudge  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 204] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 205] RUN    20 rpm / arm 1.5  action=verdict:29:empty  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 206] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 207] RUN    20 rpm / arm 1.5  action=feed  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 208] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 209] RUN    20 rpm / arm 1.5  action=verdict:30:nudge  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 210] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 211] RUN    20 rpm / arm 1.5  action=verdict:30:empty  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 212] RUN    20 rpm / arm 1.5  - the feeder servo pushes again (12 V rail dipped 131 mV): carrying on by myself
+[plan 213] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 29 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 22: 12 V dip 130 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 30: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 30 during TRANSPORT: servo moved (130 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  cycle 22: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 214] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 215] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 22: 12 V dip 130 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 30: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 30 during TRANSPORT: servo moved (130 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  cycle 22: NO_BLOCK
+    I tried / saw:  cycle 23: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 216] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 217] RUN    20 rpm / arm 1.5  action=resume  - probe: try one feed after 60 s idle
+[plan 218] RUN    20 rpm / arm 1.5  - probe: try one feed after 60 s idle
+[plan 219] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 220] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 221] RUN    20 rpm / arm 1.5  action=verdict:31:nudge  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 222] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 223] RUN    20 rpm / arm 1.5  action=verdict:31:empty  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 224] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 225] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 226] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 227] RUN    20 rpm / arm 1.5  action=verdict:32:nudge  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 228] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 229] RUN    20 rpm / arm 1.5  action=verdict:32:empty  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 230] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 231] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 232] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 233] RUN    20 rpm / arm 1.5  action=verdict:33:nudge  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 234] RUN    20 rpm / arm 1.5  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 235] RUN    20 rpm / arm 1.5  action=verdict:33:empty  - flow: I keep 1 block in flight - a block needs 8.3 s of belt to the IR and one pick leaves 6.2 s, so the next one is there when the gripper is
+[plan 236] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 32 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 24: 12 V dip 120 mV (the servo moved), feeder IR sees cubes
+    I tried / saw:  feed 33: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 33 during TRANSPORT: servo moved (120 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  cycle 24: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 237] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 238] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 24: 12 V dip 120 mV (the servo moved), feeder IR sees cubes
+    I tried / saw:  feed 33: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 33 during TRANSPORT: servo moved (120 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  cycle 24: NO_BLOCK
+    I tried / saw:  cycle 25: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 239] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 240] RUN    20 rpm / arm 1.5  action=resume  - feeder IR: cubes loaded
+[plan 241] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 242] RUN    20 rpm / arm 1.5  action=feed  - feeder IR: cubes loaded
+[plan 243] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 244] RUN    20 rpm / arm 1.5  action=verdict:34:nudge  - feeder IR: cubes loaded
+[plan 245] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 246] RUN    20 rpm / arm 1.5  action=verdict:34:empty  - feeder IR: cubes loaded
+[plan 247] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 248] RUN    20 rpm / arm 1.5  action=feed  - feeder IR: cubes loaded
+[plan 249] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 250] RUN    20 rpm / arm 1.5  action=verdict:35:nudge  - feeder IR: cubes loaded
+[plan 251] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 252] RUN    20 rpm / arm 1.5  action=verdict:35:empty  - feeder IR: cubes loaded
+[plan 253] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 254] RUN    20 rpm / arm 1.5  action=feed  - feeder IR: cubes loaded
+[plan 255] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 256] RUN    20 rpm / arm 1.5  action=verdict:36:nudge  - feeder IR: cubes loaded
+[plan 257] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 258] RUN    20 rpm / arm 1.5  action=verdict:36:empty  - feeder IR: cubes loaded
+[plan 259] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 260] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 35 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 26: 12 V dip 122 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 36: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 36 during TRANSPORT: servo moved (122 mV), camera: no new block even after a nudge, feeder IR empty->cubes => EMPTY
+    I tried / saw:  cycle 26: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 261] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 262] IDLE   20 rpm / arm 1.5  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 26: 12 V dip 122 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 36: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 36 during TRANSPORT: servo moved (122 mV), camera: no new block even after a nudge, feeder IR empty->cubes => EMPTY
+    I tried / saw:  cycle 26: NO_BLOCK
+    I tried / saw:  cycle 27: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 263] IDLE   20 rpm / arm 1.5  - feeder empty: no cube came after FEED (fed again, still nothing)
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

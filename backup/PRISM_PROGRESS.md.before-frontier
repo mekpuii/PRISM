@@ -1,0 +1,165 @@
+# PRISM progress planner: toward a cell that feels alive
+
+Updated 2026-10-27 18:45. A living cell **senses**, **decides**, **acts**, **remembers**, **learns**, **stays safe**,
+**recovers** and **tells you how it is doing**, all without being told. This page tracks how far each of those is.
+
+## How the percentages are counted
+
+| Mark | Meaning | Counts as |
+|---|---|---|
+| ✅ | built **and proven on the real machine** | 100 % |
+| 🧪 | built and passes the simulator tests, **not yet proven on the machine** | 60 % |
+| 🔜 | next up, not built yet | 0 % |
+| ⬜ | later / needs hardware or a decision | 0 % |
+
+A topic's % = the average of its items. The overall % = the average of the topics.
+
+---
+
+## Overall: **66 %**
+
+```
+Body (robot control)      ██████████████░░░░░░  69 %
+Eyes (camera)             ████████████░░░░░░░░  60 %
+Brain (decisions)         ██████████░░░░░░░░░░  50 %
+Energy saving             █████████████░░░░░░░  67 %
+Safety & recovery         ███████████░░░░░░░░░  54 %
+Runs by itself            █████████████░░░░░░░  63 %
+Memory & learning         ██████████████████░░  92 %
+Colour sorting            ██████████░░░░░░░░░░  48 %
+Reports & awareness       ████████████░░░░░░░░  60 %
+Tests (no robot needed)   ████████████████████ 100 %
+```
+
+---
+
+## 1. Body: robot control (autoen + Mega). **69 %**
+
+| | Item | Notes |
+|---|---|---|
+| ✅ | Speeds measured: best = 20 rpm / arm 1.5 | 264 cycles, model refitted after the arm repair |
+| ✅ | Wake from the cradle (`--resting`) | used on the machine 2026-10-25 |
+| ✅ | Stop the belt early on an empty feed (`abort_transport`) | 49.5 J → 11 J per empty feeder |
+| 🧪 | Lost Mega replies are asked again (not `FEED`) | happened ~1 in a few hundred commands |
+| 🧪 | `NO_BLOCK` aborts don't count as failures | otherwise 3 probes stopped autoen |
+| 🧪 | Arm rest state remembered across restarts | the file is written on the machine; the cradle restart is not yet tried |
+| ⬜ | Rest with torque off (needs the `Q` firmware flashed) | the only way resting could save energy |
+
+## 2. Eyes: camera and sensors. **60 %**
+
+| | Item | Notes |
+|---|---|---|
+| ✅ | White + orange calibrated, never green (belt is green) | orange re-measured 2026-10-26 |
+| ✅ | Belt direction fixed (`--belt-dir -1`) | 176/176 velocity samples right |
+| ✅ | Camera trust (9 of the last 10 cubes seen) | earned after ~5 cubes each run |
+| 🧪 | Colour by majority vote, cube chosen **at the IR**, vanish check | your idea; fixes the mixed bins |
+| ⬜ | Fix track break-up inside vision itself | vision counted 5 "cubes" in 10 s at 17:44 |
+| ⬜ | Measure the camera's arrival-time (ETA) accuracy | needed for just-in-time belt speed |
+| 🧪 | **Feeder IR sensor on D36** (firmware + autoen + optimizer) | written 2026-10-27; flash the Mega, then prove it |
+| 🧪 | Camera reads the **light** on the belt: dark / glare → camera not used for decisions | measured normal V 75; 2026-10-27 |
+| 🧪 | Camera sees a **stuck cube** (still 4 s on the running belt) → belt braked + ALERT | `--no-stuck-alert` to switch off |
+| 🧪 | Camera sees **cubes waiting** (≥ 2) → rush: fastest safe setting; touching cubes and belt slip logged | |
+| 🧪 | **Case array:** one row per cycle in `orchestrator/cases/`, `study_cases.py` adds it up per situation | the data for learning |
+
+## 3. Brain: decisions. **50 %**
+
+| | Item | Notes |
+|---|---|---|
+| ✅ | Modes RUN / IDLE / ALERT / MANUAL / PARK / OFF | all seen working on the machine |
+| 🧪 | Priority choice: 1 safety → 2 energy → 3 speed | every cycle |
+| 🧪 | Learns real J per cube for each setting | the meter already runs live |
+| 🧪 | Compares settings with each other (machine-wide scale) | stops it from slowing down for nothing |
+| 🧪 | Tries a nearby safe setting every 40 cubes (4 cubes) | keeps its knowledge fresh |
+| 🧪 | Feeds once more if no cube is seen 3 s after a feed | a missed push is cheap to retry |
+| 🔜 | **Overlap:** feed the next cube while the arm carries | ~35 % faster and less J per cube (hint: 11–12 s cycles seen) |
+| 🔜 | **Just-in-time belt speed:** next cube arrives when the arm is back | only pays off together with overlap |
+
+## 4. Energy saving. **67 %**
+
+| | Item | Notes |
+|---|---|---|
+| ✅ | Idle = arm home + belt braked | 0.08 W |
+| ✅ | Empty feed stopped after ~6 s instead of 25 s | −78 % per empty feeder |
+| ✅ | Live energy meter (belt + arm, per mode) | matches the offline scripts within 0.1 % |
+| ✅ | Forecast-timed probes instead of fixed retries | 11 J per probe |
+| ⬜ | Resting only when it really saves energy | needs torque-off rest (§1) |
+| 🔜 | Less arm waiting through overlap | see §3 |
+
+## 5. Safety & self-recovery. **54 %**
+
+| | Item | Notes |
+|---|---|---|
+| ✅ | Grip miss / fault → ALERT, waits for a person | worked at 14:43 |
+| ✅ | Never overrides a person (MANUAL) | |
+| 🧪 | Too warm → gentler; too hot → COOL (pause, resume when cool) | servo 55/65 °C, belt 50/57 °C |
+| 🧪 | Lost Mega reply → asked again | |
+| 🧪 | Actuator: drops stale jobs, checks every pause / resume, retries when autoen doesn't answer, survives an autoen restart | 2026-10-27; `test_actuate_smart` |
+| 🧪 | Never drives into the frame after a restart (rest memory) | |
+| 🧪 | **Answers incidents by itself** (grip miss, belt fault, stuck cube, new ones): retry → gentler → ALERT, learns which works | `incidents.py`; never after an arm timeout / over-temperature; max 6 per 30 min |
+| ⬜ | Physical guard (cover / light curtain) | needed before it may start with nobody there |
+
+## 6. Runs by itself. **63 %**
+
+| | Item | Notes |
+|---|---|---|
+| ✅ | One command starts / stops everything (`start_cell.sh` / `stop_cell.sh`) | |
+| ✅ | Restarts by itself after a refill (probes) | found a refill at 15:13 |
+| 🧪 | Forecast of your refill times | learning: 4 idle periods so far, needs days |
+| 🧪 | Starts at boot (`prism-cell.desktop`) | prepared; you install it (one `cp`) |
+| 🧪 | Feeder IR → idle the moment it is empty, resume the moment you refill | probes stay as a backup until it is right 3 times |
+| ⬜ | Working-hours schedule (start / park by time) | needs the physical guard (§5) |
+
+## 7. Memory & learning. **92 %**
+
+| | Item | Notes |
+|---|---|---|
+| ✅ | Refill pattern (`forecast_state.json`) | written by the machine |
+| ✅ | Which settings work + their real energy (`learned_state.json`) | written by the machine 18:15 |
+| ✅ | Where the arm is (`rest_state.json`) | written by the machine 18:13 |
+| ✅ | Cycle-time model refitted with real data | |
+| 🧪 | All of it keeps building up over days | proven only after a few days of use |
+
+## 8. Colour sorting (orange → left, white → right). **48 %**
+
+| | Item | Notes |
+|---|---|---|
+| 🧪 | Bin set per cube during its own ride | |
+| 🧪 | Majority colour of the cube at the IR | fixes the flipping seen at 17:44 |
+| 🧪 | Your vanish check (confirmed / disagree) | 3/3 in the O-W-O test |
+| 🧪 | **Your list strategy** (`sortq.py`): cubes in the order they appear, front = next pick, re-sync at the IR | real 10-26 camera data replayed: 11 cubes listed, 2 phantoms dropped, would have fixed cycle 4 |
+| 🔜 | **Proven on the machine with a known order** | the test you are about to run |
+
+## 9. Reports & awareness. **60 %**
+
+| | Item | Notes |
+|---|---|---|
+| ✅ | A log of every decision, cycle and minute of energy | `orchestrator/logs/` |
+| ✅ | Daily and weekly report (`report.py`) | cubes, J/cube, idle W, sorting, problems |
+| ✅ | Live plan / status on MQTT | `orchestrator/plan`, `orchestrator/status` |
+| ⬜ | Live dashboard page (what it is doing and why) | |
+| ⬜ | AI advisor that reads the reports and suggests changes | advice only, never moves the robot |
+
+## 10. Tests without the robot. **100 %**
+
+15 test suites, all passing: logic, forecast, smart choices, replay of a real run, and real autoen against a simulated
+Mega for idle, abort, auto-resume, sorting, rest memory, lost replies and experiments.
+
+---
+
+## The plan: next steps in order
+
+| # | Step | Who | Raises |
+|---|---|---|---|
+| 1 | **Sorting test with a known order** (running now) | you run, I analyse | Sorting → ~90 %, Eyes, Brain |
+| 2 | A normal day with `./start_cell.sh` → check the report | you | Brain, Safety, Memory (🧪 → ✅) |
+| 3 | **Overlap test** (feed the next cube while the arm carries) | I prepare, you run | Brain, Energy, speed ~+35 % |
+| 4 | Just-in-time belt speed (after 3 passes) | me | Brain |
+| 5 | Self-recovery from harmless problems | me | Safety |
+| 6 | **Feeder IR sensor (D36)**: code ready, flash and test | you flash + test, I check | Eyes, Runs by itself |
+| 7 | Fix track break-up in vision | me | Eyes, Sorting |
+| 8 | Live dashboard page | me | Reports |
+| 9 | Physical guard → working-hours schedule | your decision | Safety, Runs by itself |
+| 10 | Torque-off rest (flash `Q` firmware) | you flash, I measure | Body, Energy |
+
+Steps 1–2 alone turn most 🧪 into ✅ and bring the total to about **75 %**. Steps 3–6 to about **90 %**.
+The last 10 % is the physical guard and the hardware items.

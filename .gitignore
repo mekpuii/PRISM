@@ -1,0 +1,7 @@
+# Data kept local (not in git)
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+orchestrator/cal/runs/*.jsonl
+archive/**/*.zip

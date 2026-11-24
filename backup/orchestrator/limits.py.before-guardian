@@ -1,0 +1,21 @@
+# limits.py - every limit that makes PRISM rest, in ONE place (2026-11-12).
+# The optimizer (optimize.py) acts on these numbers and the dashboard's Overview ("Limits" zone) shows the same ones,
+# so the page can never show a limit the machine does not use. Pure constants: nothing is imported, nothing runs.
+#
+#   warm  = gentler settings (the machine keeps working)      hot / limit = REST (COOL mode) until it is cool again
+SERVO_WARM_C, SERVO_HOT_C = 55.0, 65.0   # each arm servo J1-J6 (STS3215): temperature in the servo (A1 peak: 39 C)
+BELT_WARM_C, BELT_HOT_C = 50.0, 57.0     # belt motor (DS18B20); the firmware itself faults at TEMPMAX 60 C
+PI_WARM_C, PI_HOT_C = 70.0, 80.0         # Raspberry Pi SoC (the Pi slows itself down above ~80 C)
+COOL_HYST_C = 5.0                        # back to normal only this far below the WARM limit
+COOL_MIN_S = 30.0                        # a rest lasts at least this long
+SERVO_STRAIN_MA = 1500.0                 # a servo drawing more than this ...
+SERVO_STRAIN_S = 2.0                     # ... for this long = straining (blocked / overloaded): rest
+RAIL_OK_V = 11.5                         # 12 V rail: below this the feeder does not push (it waits)
+RAIL_BAD_V = 10.5                        # below this the supply is collapsing
+FEEDER_MAX_PER_MIN = 12                  # feeder servo (no temperature sensor): more pushes a minute -> it rests
+FEEDER_REST_S = 45.0                     # ... this long (autoen --feeder-max-per-min / --feeder-rest-s mirror these)
+SLEEP_AFTER_S = 300.0                    # empty feeder this long -> SLEEP (arm rests, power off)
+WAKE_EVERY_S = 600.0                     # asleep: wake and check this often
+
+JOINT_NAME = {"1": "J1 base", "2": "J2 shoulder", "3": "J3 elbow", "4": "J4 wrist flex", "5": "J5 wrist roll",
+              "6": "J6 gripper"}

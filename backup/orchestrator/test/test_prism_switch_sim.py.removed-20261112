@@ -1,0 +1,102 @@
+# test_prism_switch_sim.py - run: ~/db-env/bin/python test/test_prism_switch_sim.py   (needs pyserial + paho: db-env)
+# The dashboard's cloud button (dashboard/prism_switch.py, 2026-11-12): NORMAL mode first (autoen alone, one cube at a
+# time), then PRISM ON switches autoen to flow at the end of the current pick, PRISM OFF switches it back - while the
+# run goes on. The real auto_en_new.py on FeederMega (no robot, --no-mqtt); the optimizer process itself is not
+# started here (its start / stop are stubbed: the switch steps on autoen are what is checked). Also the meter's maths.
+import json
+import os
+import sys
+import tempfile
+import time
+
+import os as _os; _os.environ.setdefault("PRISM_CAMGEO", _os.devnull)   # these tests use the D415 picture
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(HERE)), "dashboard"))
+
+import test_orch_sim as T                                   # noqa: E402  (also sets up sys.path)
+import prism_switch as PS                                   # noqa: E402
+from actuate import ApiError                                # noqa: E402
+
+T.TMP = tempfile.mkdtemp(prefix="prism_switch_sim_")
+
+
+def main():
+    fake = T.FeederMega(fast=8.0)
+    fake.cubes_left = 40
+    api = T.start_autoen(fake)
+
+    def call(path, body):
+        try:
+            return 200, (api.state() if body is None else api.post(path, body))
+        except ApiError as e:
+            return 409, {"error": str(e)}
+
+    api.post("/api/start", {"clear": True, "config": {"sets": 1000, "cycles_per_set": 1000, "pause_before_set": 0,
+                                                      "enable_f": 0, "enable_b": 0, "enable_c": 0, "rpm": 20.0,
+                                                      "arm_speed": 1.5, "enable_verify": 0}})
+
+    def wait(pred, timeout, what):
+        end = time.monotonic() + timeout
+        while time.monotonic() < end:
+            st = api.state()
+            if pred(st):
+                return st
+            if st["status"] in ("error", "stopped", "finished"):
+                raise AssertionError(f"autoen ended while waiting for {what}: {st['status']} {st['message']}")
+            time.sleep(0.2)
+        raise AssertionError(f"timed out waiting for {what}: {api.state()['status']}")
+
+    events = []
+    sw = PS.PrismSwitch(call, on_event=lambda lvl, txt: events.append(txt))
+    started, stopped = [], []
+    sw._start_optimizer = lambda: started.append(time.time())      # the optimizer process is not part of this test
+    sw._stop_optimizer = lambda: stopped.append(time.time())
+    try:
+        st = wait(lambda s: sum(c["result"] == "OK" for c in s["cycles"]) >= 2, 120, "2 normal picks")
+        assert not st["config"]["enable_f"] and st.get("flow") is None, st["config"]
+        print("normal:   autoen alone, one cube at a time, no flow   OK")
+
+        sw.request(True)
+        assert sw.busy, "the switch must show what it is doing"
+        wait(lambda s: sw.busy is None, 150, "PRISM ON done")
+        assert sw.error is None, sw.error
+        st = wait(lambda s: s["status"] == "running" and s.get("flow") is not None, 30, "flow running")
+        assert st["config"]["enable_f"] == 1 and started, (st["config"], started)
+        print(f"PRISM ON: paused at the end of the pick, switched to flow, resumed ({st['status']}), optimizer started   OK")
+
+        sw.request(False)
+        wait(lambda s: sw.busy is None, 150, "PRISM OFF done")
+        assert sw.error is None, sw.error
+        n0 = sum(c["result"] == "OK" for c in api.state()["cycles"])
+        st = wait(lambda s: sum(c["result"] == "OK" for c in s["cycles"]) >= n0 + 2, 120, "2 normal picks after OFF")
+        assert not st["config"]["enable_f"] and st.get("flow") is None and stopped, (st["config"], stopped)
+        print("PRISM OFF: optimizer stopped first, back to the normal cycle, picking went on   OK")
+    finally:
+        try:
+            api.post("/api/stop")
+        except ApiError:
+            pass
+
+    # the meter: 3 normal cubes at 18 s / 10 W, then 3 PRISM cubes at 12 s / 8 W
+    mode = ["normal"]
+    m = PS.Meter(lambda: mode[0])
+    clock = [1000.0]
+    PS.time.time = lambda: clock[0]
+    for md, secs, watts in (("normal", 18.0, 10.0), ("prism", 12.0, 8.0)):
+        mode[0] = md
+        for _ in range(3):
+            for _ in range(int(secs)):
+                m.feed("belt/telemetry", json.dumps({"current": watts / 12.0 * 1000.0, "voltage": 12.0}))
+                clock[0] += 1.0
+            m.feed("autoen/cycle", json.dumps({"result": "OK", "secs": secs}))
+    s = m.status()
+    assert s["normal"]["s_per_cube"] == 18.0 and s["prism"]["s_per_cube"] == 12.0, s
+    assert s["saving"]["time_pct"] == 33 and 45 <= s["saving"]["energy_pct"] <= 48, s
+    print(f"meter:    normal 18 s / {s['normal']['J_per_cube']} J, PRISM 12 s / {s['prism']['J_per_cube']} J per cube -> "
+          f"-{s['saving']['time_pct']} % time, -{s['saving']['energy_pct']} % energy   OK")
+    print("\nall PRISM switch tests passed")
+
+
+if __name__ == "__main__":
+    main()

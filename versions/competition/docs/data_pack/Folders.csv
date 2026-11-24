@@ -1,0 +1,20 @@
+folder,what it is,files,size MB
+analysis,arm / belt analyzers,11,8.4
+archive,data of the deleted PRISM_mek / PRISM_dupi / PRISM-Mek copies,438,375.5
+arduino_mega_2560,"Mega firmware (belt, feeder, servo bus)",2,0.1
+arm_cam,wrist camera tools (emergency grip),120,12.8
+autoencoder,"autoen: owns the Mega, runs the pick cycle; riff_logs = raw run data",966,52.7
+automation,plain automation without the optimizer,45,1.8
+backup,every earlier version of a changed file,355,20.4
+competition,speed/energy sheets,9,0.8
+config,health thresholds,1,0.0
+dashboard,web dashboard,48,453.8
+data,old databases,155,174.2
+docs,documents,15,0.2
+health,health monitor,3,0.0
+logger,MQTT -> sqlite loggers,9,460.7
+orchestrator,the optimizer (brain),408,421.4
+run_logs,program output per start,431,19.3
+run_reports,per-run temperature/power reports,33,0.0
+versions,"frozen copies pt1, pt2, pt4, pt5, pt6",1155,47.8
+vision,camera: colour + position of cubes,34,3.1

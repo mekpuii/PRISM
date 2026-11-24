@@ -1,0 +1,18 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=priority  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261027_195152.jsonl
+[plan 1] OFF    15 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    15 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    15 rpm / arm 1.5  - autoen running
+[plan 4] RUN    15 rpm / arm 1.5  - autoen running
+[plan 5] ALERT  15 rpm / arm 1.5  action=pause  - cycle 2 FAULT_1: check before resuming (belt FAULT during TRANSPORT)
+[plan 6] ALERT  15 rpm / arm 1.5  - cycle 2 FAULT_1: check before resuming (belt FAULT during TRANSPORT)
+[plan 7] RUN    15 rpm / arm 1.5  action=resume  - operator: resume
+[plan 8] RUN    15 rpm / arm 1.5  - operator: resume
+[plan 9] RUN    15 rpm / arm 1.5  - operator: resume
+[plan 10] ALERT  15 rpm / arm 1.5  action=pause  - cycle 3 GRIP_MISS: check before resuming (gripper stopped at 218.6 deg, outside the block window 150-181.8 deg - no block caught | feature-A fast move timed out, finishing with the slow move to grip_pos; grip_pos move did not start (J6 still at 2487): resent; grip_pos move did not start (J6 still at 2487): resent; gripper stopped +475t short of grip_pos 2012: holding at 2477 (block wider than taught))
+[actuate] pause FAILED: autoen is error: nothing to pause
+[plan 11] ALERT  15 rpm / arm 1.5  - cycle 3 GRIP_MISS: check before resuming (gripper stopped at 218.6 deg, outside the block window 150-181.8 deg - no block caught | feature-A fast move timed out, finishing with the slow move to grip_pos; grip_pos move did not start (J6 still at 2487): resent; grip_pos move did not start (J6 still at 2487): resent; gripper stopped +475t short of grip_pos 2012: holding at 2477 (block wider than taught))
+[plan 12] OFF    15 rpm / arm 1.5  - autoen error
+[plan 13] OFF    15 rpm / arm 1.5  - autoen not reachable
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

@@ -1,0 +1,1074 @@
+#!/usr/bin/env python3
+"""
+PRISM DASHBOARD NODE  -  one local web page for the whole cell (PRISM, Raspberry Pi 4 / the PC next to the arm).
+
+It is an OBSERVER: it subscribes to MQTT and shows everything. The only thing it can do to the machine is relay the
+same buttons autoen_node.py's own page has (Start / Stop / Pause / settings) to autoen_node's local HTTP API, and edit
+the two analyzer threshold files (the analyzers reload them within 5 s). If the dashboard crashes, the cell keeps running.
+
+PAGES  (http://127.0.0.1:8080)
+  Overview               the whole cell on one page: READY, the Pi, every program, the hardware, the optimizer talking
+                         (what it changed and why), vision + the case array, autoen's buttons, the log  (overview.py)
+  Control   > Run        the autoen_node page: Start / Stop / Pause, every setting, live device table, cycles
+            > Camera     camera/perception, demand per 10 s, 3-minute windows
+            > 3D Twin    the CAD model of the cell driven by the REAL joint positions, belt, IR and cycle phase
+  Logger                 the SQLite databases (logger instances, analyzers) and the autoen CSV logs, read-only
+  Health                 every node: alive / stale / offline, broker, message rate of every topic
+  Analysis  > Arm        state timeline, per-joint current against its limits, cycles, conditions, threshold editor
+            > Conveyor   speed / current / temperature, runs, conditions, threshold editor
+
+INPUT TOPICS (nothing is required: a missing node simply shows NOT AVAILABLE)
+  arm/telemetry arm/state arm/status arm/ir arm/gripper   belt/telemetry belt/event belt/status   autoen/state autoen/cycle
+  analyzer/arm/*  analyzer/belt/*   camera/*   health/status   logger/#   forecast/#   orchestrator/#
+
+RUN
+  python3 dashboard_node.py                      browser: http://127.0.0.1:8080
+  python3 dashboard_node.py --mqtt-host <broker> --autoen http://127.0.0.1:8781 --data-dir <folder with the .db files>
+  python3 dashboard_node.py --read-only          no Start/Stop/threshold writes at all (a pure display)
+Install: pip install paho-mqtt      (the page itself needs no internet: three.js is in web/vendor)
+
+Not a safety function. The page binds to 127.0.0.1 only: use an SSH tunnel to look at it from another machine
+(ssh -L 8080:127.0.0.1:8080 pi@<pi>). --host 0.0.0.0 is possible but has NO login: only on a network you trust.
+"""
+
+import argparse
+import faulthandler
+import glob
+import importlib.util
+import json
+import mimetypes
+import os
+import queue
+import re
+import sqlite3
+import subprocess
+import sys
+import threading
+import time
+import urllib.error
+import urllib.request
+from collections import deque
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import parse_qs, urlparse
+
+try:
+    import paho.mqtt.client as mqtt
+except ImportError:                       # the page and the files still work without it; live data does not
+    mqtt = None
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import camcal                             # noqa: E402 - Control -> Calibrate: camera controls, colours, save / undo
+import overview                           # noqa: E402 - the Overview page: Pi, programs, hardware, READY, optimizer trace
+WEB_DIR = os.path.join(HERE, "web")
+
+# ============================================================================
+# CONFIG  -  every number you may want to tune lives here
+# ============================================================================
+BROKER_HOST = os.environ.get("MQTT_HOST", "localhost")
+BROKER_PORT = 1883
+MA_PER_COUNT = 6.5            # STS3215 current register: arm/telemetry carries COUNTS (autoen_node / arm_node), the page shows mA
+PUSH_HZ = 4.0                 # live snapshot rate to the browser (was 10; 4 is plenty for eyes, half the CPU - 2026-11-12)
+MJPEG_MAX_FPS = 1.5           # live picture to the browser at most this often (decoding a 53 kB JPEG costs the Pi's browser)
+OVERVIEW_CACHE_S = 1.5        # /api/overview (process scan, hardware checks) is rebuilt at most this often
+HIST_HZ = 5.0                 # history sampling for the charts
+HIST_S = 20 * 60              # seconds of history kept in memory
+EVENTS_KEEP = 1500
+STALE_RING = 200
+WATCHDOG_S = 20.0             # reconnect when the broker has been silent this long (see Bus._watchdog)
+
+# node -> (status topic or None, {signal topic: (seconds to STALE, seconds to OFFLINE)}, optional?)
+# optional = the node is not built yet: never seen means NOT AVAILABLE, not an error.
+NODES = {
+    "autoen (arm + feeder + belt driver)": ("arm/status", {"arm/telemetry": (1.0, 5.0), "arm/state": (1.0, 5.0)}, False),
+    "belt link":      ("belt/status", {"belt/telemetry": (1.0, 5.0)}, False),
+    "arm analyzer":   ("analyzer/arm/status", {"analyzer/arm/state": (3.0, 10.0)}, False),
+    "belt analyzer":  ("analyzer/belt/status", {"analyzer/belt/state": (3.0, 10.0)}, False),
+    "camera":         ("camera/status", {"camera/perception": (3.0, 10.0), "camera/demand": (25.0, 45.0)}, False),
+    "health monitor": (None, {"health/status": (5.0, 15.0)}, False),
+    "logger (arm)":   ("logger/arm/status", {"logger/arm/heartbeat": (6.0, 15.0)}, False),
+    "logger (camera)": ("logger/camera/status", {"logger/camera/heartbeat": (6.0, 15.0)}, False),
+    "forecast":       ("forecast/status", {"forecast/demand": (120.0, 600.0)}, True),
+    "orchestrator":   (None, {"orchestrator/status": (5.0, 15.0)}, True),      # 1 Hz from actuate.py (no Last Will)
+}
+SUBSCRIBE = ["arm/#", "belt/#", "autoen/#", "analyzer/#", "camera/#", "health/#", "logger/#", "forecast/#", "orchestrator/#",
+             "video/#"]
+JPEG_TOPIC = "video/camera/jpeg"   # vision's annotated frame (raw JPEG bytes, ~3 Hz) -> /api/camera.mjpg
+RAW_TOPIC = "video/camera/raw"     # the UNannotated frame, only while the Calibrate page asks for it (~2 Hz)
+CAM_CMD_TOPIC = "camera/cmd"       # -> vision: {"raw_s": 60} = send raw frames for 60 s
+CONTROL_PATHS = {"start": "/api/start", "stop": "/api/stop", "pause": "/api/pause", "config": "/api/config"}
+
+
+def now_wall():
+    return time.time()
+
+
+# ============================================================================
+# 1. STORE  -  latest value per topic, rates, history rings, event log. Written by the MQTT thread, read by HTTP threads.
+# ============================================================================
+class Store:
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.latest = {}                                   # topic -> {"t": monotonic, "wall", "d", "retained", "n"}
+        self.rate = {}                                     # topic -> msgs/s (EMA over 1 s buckets)
+        self._bucket = {}                                  # topic -> [bucket_start, count]
+        self.status = {}                                   # status topic -> {"online": bool, "t": monotonic}
+        self.events = deque(maxlen=EVENTS_KEEP)
+        self._eid = 0
+        self.arm = None                                    # latest converted arm telemetry
+        self.belt = None
+        self.hist_arm = deque(maxlen=int(HIST_S * HIST_HZ))     # (t_wall, cur_mA[6], temp[6], pos[6])
+        self.hist_belt = deque(maxlen=int(HIST_S * HIST_HZ))    # (t_wall, current, velocity, temp, position)
+        self._last_hist = {"arm": 0.0, "belt": 0.0}
+        self.rings = {k: deque(maxlen=STALE_RING) for k in
+                      ("an_arm_transition", "an_arm_cycle", "an_arm_condition", "an_belt_transition", "an_belt_run",
+                       "an_belt_condition", "autoen_cycle", "camera_demand", "camera_window", "camera_fps")}
+        self.health_prev = {}
+        self.mqtt_connected = False
+        self.mqtt_since = None
+        self.trace = None                                  # overview.Trace: the optimizer's decisions as sentences
+        self.jpeg, self.jpeg_t, self.jpeg_seq = None, None, 0   # the newest camera picture (bytes, monotonic, number)
+        self.jpeg_cv = threading.Condition()
+        self.raw, self.raw_t = None, None                  # the unannotated picture for Calibrate
+
+    def on_jpeg(self, payload):
+        with self.jpeg_cv:
+            self.jpeg, self.jpeg_t = bytes(payload), time.monotonic()
+            self.jpeg_seq += 1
+            self.jpeg_cv.notify_all()
+
+    def wait_jpeg(self, last_seq, timeout=5.0):
+        """(seq, jpeg bytes) of a picture newer than last_seq, or (last_seq, None) after the timeout."""
+        with self.jpeg_cv:
+            if self.jpeg_seq == last_seq:
+                self.jpeg_cv.wait(timeout)
+            return (self.jpeg_seq, self.jpeg) if self.jpeg_seq != last_seq else (last_seq, None)
+
+    # ---- event log ------------------------------------------------------------
+    def add_event(self, src, level, text, data=None, t=None):
+        with self.lock:
+            self._eid += 1
+            self.events.append({"id": self._eid, "t": t or now_wall(), "src": src, "level": level, "text": text, "data": data})
+
+    def events_since(self, since, limit=300):
+        with self.lock:
+            out = [e for e in self.events if e["id"] > since]
+        return out[-limit:]
+
+    # ---- message intake ----------------------------------------------------------
+    def on_message(self, topic, payload, retained):
+        try:
+            d = json.loads(payload)
+        except ValueError:
+            return
+        mono = time.monotonic()
+        with self.lock:
+            rec = self.latest.get(topic)
+            self.latest[topic] = {"t": mono, "wall": now_wall(), "d": d, "retained": bool(retained),
+                                  "n": (rec["n"] if rec else 0) + 1}
+            if not retained:                                # a retained copy at connect time says nothing about the rate
+                b = self._bucket.setdefault(topic, [mono, 0])
+                b[1] += 1
+                if mono - b[0] >= 1.0:
+                    r = b[1] / (mono - b[0])
+                    self.rate[topic] = r if topic not in self.rate else 0.5 * self.rate[topic] + 0.5 * r
+                    self._bucket[topic] = [mono, 0]
+            if topic.endswith("/status") and isinstance(d, dict) and "online" in d:
+                prev = self.status.get(topic, {}).get("online")
+                self.status[topic] = {"online": bool(d["online"]), "t": mono}
+                if prev is not None and prev != bool(d["online"]) or (prev is None and not d["online"]):
+                    pass_event = ("status", "info" if d["online"] else "alarm",
+                                  f"{topic}: {'online' if d['online'] else 'OFFLINE'}")
+                else:
+                    pass_event = None
+            else:
+                pass_event = None
+        if pass_event:
+            self.add_event(*pass_event)
+        try:
+            self._handle(topic, d, retained, mono)
+        except (KeyError, TypeError, ValueError, AttributeError):
+            pass                                            # a payload of an unexpected shape must never stop the intake
+
+    def _handle(self, topic, d, retained, mono):
+        wall = now_wall()
+        if topic == "arm/telemetry":
+            js = d.get("joints") or {}
+            row = []
+            for sid in "123456":
+                j = js.get(sid) or {}
+                cur = j.get("cur")
+                row.append({"pos": j.get("pos"), "speed": j.get("speed"),
+                            "cur_mA": None if cur is None else abs(float(cur)) * MA_PER_COUNT, "temp": j.get("temp")})
+            with self.lock:
+                self.arm = {"joints": row, "ts": d.get("ts"), "t": mono}
+                if mono - self._last_hist["arm"] >= 1.0 / HIST_HZ:
+                    self._last_hist["arm"] = mono
+                    self.hist_arm.append((wall, [r["cur_mA"] for r in row], [r["temp"] for r in row],
+                                          [r["pos"] for r in row]))
+        elif topic == "belt/telemetry":
+            with self.lock:
+                self.belt = dict(d, t=mono)
+                if mono - self._last_hist["belt"] >= 1.0 / HIST_HZ:
+                    self._last_hist["belt"] = mono
+                    self.hist_belt.append((wall, d.get("current"), d.get("velocity"), d.get("temp"), d.get("position")))
+        elif topic in ("analyzer/arm/transition", "analyzer/belt/transition"):
+            who = "arm" if "/arm/" in topic else "belt"
+            with self.lock:
+                self.rings[f"an_{who}_transition"].append(d)
+            if retained:
+                return
+            lvl = "warn" if d.get("unexpected") else "info"
+            self.add_event(f"{who} analyzer", lvl, f"{d.get('from')} -> {d.get('to')}  ({d.get('detail')})", t=d.get("t"))
+        elif topic == "analyzer/arm/cycle":
+            with self.lock:
+                self.rings["an_arm_cycle"].append(d)
+            if not retained:
+                bad = d.get("result") != "OK"
+                self.add_event("arm analyzer", "warn" if bad else "info",
+                               f"cycle {d.get('result')} {d.get('seconds')} s -> {d.get('dest')}"
+                               + (f"  {'; '.join(d.get('conditions') or [])}" if d.get("conditions") else ""), t=d.get("t"))
+        elif topic == "analyzer/belt/run":
+            with self.lock:
+                self.rings["an_belt_run"].append(d)
+            if not retained:
+                bad = d.get("result") != "OK"
+                self.add_event("belt analyzer", "warn" if bad else "info",
+                               f"run {d.get('result')} {d.get('seconds')} s, {d.get('distance_rev')} rev"
+                               + (f"  {', '.join(d.get('reasons') or [])}" if d.get("reasons") else ""), t=d.get("t"))
+        elif topic in ("analyzer/arm/condition", "analyzer/belt/condition"):
+            who = "arm" if "/arm/" in topic else "belt"
+            with self.lock:
+                self.rings[f"an_{who}_condition"].append(d)
+            if not retained:
+                lv = d.get("level")
+                self.add_event(f"{who} analyzer", {"ALARM": "alarm", "WARN": "warn"}.get(lv, "info"),
+                               d.get("text") or str(d), t=d.get("t"))
+        elif topic == "autoen/cycle":
+            with self.lock:
+                self.rings["autoen_cycle"].append(d)
+            if not retained:
+                if self.trace is not None:
+                    self.trace.cycle(d, wall)
+                ok = d.get("result") == "OK"
+                self.add_event("autoen", "info" if ok else "warn",
+                               f"cycle {d.get('n')} {d.get('result')} {d.get('secs')} s, drop {d.get('drop')}")
+        elif topic == "arm/gripper" and not retained:
+            st = d.get("state")
+            self.add_event("gripper", "alarm" if st == "ERROR" else "info",
+                           f"gripper {st}" + (f" ({d.get('reason')})" if d.get("reason") else ""))
+        elif topic == "belt/event" and not retained:
+            nm = d.get("name")
+            self.add_event("belt", "alarm" if nm == "FAULT" else "info", f"belt event {nm} {d.get('args') or ''}".strip())
+        elif topic == "camera/demand":
+            with self.lock:
+                self.rings["camera_demand"].append(d)
+        elif topic == "camera/window":
+            with self.lock:
+                self.rings["camera_window"].append(d)
+            if not retained:
+                self.add_event("camera", "info", f"window {d.get('window_id')} complete: {d.get('total')} objects")
+        elif topic == "camera/perception":
+            with self.lock:
+                self.rings["camera_fps"].append((wall, d.get("fps"), d.get("active")))
+        elif topic == "orchestrator/plan" and self.trace is not None:
+            self.trace.plan(d, wall, retained=retained)
+        elif topic == "health/status":
+            nodes = d.get("nodes") or {}
+            for name, v in nodes.items():
+                st = v.get("status")
+                if self.health_prev.get(name) not in (None, st):
+                    self.add_event("health", {"STALE": "warn", "OFFLINE": "alarm"}.get(st, "info"),
+                                   f"{name}: {self.health_prev[name]} -> {st}" + (f" ({v.get('reason')})" if v.get("reason") else ""))
+                self.health_prev[name] = st
+
+    # ---- views ----------------------------------------------------------------------
+    def age(self, topic, mono=None):
+        with self.lock:
+            r = self.latest.get(topic)
+        return None if r is None else round((mono or time.monotonic()) - r["t"], 2)
+
+    def get(self, topic):
+        with self.lock:
+            r = self.latest.get(topic)
+        return None if r is None else r["d"]
+
+    def get_live(self, topic):
+        """Latest payload of a LIVE topic. A retained copy delivered at connect time is not 'live': (payload, retained, age)."""
+        with self.lock:
+            r = self.latest.get(topic)
+        return (None, False, None) if r is None else (r["d"], r["retained"], round(time.monotonic() - r["t"], 2))
+
+    def node_status(self):
+        """Dashboard-side liveness of every node: OK / STALE / OFFLINE / NOT AVAILABLE, with the reason."""
+        mono = time.monotonic()
+        out = {}
+        with self.lock:
+            for name, (st_topic, sigs, optional) in NODES.items():
+                st = self.status.get(st_topic) if st_topic else None
+                ages = {}
+                for sig in sigs:
+                    r = self.latest.get(sig)
+                    ages[sig] = None if r is None or (r["retained"] and r["n"] == 1) else mono - r["t"]
+                seen = [a for a in ages.values() if a is not None]
+                worst = "OK"
+                why = []
+                for sig, (stale, off) in sigs.items():
+                    a = ages[sig]
+                    if a is None:
+                        continue
+                    if a > off:
+                        worst = "OFFLINE"
+                        why.append(f"{sig} silent {a:.0f} s")
+                    elif a > stale and worst != "OFFLINE":
+                        worst = "STALE"
+                        why.append(f"{sig} late {a:.1f} s")
+                missing = [s for s, a in ages.items() if a is None]
+                if st is not None and not st["online"]:
+                    worst, why = "OFFLINE", ["the broker announced it died (Last Will)"]
+                elif not seen and st is None:
+                    worst, why = ("NOT AVAILABLE" if optional else "NO DATA"), ["nothing received yet"]
+                elif missing and worst == "OK":
+                    worst = "STALE" if len(missing) < len(sigs) else "NO DATA"
+                    why = [f"no {', '.join(missing)} yet"]
+                out[name] = {"status": worst, "reason": "; ".join(why), "age_s": None if not seen else round(min(seen), 1),
+                             "online_flag": None if st is None else st["online"], "optional": optional,
+                             "signals": {s: (None if a is None else round(a, 1)) for s, a in ages.items()}}
+        return out
+
+    def topics(self):
+        mono = time.monotonic()
+        with self.lock:
+            return sorted(({"topic": t, "n": r["n"], "age_s": round(mono - r["t"], 1), "rate_hz": round(self.rate.get(t, 0.0), 2),
+                            "retained": r["retained"]} for t, r in self.latest.items()), key=lambda x: x["topic"])
+
+    def history(self, seconds, step):
+        cut = now_wall() - seconds
+        with self.lock:
+            a = [r for r in self.hist_arm if r[0] >= cut][::step]
+            b = [r for r in self.hist_belt if r[0] >= cut][::step]
+        return {"arm": {"t": [r[0] for r in a], "cur": [r[1] for r in a], "temp": [r[2] for r in a], "pos": [r[3] for r in a]},
+                "belt": {"t": [r[0] for r in b], "current": [r[1] for r in b], "velocity": [r[2] for r in b],
+                         "temp": [r[3] for r in b], "position": [r[4] for r in b]}}
+
+    def ring(self, name):
+        with self.lock:
+            return list(self.rings[name])
+
+
+# ============================================================================
+# 2. LIVE SNAPSHOT  -  one JSON blob, built 10x a second, pushed to every open page (server-sent events)
+# ============================================================================
+def build_live(store, seq):
+    mono = time.monotonic()
+    arm = store.arm
+    belt = store.belt
+    g = store.get
+    def tel_age(x):
+        return None if x is None else round(mono - x["t"], 2)
+    def pick(topic):
+        d, retained, age = store.get_live(topic)
+        return {"d": d, "age": age, "retained": retained} if d is not None else None
+    return {
+        "seq": seq, "t": now_wall(),
+        "mqtt": store.mqtt_connected,
+        "arm": None if arm is None else {"joints": arm["joints"], "age": tel_age(arm)},
+        "belt": None if belt is None else {"d": {k: v for k, v in belt.items() if k != "t"}, "age": tel_age(belt)},
+        "arm_state": pick("arm/state"), "autoen": pick("autoen/state"),
+        "an_arm": pick("analyzer/arm/state"), "an_belt": pick("analyzer/belt/state"),
+        "ir": g("arm/ir"), "gripper": g("arm/gripper"), "belt_event": g("belt/event"),
+        "camera": {"perception": pick("camera/perception"), "demand": g("camera/demand"), "window": g("camera/window")},
+        "health": g("health/status"),
+        "forecast": g("forecast/demand"), "orchestrator": pick("orchestrator/status"), "orch_plan": g("orchestrator/plan"),
+        "logger": {"arm": g("logger/arm/heartbeat"), "camera": g("logger/camera/heartbeat")},
+        "health_age": store.age("health/status"),
+        "nodes": store.node_status(),
+        "last_event": store.events[-1]["id"] if store.events else 0,
+        "trace_last": store.trace.last_id() if store.trace is not None else 0,
+        "jpeg_age": None if store.jpeg_t is None else round(mono - store.jpeg_t, 1),
+    }
+
+
+def build_overview(store, pi):
+    """The Overview page's slow part (1 Hz is plenty): the Pi, the programs, the hardware and READY - and the cloud."""
+    p = pi.get()
+    try:
+        hw = overview.hardware(store, p)
+    except Exception as e:                                   # noqa: BLE001 - one bad value must not blank the page
+        hw = [{"name": "Hardware check", "state": "warn", "text": f"could not read: {e}", "required": False, "hint": ""}]
+    try:
+        progs = overview.programs(store, p, store.node_status())
+    except Exception as e:                                   # noqa: BLE001
+        progs = [{"name": "Programs", "state": "warn", "text": f"could not read: {e}", "required": False, "pids": [],
+                  "cpu_pct": None, "twice": False}]
+    out = {"t": now_wall(), "pi": {k: v for k, v in p.items() if k != "programs"}, "programs": progs, "hardware": hw,
+           "ready": overview.readiness(hw, progs)}
+    orch, _r, age = store.get_live("orchestrator/status")   # the cloud: PRISM's voice (2026-11-12)
+    out["cloud"] = overview.cloud_say(orch, age, store.get("autoen/state"))
+    return out
+
+
+class Hub:
+    """Builds the snapshot on a ticker and wakes every SSE handler: N browsers cost one JSON encode, not N."""
+
+    def __init__(self, store):
+        self.store, self.cv, self.seq, self.blob = store, threading.Condition(), 0, b"{}"
+        self.stop = False
+        threading.Thread(target=self._run, daemon=True).start()
+
+    def _run(self):
+        period = 1.0 / PUSH_HZ
+        while not self.stop:
+            t0 = time.monotonic()
+            try:
+                self.seq += 1
+                blob = json.dumps(_finite(build_live(self.store, self.seq)), separators=(",", ":"), default=str).encode()
+                with self.cv:
+                    self.blob = blob
+                    self.cv.notify_all()
+            except Exception as e:                           # noqa: BLE001 - keep the ticker alive
+                print("[dashboard] snapshot error:", e, flush=True)
+            time.sleep(max(0.0, period - (time.monotonic() - t0)))
+
+    def wait(self, last_seq, timeout=15.0):
+        with self.cv:
+            if self.seq == last_seq:
+                self.cv.wait(timeout)
+            return self.seq, self.blob
+
+
+# ============================================================================
+# 3. MQTT
+# ============================================================================
+class Bus:
+    def __init__(self, store, host, port):
+        self.store = store
+        if mqtt is None:
+            print("[dashboard] paho-mqtt is not installed: the page works, live data does not (pip install paho-mqtt)", flush=True)
+            self.c = None
+            return
+        self.c = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=f"dashboardnode{os.getpid()}")
+        self.c.on_connect, self.c.on_disconnect = self._on_connect, self._on_disconnect
+        self.c.on_message, self.c.on_connect_fail = self._on_message, self._on_fail
+        self.host, self.port = host, port
+        self.last_msg = time.monotonic()
+        self.c.connect_async(host, port, keepalive=10)
+        self.c.loop_start()
+        threading.Thread(target=self._watchdog, daemon=True).start()
+
+    def _on_connect(self, client, userdata, flags, reason_code, properties):
+        self.store.mqtt_connected = True
+        self.store.mqtt_since = now_wall()
+        client.subscribe([(t, 0) for t in SUBSCRIBE])          # re-subscribe on every connect
+        print(f"[dashboard] connected to the broker: {reason_code}", flush=True)
+
+    def _on_disconnect(self, client, userdata, flags, reason_code, properties):
+        self.store.mqtt_connected = False
+        print("[dashboard] lost the broker", flush=True)
+
+    def _on_fail(self, client, userdata):
+        print(f"[dashboard] cannot reach the broker at {self.host}:{self.port} - retrying", flush=True)
+
+    def _on_message(self, client, userdata, msg):
+        self.last_msg = time.monotonic()
+        if msg.topic == JPEG_TOPIC:
+            self.store.on_jpeg(msg.payload)
+            return
+        if msg.topic == RAW_TOPIC:
+            self.store.raw, self.store.raw_t = bytes(msg.payload), time.monotonic()
+            return
+        try:
+            self.store.on_message(msg.topic, msg.payload, msg.retain)
+        except Exception as e:                               # noqa: BLE001 - an exception here would stop paho's network thread for good
+            print(f"[dashboard] bad message on {msg.topic}: {e!r}", flush=True)
+
+    def _watchdog(self):
+        """The socket can stay 'connected' while the broker has stopped delivering to us (seen with a broker that wedged):
+        no message at all for WATCHDOG_S while connected -> reconnect and re-subscribe. Harmless on a healthy broker."""
+        while True:
+            time.sleep(5.0)
+            if self.store.mqtt_connected and time.monotonic() - self.last_msg > WATCHDOG_S:
+                print(f"[dashboard] no MQTT message for {WATCHDOG_S:.0f} s: reconnecting", flush=True)
+                self.last_msg = time.monotonic()
+                try:
+                    self.c.reconnect()
+                except Exception as e:                       # noqa: BLE001
+                    print(f"[dashboard] reconnect failed: {e!r}", flush=True)
+
+    def close(self):
+        if self.c:
+            self.c.loop_stop()
+            self.c.disconnect()
+
+
+# ============================================================================
+# 4. FILES: SQLite (read-only), CSV logs, threshold files, arm model map
+# ============================================================================
+SAFE_NAME = re.compile(r"^[A-Za-z0-9_.\-]+$")
+
+
+def db_open(data_dir, name):
+    """Read-only handle to ONE .db file inside data_dir (basename only: no path tricks)."""
+    if not SAFE_NAME.match(name or "") or not name.endswith(".db"):
+        raise ValueError("bad database name")
+    path = os.path.join(data_dir, name)
+    if not os.path.isfile(path):
+        raise ValueError("no such database")
+    return sqlite3.connect(f"file:{path}?mode=ro", uri=True, timeout=2.0)
+
+
+def db_list(data_dir):
+    out = []
+    for p in sorted(glob.glob(os.path.join(data_dir, "*.db"))):
+        name = os.path.basename(p)
+        item = {"name": name, "size": os.path.getsize(p), "mtime": os.path.getmtime(p), "tables": [], "error": None}
+        try:
+            db = db_open(data_dir, name)
+            for (t,) in db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name"):
+                n = db.execute(f'SELECT count(*) FROM "{t}"').fetchone()[0]
+                item["tables"].append({"name": t, "rows": n})
+            db.close()
+        except (sqlite3.Error, ValueError) as e:
+            item["error"] = str(e)
+        out.append(item)
+    return out
+
+
+def db_rows(data_dir, name, table, limit, before_id):
+    db = db_open(data_dir, name)
+    try:
+        tabs = {r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        if table not in tabs:
+            raise ValueError("no such table")
+        cols = [r[1] for r in db.execute(f'PRAGMA table_info("{table}")')]
+        order = "id DESC" if "id" in cols else "rowid DESC"
+        where, args = ("WHERE id < ?", [before_id]) if before_id and "id" in cols else ("", [])
+        rows = db.execute(f'SELECT * FROM "{table}" {where} ORDER BY {order} LIMIT ?', args + [limit]).fetchall()
+        total = db.execute(f'SELECT count(*) FROM "{table}"').fetchone()[0]
+        return {"columns": cols, "rows": rows, "total": total}
+    finally:
+        db.close()
+
+
+def csv_list(log_dir):
+    out = []
+    for p in sorted(glob.glob(os.path.join(log_dir, "*")), key=os.path.getmtime, reverse=True):
+        if os.path.isfile(p) and p.rsplit(".", 1)[-1] in ("csv", "log"):
+            out.append({"name": os.path.basename(p), "size": os.path.getsize(p), "mtime": os.path.getmtime(p)})
+    return out[:60]
+
+
+def csv_tail(log_dir, name, limit):
+    if not SAFE_NAME.match(name or ""):
+        raise ValueError("bad file name")
+    path = os.path.join(log_dir, name)
+    if not os.path.isfile(path):
+        raise ValueError("no such file")
+    with open(path, "r", encoding="utf-8", errors="replace") as f:
+        lines = f.read().splitlines()
+    head = lines[0] if lines else ""
+    return {"header": head, "lines": lines[1:][-limit:], "total": max(0, len(lines) - 1)}
+
+
+def load_module(name, dirs):
+    """Import arm_analyzer_node / belt_analyzer_node if they sit next to us: gives the threshold defaults + validation."""
+    for d in dirs:
+        p = os.path.join(d, name + ".py")
+        if os.path.isfile(p):
+            try:
+                spec = importlib.util.spec_from_file_location(name, p)
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                return mod
+            except Exception as e:                           # noqa: BLE001
+                print(f"[dashboard] could not import {p}: {e}", flush=True)
+    return None
+
+
+class Thresholds:
+    """Reads / writes arm_thresholds.json and belt_thresholds.json in the analyzers' FILE schema. Validation and the
+    defaults come from the analyzer modules themselves, so the dashboard can never save a file the analyzer refuses."""
+
+    def __init__(self, data_dir, dirs):
+        self.dir = data_dir
+        self.mods = {"arm": load_module("arm_analyzer_node", dirs), "belt": load_module("belt_analyzer_node", dirs)}
+        self.files = {"arm": "arm_thresholds.json", "belt": "belt_thresholds.json"}
+
+    def _path(self, who):
+        return os.path.join(self.dir, self.files[who])
+
+    def read(self, who):
+        mod = self.mods.get(who)
+        if mod is None:
+            return {"available": False, "error": f"{who}_analyzer_node.py not found next to the dashboard"}
+        res = mod.load_file_schema(self._path(who))                # arm -> (dict, used, problems) ; belt -> (dict, used)
+        merged, used, problems = res if len(res) == 3 else (res[0], res[1], [])
+        return {"available": True, "file": self._path(who), "exists": used, "thresholds": merged, "problems": problems,
+                "defaults": mod.DEFAULT_THRESHOLDS}
+
+    def write(self, who, body):
+        mod = self.mods.get(who)
+        if mod is None:
+            raise ValueError("analyzer module not available")
+        if who == "arm":
+            merged, problems = mod.merge_thresholds(body)
+            if problems:
+                raise ValueError("; ".join(problems[:4]))
+        else:                                               # belt: validate the numbers ourselves, same rules as its --calibrate
+            merged = json.loads(json.dumps(mod.DEFAULT_THRESHOLDS))
+            for key, row in body.items():
+                if key not in merged or not isinstance(row, dict):
+                    raise ValueError(f"unknown key {key}")
+                for fld, v in row.items():
+                    if isinstance(v, bool) or not isinstance(v, (int, float)):
+                        raise ValueError(f"{key}.{fld} must be a number")
+                    merged[key][fld] = v
+            for st in ("STOPPED", "STARTING", "RUNNING", "STOPPING", "STALLED"):
+                if not 0 < merged[st]["warn_current"] < merged[st]["alarm_current"]:
+                    raise ValueError(f"{st}: need 0 < warn < alarm")
+            t = merged["TEMPERATURE"]
+            if not 0 < t["warn"] < t["alarm"]:
+                raise ValueError("TEMPERATURE: need 0 < warn < alarm")
+        tmp = self._path(who) + ".tmp"
+        with open(tmp, "w") as f:
+            json.dump(merged, f, indent=2)
+        os.replace(tmp, self._path(who))                    # atomic: the analyzer never reads a half-written file
+        return merged
+
+
+class ArmMap:
+    """Real servo ticks -> model joint angles. A guess that you align once on the 3D page (see arm_model_map.json)."""
+    DEFAULT = {"joints": [{"sign": 1, "zero": 1988}, {"sign": 1, "zero": 1826}, {"sign": 1, "zero": 2217},
+                          {"sign": 1, "zero": 1961}, {"sign": -1, "zero": 2263}],
+               "gripper": {"zero": 2108},
+               "note": "model angle (rad) = sign * (ticks - zero) * 2*pi/4096 ; jaw angle = g_close + (ticks - gripper.zero) * 2*pi/4096 "
+                       "(gripper.zero = ticks with the block gripped). Fitted from the named poses (J1-J4 signs agree with the bin poses; "
+                       "J5 sign and all zeros are a first guess): use Align on the 3D Twin page."}
+
+    def __init__(self, path):
+        self.path = path
+
+    def read(self):
+        try:
+            with open(self.path) as f:
+                d = json.load(f)
+            if len(d.get("joints", [])) == 5 and "gripper" in d:
+                return d
+        except (OSError, ValueError):
+            pass
+        return json.loads(json.dumps(self.DEFAULT))
+
+    def write(self, d):
+        js = d.get("joints")
+        if not (isinstance(js, list) and len(js) == 5):
+            raise ValueError("need 5 joints")
+        clean = {"joints": [], "gripper": {}, "note": self.DEFAULT["note"]}
+        for j in js:
+            s, z = j.get("sign"), j.get("zero")
+            if s not in (1, -1) or isinstance(z, bool) or not isinstance(z, (int, float)) or not -8192 <= z <= 12288:
+                raise ValueError("sign must be 1 or -1, zero a tick count")
+            clean["joints"].append({"sign": int(s), "zero": round(float(z), 1)})
+        gz = d.get("gripper", {}).get("zero")
+        if isinstance(gz, bool) or not isinstance(gz, (int, float)):
+            raise ValueError("gripper zero must be a number")
+        clean["gripper"] = {"zero": round(float(gz), 1)}
+        with open(self.path, "w") as f:
+            json.dump(clean, f, indent=2)
+        return clean
+
+
+# ============================================================================
+# 5. HTTP
+# ============================================================================
+def relay_to_autoen(base, path, body):
+    """POST to autoen_node's own API from the server side, with the Origin / Host its CSRF guard expects."""
+    u = urlparse(base)
+    hostport = u.netloc
+    data = None if body is None else json.dumps(body).encode()
+    req = urllib.request.Request(base.rstrip("/") + path, data=data, method="POST" if path != "/api/state" else "GET",
+                                 headers={"Origin": f"{u.scheme}://{hostport}", "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=4) as r:
+            return r.status, json.loads(r.read() or b"{}")
+    except urllib.error.HTTPError as e:
+        try:
+            return e.code, json.loads(e.read() or b"{}")
+        except ValueError:
+            return e.code, {"error": f"autoen_node answered {e.code}"}
+    except (urllib.error.URLError, OSError, ValueError) as e:
+        return 502, {"error": f"cannot reach autoen_node at {base}: {getattr(e, 'reason', e)}"}
+
+
+class AutoenKeeper:
+    """After a Stop pressed on THIS dashboard, autoen finishes its run and exits (one run per program). The keeper then
+    starts a fresh autoen exactly like start_cell.sh step 2 (nothing moves until Start), so the Autoen block is ready
+    for the next run like a normal web page (2026-11-12, the operator). Only after our own Stop: never after
+    stop_cell.sh or a crash. Never a second copy (checked in /proc)."""
+
+    PRISM = os.path.dirname(HERE)
+
+    def __init__(self, autoen_url):
+        self.url, self.state, self.lock = autoen_url, None, threading.Lock()
+
+    @staticmethod
+    def running():
+        for pid in os.listdir("/proc"):
+            if pid.isdigit():
+                try:
+                    with open(f"/proc/{pid}/cmdline", "rb") as f:
+                        cmd = f.read().split(b"\0")
+                    if any(c.endswith(b"auto_en_new.py") for c in cmd[:3]) and b"python" in cmd[0]:
+                        return True
+                except OSError:
+                    continue
+        return False
+
+    def after_stop(self):
+        with self.lock:
+            if self.state:
+                return
+            self.state = "the run is ending (arm holds, belt coasts)"
+        threading.Thread(target=self._run, daemon=True).start()
+
+    def _run(self):
+        try:
+            end = time.time() + 90
+            while self.running() and time.time() < end:     # autoen closes its files and exits
+                time.sleep(0.5)
+            if self.running():
+                self.state = None                           # still there (paused / busy): nothing to restart
+                return
+            self.state = "getting ready for a new run (starting autoen)"
+            os.makedirs(os.path.join(self.PRISM, "run_logs"), exist_ok=True)
+            log = open(os.path.join(self.PRISM, "run_logs", time.strftime("autoen_%Y%m%d_%H%M%S.log")), "w")
+            subprocess.Popen([os.path.expanduser("~/autoen-env/bin/python"), "auto_en_new.py"],
+                             cwd=os.path.join(self.PRISM, "autoencoder"), stdout=log, stderr=subprocess.STDOUT,
+                             start_new_session=True)
+            end = time.time() + 60
+            while time.time() < end:
+                code, st = relay_to_autoen(self.url, "/api/state", None)
+                if code == 200 and st.get("status") == "ready":
+                    break
+                time.sleep(1.0)
+        finally:
+            self.state = None
+
+
+def _finite(x):
+    """The same data with every NaN / Infinity replaced by None (valid JSON for the browser)."""
+    if isinstance(x, float):
+        return x if x == x and x not in (float("inf"), float("-inf")) else None
+    if isinstance(x, dict):
+        return {k: _finite(v) for k, v in x.items()}
+    if isinstance(x, (list, tuple)):
+        return [_finite(v) for v in x]
+    return x
+
+
+def make_handler(app):
+    class H(BaseHTTPRequestHandler):
+        server_version = "prism-dashboard"
+        protocol_version = "HTTP/1.1"
+
+        def log_message(self, *a):
+            pass                                             # the console stays for node output, not for every GET
+
+        # ---- guards ----------------------------------------------------------------
+        def _host_ok(self):
+            if app.any_host:
+                return True
+            host = (self.headers.get("Host") or "").rsplit(":", 1)[0].strip("[]")
+            return host in ("127.0.0.1", "localhost", "::1")      # DNS-rebinding guard
+
+        def _post_ok(self):
+            o = self.headers.get("Origin")
+            return o is None or o.split("://", 1)[-1] == self.headers.get("Host")
+
+        def _json(self, obj, code=200):
+            b = json.dumps(_finite(obj), separators=(",", ":"), default=str).encode()   # NaN -> null: a browser cannot read NaN
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(b)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(b)
+
+        def _err(self, code, msg):
+            self._json({"error": msg}, code)
+
+        def _body(self):
+            n = int(self.headers.get("Content-Length") or 0)
+            if n > 200_000:
+                raise ValueError("body too large")
+            return json.loads(self.rfile.read(n) or b"{}")
+
+        # ---- GET -------------------------------------------------------------------
+        def do_GET(self):
+            if not self._host_ok():
+                return self._err(403, "host not allowed")
+            u = urlparse(self.path)
+            q = {k: v[0] for k, v in parse_qs(u.query).items()}
+            p = u.path
+            try:
+                if p == "/api/stream":
+                    return self._stream()
+                if p == "/api/camera.mjpg":
+                    return self._mjpeg()
+                if p == "/api/camera.jpg":
+                    if app.store.jpeg is None:
+                        return self._err(404, "no camera picture yet (is vision running?)")
+                    b = app.store.jpeg
+                    self.send_response(200)
+                    self.send_header("Content-Type", "image/jpeg")
+                    self.send_header("Content-Length", str(len(b)))
+                    self.send_header("Cache-Control", "no-store")
+                    self.end_headers()
+                    self.wfile.write(b)
+                    return
+                if p == "/api/camera_raw.jpg":
+                    if app.store.raw is None or time.monotonic() - app.store.raw_t > 10:
+                        return self._err(404, "no raw picture (vision not running, or not updated for Calibrate yet)")
+                    b = app.store.raw
+                    self.send_response(200)
+                    self.send_header("Content-Type", "image/jpeg")
+                    self.send_header("Content-Length", str(len(b)))
+                    self.send_header("Cache-Control", "no-store")
+                    self.end_headers()
+                    self.wfile.write(b)
+                    return
+                if p == "/api/cam/calib":
+                    return self._json(camcal.read())
+                if p == "/api/info":
+                    return self._json({"read_only": app.read_only, "autoen": app.autoen, "mqtt": f"{app.mqtt_host}:{app.mqtt_port}",
+                                       "data_dir": app.data_dir, "log_dir": app.log_dir, "ma_per_count": MA_PER_COUNT,
+                                       "nodes": list(NODES), "time": now_wall()})
+                if p == "/api/history":
+                    sec = max(5, min(HIST_S, int(float(q.get("seconds", 120)))))
+                    step = max(1, int(sec * HIST_HZ / 600))
+                    return self._json(app.store.history(sec, step))
+                if p == "/api/events":
+                    return self._json({"events": app.store.events_since(int(q.get("since", 0)))})
+                if p == "/api/rings":
+                    return self._json({k: app.store.ring(k) for k in app.store.rings})
+                if p == "/api/topics":
+                    return self._json({"topics": app.store.topics()})
+                if p == "/api/overview":
+                    now = time.monotonic()
+                    if app.ov_cache is None or now - app.ov_cache[0] > OVERVIEW_CACHE_S:
+                        app.ov_cache = (now, build_overview(app.store, app.pi))
+                    return self._json(app.ov_cache[1])
+                if p == "/api/ready":                     # for start_cell.sh: one line per item, READY / NOT READY last
+                    o = build_overview(app.store, app.pi)
+                    mark = {"ok": "OK  ", "warn": "WARN", "bad": "FAIL", "off": " -- "}
+                    lines = [f"  {mark[x['state']]}  {x['name']:<22} {x['text']}" + (f"   -> {x['hint']}" if x.get("hint") else "")
+                             for x in o["programs"] + o["hardware"]]
+                    lines.append("READY" if o["ready"]["ready"] else "NOT READY")
+                    b = ("\n".join(lines) + "\n").encode()
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/plain; charset=utf-8")
+                    self.send_header("Content-Length", str(len(b)))
+                    self.end_headers()
+                    self.wfile.write(b)
+                    return
+                if p == "/api/trace":
+                    return self._json({"trace": app.store.trace.since(int(q.get("since", 0)))})
+                if p == "/api/cases":
+                    return self._json(overview.cases_tail(max(1, min(50, int(q.get("limit", 10))))))
+                if p == "/api/control/state":
+                    code, body = relay_to_autoen(app.autoen, "/api/state", None)
+                    if app.keeper.state:
+                        body = {**body, "keeper": app.keeper.state}
+                    return self._json(body, code)
+                if p == "/api/db/list":
+                    return self._json({"dbs": db_list(app.data_dir), "csv": csv_list(app.log_dir)})
+                if p == "/api/db/rows":
+                    return self._json(db_rows(app.data_dir, q.get("db"), q.get("table"),
+                                              max(1, min(500, int(q.get("limit", 50)))), int(q.get("before", 0) or 0)))
+                if p == "/api/csv/tail":
+                    return self._json(csv_tail(app.log_dir, q.get("file"), max(1, min(500, int(q.get("limit", 50))))))
+                if p == "/api/thresholds":
+                    who = q.get("who")
+                    if who not in ("arm", "belt"):
+                        return self._err(400, "who = arm | belt")
+                    return self._json(app.thr.read(who))
+                if p == "/api/armmap":
+                    return self._json(app.armmap.read())
+                return self._static(p)
+            except (ValueError, sqlite3.Error, KeyError) as e:
+                return self._err(400, str(e))
+            except (BrokenPipeError, ConnectionResetError):
+                return
+
+        def _static(self, p):
+            p = "/index.html" if p in ("", "/") else p
+            rel = os.path.normpath(p.lstrip("/"))
+            full = os.path.abspath(os.path.join(WEB_DIR, rel))
+            if not full.startswith(WEB_DIR + os.sep) or not os.path.isfile(full):
+                return self._err(404, "not found")
+            with open(full, "rb") as f:
+                b = f.read()
+            ctype = mimetypes.guess_type(full)[0] or "application/octet-stream"
+            if full.endswith(".js"):
+                ctype = "application/javascript; charset=utf-8"
+            elif full.endswith((".html", ".css")):
+                ctype += "; charset=utf-8"
+            self.send_response(200)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(len(b)))
+            self.send_header("Cache-Control", "no-cache" if not full.endswith(("cad_data.js", ".min.js")) else "max-age=3600")
+            self.end_headers()
+            self.wfile.write(b)
+
+        def _stream(self):
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Connection", "keep-alive")
+            self.end_headers()
+            seq = 0
+            try:
+                while not app.stop:
+                    seq, blob = app.hub.wait(seq)
+                    self.wfile.write(b"data: " + blob + b"\n\n")
+                    self.wfile.flush()
+            except (BrokenPipeError, ConnectionResetError, OSError):
+                return
+
+        def _mjpeg(self):
+            """The live camera as an MJPEG stream (an <img> shows it). Each open page costs one thread, no encoding."""
+            self.send_response(200)
+            self.send_header("Content-Type", "multipart/x-mixed-replace; boundary=frame")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Connection", "close")
+            self.end_headers()
+            seq, sent = 0, 0.0
+            try:
+                while not app.stop:
+                    seq, b = app.store.wait_jpeg(seq)
+                    if b is None:
+                        continue                              # no new picture: keep the stream open
+                    if time.monotonic() - sent < 1.0 / MJPEG_MAX_FPS:
+                        continue                              # lighter for the browser: skip this one
+                    sent = time.monotonic()
+                    self.wfile.write(b"--frame\r\nContent-Type: image/jpeg\r\nContent-Length: "
+                                     + str(len(b)).encode() + b"\r\n\r\n" + b + b"\r\n")
+                    self.wfile.flush()
+            except (BrokenPipeError, ConnectionResetError, OSError):
+                return
+
+        # ---- POST ------------------------------------------------------------------
+        def do_POST(self):
+            if not self._host_ok() or not self._post_ok():
+                return self._err(403, "cross-site request refused")
+            if app.read_only:
+                return self._err(403, "the dashboard runs with --read-only")
+            p = urlparse(self.path).path
+            try:
+                body = self._body()
+                m = re.match(r"^/api/control/(start|stop|pause|config)$", p)
+                if m:
+                    code, out = relay_to_autoen(app.autoen, CONTROL_PATHS[m.group(1)], body if m.group(1) in ("start", "config") else {})
+                    if m.group(1) == "stop" and code == 200:
+                        app.keeper.after_stop()             # a fresh autoen afterwards: the block is ready again
+                    app.store.add_event("dashboard", "info" if code == 200 else "warn",
+                                        f"control {m.group(1)} -> {code}" + ("" if code == 200 else f" {out.get('error', '')}"))
+                    return self._json(out, code)
+                if p == "/api/thresholds":
+                    who = body.get("who")
+                    if who not in ("arm", "belt"):
+                        return self._err(400, "who = arm | belt")
+                    merged = app.thr.write(who, body.get("thresholds") or {})
+                    app.store.add_event("dashboard", "info", f"{who} thresholds saved ({app.thr.files[who]})")
+                    return self._json({"saved": True, "thresholds": merged})
+                if p == "/api/armmap":
+                    return self._json({"saved": True, "map": app.armmap.write(body)})
+                if p == "/api/cam/raw":                    # the Calibrate page is open: ask vision for raw frames
+                    if app.bus.c is not None:
+                        app.bus.c.publish(CAM_CMD_TOPIC, json.dumps({"raw_s": max(5, min(120, int(body.get("seconds", 60))))}), qos=0)
+                    return self._json({"ok": app.bus.c is not None})
+                if p == "/api/cam/control":
+                    v = camcal.set_control(body.get("name"), body.get("value"))
+                    app.store.add_event("dashboard", "info", f"camera {body.get('name')} = {v}")
+                    return self._json({"ok": True, "value": v, "controls": camcal.controls()[1]})
+                if p == "/api/cam/preview":
+                    return self._json({"changes": camcal.preview(body)})
+                if p == "/api/cam/save":
+                    out = camcal.save(body)
+                    app.store.add_event("dashboard", "info", f"camera calibration saved ({len(out['changes'])} changes); backup {os.path.basename(out['backup'])}")
+                    return self._json(out)
+                if p == "/api/cam/undo":
+                    out = camcal.undo()
+                    app.store.add_event("dashboard", "warn", f"camera calibration: back to {out['restored']}")
+                    return self._json(out)
+                return self._err(404, "unknown endpoint")
+            except (ValueError, TypeError, KeyError, json.JSONDecodeError, OSError) as e:
+                return self._err(400, str(e))
+
+    return H
+
+
+class App:
+    pass
+
+
+def main(argv=None):
+    try:
+        import signal
+        faulthandler.register(signal.SIGUSR1)              # kill -USR1 <pid> prints every thread's stack (debugging a hang)
+    except (AttributeError, ValueError, OSError):
+        pass                                                # Windows: no SIGUSR1
+    ap = argparse.ArgumentParser(description="PRISM dashboard: one local web page for the whole cell")
+    ap.add_argument("--host", default="127.0.0.1", help="bind address (default 127.0.0.1 = this machine only)")
+    ap.add_argument("--port", type=int, default=8080)
+    ap.add_argument("--mqtt-host", default=BROKER_HOST)
+    ap.add_argument("--mqtt-port", type=int, default=BROKER_PORT)
+    ap.add_argument("--autoen", default="http://127.0.0.1:8781", help="autoen_node's own web address (Start/Stop/settings are relayed to it)")
+    ap.add_argument("--data-dir", default=".", help="folder with the .db files and the analyzers' threshold files")
+    ap.add_argument("--log-dir", default=None, help="autoen_node's --log-dir (default: <data-dir>/riff_logs)")
+    ap.add_argument("--code-dir", default=None, help="folder with arm_analyzer_node.py / belt_analyzer_node.py (default: next to this file, the current folder, PYTHONPATH)")
+    ap.add_argument("--read-only", action="store_true", help="no Start/Stop and no threshold writes: a pure display")
+    ap.add_argument("--open", action="store_true", help="open the page in the browser")
+    a = ap.parse_args(argv)
+
+    app = App()
+    app.store = Store()
+    app.data_dir = os.path.abspath(a.data_dir)
+    app.log_dir = os.path.abspath(a.log_dir or os.path.join(a.data_dir, "riff_logs"))
+    app.autoen, app.read_only, app.stop = a.autoen, a.read_only, False
+    app.any_host = a.host not in ("127.0.0.1", "localhost", "::1")
+    app.mqtt_host, app.mqtt_port = a.mqtt_host, a.mqtt_port
+    code_dirs = [d for d in [a.code_dir, HERE, os.getcwd(), app.data_dir, os.path.dirname(HERE)] + [p for p in os.environ.get("PYTHONPATH", "").split(os.pathsep) if p] if d]
+    app.thr = Thresholds(app.data_dir, code_dirs)
+    app.armmap = ArmMap(os.path.join(app.data_dir, "arm_model_map.json"))
+    app.pi = overview.PiStat()
+    app.keeper = AutoenKeeper(app.autoen)
+    app.ov_cache = None
+    app.store.trace = overview.Trace(on_entry=app.store.add_event)
+    told = app.store.trace.load_history()                 # before MQTT: the live plans continue the story
+    print(f"[dashboard] optimizer trace: {told} records from its last log", flush=True)
+    app.bus = Bus(app.store, a.mqtt_host, a.mqtt_port)
+    app.hub = Hub(app.store)
+    srv = ThreadingHTTPServer((a.host, a.port), make_handler(app))
+    srv.daemon_threads = True
+    url = f"http://{'127.0.0.1' if a.host == '0.0.0.0' else a.host}:{a.port}"
+    print(f"[dashboard] page: {url}   broker {a.mqtt_host}:{a.mqtt_port}   autoen {a.autoen}   data {app.data_dir}"
+          f"{'   READ-ONLY' if a.read_only else ''}", flush=True)
+    if app.any_host:
+        print("[dashboard] WARNING: bound to a network address and there is NO login: anyone on that network can press Start / Stop."
+              " Prefer 127.0.0.1 and an SSH tunnel, or use --read-only.", flush=True)
+    if a.open:
+        import webbrowser
+        webbrowser.open(url)
+    try:
+        srv.serve_forever()
+    except KeyboardInterrupt:
+        print("\n[dashboard] stopping")
+    finally:
+        app.stop = True
+        app.hub.stop = True
+        app.bus.close()
+        srv.server_close()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,4 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261114_164434.jsonl
+[plan 1] OFF    22 rpm / arm 1.75  - autoen not reachable
+[plan 2] OFF    22 rpm / arm 1.75  - autoen ready

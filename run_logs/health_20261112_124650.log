@@ -1,0 +1,23 @@
+[health] watching arm, camera, logger_arm, logger_camera via localhost:1883. Ctrl+C to stop.
+[health] connected to broker: Success
+[12:46:52] ARM           UNKNOWN -> OFFLINE   (arm/status says offline (last will or clean exit))
+[12:46:52] CAMERA        UNKNOWN -> OFFLINE   (camera/status says offline (last will or clean exit))
+[12:46:53] LOGGER_ARM    UNKNOWN -> OK
+[12:46:53] LOGGER_CAMERA UNKNOWN -> OK
+[12:46:58] ARM           OFFLINE -> UNKNOWN   (arm/state: no message yet)
+[12:46:58] CAMERA        OFFLINE -> UNKNOWN   (camera/demand: no message yet)
+[12:46:59] ARM           UNKNOWN -> OK
+[12:47:01] arm=OK  camera=UNKNOWN  logger_arm=OK  logger_camera=OK
+[12:47:06] CAMERA        UNKNOWN -> OFFLINE   (camera/demand: never seen)
+[12:47:08] CAMERA        OFFLINE -> RECOVERED
+[12:47:11] CAMERA        RECOVERED -> OK
+[12:47:11] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[12:47:21] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[12:47:31] arm=OK  camera=OK  logger_arm=OK  logger_camera=OK
+[12:47:40] ARM           OK -> OFFLINE   (arm/status says offline (last will or clean exit))
+[12:47:41] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[12:47:51] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[12:48:01] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[12:48:11] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[12:48:21] arm=OFFLINE  camera=OK  logger_arm=OK  logger_camera=OK
+[health] lost the broker: health is UNKNOWN until it is back

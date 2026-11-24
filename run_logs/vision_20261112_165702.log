@@ -1,0 +1,365 @@
+=================================================================
+DELTA - Raspberry Pi 4 Object Perception + Spacing + Demand Collection
+=================================================================
+Mode: HSV color detection + USB camera (no depth) + Kalman
+Colours (priority order): white, orange
+Belt axis: u   direction: +1
+Camera streams: 854x480 at 6 FPS
+Demand window: 180 seconds
+Data sample interval: 10 seconds
+History file: delta_demand_history.csv
+Summary file: delta_3min_summary.csv
+Press ESC or Q to exit.
+=================================================================
+[camera] using /dev/v4l/by-id/usb-QCM_Astro_HD_Camera-video-index0
+
+Starting USB camera /dev/v4l/by-id/usb-QCM_Astro_HD_Camera-video-index0 at 1280x720 -> 854x480, 6 FPS (camera 15 FPS, MJPG)...
+Camera warm-up: 1/3
+Camera warm-up: 2/3
+Camera warm-up: 3/3
+[spacing] USB camera has no depth; gaps will be in pixels only
+[belt] learning the empty belt (reflections are ignored); belt brightness at calibration V=67
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in "/home/mekkhram/prism-env/lib/python3.11/site-packages/cv2/qt/plugins"
+QFontDatabase: Cannot find font directory /home/mekkhram/prism-env/lib/python3.11/site-packages/cv2/qt/fonts.
+Note that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.
+QFontDatabase: Cannot find font directory /home/mekkhram/prism-env/lib/python3.11/site-packages/cv2/qt/fonts.
+Note that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.
+QFontDatabase: Cannot find font directory /home/mekkhram/prism-env/lib/python3.11/site-packages/cv2/qt/fonts.
+Note that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.
+QFontDatabase: Cannot find font directory /home/mekkhram/prism-env/lib/python3.11/site-packages/cv2/qt/fonts.
+Note that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.
+QFontDatabase: Cannot find font directory /home/mekkhram/prism-env/lib/python3.11/site-packages/cv2/qt/fonts.
+Note that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.
+[DATA] Window 1 |   10.1s | +0 {} (total 0)
+[DATA] Window 1 |   20.1s | +4 {'white': 2, 'orange': 2} (total 4)
+[DATA] Window 1 |   30.1s | +2 {'orange': 1, 'white': 1} (total 6)
+[DATA] Window 1 |   40.3s | +0 {} (total 6)
+[DATA] Window 1 |   50.3s | +0 {} (total 6)
+[DATA] Window 1 |   60.5s | +0 {} (total 6)
+[DATA] Window 1 |   70.5s | +0 {} (total 6)
+[DATA] Window 1 |   80.5s | +0 {} (total 6)
+[DATA] Window 1 |   90.5s | +0 {} (total 6)
+[DATA] Window 1 |  100.6s | +0 {} (total 6)
+[DATA] Window 1 |  110.6s | +0 {} (total 6)
+[DATA] Window 1 |  120.8s | +0 {} (total 6)
+[DATA] Window 1 |  130.8s | +0 {} (total 6)
+[DATA] Window 1 |  141.0s | +0 {} (total 6)
+[DATA] Window 1 |  151.1s | +0 {} (total 6)
+[DATA] Window 1 |  161.1s | +0 {} (total 6)
+[DATA] Window 1 |  171.3s | +0 {} (total 6)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #1 COMPLETE
+Objects : 6   by colour: {'white': 3, 'orange': 3}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 2 |   10.0s | +1 {'white': 1} (total 1)
+[DATA] Window 2 |   20.2s | +0 {} (total 1)
+[DATA] Window 2 |   30.2s | +0 {} (total 1)
+[DATA] Window 2 |   40.3s | +0 {} (total 1)
+[DATA] Window 2 |   50.3s | +0 {} (total 1)
+[DATA] Window 2 |   60.3s | +0 {} (total 1)
+[DATA] Window 2 |   70.5s | +0 {} (total 1)
+[DATA] Window 2 |   80.5s | +0 {} (total 1)
+[DATA] Window 2 |   90.6s | +0 {} (total 1)
+[DATA] Window 2 |  100.8s | +0 {} (total 1)
+[DATA] Window 2 |  110.8s | +0 {} (total 1)
+[DATA] Window 2 |  120.8s | +0 {} (total 1)
+[DATA] Window 2 |  131.0s | +0 {} (total 1)
+[DATA] Window 2 |  141.0s | +0 {} (total 1)
+[DATA] Window 2 |  151.1s | +0 {} (total 1)
+[DATA] Window 2 |  161.3s | +0 {} (total 1)
+[DATA] Window 2 |  171.3s | +0 {} (total 1)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #2 COMPLETE
+Objects : 1   by colour: {'white': 1}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 3 |   10.2s | +0 {} (total 0)
+[DATA] Window 3 |   20.3s | +0 {} (total 0)
+[DATA] Window 3 |   30.3s | +0 {} (total 0)
+[DATA] Window 3 |   40.5s | +0 {} (total 0)
+[DATA] Window 3 |   50.5s | +0 {} (total 0)
+[DATA] Window 3 |   60.7s | +0 {} (total 0)
+[DATA] Window 3 |   70.8s | +0 {} (total 0)
+[DATA] Window 3 |   80.8s | +0 {} (total 0)
+[DATA] Window 3 |   90.8s | +0 {} (total 0)
+[DATA] Window 3 |  101.0s | +0 {} (total 0)
+[DATA] Window 3 |  111.0s | +0 {} (total 0)
+[DATA] Window 3 |  121.2s | +0 {} (total 0)
+[DATA] Window 3 |  131.2s | +0 {} (total 0)
+[DATA] Window 3 |  141.4s | +0 {} (total 0)
+[DATA] Window 3 |  151.4s | +0 {} (total 0)
+[DATA] Window 3 |  161.4s | +0 {} (total 0)
+[DATA] Window 3 |  171.6s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #3 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 4 |   10.0s | +0 {} (total 0)
+[DATA] Window 4 |   20.0s | +0 {} (total 0)
+[DATA] Window 4 |   30.2s | +0 {} (total 0)
+[DATA] Window 4 |   40.3s | +0 {} (total 0)
+[DATA] Window 4 |   50.4s | +0 {} (total 0)
+[DATA] Window 4 |   60.5s | +0 {} (total 0)
+[DATA] Window 4 |   70.7s | +0 {} (total 0)
+[DATA] Window 4 |   80.8s | +0 {} (total 0)
+[DATA] Window 4 |   90.8s | +0 {} (total 0)
+[DATA] Window 4 |  100.9s | +0 {} (total 0)
+[DATA] Window 4 |  110.9s | +0 {} (total 0)
+[DATA] Window 4 |  120.9s | +0 {} (total 0)
+[DATA] Window 4 |  131.0s | +0 {} (total 0)
+[belt] light changed (65% of the belt different at once): learning the empty belt again
+[belt] 5 cube(s) were standing on the belt while it was learned: kept as cubes
+[DATA] Window 4 |  141.2s | +4 {'white': 1, 'orange': 3} (total 4)
+[DATA] Window 4 |  151.2s | +2 {'white': 2} (total 6)
+[DATA] Window 4 |  161.4s | +0 {} (total 6)
+[DATA] Window 4 |  171.5s | +0 {} (total 6)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #4 COMPLETE
+Objects : 6   by colour: {'white': 3, 'orange': 3}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 5 |   10.0s | +0 {} (total 0)
+[DATA] Window 5 |   20.2s | +0 {} (total 0)
+[DATA] Window 5 |   30.3s | +0 {} (total 0)
+[DATA] Window 5 |   40.5s | +0 {} (total 0)
+[DATA] Window 5 |   50.5s | +0 {} (total 0)
+[DATA] Window 5 |   60.5s | +0 {} (total 0)
+[DATA] Window 5 |   70.7s | +0 {} (total 0)
+[DATA] Window 5 |   80.7s | +0 {} (total 0)
+[DATA] Window 5 |   90.8s | +1 {'white': 1} (total 1)
+[DATA] Window 5 |  101.0s | +0 {} (total 1)
+[DATA] Window 5 |  111.2s | +0 {} (total 1)
+[DATA] Window 5 |  121.2s | +0 {} (total 1)
+[DATA] Window 5 |  131.3s | +0 {} (total 1)
+[DATA] Window 5 |  141.5s | +0 {} (total 1)
+[DATA] Window 5 |  151.5s | +0 {} (total 1)
+[DATA] Window 5 |  161.7s | +0 {} (total 1)
+[DATA] Window 5 |  171.8s | +0 {} (total 1)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #5 COMPLETE
+Objects : 1   by colour: {'white': 1}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 6 |   10.0s | +0 {} (total 0)
+[DATA] Window 6 |   20.2s | +0 {} (total 0)
+[DATA] Window 6 |   30.2s | +0 {} (total 0)
+[DATA] Window 6 |   40.3s | +0 {} (total 0)
+[DATA] Window 6 |   50.5s | +1 {'white': 1} (total 1)
+[DATA] Window 6 |   60.7s | +0 {} (total 1)
+[DATA] Window 6 |   70.8s | +0 {} (total 1)
+[DATA] Window 6 |   80.8s | +0 {} (total 1)
+[DATA] Window 6 |   91.0s | +0 {} (total 1)
+[DATA] Window 6 |  101.0s | +0 {} (total 1)
+[DATA] Window 6 |  111.2s | +0 {} (total 1)
+[DATA] Window 6 |  121.2s | +0 {} (total 1)
+[DATA] Window 6 |  131.3s | +0 {} (total 1)
+[DATA] Window 6 |  141.5s | +0 {} (total 1)
+[DATA] Window 6 |  151.5s | +0 {} (total 1)
+[DATA] Window 6 |  161.7s | +2 {'white': 2} (total 3)
+[DATA] Window 6 |  171.8s | +0 {} (total 3)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #6 COMPLETE
+Objects : 4   by colour: {'white': 4}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 7 |   10.0s | +1 {'white': 1} (total 1)
+[DATA] Window 7 |   20.2s | +1 {'white': 1} (total 2)
+[DATA] Window 7 |   30.2s | +0 {} (total 2)
+[DATA] Window 7 |   40.3s | +0 {} (total 2)
+[DATA] Window 7 |   50.5s | +0 {} (total 2)
+[DATA] Window 7 |   60.5s | +0 {} (total 2)
+[DATA] Window 7 |   70.7s | +0 {} (total 2)
+[DATA] Window 7 |   80.8s | +0 {} (total 2)
+[belt] light changed (58% of the belt different at once): learning the empty belt again
+[belt] 4 cube(s) were standing on the belt while it was learned: kept as cubes
+[DATA] Window 7 |   91.0s | +3 {'white': 1, 'orange': 2} (total 5)
+[DATA] Window 7 |  101.0s | +0 {} (total 5)
+[DATA] Window 7 |  111.2s | +0 {} (total 5)
+[DATA] Window 7 |  121.2s | +0 {} (total 5)
+[DATA] Window 7 |  131.3s | +0 {} (total 5)
+[DATA] Window 7 |  141.5s | +0 {} (total 5)
+[DATA] Window 7 |  151.7s | +0 {} (total 5)
+[DATA] Window 7 |  161.7s | +0 {} (total 5)
+[DATA] Window 7 |  171.8s | +0 {} (total 5)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #7 COMPLETE
+Objects : 5   by colour: {'white': 3, 'orange': 2}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 8 |   10.0s | +0 {} (total 0)
+[DATA] Window 8 |   20.2s | +0 {} (total 0)
+[DATA] Window 8 |   30.3s | +0 {} (total 0)
+[DATA] Window 8 |   40.3s | +0 {} (total 0)
+[DATA] Window 8 |   50.3s | +0 {} (total 0)
+[DATA] Window 8 |   60.5s | +0 {} (total 0)
+[DATA] Window 8 |   70.7s | +0 {} (total 0)
+[DATA] Window 8 |   80.7s | +0 {} (total 0)
+[DATA] Window 8 |   90.7s | +0 {} (total 0)
+[DATA] Window 8 |  100.7s | +0 {} (total 0)
+[DATA] Window 8 |  110.8s | +0 {} (total 0)
+[DATA] Window 8 |  121.0s | +0 {} (total 0)
+[DATA] Window 8 |  131.0s | +0 {} (total 0)
+[DATA] Window 8 |  141.2s | +0 {} (total 0)
+[DATA] Window 8 |  151.3s | +0 {} (total 0)
+[DATA] Window 8 |  161.3s | +0 {} (total 0)
+[DATA] Window 8 |  171.5s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #8 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 9 |   10.2s | +0 {} (total 0)
+[DATA] Window 9 |   20.3s | +0 {} (total 0)
+[DATA] Window 9 |   30.5s | +0 {} (total 0)
+[DATA] Window 9 |   40.5s | +0 {} (total 0)
+[DATA] Window 9 |   50.7s | +0 {} (total 0)
+[DATA] Window 9 |   60.8s | +0 {} (total 0)
+[DATA] Window 9 |   70.8s | +0 {} (total 0)
+[DATA] Window 9 |   81.0s | +0 {} (total 0)
+[DATA] Window 9 |   91.2s | +0 {} (total 0)
+[DATA] Window 9 |  101.2s | +0 {} (total 0)
+[DATA] Window 9 |  111.3s | +0 {} (total 0)
+[DATA] Window 9 |  121.3s | +0 {} (total 0)
+[DATA] Window 9 |  131.3s | +0 {} (total 0)
+[DATA] Window 9 |  141.5s | +0 {} (total 0)
+[DATA] Window 9 |  151.5s | +0 {} (total 0)
+[DATA] Window 9 |  161.5s | +0 {} (total 0)
+[DATA] Window 9 |  171.5s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #9 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 10 |   10.0s | +0 {} (total 0)
+[DATA] Window 10 |   20.2s | +0 {} (total 0)
+[DATA] Window 10 |   30.3s | +0 {} (total 0)
+[DATA] Window 10 |   40.3s | +0 {} (total 0)
+[DATA] Window 10 |   50.5s | +0 {} (total 0)
+[DATA] Window 10 |   60.7s | +0 {} (total 0)
+[DATA] Window 10 |   70.7s | +0 {} (total 0)
+[DATA] Window 10 |   80.8s | +0 {} (total 0)
+[DATA] Window 10 |   91.0s | +0 {} (total 0)
+[DATA] Window 10 |  101.0s | +0 {} (total 0)
+[DATA] Window 10 |  111.2s | +0 {} (total 0)
+[DATA] Window 10 |  121.3s | +0 {} (total 0)
+[DATA] Window 10 |  131.3s | +0 {} (total 0)
+[DATA] Window 10 |  141.5s | +0 {} (total 0)
+[DATA] Window 10 |  151.7s | +0 {} (total 0)
+[DATA] Window 10 |  161.7s | +0 {} (total 0)
+[DATA] Window 10 |  171.7s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #10 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 11 |   10.2s | +0 {} (total 0)
+[DATA] Window 11 |   20.3s | +0 {} (total 0)
+[DATA] Window 11 |   30.5s | +0 {} (total 0)
+[DATA] Window 11 |   40.7s | +0 {} (total 0)
+[DATA] Window 11 |   50.7s | +0 {} (total 0)
+[DATA] Window 11 |   60.8s | +0 {} (total 0)
+[DATA] Window 11 |   70.8s | +0 {} (total 0)
+[DATA] Window 11 |   81.0s | +0 {} (total 0)
+[DATA] Window 11 |   91.2s | +0 {} (total 0)
+[DATA] Window 11 |  101.2s | +0 {} (total 0)
+[DATA] Window 11 |  111.3s | +0 {} (total 0)
+[DATA] Window 11 |  121.3s | +0 {} (total 0)
+[DATA] Window 11 |  131.3s | +0 {} (total 0)
+[DATA] Window 11 |  141.5s | +0 {} (total 0)
+[DATA] Window 11 |  151.7s | +0 {} (total 0)
+[DATA] Window 11 |  161.7s | +0 {} (total 0)
+[DATA] Window 11 |  171.7s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #11 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[belt] light changed (50% of the belt different at once): learning the empty belt again
+[belt] 3 cube(s) were standing on the belt while it was learned: kept as cubes
+[DATA] Window 12 |   10.0s | +4 {'orange': 2, 'white': 2} (total 4)
+[DATA] Window 12 |   20.2s | +1 {'white': 1} (total 5)
+[DATA] Window 12 |   30.3s | +0 {} (total 5)
+[DATA] Window 12 |   40.4s | +0 {} (total 5)
+[DATA] Window 12 |   50.5s | +0 {} (total 5)
+[DATA] Window 12 |   60.5s | +0 {} (total 5)
+[DATA] Window 12 |   70.7s | +0 {} (total 5)
+[DATA] Window 12 |   80.7s | +0 {} (total 5)
+[DATA] Window 12 |   90.8s | +0 {} (total 5)
+[DATA] Window 12 |  101.0s | +0 {} (total 5)
+[DATA] Window 12 |  111.2s | +0 {} (total 5)
+[DATA] Window 12 |  121.2s | +0 {} (total 5)
+[DATA] Window 12 |  131.3s | +0 {} (total 5)
+[DATA] Window 12 |  141.3s | +0 {} (total 5)
+[DATA] Window 12 |  151.5s | +0 {} (total 5)
+[DATA] Window 12 |  161.5s | +0 {} (total 5)
+[DATA] Window 12 |  171.7s | +0 {} (total 5)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #12 COMPLETE
+Objects : 5   by colour: {'orange': 2, 'white': 3}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 13 |   10.0s | +0 {} (total 0)
+[DATA] Window 13 |   20.1s | +0 {} (total 0)
+[DATA] Window 13 |   30.3s | +0 {} (total 0)
+[DATA] Window 13 |   40.3s | +0 {} (total 0)
+[DATA] Window 13 |   50.4s | +0 {} (total 0)
+[DATA] Window 13 |   60.6s | +0 {} (total 0)
+[DATA] Window 13 |   70.7s | +0 {} (total 0)
+[DATA] Window 13 |   81.0s | +0 {} (total 0)
+[DATA] Window 13 |   91.0s | +0 {} (total 0)
+[DATA] Window 13 |  101.3s | +0 {} (total 0)
+[DATA] Window 13 |  111.3s | +0 {} (total 0)
+[DATA] Window 13 |  121.3s | +0 {} (total 0)
+[DATA] Window 13 |  131.5s | +0 {} (total 0)
+[DATA] Window 13 |  141.6s | +0 {} (total 0)
+[DATA] Window 13 |  151.7s | +0 {} (total 0)
+[DATA] Window 13 |  161.8s | +0 {} (total 0)
+[DATA] Window 13 |  171.9s | +0 {} (total 0)
+
+-----------------------------------------------------------------
+3-MINUTE WINDOW #13 COMPLETE
+Objects : 0   by colour: {}
+Saved to: delta_3min_summary.csv
+-----------------------------------------------------------------
+
+[DATA] Window 14 |   10.2s | +0 {} (total 0)
+[DATA] Window 14 |   20.3s | +0 {} (total 0)
+[DATA] Window 14 |   30.3s | +0 {} (total 0)
+[DATA] Window 14 |   40.5s | +0 {} (total 0)
+[DATA] Window 14 |   50.7s | +0 {} (total 0)
+[DATA] Window 14 |   60.8s | +0 {} (total 0)
+[DATA] Window 14 |   70.9s | +0 {} (total 0)
+[DATA] Window 14 |   81.1s | +0 {} (total 0)
+[DATA] Window 14 |   91.1s | +0 {} (total 0)
+[DATA] Window 14 |  101.1s | +0 {} (total 0)
+
+Stopping...
+
+Stopping camera...
+Done.

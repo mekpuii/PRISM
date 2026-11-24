@@ -1,0 +1,113 @@
+19:54:40.722 ## cycle 0 phase PREPARE
+19:54:40.723 TX X,CPR,11880
+19:54:40.733 TX X,TEMPMAX,60
+19:54:40.744 TX X,OFFSET,0
+19:54:40.755 TX X,FEEDCFG,180,0,300,300
+19:54:40.765 TX X,PID,4.5,13.5,0
+19:54:40.775 TX X,WDT,500
+19:54:40.786 TX X,ZERO
+19:54:40.797 TX X,VER
+19:54:40.807 TX P,6,2492,1200,8
+19:54:40.811 RX X,VER,Oct 27 2026 18:56:16,enc=1,ina=1,temp=1,hz=10000,home=180,on=1111
+19:54:40.818 TX P,1,2069,360,8
+19:54:40.828 TX P,2,1478,360,8
+19:54:40.838 TX P,3,2172,360,8
+19:54:40.848 TX P,4,3190,360,8
+19:54:40.858 TX P,5,1230,360,8
+19:54:40.868 TX H,1
+19:54:40.879 TX H,2
+19:54:40.889 TX H,3
+19:54:40.902 TX H,4
+19:54:40.915 TX H,5
+19:54:40.923 ## cycle 1 phase FEED
+19:54:40.935 TX X,FEED
+19:54:41.607 RX X,E,FEED_DONE,9962
+19:54:41.607 ## cycle 1 phase TRANSPORT
+19:54:41.608 TX P,1,2103,360,8
+19:54:41.618 TX P,2,1662,360,8
+19:54:41.629 TX X,CONV,6.70
+19:54:41.639 TX P,3,2357,360,8
+19:54:41.649 TX P,4,3009,360,8
+19:54:41.659 TX P,5,1239,360,8
+19:54:42.384 TX H,1
+19:54:42.396 TX H,2
+19:54:42.406 TX H,3
+19:54:42.417 TX H,4
+19:54:42.427 TX H,5
+19:55:01.718 TX X,BRAKE
+19:55:01.729 TX X,STOP
+19:55:02.750 ## cycle 2 phase FEED
+19:55:02.752 TX X,FEED
+19:55:03.364 RX X,E,FEED_DONE,31504
+19:55:03.365 ## cycle 2 phase TRANSPORT
+19:55:03.367 TX P,1,2103,540,8
+19:55:03.378 TX X,CONV,20.00
+19:55:03.389 TX P,2,1662,540,8
+19:55:03.399 TX P,3,2357,540,8
+19:55:03.411 TX P,4,3009,540,8
+19:55:03.425 TX P,5,1239,540,8
+19:55:03.435 TX H,1
+19:55:03.477 TX H,2
+19:55:03.487 TX H,3
+19:55:03.498 TX H,4
+19:55:03.531 TX H,5
+19:55:05.652 RX X,E,ARRIVED,33767,33167
+19:55:05.653 ## cycle 2 phase GRIP
+19:55:05.705 TX P,6,2323,1800,70
+19:55:06.725 TX P,6,2323,1800,70
+19:55:07.733 TX P,6,2323,1800,70
+19:55:07.753 TX P,6,2012,400,8
+19:55:09.265 TX P,6,2012,400,8
+19:55:10.772 TX P,6,2012,400,8
+19:55:12.582 TX P,6,2477,400,8
+19:55:12.582 ## cycle 2 phase RECOVER
+19:55:12.592 TX P,6,2492,1200,8
+19:55:12.602 TX P,1,2069,540,8
+19:55:12.613 TX P,2,1478,540,8
+19:55:12.623 TX P,3,2172,540,8
+19:55:12.633 TX P,4,3190,540,8
+19:55:12.643 TX P,5,1230,540,8
+19:55:13.505 TX H,1
+19:55:13.515 TX H,2
+19:55:13.525 TX H,3
+19:55:13.536 TX H,4
+19:55:13.567 TX H,5
+19:55:13.587 TX X,STOP
+19:56:14.072 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:14.387 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:56:14.731 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:15.045 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:56:15.356 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:15.703 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:56:16.015 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:16.330 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:56:16.673 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:16.988 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:56:17.299 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:17.645 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:56:17.956 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:26.765 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:27.078 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:27.394 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:56:27.740 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:56:28.050 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:28.363 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:29.679 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:29.995 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:56:30.308 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:56:30.653 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:56:30.965 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:31.278 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:31.624 ## RX GAP 0.31s - the Mega sent nothing (its loop was blocked?)
+19:56:31.936 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:32.249 ## RX GAP 0.30s - the Mega sent nothing (its loop was blocked?)
+19:56:32.798 ## RX GAP 0.41s - the Mega sent nothing (its loop was blocked?)
+19:58:29.772 ## cycle 2 phase IDLE
+19:58:29.775 TX X,STOP
+19:58:29.788 TX H,1
+19:58:29.799 TX H,2
+19:58:29.809 TX H,3
+19:58:29.820 TX H,4
+19:58:29.838 TX H,5
+19:58:30.509 TX X,STOP
+19:58:32.524 ## end, unparsable RX lines: 0

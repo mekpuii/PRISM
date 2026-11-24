@@ -1,0 +1,113 @@
+# main.py - the orchestrator: one process, one tick loop (PRISM, Raspberry Pi 4).
+#   observe (MQTT -> WorldState) -> predict (cube Kalman) -> optimize (Plan) -> actuate (autoen HTTP + MQTT)
+#
+# USAGE  (orch-env, from orchestrator/)
+#   python3 main.py --shadow                 compute + log plans, send NOTHING to autoen (Phase D step 1)
+#   python3 main.py                          optimizer in control (operator watching, Ctrl+C ready)
+#   python3 main.py --objective energy       fewest J per cube instead of most cubes per minute
+#   python3 main.py --probe-s 120            when IDLE, try one feed every 120 s (default: wait for the operator)
+#   python3 main.py --auto-resume            when IDLE, forecast.py decides when to try a feed (learns refill times)
+#
+# autoen must already be started by the operator (arm awake, Start pressed, pause_before_set = 0).
+# Operator commands while it runs:  mosquitto_pub -t orchestrator/cmd -m resume   (or park / wake)
+# Ctrl+C stops the orchestrator only: autoen keeps whatever state it has (running or paused).
+import argparse
+import signal
+import sys
+import time
+
+from actuate import Actuate
+from forecast import STATE_FILE, Forecast
+from meter import EnergyMeter
+from observe import Observe
+from optimize import LEARNED_FILE, OBJECTIVES, Optimize
+from predict import Predict
+from incidents import STATE_FILE as INCIDENTS_FILE, Responder
+from scene import Scene
+
+TICK_S = 0.05  # 20 Hz control tick
+ENERGY_LOG_S = 60.0  # energy by mode goes to the log this often (report.py adds it up)
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="PRISM orchestrator: observe -> predict -> optimize -> actuate")
+    ap.add_argument("--shadow", action="store_true", help="compute and log plans, send nothing to autoen")
+    ap.add_argument("--objective", choices=OBJECTIVES, default="efficiency",
+                    help="efficiency (default) = safety always, then 1 good cubes per minute, 2 energy; "
+                         "priority = 1 safety, 2 energy, 3 speed; or throughput / energy / balanced")
+    ap.add_argument("--keep-budget", action="store_true",
+                    help="leave autoen's sets / cycles per set as they were started (default: the optimizer owns the "
+                         "run and raises them, so it never 'finishes' in the middle of the work)")
+    ap.add_argument("--no-frontier", action="store_true",
+                    help="stay inside the tested grid (default: try one step at a time beyond what it has proven)")
+    ap.add_argument("--lam", type=float, default=0.5, help="balanced: J per second of cycle time")
+    ap.add_argument("--j-limit", type=float, default=None, help="only configs with at most this many J per cube")
+    ap.add_argument("--probe-s", type=float, default=None, help="IDLE: resume to try a feed after this many seconds")
+    ap.add_argument("--auto-resume", action="store_true",
+                    help="IDLE: probe the feeder when forecast.py expects a refill (history in forecast_state.json)")
+    ap.add_argument("--no-sort", action="store_true",
+                    help="do not sort by colour (autoen keeps its own drop order)")
+    ap.add_argument("--no-auto-recover", action="store_true",
+                    help="every abnormal cycle -> ALERT, wait for a person (default: answer it itself, incidents.py)")
+    ap.add_argument("--no-stuck-alert", action="store_true",
+                    help="a cube still on the running belt is only logged (default: brake + ALERT)")
+    ap.add_argument("--no-brake", action="store_true", help="IDLE: leave the belt coasting (the brake saves ~0.05 W)")
+    ap.add_argument("--max-s", type=float, default=None, help="stop after this many seconds (tests)")
+    a = ap.parse_args(argv)
+
+    if a.auto_resume and a.probe_s:
+        ap.error("--auto-resume and --probe-s are two ways to resume: pick one")
+    optimize = Optimize(objective=a.objective, lam=a.lam, j_limit=a.j_limit, probe_s=a.probe_s,
+                        forecast=Forecast(path="" if a.shadow else STATE_FILE),   # learns from every real run
+                        auto_resume=a.auto_resume,
+                        learned_path=None if a.shadow else LEARNED_FILE,  # so do the success counts (not in shadow)
+                        sort=not a.no_sort,                                 # orange -> left bin, white -> right bin
+                        scene=Scene(record=not a.shadow),                   # one case row per cycle (cases/)
+                        stuck_alert=not a.no_stuck_alert,
+                        frontier=not a.no_frontier and not a.shadow,
+                        own_run=not a.keep_budget,
+                        responder=None if a.no_auto_recover else
+                        Responder(path=None if a.shadow else INCIDENTS_FILE))   # learns which answer works
+    for w in optimize.warnings:
+        print("WARNING:", w, flush=True)
+    observe = Observe()                # owns the MQTT client and the cube state store
+    predict = Predict()                # owns the Kalman filter(s)
+    actuate = Actuate(shadow=a.shadow, idle_brake=not a.no_brake)
+    print(f"orchestrator {'SHADOW (sends nothing)' if a.shadow else 'LIVE'}  objective={a.objective}  "
+          f"log={actuate.log_path}", flush=True)
+
+    meter = EnergyMeter()              # belt + arm joules per mode, logged every minute
+    stop = {"now": False}
+    signal.signal(signal.SIGTERM, lambda *_: stop.update(now=True))
+    t_start = t_energy = time.monotonic()
+    label = "OFF"                      # the mode in force since the last tick (PROBE = RUN looking for a refill)
+    try:
+        while not stop["now"] and (a.max_s is None or time.monotonic() - t_start < a.max_s):
+            t0 = time.monotonic()
+
+            state = observe.step()                                      # 1. drain inbound messages, snapshot
+            meter.step(state, label)
+            pred = predict.step(state)                                  # 2. forecast cube positions
+            view = actuate.view()
+            for c in view.new_cycles:
+                actuate.log("cycle", c)
+            plan = optimize.step(state, pred, view, actuate.commands())  # 3. mode + settings
+            actuate.step(plan)                                          # 4. send at the boundary, publish
+            label = "PROBE" if optimize.probing else plan.mode
+            if t0 - t_energy >= ENERGY_LOG_S:
+                actuate.log("energy", {"by_mode": meter.take()})
+                t_energy = t0
+
+            time.sleep(max(0.0, TICK_S - (time.monotonic() - t0)))
+    except KeyboardInterrupt:
+        pass
+    finally:
+        print("stopping: autoen is left as it is", flush=True)
+        actuate.log("energy", {"by_mode": meter.take()})
+        actuate.stop()
+        observe.shutdown()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

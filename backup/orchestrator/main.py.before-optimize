@@ -1,0 +1,30 @@
+# orches.py: one process, one tick loop (sketch, not final code)
+import time
+from observe import Observe
+from predict import Predict
+from optimize import Optimize
+from actuate import Actuate
+
+TICK_S = 0.05  # 20 Hz control tick (tune against measured latency)
+
+def main():
+    # Build each module once; each keeps its own state
+    observe = Observe()    # owns the MQTT client and the cube state store
+    predict = Predict() 
+       # owns the Kalman filter(s)
+    optimize = Optimize()  # owns the sequencer and speed optimizer
+    actuate = Actuate()    # owns the outgoing MQTT commands
+
+    while True:
+        t0 = time.monotonic()
+
+        state = observe.step()          # 1. drain inbound messages, snapshot state
+        state = predict.step(state)     # 2. forecast cube positions
+        plan = optimize.step(state)     # 3. pick next cube, choose speeds
+        actuate.step(plan)              # 4. publish goals and mode changes
+
+        # Sleep for the rest of the tick so the loop stays at a fixed rate
+        time.sleep(max(0.0, TICK_S - (time.monotonic() - t0)))
+
+if __name__ == "__main__":
+    main()

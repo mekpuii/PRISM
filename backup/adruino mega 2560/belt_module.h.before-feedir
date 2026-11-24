@@ -1,0 +1,627 @@
+/*
+ * belt_module.h -- conveyor + feeder + sensors, added to the SO-101 Mega sketch.
+ *
+ * Lives next to so101_mega_controller.ino (same sketch folder). The arm code is untouched;
+ * the .ino only calls belt::begin(), belt::update(), routes "X,..." lines to belt::handle(),
+ * and provides irStableDetected() (the SAME debounced D22 reading the arm sequence uses).
+ *
+ * Hardware
+ *   BTS7960 : RPWM=D3 (forward)  LPWM=D2 (reverse)  R_EN=D8  L_EN=D9
+ *   Encoder : A=D6  B=D7           (JGB37-520 Hall, quadrature)
+ *   INA260  : SDA=D20 SCL=D21      #1 0x40 = belt motor,  #2 = arm rail, own SOFTWARE bus SDA=D50 SCL=D52 (address 0x40, no solder bridge needed)
+ *   Servo   : MG90S on D12  (feeder blade)
+ *   DS18B20 : D24  (motor temperature, 4.7k pull-up to 5V)
+ *   IR FC51 : D22  (owned by the arm sketch; read via irStableDetected())
+ * Not used here, already taken by the arm: Serial2 = D16/D17 (STS3215 bus).
+ *
+ * Libraries: OneWire, DallasTemperature (Library Manager). Servo, Wire are built in.
+ *
+ * Protocol: every line starts with "X," so the existing arm dashboard ignores it.
+ *   PC -> Mega  X,PING | HB | GET | STOP | BRAKE | ZERO
+ *               X,PWM,<-255..255>      open-loop motor
+ *               X,RPM,<rpm>            closed-loop speed, output shaft, signed (ignores IR)
+ *               X,CONV,<rpm>           run until the IR sees a block, then brake + hold
+ *               X,OFFSET,<counts>      after IR triggers keep moving this many counts, then brake
+ *               X,FEED                 one feeder push (non-blocking)
+ *               X,FEEDCFG,<home>,<push>,<push_ms>,<return_ms>
+ *               X,SERVO,<0..180>       raw feeder servo move
+ *               X,PID,<kp>,<ki>,<kd>   X,CPR,<counts/output-rev>   X,TEMPMAX,<C> (0=off)
+ *               X,WDT,<ms> (0=off)     X,STREAM,<ms> (0=off)
+ *   Mega -> PC  X,OK | X,ERR,<why> | X,PONG
+ *               X,E,ARRIVED,<ms>,<enc> | X,E,FEED_DONE,<ms> | X,E,FAULT,<ms>,<code>
+ *               X,T,ms,enc,rpm,pwm,mode,beltmA,beltmV,beltmW,armmA,armmV,armmW,tempC,ir,feedServo,fault,conv,feed
+ *   mode: 0 coast 1 pwm 2 rpm 3 brake | conv: 0 idle 1 run 2 offset 3 arrived | feed: 0 idle 1 push 2 return
+ *   fault: 0 none 1 watchdog 2 overtemp 3 temp-sensor 4 stall   (latched until X,STOP)
+ */
+#ifndef BELT_MODULE_H
+#define BELT_MODULE_H
+
+// ---- diagnostic switches: set one to 0 to switch that feature OFF (to find what disturbs the servo bus)
+#ifndef BELT_ENABLE_ENC
+#define BELT_ENABLE_ENC  1     // encoder sampling ISR (Timer2)
+#endif
+#ifndef BELT_ENABLE_INA
+#define BELT_ENABLE_INA  1     // INA260 I2C reads
+#endif
+#ifndef BELT_ENABLE_TEMP
+#define BELT_ENABLE_TEMP 1     // DS18B20 (OneWire). If 0 and the belt drives, use X,TEMPMAX,0 or it faults after 5 s
+#endif
+
+#include <Wire.h>
+#include <Servo.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+bool irStableDetected();   // defined in so101_mega_controller.ino
+
+namespace belt {
+
+// ---------------------------------------------------------------- pins
+const uint8_t PIN_RPWM    = 3;
+const uint8_t PIN_LPWM    = 2;
+const uint8_t PIN_R_EN    = 8;
+const uint8_t PIN_L_EN    = 9;
+const uint8_t PIN_SERVO   = 12;
+const uint8_t PIN_ONEWIRE = 24;
+// Encoder A=D6 -> PH3, B=D7 -> PH4 (read straight from PINH in the ISR)
+const uint8_t ENC_A_BIT   = 3;
+const uint8_t ENC_B_BIT   = 4;
+
+// ---------------------------------------------------------------- tunables
+const int8_t   ENC_SIGN        = 1;      // +PWM gives positive counts (was -1: belt PID ran away, measured -337 rpm for +60 rpm)
+const uint8_t  INA_BELT_ADDR   = 0x40;
+const uint8_t  INA_ARM_ADDR    = 0x40;   // arm INA260 sits ALONE on its own soft bus, so the default address is fine
+const uint8_t  PIN_ARM_SDA     = 50;     // soft-I2C data  (module SDA)
+const uint8_t  PIN_ARM_SCL     = 52;     // soft-I2C clock (module SCL)
+const uint16_t CTRL_MS         = 50;     // speed-loop period
+const float    RPM_FILT_ALPHA  = 0.3f;   // EMA on measured rpm
+const uint8_t  STALL_PWM       = 70;     // driving at least this hard ...
+const float    STALL_RPM       = 2.0f;   // ... while slower than this ...
+const uint16_t STALL_MS        = 1500;   // ... for this long = jam
+// Encoder sampling rate. Needs > 2x the edge rate: at 1:30 gearing / 44 counts per motor rev, 10 kHz
+// handles up to ~5000 counts/s (~227 output rpm), far above belt speeds. Lower = less ISR load on the
+// 1 Mbps servo bus (Serial2). Must stay >= 7813 Hz (8-bit OCR2A with prescaler 8).
+const uint32_t ENC_SAMPLE_HZ   = 10000;
+const uint16_t TEMP_LOST_MS    = 30000;  // no valid DS18B20 reading this long while driving = fault
+
+// JGB37-520 Hall encoder is typically 11 PPR on the MOTOR shaft.
+// Default assumes 11 PPR * 4 (x4 decoding) * 30:1 gearbox.  CHANGE VIA "X,CPR".
+float cpr = 11.0f * 4.0f * 30.0f;
+
+// ---------------------------------------------------------------- state
+enum Mode  : uint8_t { MODE_COAST = 0, MODE_PWM = 1, MODE_RPM = 2, MODE_BRAKE = 3 };
+enum Conv  : uint8_t { CONV_IDLE = 0, CONV_RUN = 1, CONV_OFFSET = 2, CONV_ARRIVED = 3 };
+enum Feed  : uint8_t { FEED_IDLE = 0, FEED_PUSH = 1, FEED_RETURN = 2 };
+enum Fault : uint8_t { F_NONE = 0, F_WATCHDOG = 1, F_OVERTEMP = 2, F_TEMP_SENSOR = 3, F_STALL = 4 };
+
+Mode     mode        = MODE_COAST;
+Conv     convState   = CONV_IDLE;
+Feed     feedState   = FEED_IDLE;
+Fault    fault       = F_NONE;
+int      pwmOut      = 0;               // last PWM written (-255..255)
+float    targetRpm   = 0;
+float    rpmFilt     = 0;
+long     offsetCounts= 0;               // extra travel after IR trigger (0 = brake immediately)
+long     trigEnc     = 0;
+uint32_t wdtMs       = 500;             // belt stops if host silent this long (only while driving)
+uint32_t lastHostMs  = 0;
+uint32_t streamMs    = 100;             // 10 Hz: the arm telemetry already uses much of the 115200 link
+
+// PID
+float kp = 0.5f, ki = 1.5f, kd = 0.0f;
+float iTerm = 0, prevMeas = 0;
+
+// Feeder.  DEFAULT ANGLES ARE A GUESS (+-20 deg around centre) -> tune with X,FEEDCFG, test with blade off.
+Servo    feederServo;
+int      servoAngle  = 170;
+int      feedHome    = 170;
+int      feedPush    = 0;  
+uint16_t feedPushMs  = 400;
+uint16_t feedRetMs   = 400;
+uint32_t feedT       = 0;
+
+// Temperature
+OneWire oneWire(PIN_ONEWIRE);
+DallasTemperature ds(&oneWire);
+float    tempC       = NAN;
+bool     encOn = true, inaOn = true, tempOn = true, servoOn = true;   // runtime diagnostic switches (X,DIAG)
+float    tempMax     = 60.0f;           // PLACEHOLDER -> set from the motor datasheet
+uint32_t lastTempOk  = 0;
+
+// INA260
+struct InaReading { float mA, mV, mW; bool ok; };
+InaReading inaBelt = { NAN, NAN, NAN, false };
+InaReading inaArm  = { NAN, NAN, NAN, false };
+
+// ---------------------------------------------------------------- encoder (shared with the ISR below)
+volatile long encCount = 0;
+// Quadrature transition table: index = (prev<<2)|curr -> -1/0/+1
+const int8_t QEM[16] = { 0,+1,-1, 0,  -1, 0, 0,+1,  +1, 0, 0,-1,  0,-1,+1, 0 };
+volatile uint8_t encPrev = 0;
+
+long readEnc() {                       // atomic copy of a 32-bit value
+  noInterrupts();
+  long c = encCount;
+  interrupts();
+  return c;
+}
+
+void setupEncoderTimer() {
+  uint8_t p = PINH;
+  encPrev = (((p >> ENC_A_BIT) & 1) << 1) | ((p >> ENC_B_BIT) & 1);
+  noInterrupts();
+  // Timer2 (8-bit) on purpose: the Servo library defines the Timer1/3/4/5 compare ISRs on the Mega,
+  // so using TIMER1_COMPA_vect here gives "multiple definition of __vector_17" at link time.
+  TCCR2A = (1 << WGM21);                 // CTC mode (TOP = OCR2A)
+  TCCR2B = (1 << CS21);                  // prescaler 8 -> 2 MHz tick
+  OCR2A  = (uint8_t)(2000000UL / ENC_SAMPLE_HZ - 1);   // 2 MHz tick / ENC_SAMPLE_HZ
+  TCNT2  = 0;
+  TIMSK2 = (1 << OCIE2A);
+  interrupts();
+}
+
+// ---------------------------------------------------------------- output helpers
+void eventStart(const __FlashStringHelper *name) {   // prints "X,E,<NAME>,<ms>" (no newline)
+  Serial.print(F("X,E,"));
+  Serial.print(name);
+  Serial.print(',');
+  Serial.print(millis());
+}
+
+void replyOk()                  { Serial.println(F("X,OK")); }
+void replyErr(const char *why)  { Serial.print(F("X,ERR,")); Serial.println(why); }
+
+// ---------------------------------------------------------------- motor
+void motorEnable(bool on) {
+  digitalWrite(PIN_R_EN, on);
+  digitalWrite(PIN_L_EN, on);
+}
+
+void motorWrite(int pwm) {
+  pwm = constrain(pwm, -255, 255);
+  pwmOut = pwm;
+  motorEnable(true);
+  // Always switch the idle side off first so we never shoot-through on reversal
+  if (pwm >= 0) { analogWrite(PIN_LPWM, 0); analogWrite(PIN_RPWM, pwm);  }
+  else          { analogWrite(PIN_RPWM, 0); analogWrite(PIN_LPWM, -pwm); }
+}
+
+void motorCoast() {                    // H-bridge off, shaft free-spins
+  analogWrite(PIN_RPWM, 0);
+  analogWrite(PIN_LPWM, 0);
+  motorEnable(false);
+  pwmOut = 0; targetRpm = 0; iTerm = 0;
+  mode = MODE_COAST;
+}
+
+void motorBrake() {                    // EN high + both PWM 0 = both low-sides on
+  analogWrite(PIN_RPWM, 0);
+  analogWrite(PIN_LPWM, 0);
+  motorEnable(true);
+  pwmOut = 0; targetRpm = 0; iTerm = 0;
+  mode = MODE_BRAKE;
+}
+
+void raiseFault(Fault f) {             // coast, latch, tell the Pi
+  motorCoast();
+  fault = f;
+  convState = CONV_IDLE;
+  eventStart(F("FAULT"));
+  Serial.print(',');
+  Serial.println((int)f);
+}
+
+// ---------------------------------------------------------------- bit-bang I2C master for the arm INA260 (D50/D52)
+// Same code that worked in ina260_soft_test. Open-drain style: a line is pulled LOW or released (pull-up makes it HIGH).
+// Interrupts stay ON (encoder ISR keeps running); an ISR in the middle only stretches a clock phase, which I2C allows.
+class SoftI2C {
+ public:
+  void begin(uint8_t sda, uint8_t scl) { _sda = sda; _scl = scl; release(_sda); release(_scl); }
+  void beginTransmission(uint8_t addr) { _addr = addr; _txLen = 0; }
+  size_t write(uint8_t b) { if (_txLen < sizeof(_tx)) _tx[_txLen++] = b; return 1; }
+  uint8_t endTransmission(bool sendStop = true) {          // 0 ok, 2 address NACK, 3 data NACK
+    start();
+    if (!sendByte((_addr << 1) | 0)) { stop(); return 2; }
+    for (uint8_t i = 0; i < _txLen; i++) if (!sendByte(_tx[i])) { stop(); return 3; }
+    if (sendStop) stop();
+    return 0;
+  }
+  uint8_t requestFrom(uint8_t addr, uint8_t n) {
+    _rxLen = 0; _rxPos = 0;
+    start();                                                // repeated START
+    if (!sendByte((addr << 1) | 1)) { stop(); return 0; }
+    for (uint8_t i = 0; i < n && i < sizeof(_rx); i++) _rx[_rxLen++] = readByte(i < n - 1);
+    stop();
+    return _rxLen;
+  }
+  int read() { return (_rxPos < _rxLen) ? _rx[_rxPos++] : -1; }
+ private:
+  static const uint8_t HALF_US = 5;                         // half clock period -> ~100 kHz
+  uint8_t _sda = 50, _scl = 52, _addr = 0, _tx[8], _txLen = 0, _rx[8], _rxLen = 0, _rxPos = 0;
+  void low(uint8_t pin)     { digitalWrite(pin, LOW); pinMode(pin, OUTPUT); }
+  void release(uint8_t pin) { pinMode(pin, INPUT_PULLUP); }
+  void sclHigh() {                                          // release SCL, wait while a slave stretches it
+    release(_scl);
+    uint16_t guard = 500;
+    while (digitalRead(_scl) == LOW && guard--) delayMicroseconds(1);
+  }
+  void start() { release(_sda); sclHigh(); delayMicroseconds(HALF_US); low(_sda); delayMicroseconds(HALF_US); low(_scl); delayMicroseconds(HALF_US); }
+  void stop()  { low(_sda); delayMicroseconds(HALF_US); sclHigh(); delayMicroseconds(HALF_US); release(_sda); delayMicroseconds(HALF_US); }
+  bool sendByte(uint8_t b) {
+    for (uint8_t i = 0; i < 8; i++) {
+      if (b & 0x80) release(_sda); else low(_sda);
+      b <<= 1;
+      delayMicroseconds(HALF_US); sclHigh(); delayMicroseconds(HALF_US); low(_scl);
+    }
+    release(_sda);                                          // 9th clock: slave pulls SDA low = ACK
+    delayMicroseconds(HALF_US); sclHigh();
+    bool ack = (digitalRead(_sda) == LOW);
+    delayMicroseconds(HALF_US); low(_scl);
+    return ack;
+  }
+  uint8_t readByte(bool ack) {
+    uint8_t v = 0;
+    release(_sda);
+    for (uint8_t i = 0; i < 8; i++) {
+      delayMicroseconds(HALF_US); sclHigh();
+      v = (v << 1) | (digitalRead(_sda) ? 1 : 0);
+      delayMicroseconds(HALF_US); low(_scl);
+    }
+    if (ack) low(_sda); else release(_sda);
+    delayMicroseconds(HALF_US); sclHigh(); delayMicroseconds(HALF_US); low(_scl);
+    release(_sda);
+    return v;
+  }
+};
+SoftI2C armBus;
+
+// ---------------------------------------------------------------- INA260 (raw registers, no library)
+template <typename Bus>
+bool inaReadReg(Bus &bus, uint8_t addr, uint8_t reg, uint16_t &val) {
+  bus.beginTransmission(addr);
+  bus.write(reg);
+  if (bus.endTransmission(false) != 0) return false;
+  if (bus.requestFrom(addr, (uint8_t)2) != 2) return false;
+  val = ((uint16_t)bus.read() << 8) | bus.read();
+  return true;
+}
+
+template <typename Bus>
+void inaConfig(Bus &bus, uint8_t addr) {
+  // CONFIG reg 0x00: average 16 samples (bits 11:9 = 010), continuous shunt+bus
+  bus.beginTransmission(addr);
+  bus.write(0x00); bus.write(0x65); bus.write(0x27);
+  bus.endTransmission();
+}
+
+template <typename Bus>
+void inaUpdate(Bus &bus, uint8_t addr, InaReading &r) {
+  uint16_t a, b, c;
+  r.ok = inaReadReg(bus, addr, 0x01, a) && inaReadReg(bus, addr, 0x02, b) && inaReadReg(bus, addr, 0x03, c);
+  if (r.ok) {
+    r.mA = (int16_t)a * 1.25f;          // signed, 1.25 mA/LSB
+    r.mV = b * 1.25f;                   // 1.25 mV/LSB
+    r.mW = c * 10.0f;                   // 10 mW/LSB
+  } else {
+    r.mA = r.mV = r.mW = NAN;           // module missing / bus error -> report nan, never stale data
+  }
+}
+
+// ---------------------------------------------------------------- speed PID + stall detect
+void speedControlStep(float dt) {
+  static long lastCount = 0;
+  static uint16_t stallAcc = 0;
+  long c = readEnc();
+  long d = c - lastCount;
+  lastCount = c;
+
+  float rpmRaw = ((float)d / cpr) * (60.0f / dt);
+  rpmFilt = RPM_FILT_ALPHA * rpmRaw + (1.0f - RPM_FILT_ALPHA) * rpmFilt;
+
+  // Jam detection: pushing hard but not turning
+  bool driven = (mode == MODE_PWM || mode == MODE_RPM);
+  if (driven && abs(pwmOut) >= STALL_PWM && fabs(rpmFilt) < STALL_RPM) {
+    stallAcc += CTRL_MS;
+    if (stallAcc >= STALL_MS) { stallAcc = 0; raiseFault(F_STALL); }
+  } else {
+    stallAcc = 0;
+  }
+
+  if (mode != MODE_RPM) { prevMeas = rpmFilt; return; }
+
+  float err = targetRpm - rpmFilt;
+  iTerm += ki * err * dt;
+  iTerm = constrain(iTerm, -255.0f, 255.0f);          // anti-windup clamp
+  float dTerm = -kd * (rpmFilt - prevMeas) / dt;      // derivative on measurement
+  prevMeas = rpmFilt;
+
+  float out = kp * err + iTerm + dTerm;
+  motorWrite((int)constrain(out, -255.0f, 255.0f));
+}
+
+// ---------------------------------------------------------------- conveyor: stop at IR
+void arrive() {
+  motorBrake();                         // hold the block at the pick point
+  convState = CONV_ARRIVED;
+  eventStart(F("ARRIVED"));
+  Serial.print(',');
+  Serial.println(readEnc());
+}
+
+void convStep() {
+  // irStableDetected() is the arm sketch's own debounced D22 reading (40 ms)
+  bool irStable = irStableDetected();
+
+  if (convState == CONV_RUN) {
+    if (mode != MODE_RPM) { convState = CONV_IDLE; return; }   // something else took over
+    if (irStable) {
+      if (offsetCounts > 0) { trigEnc = readEnc(); convState = CONV_OFFSET; }
+      else arrive();
+    }
+  } else if (convState == CONV_OFFSET) {
+    if (mode != MODE_RPM) { convState = CONV_IDLE; return; }
+    if (labs(readEnc() - trigEnc) >= offsetCounts) arrive();
+  }
+}
+
+// ---------------------------------------------------------------- feeder (non-blocking)
+void feedStep(uint32_t now) {
+  if (feedState == FEED_PUSH && (now - feedT) >= feedPushMs) {
+    servoAngle = feedHome; feederServo.write(servoAngle);
+    feedState = FEED_RETURN; feedT = now;
+  } else if (feedState == FEED_RETURN && (now - feedT) >= feedRetMs) {
+    feedState = FEED_IDLE;
+    eventStart(F("FEED_DONE"));
+    Serial.println();
+  }
+}
+
+// ---------------------------------------------------------------- telemetry
+void printNum(float v, uint8_t digits) {
+  if (isnan(v)) Serial.print(F("nan")); else Serial.print(v, digits);
+}
+
+void printTelemetry() {
+  Serial.print(F("X,T,"));  Serial.print(millis());
+  Serial.print(',');        Serial.print(readEnc());
+  Serial.print(',');        Serial.print(rpmFilt, 1);
+  Serial.print(',');        Serial.print(pwmOut);
+  Serial.print(',');        Serial.print((int)mode);
+  Serial.print(',');        printNum(inaBelt.mA, 0);
+  Serial.print(',');        printNum(inaBelt.mV, 0);
+  Serial.print(',');        printNum(inaBelt.mW, 0);
+  Serial.print(',');        printNum(inaArm.mA, 0);
+  Serial.print(',');        printNum(inaArm.mV, 0);
+  Serial.print(',');        printNum(inaArm.mW, 0);
+  Serial.print(',');        printNum(tempC, 2);
+  Serial.print(',');        Serial.print(irStableDetected() ? 1 : 0);
+  Serial.print(',');        Serial.print(servoAngle);
+  Serial.print(',');        Serial.print((int)fault);
+  Serial.print(',');        Serial.print((int)convState);
+  Serial.print(',');        Serial.println((int)feedState);
+}
+
+// ---------------------------------------------------------------- command handler (args = text after "X,")
+// Returns a reason string if the motor must not be started right now, else NULL
+const char *driveBlocked() {
+  if (fault != F_NONE) return "fault_latched_send_STOP";
+  if (tempMax > 0 && !isnan(tempC) && tempC >= tempMax) return "too_hot";
+  return NULL;
+}
+
+void handle(char *s) {
+  char *sp = NULL;
+  char *cmd = strtok_r(s, ", ", &sp);
+  if (!cmd) return;
+  for (char *p = cmd; *p; ++p) *p = toupper(*p);
+  char *a1 = strtok_r(NULL, ", ", &sp);
+  char *a2 = strtok_r(NULL, ", ", &sp);
+  char *a3 = strtok_r(NULL, ", ", &sp);
+  char *a4 = strtok_r(NULL, ", ", &sp);
+
+  lastHostMs = millis();                                     // any X line feeds the belt watchdog
+  if (!strcmp(cmd, "HB")) return;                            // silent keep-alive
+
+  if (!strcmp(cmd, "DIAG") && a1 && a2 && a3) {   // X,DIAG,<enc>,<ina>,<temp>[,<servo>]  1=on 0=off, runtime only (reset restores all on)
+    encOn = atoi(a1) != 0; inaOn = atoi(a2) != 0; tempOn = atoi(a3) != 0;
+#if BELT_ENABLE_ENC
+    noInterrupts();
+    if (encOn) TIMSK2 |= (1 << OCIE2A); else TIMSK2 &= ~(1 << OCIE2A);   // stop/start the encoder sampling ISR
+    interrupts();
+#endif
+    if (a4) {                                   // optional 4th flag: feeder servo pulses (Servo lib ISR) on/off
+      bool want = atoi(a4) != 0;
+      if (!want && servoOn) feederServo.detach();
+      if (want && !servoOn) { feederServo.attach(PIN_SERVO, 500, 2400); feederServo.write(servoAngle); }
+      servoOn = want;
+    }
+    replyOk(); return;
+  }
+  if (!strcmp(cmd, "VER")) {                  // which build is really on the board + which switches are on
+    Serial.print(F("X,VER,")); Serial.print(F(__DATE__ " " __TIME__));
+    Serial.print(F(",enc="));  Serial.print(BELT_ENABLE_ENC);
+    Serial.print(F(",ina="));  Serial.print(BELT_ENABLE_INA);
+    Serial.print(F(",temp=")); Serial.print(BELT_ENABLE_TEMP);
+    Serial.print(F(",hz="));   Serial.print(ENC_SAMPLE_HZ);
+    Serial.print(F(",home=")); Serial.print(feedHome);
+    Serial.print(F(",on=")); Serial.print(encOn); Serial.print(inaOn); Serial.print(tempOn); Serial.println(servoOn);
+    return;
+  }
+  if (!strcmp(cmd, "PING")) { Serial.println(F("X,PONG")); return; }
+  if (!strcmp(cmd, "GET"))  { printTelemetry(); return; }
+
+  if (!strcmp(cmd, "STOP"))  { motorCoast(); fault = F_NONE; convState = CONV_IDLE; replyOk(); return; }
+  if (!strcmp(cmd, "BRAKE")) { motorBrake(); convState = CONV_IDLE; replyOk(); return; }
+  if (!strcmp(cmd, "ZERO"))  { noInterrupts(); encCount = 0; interrupts(); replyOk(); return; }
+
+  if (!strcmp(cmd, "PWM") && a1) {
+    const char *why = driveBlocked(); if (why) { replyErr(why); return; }
+    mode = MODE_PWM; iTerm = 0; convState = CONV_IDLE;
+    motorWrite(atoi(a1));
+    replyOk(); return;
+  }
+  if (!strcmp(cmd, "RPM") && a1) {
+    const char *why = driveBlocked(); if (why) { replyErr(why); return; }
+    targetRpm = atof(a1);
+    if (mode != MODE_RPM) { iTerm = 0; prevMeas = rpmFilt; }
+    mode = MODE_RPM; convState = CONV_IDLE;
+    replyOk(); return;
+  }
+  if (!strcmp(cmd, "CONV") && a1) {
+    const char *why = driveBlocked(); if (why) { replyErr(why); return; }
+    targetRpm = atof(a1);
+    if (mode != MODE_RPM) { iTerm = 0; prevMeas = rpmFilt; }
+    mode = MODE_RPM; convState = CONV_RUN;
+    replyOk(); return;
+  }
+  if (!strcmp(cmd, "OFFSET") && a1) { offsetCounts = labs(atol(a1)); replyOk(); return; }
+
+  if (!strcmp(cmd, "FEED")) {
+    if (feedState != FEED_IDLE) { replyErr("feeder_busy"); return; }
+    servoAngle = feedPush; feederServo.write(servoAngle);
+    feedState = FEED_PUSH; feedT = millis();
+    replyOk(); return;
+  }
+  if (!strcmp(cmd, "FEEDCFG") && a1 && a2 && a3 && a4) {
+    int h = atoi(a1), p = atoi(a2); long pm = atol(a3), rm = atol(a4);
+    if (h < 0 || h > 180 || p < 0 || p > 180 || pm < 100 || pm > 3000 || rm < 100 || rm > 3000) {
+      replyErr("feedcfg_range"); return;
+    }
+    feedHome = h; feedPush = p; feedPushMs = (uint16_t)pm; feedRetMs = (uint16_t)rm;
+    replyOk(); return;
+  }
+  if (!strcmp(cmd, "SERVO") && a1) {
+    if (feedState != FEED_IDLE) { replyErr("feeder_busy"); return; }
+    servoAngle = constrain(atoi(a1), 0, 180);
+    feederServo.write(servoAngle);
+    replyOk(); return;
+  }
+  if (!strcmp(cmd, "PID") && a1 && a2 && a3) {
+    kp = atof(a1); ki = atof(a2); kd = atof(a3); iTerm = 0;
+    replyOk(); return;
+  }
+  if (!strcmp(cmd, "CPR") && a1) {
+    float v = atof(a1);
+    if (v < 1) { replyErr("bad_cpr"); return; }
+    cpr = v; replyOk(); return;
+  }
+  if (!strcmp(cmd, "TEMPMAX") && a1) { tempMax = atof(a1); replyOk(); return; }
+  if (!strcmp(cmd, "WDT") && a1)     { wdtMs = (uint32_t)atol(a1); replyOk(); return; }
+  if (!strcmp(cmd, "STREAM") && a1)  { streamMs = (uint32_t)atol(a1); replyOk(); return; }
+
+  replyErr("unknown_cmd");
+}
+
+// ---------------------------------------------------------------- setup / update
+void begin() {
+  pinMode(PIN_RPWM, OUTPUT); pinMode(PIN_LPWM, OUTPUT);
+  pinMode(PIN_R_EN, OUTPUT); pinMode(PIN_L_EN, OUTPUT);
+  motorCoast();                               // safe state before anything else
+
+  // D2/D3 are both on Timer3. Default 490 Hz whines. Prescaler 8 -> ~3.9 kHz.
+  TCCR3B = (TCCR3B & 0xF8) | 0x02;
+
+  pinMode(6, INPUT_PULLUP); pinMode(7, INPUT_PULLUP);  // encoder
+#if BELT_ENABLE_ENC
+  setupEncoderTimer();
+#endif
+
+  feederServo.attach(PIN_SERVO, 500, 2400);   // MG90S pulse range
+  servoAngle = feedHome;                      // report the real parked angle in telemetry
+  feederServo.write(feedHome);                // park the blade at home
+
+  Wire.begin();
+  Wire.setClock(400000);
+#ifdef WIRE_HAS_TIMEOUT
+  Wire.setWireTimeout(3000, true);            // don't hang if an INA260 is unplugged
+#endif
+#if BELT_ENABLE_INA
+  inaConfig(Wire, INA_BELT_ADDR);
+  armBus.begin(PIN_ARM_SDA, PIN_ARM_SCL);
+  inaConfig(armBus, INA_ARM_ADDR);
+#endif
+
+#if BELT_ENABLE_TEMP
+  ds.begin();
+  ds.setWaitForConversion(false);             // non-blocking: request, then read later
+  ds.requestTemperatures();
+#endif
+
+  lastHostMs = millis();
+  lastTempOk = millis();
+}
+
+void update() {
+  uint32_t now = millis();
+
+  convStep();                                 // IR arrive-and-brake (every loop pass for low latency)
+  feedStep(now);
+
+  // ---- host watchdog: no X line from the Pi for wdtMs -> stop (only while driving)
+  if (wdtMs && (now - lastHostMs) > wdtMs && (mode == MODE_PWM || mode == MODE_RPM)) {
+    raiseFault(F_WATCHDOG);
+  }
+
+  // ---- motor temperature protection (only while driving; TEMPMAX 0 disables)
+  if (tempMax > 0 && (mode == MODE_PWM || mode == MODE_RPM)) {
+    if (!isnan(tempC) && tempC >= tempMax)       raiseFault(F_OVERTEMP);
+    else if ((now - lastTempOk) > TEMP_LOST_MS)  raiseFault(F_TEMP_SENSOR);
+  }
+
+  // ---- speed loop + stall detect
+  static uint32_t tCtrl = 0;
+  if (now - tCtrl >= CTRL_MS) {
+    float dt = (now - tCtrl) / 1000.0f;
+    tCtrl = now;
+    speedControlStep(dt);
+  }
+
+  // ---- INA260 x2 @ 20 Hz
+  static uint32_t tIna = 0;
+  if (now - tIna >= 50) {
+    tIna = now;
+#if BELT_ENABLE_INA
+    if (inaOn) {
+      inaUpdate(Wire, INA_BELT_ADDR, inaBelt);
+      // arm INA is on the slow software bus (~3 ms per read): read it every 2nd tick = 10 Hz, retry once on a dropout
+      static bool armTick = false;
+      armTick = !armTick;
+      if (armTick) {
+        inaUpdate(armBus, INA_ARM_ADDR, inaArm);
+        if (!inaArm.ok) inaUpdate(armBus, INA_ARM_ADDR, inaArm);
+      }
+    }
+#endif
+  }
+
+  // ---- DS18B20 (12-bit conversion ~750 ms)
+  static uint32_t tTemp = 0;
+  if (now - tTemp >= 800) {
+    tTemp = now;
+#if BELT_ENABLE_TEMP
+    if (tempOn) {
+      float t = ds.getTempCByIndex(0);
+      if (t == DEVICE_DISCONNECTED_C) tempC = NAN;
+      else { tempC = t; lastTempOk = now; }
+      ds.requestTemperatures();
+    } else lastTempOk = now;                  // diagnostic: sensor ignored, no temp-lost fault
+#endif
+  }
+
+  // ---- telemetry stream
+  static uint32_t tStream = 0;
+  if (streamMs && (now - tStream) >= streamMs) { tStream = now; printTelemetry(); }
+}
+
+}  // namespace belt
+
+// D6/D7 have NO pin-change interrupt on the Mega, so sample them at 20 kHz from Timer2.
+// (ISRs must live at global scope.)
+ISR(TIMER2_COMPA_vect) {
+  uint8_t p = PINH;
+  uint8_t curr = (((p >> belt::ENC_A_BIT) & 1) << 1) | ((p >> belt::ENC_B_BIT) & 1);
+  belt::encCount += belt::ENC_SIGN * belt::QEM[(belt::encPrev << 2) | curr];
+  belt::encPrev = curr;
+}
+
+#endif  // BELT_MODULE_H

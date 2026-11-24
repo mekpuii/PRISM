@@ -1,0 +1,135 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261113_184934.jsonl
+[plan 1] OFF    22 rpm / arm 1.75  - autoen not reachable
+[plan 2] OFF    22 rpm / arm 1.75  - autoen ready
+[plan 3] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 4] RUN    22 rpm / arm 1.75  - autoen preparing
+[plan 5] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 6] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 7] RUN    22 rpm / arm 1.75  action=verdict:1:fed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 8] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 9] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 10] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 11] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 12] RUN    22 rpm / arm 1.75  action=verdict:2:fed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 13] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 14] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 15] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 16] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 17] RUN    22 rpm / arm 1.75  action=verdict:3:fed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 18] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 19] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 20] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 21] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 22] RUN    22 rpm / arm 1.75  action=verdict:4:fed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 23] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 24] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 25] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 26] RUN    22 rpm / arm 1.75  action=verdict:5:fed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 27] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 28] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 29] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 30] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped -7 mV): giving that push up, feeding again (1/2)
+[plan 31] RUN    22 rpm / arm 1.75  action=verdict:6:empty  - the feeder servo did not move (12 V rail dipped -7 mV): giving that push up, feeding again (1/2)
+[plan 32] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped -7 mV): giving that push up, feeding again (1/2)
+[plan 33] RUN    22 rpm / arm 1.75  action=feed  - the feeder servo did not move (12 V rail dipped -7 mV): giving that push up, feeding again (1/2)
+[plan 34] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped -7 mV): giving that push up, feeding again (1/2)
+[plan 35] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 36] RUN    22 rpm / arm 1.75  action=verdict:7:empty  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 37] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 38] RUN    22 rpm / arm 1.75  action=feed  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 39] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 40] RUN    22 rpm / arm 1.75  action=verdict:8:fed  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 41] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 42] RUN    22 rpm / arm 1.75  action=feed  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 43] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 44] RUN    22 rpm / arm 1.75  action=verdict:9:fed  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 45] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 46] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 47] RUN    22 rpm / arm 1.75  action=feed  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 48] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 49] RUN    22 rpm / arm 1.75  action=verdict:10:fed  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 50] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 51] RUN    22 rpm / arm 1.75  action=feed  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 52] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 53] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 8 mV): giving that push up, feeding again (1/2)
+[plan 54] RUN    22 rpm / arm 1.75  action=verdict:11:empty  - the feeder servo did not move (12 V rail dipped 8 mV): giving that push up, feeding again (1/2)
+[plan 55] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 8 mV): giving that push up, feeding again (1/2)
+[plan 56] RUN    22 rpm / arm 1.75  action=feed  - the feeder servo did not move (12 V rail dipped 8 mV): giving that push up, feeding again (1/2)
+[plan 57] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 8 mV): giving that push up, feeding again (1/2)
+[plan 58] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 59] RUN    22 rpm / arm 1.75  action=verdict:12:empty  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 60] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 61] RUN    22 rpm / arm 1.75  action=feed  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 62] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 63] RUN    22 rpm / arm 1.75  action=verdict:13:nudge  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 64] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 65] RUN    22 rpm / arm 1.75  action=verdict:13:empty  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 66] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 0 mV): giving that push up, feeding again (2/2)
+[plan 67] IDLE   22 rpm / arm 1.75  action=idle  - feeder empty: the last 3 feeds brought nothing
+[story] FEEDER EMPTY
+    I tried / saw:  feed 12 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 9: 12 V dip 82 mV (the servo moved), feeder IR sees cubes
+    I tried / saw:  feed 13: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 13 during TRANSPORT: servo moved (82 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  feed 13 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    so:             3 feeds in a row brought no block to the IR (feed 11 during GRIP, feed 12 during TRANSPORT, feed 13 during TRANSPORT)  ->  the feeder has no cubes left (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 68] IDLE   22 rpm / arm 1.75  - feeder empty: the last 3 feeds brought nothing
+[plan 69] IDLE   22 rpm / arm 1.75  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 9: 12 V dip 82 mV (the servo moved), feeder IR sees cubes
+    I tried / saw:  feed 13: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 13 during TRANSPORT: servo moved (82 mV), camera: no new block even after a nudge, feeder IR cubes => EMPTY
+    I tried / saw:  feed 13 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  cycle 9: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 70] IDLE   22 rpm / arm 1.75  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 71] IDLE   22 rpm / arm 1.75  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 72] IDLE   22 rpm / arm 1.75  action=feed_probe  - resting: probe push 1 (the feeder IR sees cubes) - the camera watches the exit
+[plan 73] IDLE   22 rpm / arm 1.75  - resting: probe push 1 (the feeder IR sees cubes) - the camera watches the exit
+[plan 74] IDLE   22 rpm / arm 1.75  - resting: probe push 1 brought nothing - the feeder is still empty
+[plan 75] IDLE   22 rpm / arm 1.75  action=feed_probe  - resting: probe push 2 (every 20 s) - the camera watches the exit
+[plan 76] IDLE   22 rpm / arm 1.75  - resting: probe push 2 (every 20 s) - the camera watches the exit
+[plan 77] RUN    22 rpm / arm 1.75  action=resume  - feeder refilled: probe push 2 brought a cube - running again
+[plan 78] RUN    22 rpm / arm 1.75  - feeder refilled: probe push 2 brought a cube - running again
+[plan 79] RUN    22 rpm / arm 1.75  action=verdict:0:nudge  - feeder refilled: probe push 2 brought a cube - running again
+[plan 80] RUN    22 rpm / arm 1.75  - feeder refilled: probe push 2 brought a cube - running again
+[plan 81] RUN    22 rpm / arm 1.75  - feeder refilled: probe push 2 brought a cube - running again
+[plan 82] RUN    22 rpm / arm 1.75  action=verdict:0:nudge  - feeder refilled: probe push 2 brought a cube - running again
+[plan 83] RUN    22 rpm / arm 1.75  - feeder refilled: probe push 2 brought a cube - running again
+[plan 84] RUN    22 rpm / arm 1.75  action=verdict:0:nudge  - feeder refilled: probe push 2 brought a cube - running again
+[plan 85] RUN    22 rpm / arm 1.75  - feeder refilled: probe push 2 brought a cube - running again
+[plan 86] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 87] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 88] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 5 mV): giving that push up, feeding again (1/2)
+[plan 89] RUN    22 rpm / arm 1.75  action=verdict:14:empty  - the feeder servo did not move (12 V rail dipped 5 mV): giving that push up, feeding again (1/2)
+[plan 90] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 5 mV): giving that push up, feeding again (1/2)
+[plan 91] RUN    22 rpm / arm 1.75  action=feed  - the feeder servo did not move (12 V rail dipped 5 mV): giving that push up, feeding again (1/2)
+[plan 92] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 5 mV): giving that push up, feeding again (1/2)
+[plan 93] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 1 mV): giving that push up, feeding again (2/2)
+[plan 94] RUN    22 rpm / arm 1.75  action=verdict:15:empty  - the feeder servo did not move (12 V rail dipped 1 mV): giving that push up, feeding again (2/2)
+[plan 95] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 1 mV): giving that push up, feeding again (2/2)
+[plan 96] RUN    22 rpm / arm 1.75  action=feed  - the feeder servo did not move (12 V rail dipped 1 mV): giving that push up, feeding again (2/2)
+[plan 97] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 1 mV): giving that push up, feeding again (2/2)
+[plan 98] RUN    22 rpm / arm 1.75  action=verdict:16:fed  - the feeder servo did not move (12 V rail dipped 1 mV): giving that push up, feeding again (2/2)
+[plan 99] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 1 mV): giving that push up, feeding again (2/2)
+[plan 100] RUN    22 rpm / arm 1.75  action=feed  - the feeder servo did not move (12 V rail dipped 1 mV): giving that push up, feeding again (2/2)
+[plan 101] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 1 mV): giving that push up, feeding again (2/2)
+[plan 102] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 7 mV): giving that push up, feeding again (1/2)
+[plan 103] RUN    22 rpm / arm 1.75  action=verdict:17:empty  - the feeder servo did not move (12 V rail dipped 7 mV): giving that push up, feeding again (1/2)
+[plan 104] RUN    22 rpm / arm 1.75  - the feeder servo did not move (12 V rail dipped 7 mV): giving that push up, feeding again (1/2)
+[plan 105] FAULT  22 rpm / arm 1.75  action=fault_stop  - FAULT: the camera is covered or its lens is blocked (the belt picture is black). Pausing at the checkpoint (finishing what is in the gripper, then home), warning with the arm, resting; I try again by myself and carry on by myself when it is fixed
+[story] A FAULT: CAMERA_COVERED
+    I tried / saw:  feed 16 during TRANSPORT: servo moved (75 mV), camera: new block at 80 px after 0.1 s, feeder IR cubes => FED
+    I tried / saw:  feed 16 pushed during TRANSPORT: delivered
+    I tried / saw:  feed for cycle 11: 12 V dip 7 mV (no current: the servo did not move), feeder IR sees cubes
+    I tried / saw:  feed 17 during GRIP: servo did not move (7 mV), camera: no new block, feeder IR cubes => EMPTY
+    I tried / saw:  feed 17 pushed during GRIP: nothing came (nothing came out (optimizer: servo / camera))
+    so:             the camera is covered or its lens is blocked (the belt picture is black)  ->  running on could drop cubes or hurt something; the Raspberry Pi and the dashboard keep running
+    next:           finish the cube in the gripper, go home, shake the arm 3 x 3 times a minute apart (not for a hand), rest, then try again every 30 s (feeder: a push and a little belt roll; camera: restart it)
+[plan 106] FAULT  22 rpm / arm 1.75  - FAULT: the camera is covered or its lens is blocked (the belt picture is black). Pausing at the checkpoint (finishing what is in the gripper, then home), warning with the arm, resting; I try again by myself and carry on by myself when it is fixed
+stopping: autoen is left as it is
+[actuate] fault_stop FAILED: stopping during the gap between two shake sets
+[observe] lost the broker: all feeds will go stale

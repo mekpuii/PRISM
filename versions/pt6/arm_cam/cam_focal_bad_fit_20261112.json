@@ -1,0 +1,39 @@
+{
+ "f_px": -333.7942856346113,
+ "offset_mm": -146.29882497377494,
+ "block_eq_mm": 34.64101615137755,
+ "points": [
+  [
+   106.7,
+   300.0306817691597
+  ],
+  [
+   108.4,
+   311.9551054250016
+  ],
+  [
+   110.3,
+   305.16389051970555
+  ]
+ ],
+ "residual_mm": [
+  -1.0595223540431107,
+  -0.8326797534461008,
+  1.89220210748924
+ ],
+ "dropped_points": [
+  [
+   134.0,
+   93.7,
+   "outlier: probably detected the bin, not the block"
+  ]
+ ],
+ "cam_to_tip_mm": 50.17597141581061,
+ "cam_to_tip_from": "user measured jaw tip -> block = 93 mm while block = 223.9 px",
+ "image_size": [
+  1280,
+  720
+ ],
+ "time": "2026-11-12 03:20:02",
+ "note": "ระยะหน้าเลนส์->ผิวบนบล็อก (mm) = f_px * block_eq_mm / ขนาดบล็อกเทียบเท่า(px) - offset_mm"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "example_grid",
+  "seed": 20261024,
+  "order": "rounds",
+  "repeats": 4,
+  "defaults": {"n_cycles": 10, "carry_speed": 1.0, "set": {"arrive_timeout": 40}},
+  "configs": [
+    {"label": "a0.7", "rpm": 100, "arm_speed": 0.7, "carry_speed": 0.7},
+    {"label": "a1.0", "rpm": 100, "arm_speed": 1.0},
+    {"label": "a1.5", "rpm": 100, "arm_speed": 1.5, "carry_speed": 1.5},
+    {"label": "a2.0", "rpm": 100, "arm_speed": 2.0, "carry_speed": 2.0}
+  ]
+}

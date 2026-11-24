@@ -1,0 +1,21 @@
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261112_194752.jsonl
+[observe] connected to broker: Success
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 5] OFF    20 rpm / arm 1.5  - autoen stopped
+[plan 6] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 7] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 8] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 9] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 10] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 11] RUN    20 rpm / arm 1.5  action=verdict:1:nudge  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 12] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 13] RUN    20 rpm / arm 1.5  action=verdict:1:fed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 14] RUN    20 rpm / arm 1.5  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 15] OFF    20 rpm / arm 1.5  - autoen stopped
+[plan 16] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 17] OFF    20 rpm / arm 1.5  - autoen ready
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

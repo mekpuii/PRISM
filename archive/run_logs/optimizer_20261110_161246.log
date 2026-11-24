@@ -1,0 +1,37 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261110_161252.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen starting
+[plan 3] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 4] OFF    20 rpm / arm 1.5  - autoen preparing
+[plan 5] RUN    20 rpm / arm 1.5  - autoen running
+[plan 6] RUN    20 rpm / arm 1.5  - autoen running
+[plan 7] RUN    20 rpm / arm 1.5  - autoen running
+[plan 8] IDLE   20 rpm / arm 1.5  action=idle  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 9] IDLE   20 rpm / arm 1.5  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 10] IDLE   20 rpm / arm 1.5  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 11] RUN    20 rpm / arm 1.5  action=resume  - feeder IR: cubes loaded
+[plan 12] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 13] MANUAL 20 rpm / arm 1.5  - autoen paused by someone else: hands off
+[plan 14] RUN    20 rpm / arm 1.5  - autoen running
+[plan 15] IDLE   20 rpm / arm 1.5  action=idle  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 16] IDLE   20 rpm / arm 1.5  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 17] IDLE   20 rpm / arm 1.5  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 18] RUN    20 rpm / arm 1.5  action=resume  - feeder IR: cubes loaded
+[plan 19] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 20] MANUAL 20 rpm / arm 1.5  - autoen paused by someone else: hands off
+[plan 21] RUN    20 rpm / arm 1.5  - autoen running
+[plan 22] RUN    20 rpm / arm 1.5  - autoen running
+[plan 23] IDLE   20 rpm / arm 1.5  action=idle  - 2 transport timeouts in a row (camera off): feeder empty, or check the belt
+[plan 24] IDLE   20 rpm / arm 1.5  - 2 transport timeouts in a row (camera off): feeder empty, or check the belt
+[plan 25] RUN    20 rpm / arm 1.5  action=resume  - feeder IR: cubes loaded
+[plan 26] RUN    20 rpm / arm 1.5  - feeder IR: cubes loaded
+[plan 27] MANUAL 20 rpm / arm 1.5  - autoen paused by someone else: hands off
+[plan 28] RUN    20 rpm / arm 1.5  - autoen running
+[plan 29] IDLE   20 rpm / arm 1.5  action=idle  - 2 transport timeouts in a row (camera off): feeder empty, or check the belt
+[actuate] idle FAILED: autoen is error: nothing to pause
+[plan 30] IDLE   20 rpm / arm 1.5  - 2 transport timeouts in a row (camera off): feeder empty, or check the belt
+[plan 31] OFF    20 rpm / arm 1.5  - autoen error
+[plan 32] OFF    20 rpm / arm 1.5  - autoen not reachable
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

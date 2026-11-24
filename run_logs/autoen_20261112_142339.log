@@ -1,0 +1,30 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+[mqtt] belt connected to localhost:1883: Success
+[mqtt] arm connected to localhost:1883: Success
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261112_142348.csv
+       riff_logs/autoen_sets_20261112_142348.csv
+       riff_logs/autoen_cycles_20261112_142348.csv
+       riff_logs/autoen_thresholds_20261112_142348.csv
+settings changed from the web page: {'rpm': 6.7, 'arm_speed': 1.0, 'carry_speed': 1.0, 'arrive_timeout': 20.0}
+settings changed from the web page: {'rpm': 20.0, 'arm_speed': 1.5, 'carry_speed': 1.5, 'arrive_timeout': 25.0, 'max_fails': 8, 'sets': 1000, 'cycles_per_set': 1000}
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 1/1000  OK 28.2s 
+settings changed from the web page: {'drop_mode': 'left'}
+set 1/1000 cycle 2/1000  OK 13.8s 
+settings changed from the web page: {'drop_mode': 'down'}
+set 1/1000 cycle 3/1000  OK 12.4s 
+set 1/1000 cycle 4/1000  OK 11.0s DRIFT J3 -65t in phase RELEASE
+set 1/1000 cycle 5/1000  OK 11.7s 
+set 1/1000 cycle 6/1000  OK 10.9s 
+set 1/1000 cycle 7/1000  OK 11.2s 
+set 1/1000 cycle 8/1000  OK 10.1s 
+set 1/1000 cycle 9/1000  OK 11.7s 
+set 1/1000 cycle 10/1000  OK 15.2s 
+Set 1 (14:23:48-14:27:00): J1: temp max 35C, current avg 7 / peak 32 mA; J2: temp max 33C, current avg 10 / peak 136 mA; J3: temp max 34C, current avg 22 / peak 176 mA; J4: temp max 34C, current avg 4 / peak 20 mA; J5: temp max 35C, current avg 5 / peak 26 mA; J6: temp max 35C, current avg 8 / peak 46 mA; Belt: temp max 25C, current avg 58 / peak 394 mA; ARM TOTAL: servo volt min 11.8 V, summed current avg 55 / peak 254 mA
+Ctrl+C: stopping (belt coasts, arm holds)
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+paused:   (unparsable RX lines: 0)

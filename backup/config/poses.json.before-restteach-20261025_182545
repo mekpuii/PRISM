@@ -1,0 +1,17 @@
+{
+ "_doc": "Extra arm poses read by autoencoder/auto_en_new.py at startup (--pose-config). Ticks: 4096 per revolution. The 4 cycle poses (up/right/down/left) stay in auto_en_new.py; this file only ADDS poses. rest = the arm folded on its cradle (measured 2026-10-24). rest_sequence / wake_sequence are done in order, one step at a time; a step moves only the joints it lists. VERIFY every step once by hand at low speed before trusting it. 2026-10-25: J2 moves FIRST and alone (the old order coiled J3/J4 with J2 still at home and hit the frame); wake is the exact reverse.",
+ "rest": {"1": 2007, "2": 1030, "3": 3051, "4": 990, "5": 1193, "6": 1912},
+ "rest_speed": 120,
+ "rest_sequence": [
+  {"name": "shoulder", "joints": {"2": 1030}, "speed": 100},
+  {"name": "coil",     "joints": {"3": 3051, "4": 990}},
+  {"name": "align",    "joints": {"1": 2007, "5": 1193, "6": 1912}}
+ ],
+ "wake_sequence": [
+  {"name": "unalign",  "joints": {"1": 2069, "5": 1230}},
+  {"name": "uncoil",   "joints": {"3": 2172, "4": 3190}},
+  {"name": "shoulder", "joints": {"2": 1478}, "speed": 100}
+ ],
+ "torque_off_joints": [1, 2, 3, 4, 5, 6],
+ "torque_off_settle_s": 1.0
+}

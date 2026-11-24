@@ -1,0 +1,29 @@
+orchestrator LIVE  objective=priority  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261027_224900.jsonl
+[observe] connected to broker: Success
+[plan 1] OFF    20 rpm / arm 1  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1  - autoen starting
+[plan 3] OFF    20 rpm / arm 1  - autoen ready
+[plan 4] OFF    20 rpm / arm 1  - autoen preparing
+[plan 5] RUN    20 rpm / arm 1  - autoen running
+[plan 6] RUN    20 rpm / arm 1  - autoen running
+[plan 7] RUN    20 rpm / arm 1  - autoen running
+[plan 8] RUN    20 rpm / arm 1  - autoen running
+[plan 9] RUN    20 rpm / arm 1  - autoen running
+[plan 10] RECOVER 20 rpm / arm 1  action=pause  - cycle 6 BLOCK_STILL_AT_IR: auto response 'retry' (try 1/2, learned success 33%)
+[plan 11] RECOVER 20 rpm / arm 1  - cycle 6 BLOCK_STILL_AT_IR: auto response 'retry' (try 1/2, learned success 33%)
+[plan 12] RUN    20 rpm / arm 1  action=resume  - auto response 'retry': running again
+[plan 13] RUN    20 rpm / arm 1  - auto response 'retry': running again
+[plan 14] RUN    20 rpm / arm 1  - auto response 'retry': running again
+[plan 15] RUN    20 rpm / arm 1  - auto response 'retry': running again
+[plan 16] IDLE   20 rpm / arm 1  action=idle  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 17] IDLE   20 rpm / arm 1  - feeder IR: feeder empty (finishing the cube on the belt first)
+[plan 18] RECOVER 20 rpm / arm 1  action=pause  - cycle 10 RuntimeError: auto response 'retry' (try 1/1, learned success 50%) (new incident: remembered)
+[plan 19] RECOVER 20 rpm / arm 1  - cycle 10 RuntimeError: auto response 'retry' (try 1/1, learned success 50%) (new incident: remembered)
+[plan 20] RUN    20 rpm / arm 1  action=resume  - auto response 'retry': running again
+[plan 21] RUN    20 rpm / arm 1  - auto response 'retry': running again
+[plan 22] RECOVER 15 rpm / arm 2  action=pause  - cycle 11 TimeoutError: auto response 'retry' (try 1/1, learned success 50%) (new incident: remembered); settings 20/1 -> 15/2 (old one fell below the success floor)
+[plan 23] RECOVER 15 rpm / arm 2  - cycle 11 TimeoutError: auto response 'retry' (try 1/1, learned success 50%) (new incident: remembered); settings 20/1 -> 15/2 (old one fell below the success floor)
+[plan 24] RUN    15 rpm / arm 2  action=resume  - auto response 'retry': running again
+[plan 25] RUN    15 rpm / arm 2  - auto response 'retry': running again
+[plan 26] ALERT  15 rpm / arm 1.5  action=pause  - settings 15/2 -> 15/1.5 (old one fell below the success floor)
+[plan 27] ALERT  15 rpm / arm 1.5  - settings 15/2 -> 15/1.5 (old one fell below the success floor)

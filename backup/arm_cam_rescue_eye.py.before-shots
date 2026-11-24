@@ -1,0 +1,190 @@
+#!/usr/bin/env python3
+"""rescue_eye.py - the wrist camera's eye for PRISM's EMERGENCY GRIP (2026-11-12).
+
+The operator: "if the arm's IR still sees the cube after GRIP and the grip failed, open the follow_block function as
+the emergency: no camera window, find the cube, grip it, go home, then orange -> left, else -> right".
+
+PRISM's autoen owns the Mega (one port, one owner), so this program never moves the arm. It is the EYE and the BRAIN of
+follow_block.py, and autoen is its hands: autoen sends the arm's joints ~12 times a second, this program answers with
+follow_block's own corrections, and says READY with the taught grip when the cube sits still under the jaws.
+The maths is follow_block.py, unchanged (imported): BlockTracker -> block_error_mm -> plan_follow (Jacobian, height and
+pitch kept) -> integrate_goals; centred = within CENTER_PX of the jaw target (follow_target.json) for HOLD_S without
+moving more than JITTER_PX; the grip = follow_grip.json (taught at the pick spot: joints down by delta, z checked).
+No window, no keyboard. The camera opens at "start" and is released by "close".
+
+Protocol: one JSON object per line on stdin; one JSON reply per line on stdout (all other output goes to stderr).
+  {"cmd": "hello"}                       -> {"ok": true, "scan": {joint: tick}, "range": {...}, "limits": {...}}
+  {"cmd": "start"}                       -> camera on, tracker reset (searches the whole picture)
+  {"cmd": "step", "joints": {name: tick}}-> {"ok": true, "found": bool, "cmds": {name: [goal, speed]}, "err_px": [u, v],
+                                             "centred": bool, "ready": bool, "grip": {"down": {...}, "up": {...}}}
+                                            {"ok": false, "abort": "..."}  (the arm's height drifted - stop)
+  {"cmd": "close"}  camera off            {"cmd": "quit"}
+Test without a camera:  --fake   (a cube that appears where the jaws are after 0.5 s and holds still)
+"""
+import json
+import os
+import sys
+import time
+
+OUT = sys.stdout
+sys.stdout = sys.stderr                                     # library prints must not mix into the protocol
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+os.chdir(HERE)
+
+import config as C                                          # noqa: E402
+import kinematics as K                                      # noqa: E402
+
+HOLD_S = 0.6                  # centred and still this long -> grip (follow_block's --hold default is 1.0)
+GRIP_FILE = os.path.join(HERE, "follow_grip.json")
+TARGET_FILE = os.path.join(HERE, "follow_target.json")
+
+
+def reply(**kv):
+    OUT.write(json.dumps(kv, default=float) + "\n")
+    OUT.flush()
+
+
+class Eye:
+    def __init__(self, fake=False):
+        self.fake, self.cap, self.H, self.trk = fake, None, None, None
+        self.scan = {j: int(C.SCAN_POSE[j]) for j in K.JOINTS5}
+        import follow_block as FB
+        self.FB = FB
+        self.td = json.load(open(GRIP_FILE, encoding="utf-8")) if os.path.exists(GRIP_FILE) else None
+        try:
+            t = json.load(open(TARGET_FILE, encoding="utf-8"))
+            self.tu, self.tv = float(t["u"]), float(t["v"])
+        except (OSError, ValueError, KeyError):
+            self.tu = self.tv = None                        # the picture's centre (set at the first frame)
+
+    def hello(self):
+        return {"ok": True, "scan": self.scan, "range": dict(self.FB.RANGE_TICKS),
+                "limits": {j: list(C.JOINT_LIMITS[j]) for j in K.JOINTS5}, "grip_taught": self.td is not None,
+                "fake": self.fake}
+
+    def start(self):
+        import detect_block as D
+        if self.H is None:
+            self.H = D.load_homography()
+        if not self.fake and self.cap is None:
+            import camera
+            self.cap = camera.open_camera()
+        self.trk = D.BlockTracker(self.H)
+        self.trk.bg = None                                  # (the empty-lane background is only valid at the scan pose)
+        self.ref_zp, self.cmd_goal, self.since, self.hist, self.t0 = None, {}, None, [], time.monotonic()
+        return {"ok": True, "grip_taught": self.td is not None}
+
+    def close(self):
+        if self.cap is not None:
+            try:
+                self.cap.release()
+            except Exception:                               # noqa: BLE001
+                pass
+        self.cap = None
+
+    def _see(self):
+        """-> (centre px (u, v) or None)."""
+        if self.fake:
+            if time.monotonic() - self.t0 < 0.5:
+                return None
+            return (self.tu or 640.0) + 3.0, (self.tv or 360.0) - 2.0
+        import camera
+        g = camera.grab(self.cap)
+        if g is None:
+            return None
+        if self.tu is None:
+            self.tu, self.tv = g.shape[1] / 2.0, g.shape[0] / 2.0
+        res, state, _roi = self.trk.update(g)
+        if res is None or state != "TRACK":
+            return None
+        c = res["box_px"].mean(axis=0)
+        return float(c[0]), float(c[1])
+
+    def step(self, joints):
+        FB = self.FB
+        if self.trk is None or (not self.fake and self.cap is None):
+            return {"ok": False, "abort": "the hand camera is not open (start failed)", "no_camera": True}
+        c = self._see()
+        if c is None:
+            self.cmd_goal.clear()
+            self.since, self.hist = None, []
+            return {"ok": True, "found": False, "cmds": {}, "centred": False, "ready": False}
+        tu, tv = (self.tu or 640.0), (self.tv or 360.0)
+        cmds = {}
+        if not self.fake:
+            e = FB.block_error_mm(self.H, c, (tu, tv))
+            if self.ref_zp is None:
+                ts = FB.tip_state(joints)
+                self.ref_zp = (float(ts[2]), float(ts[3]))
+            _dq, cmds = FB.plan_follow(joints, self.scan, e, ref_zp=self.ref_zp)
+            dz = float(FB.tip_state(joints)[2] - self.ref_zp[0])
+            if abs(dz) > FB.Z_ABORT_MM:
+                return {"ok": False, "abort": f"the hand's height drifted {dz:+.0f} mm while following"}
+            near = ((c[0] - tu) ** 2 + (c[1] - tv) ** 2) ** 0.5 <= FB.HOLD_PX
+            cmds = {} if near else FB.integrate_goals(cmds, joints, self.scan, self.cmd_goal)
+        centred = abs(c[0] - tu) <= FB.CENTER_PX and abs(c[1] - tv) <= FB.CENTER_PX
+        out = {"ok": True, "found": True, "cmds": {j: [int(g), int(s)] for j, (g, s) in cmds.items()},
+               "err_px": [round(c[0] - tu), round(c[1] - tv)], "centred": centred, "ready": False}
+        now = time.monotonic()
+        if not centred:
+            self.since, self.hist = None, []
+            return out
+        if self.since is None:
+            self.since, self.hist = now, []
+        self.hist.append(c)
+        us, vs = zip(*self.hist)
+        if max(us) - min(us) > FB.JITTER_PX or max(vs) - min(vs) > FB.JITTER_PX:
+            self.since, self.hist = now, [c]                # still moving: start again
+            return out
+        if now - self.since < HOLD_S:
+            return out
+        if self.td is None:
+            return {"ok": False, "abort": "no taught grip (follow_grip.json): teach it once with follow_block.py, key t"}
+        down = {n: int(joints[n] + self.td["delta_joints"][n]) for n in FB.GRIP_J}
+        for n, v in down.items():
+            lo, hi = C.JOINT_LIMITS[n]
+            if not lo <= v <= hi:
+                return {"ok": False, "abort": f"the grip pose is outside the joint limits: {n}={v}"}
+        z_dn = float(FB.tip_state({**joints, **down})[2])
+        if z_dn < self.td["grip_z_mm"] - FB.GRIP_Z_TOL_MM:
+            return {"ok": False, "abort": f"the grip pose would go {self.td['grip_z_mm'] - z_dn:.0f} mm lower than "
+                                          "taught - it could hit the belt"}
+        out.update(ready=True, grip={"down": down, "up": {n: int(joints[n]) for n in FB.GRIP_J},
+                                     "drop_mm": round(float(self.td["drop_mm"]), 1)})
+        return out
+
+
+def main():
+    eye = Eye(fake="--fake" in sys.argv)
+    while True:
+        line = sys.stdin.readline()                     # line by line (a for-loop over stdin reads ahead in blocks)
+        if not line:
+            break
+        try:
+            m = json.loads(line)
+            cmd = m.get("cmd")
+            if cmd == "hello":
+                reply(**eye.hello())
+            elif cmd == "start":
+                reply(**eye.start())
+            elif cmd == "step":
+                reply(**eye.step({j: int(v) for j, v in (m.get("joints") or eye.scan).items()}))
+            elif cmd == "close":
+                eye.close()
+                reply(ok=True)
+            elif cmd == "quit":
+                eye.close()
+                reply(ok=True)
+                break
+            else:
+                reply(ok=False, why=f"unknown command {cmd!r}")
+        except Exception as e:                              # noqa: BLE001 - one bad step must not end the eye
+            import traceback
+            traceback.print_exc()
+            reply(ok=False, abort=f"{type(e).__name__}: {e}")
+    eye.close()
+
+
+if __name__ == "__main__":
+    main()

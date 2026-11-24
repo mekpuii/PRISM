@@ -1,0 +1,18 @@
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261111_190716.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[observe] connected to broker: Success
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen preparing
+[plan 4] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 5] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 6] MANUAL 20 rpm / arm 1.5  - autoen paused by someone else: hands off
+[plan 7] RUN    20 rpm / arm 1.5  - autoen running
+[plan 8] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 9] RUN    20 rpm / arm 1.5  action=refeed  - the feeder servo did not move (12 V rail dipped 1 mV, a real push takes >= 30): feeding again (1/2)
+[plan 10] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 1 mV, a real push takes >= 30): feeding again (1/2)
+[plan 11] RUN    20 rpm / arm 1.5  action=refeed  - the feeder servo did not move (12 V rail dipped 2 mV, a real push takes >= 30): feeding again (2/2)
+[plan 12] RUN    20 rpm / arm 1.5  - the feeder servo did not move (12 V rail dipped 2 mV, a real push takes >= 30): feeding again (2/2)
+[plan 13] ALERT  20 rpm / arm 1.5  action=abort  - the feeder servo did not move on 3 pushes in a row (no current draw): check its plug and its 5 V supply, then resume
+[plan 14] ALERT  20 rpm / arm 1.5  - the feeder servo did not move on 3 pushes in a row (no current draw): check its plug and its 5 V supply, then resume
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

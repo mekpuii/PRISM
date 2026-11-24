@@ -1,0 +1,10 @@
+# Libraries for arm_cam on the Pi. Environment: ~/armcam-env (Python 3.11).
+#   /usr/local/bin/python3.11 -m venv ~/armcam-env
+#   ~/armcam-env/bin/pip install -r requirements.txt
+# Same versions as the Windows PC the code came from.
+numpy==2.4.6
+opencv-python==5.0.0.93
+pyserial==3.5
+# Not installed: lerobot. Only arm.py needs it, and only when ARM_BACKEND = "lerobot" in config.py (this setup uses "mega").
+# After installing, give OpenCV's Qt the system fonts (stops a "Cannot find font directory" warning on every window):
+#   ln -s /usr/share/fonts/truetype/dejavu ~/armcam-env/lib/python3.11/site-packages/cv2/qt/fonts

@@ -1,0 +1,410 @@
+# observe.py - Module 1 of the orchestrator (PRISM, Raspberry Pi 4).
+#
+# WHAT THIS MODULE DOES
+#   Subscribes to the topics the existing nodes already publish and keeps the latest
+#   known state of: the six arm joints, the arm's cycle status, the gripper, the belt,
+#   and the cubes the camera currently sees. Each tick, step() returns a WorldState
+#   snapshot for predict.py.
+#
+# WHAT IT DOES NOT DO
+#   It never publishes and never decides. It only records what the nodes say.
+#
+# RULES THIS FILE FOLLOWS
+#   1. Freshness uses the time THIS program received a message (time.monotonic),
+#      never the "ts" inside the payload. The Pi clock and the Mega clock differ.
+#   2. Retained messages update the value but NOT the freshness. A retained copy is
+#      what the broker remembers, not proof that the node is alive now.
+#   3. paho's network thread only enqueues. All state is touched on the tick thread,
+#      so no locks are needed.
+#   4. Camera perception is a SNAPSHOT: each message replaces the cube list, and
+#      cam_seq counts snapshots so predict.py can use each one exactly once.
+#   5. A malformed message is counted and skipped. It never crashes the loop.
+
+import json
+import math
+import os
+import queue
+import time
+from dataclasses import dataclass
+from typing import Optional
+
+import paho.mqtt.client as mqtt
+
+# ============================================================
+# CONFIGURATION
+# ============================================================
+
+BROKER_HOST = os.environ.get("MQTT_HOST", "localhost")
+BROKER_PORT = 1883
+
+QUEUE_MAX = 2000        # messages buffered between ticks; beyond this we drop and count
+DRAIN_MAX = 300         # messages handled per tick, so one burst cannot stretch the tick
+
+# STS3215 current register -> mA. Same constant the arm analyzer uses.
+MA_PER_COUNT = 6.5
+
+# A feed is "fresh" only if a LIVE message arrived within this many seconds.
+# Arm and belt publish ~10 Hz; camera publishes 2 Hz, so 3 s allows one missed sample.
+STALE_S = {"arm": 1.0, "belt": 1.0, "camera": 3.0}
+
+# Telemetry is QoS 0: a newer sample replaces a lost one.
+# Events are QoS 1: an ARRIVED or a gripper CLOSED must not be lost.
+T_ARM_TEL   = "arm/telemetry"        # autoen_node.py, 10 Hz
+T_ARM_STATE = "arm/state"            # autoen_node.py, 10 Hz, retained
+T_GRIPPER   = "arm/gripper"          # autoen_node.py, on every gripper event
+T_BELT_TEL  = "belt/telemetry"       # autoen_node.py, once per new Mega sample
+T_BELT_EVT  = "belt/event"           # autoen_node.py: ARRIVED / FEED_DONE / FAULT
+T_CAM_PERC  = "camera/perception"    # camera node, 2 Hz
+T_CYCLE     = "autoen/cycle"         # auto_en_new.py: one message per finished cycle (optimize.py watches results)
+
+SUBSCRIPTIONS = [
+    (T_ARM_TEL, 0), (T_ARM_STATE, 0), (T_GRIPPER, 1),
+    (T_BELT_TEL, 0), (T_BELT_EVT, 1), (T_CAM_PERC, 0), (T_CYCLE, 1),
+]
+
+# ============================================================
+# STATE TYPES  (what predict.py and optimize.py receive)
+# ============================================================
+
+@dataclass
+class JointObs:
+    """One arm joint, latest reading. J1..J5 are the arm, J6 is the gripper."""
+    pos: int                       # raw ticks, 4096 per revolution
+    speed: int                     # ticks/s
+    cur_ma: Optional[float]        # |current| in mA, None if not sent
+    temp_c: Optional[float]        # None until the Mega sends a temperature
+    volt_v: Optional[float] = None # servo supply volts, None if not sent
+
+
+@dataclass
+class ArmStatus:
+    """Cycle status from arm/state."""
+    mode: str = "unknown"          # auto / hold / lock
+    status: str = "unknown"        # preparing / running / paused / error ...
+    phase: str = "unknown"         # GRIP, CARRY_LEFT, HOME, CLEAR, ...
+    cycle: int = 0
+    drop: str = ""                 # left / down: where the block is going
+    live_t: Optional[float] = None # when a LIVE (non-retained) message last arrived
+
+
+@dataclass
+class GripperEvent:
+    """Last gripper event from arm/gripper."""
+    state: str                     # CLOSING / CLOSED / ERROR
+    pos: Optional[int]
+    reason: Optional[str]
+    t: float
+
+
+@dataclass
+class BeltObs:
+    """Latest belt telemetry."""
+    temp_c: Optional[float] = None
+    current_ma: Optional[float] = None
+    voltage_v: Optional[float] = None    # belt INA260 bus volts (energy metering)
+    rpm: Optional[float] = None          # output-shaft speed (not mm/s: pulley radius handled in predict.py)
+    rev: Optional[float] = None          # encoder position in revolutions
+    pwm: Optional[int] = None
+    mode: Optional[int] = None
+    ir: Optional[bool] = None            # None = unknown. Never treat unknown as "no block".
+    fault: int = 0
+    live_t: Optional[float] = None
+
+
+@dataclass
+class CubeObs:
+    """One cube as the camera sees it right now."""
+    id: int                        # track id, valid only within one camera session
+    color: str
+    along_px: float                # position along the belt, px. Larger = further downstream.
+    across_px: float               # position across the belt, px
+    along_vel_px_s: float          # velocity along the belt, px/s, same sign convention
+    dist_m: Optional[float]        # depth to the cube, None if the camera had no reading
+    w_px: Optional[float]
+    h_px: Optional[float]
+    hits: int = 0                  # camera frames that confirmed this track (filters out blinks)
+
+
+@dataclass
+class Event:
+    """A one-shot event. Each one appears in exactly one WorldState."""
+    source: str                    # "belt", "gripper" or "cycle"
+    name: str                      # ARRIVED / FEED_DONE / FAULT / CLOSED / ERROR ... / cycle result (OK, GRIP_FAILED ...)
+    args: list
+    t: float
+
+
+@dataclass
+class WorldState:
+    """Immutable snapshot handed to predict.py every tick.
+    Always check the *_fresh flag before using a group. A stale value is not zero: it is unknown."""
+    t: float
+    connected: bool
+    joints: dict                   # int 1..6 -> JointObs (last complete set)
+    joints_fresh: bool
+    arm: ArmStatus
+    arm_fresh: bool
+    gripper: Optional[GripperEvent]
+    belt: BeltObs
+    belt_fresh: bool
+    cubes: list                    # list of CubeObs from the latest camera snapshot
+    camera_fresh: bool
+    cam_seq: int                   # increments once per camera snapshot (not per tick)
+    events: list                   # Event objects that arrived since the last tick
+    dropped: int = 0               # messages lost to a full queue (should stay 0)
+    bad_messages: int = 0          # malformed payloads skipped
+
+
+# ============================================================
+# SMALL HELPERS
+# ============================================================
+
+def _num(x):
+    """Return x as a finite float, or None if it is missing, text, NaN, or infinite."""
+    if x is None:
+        return None
+    try:
+        v = float(x)
+    except (TypeError, ValueError):
+        return None
+    return v if math.isfinite(v) else None
+
+
+def _keep_live(old_t, retained, t_rx):
+    """A retained message keeps the previous live time. Only a live message moves it forward."""
+    return old_t if retained else t_rx
+
+
+def _fresh(live_t, now, limit):
+    """True only if a live message arrived within `limit` seconds."""
+    return live_t is not None and now - live_t <= limit
+
+
+# ============================================================
+# MODULE
+# ============================================================
+
+class Observe:
+    """Connects to the broker, buffers inbound messages, and keeps the latest state."""
+
+    def __init__(self):
+        # Thread-safe handoff: paho's network thread writes here, the tick thread reads.
+        self._inbox = queue.Queue(maxsize=QUEUE_MAX)
+        self.dropped = 0
+        self.bad_messages = 0
+
+        # Latest known state. Touched only by the tick thread.
+        self._connected = False
+        self._joints = {}
+        self._joints_t = None
+        self._arm = ArmStatus()
+        self._gripper_last = None
+        self._belt = BeltObs()
+        self._cubes = []
+        self._cam_live_t = None
+        self._cam_seq = 0                    # snapshots received so far
+        self._events = []                    # events collected since the last step()
+
+        # Non-blocking connection: the tick loop starts even if Mosquitto is down.
+        self._client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id="orchestrator_observe")
+        self._client.on_connect = self._on_connect
+        self._client.on_disconnect = self._on_disconnect
+        self._client.on_connect_fail = self._on_connect_fail
+        self._client.on_message = self._on_message
+        self._client.connect_async(BROKER_HOST, BROKER_PORT, keepalive=10)
+        self._client.loop_start()            # starts paho's network thread
+
+    # ----- connection callbacks (paho thread: keep them tiny) -----
+
+    def _on_connect(self, client, userdata, flags, reason_code, properties):
+        self._connected = True
+        client.subscribe(SUBSCRIPTIONS)      # re-subscribe on every connect, reconnects included
+        print(f"[observe] connected to broker: {reason_code}", flush=True)
+
+    def _on_disconnect(self, client, userdata, flags, reason_code, properties):
+        self._connected = False
+        print("[observe] lost the broker: all feeds will go stale", flush=True)
+
+    def _on_connect_fail(self, client, userdata):
+        # connect_async retries silently forever. Without this, a wrong MQTT_HOST looks like a hang.
+        print(f"[observe] cannot reach the broker at {BROKER_HOST}:{BROKER_PORT} - retrying", flush=True)
+
+    def _on_message(self, client, userdata, msg):
+        # Enqueue only. No parsing here, so the network thread is never held up.
+        try:
+            self._inbox.put_nowait((msg.topic, msg.payload, bool(msg.retain), time.monotonic()))
+        except queue.Full:
+            self.dropped += 1
+
+    # ----- tick thread -----
+
+    def step(self) -> WorldState:
+        """Handle up to DRAIN_MAX queued messages, then return a snapshot."""
+        for _ in range(DRAIN_MAX):
+            try:
+                topic, raw, retained, t_rx = self._inbox.get_nowait()
+            except queue.Empty:
+                break
+            self._apply(topic, raw, retained, t_rx)
+        return self._snapshot(time.monotonic())
+
+    def inject(self, topic, data, retained=False):
+        """TEST ONLY: feed one message as if it came from the broker. Works without a robot."""
+        self._inbox.put_nowait((topic, json.dumps(data).encode(), retained, time.monotonic()))
+
+    # ----- parsing: one handler per topic -----
+
+    def _apply(self, topic, raw, retained, t_rx):
+        """Dispatch one message to its handler. A bad payload is counted and skipped."""
+        try:
+            data = json.loads(raw)                   # ValueError covers bad JSON and bad bytes
+            if not isinstance(data, dict):
+                raise TypeError("payload is not a JSON object")
+            if topic == T_ARM_TEL:
+                self._arm_telemetry(data, retained, t_rx)
+            elif topic == T_ARM_STATE:
+                self._arm_state(data, retained, t_rx)
+            elif topic == T_GRIPPER:
+                self._gripper(data, t_rx)
+            elif topic == T_BELT_TEL:
+                self._belt_telemetry(data, retained, t_rx)
+            elif topic == T_BELT_EVT:
+                self._belt_event(data, t_rx)
+            elif topic == T_CAM_PERC:
+                self._camera(data, retained, t_rx)
+            elif topic == T_CYCLE:
+                self._cycle(data, t_rx)
+        except (KeyError, TypeError, ValueError, AttributeError):
+            self.bad_messages += 1                   # keep the last good state
+
+    def _arm_telemetry(self, data, retained, t_rx):
+        """All six joints or nothing: a partial set is never mixed with an older one."""
+        joints_in = data["joints"]
+        new = {}
+        for sid in range(1, 7):
+            j = joints_in.get(str(sid))
+            if j is None or j.get("pos") is None:
+                return                               # incomplete: keep the previous complete set
+            cur = _num(j.get("cur"))
+            new[sid] = JointObs(
+                pos=int(j["pos"]),
+                speed=int(j.get("speed") or 0),
+                cur_ma=None if cur is None else abs(cur) * MA_PER_COUNT,
+                temp_c=_num(j.get("temp")),
+                volt_v=_num(j.get("volt")),
+            )
+        self._joints = new
+        self._joints_t = _keep_live(self._joints_t, retained, t_rx)
+
+    def _arm_state(self, data, retained, t_rx):
+        """Cycle status. Retained copies fill in the values but do not count as 'alive'."""
+        self._arm = ArmStatus(
+            mode=str(data.get("mode", "unknown")),
+            status=str(data.get("status", "unknown")),
+            phase=str(data.get("phase", "unknown")),
+            cycle=int(data.get("cycle") or 0),
+            drop=str(data.get("drop", "")),
+            live_t=_keep_live(self._arm.live_t, retained, t_rx),
+        )
+
+    def _gripper(self, data, t_rx):
+        """Gripper event. It is also queued as an Event, so it is seen exactly once."""
+        pos = data.get("pos")
+        pos = None if pos is None else int(pos)
+        reason = data.get("reason")
+        state = str(data.get("state", "?"))
+        self._gripper_last = GripperEvent(state=state, pos=pos, reason=reason, t=t_rx)
+        self._events.append(Event(source="gripper", name=state, args=[pos, reason], t=t_rx))
+
+    def _belt_telemetry(self, data, retained, t_rx):
+        """Belt snapshot. A missing 'ir' stays None so 'unknown' never reads as 'no block'."""
+        ir = data.get("ir")
+        self._belt = BeltObs(
+            temp_c=_num(data.get("temp")),
+            current_ma=_num(data.get("current")),
+            voltage_v=_num(data.get("voltage")),
+            rpm=_num(data.get("velocity")),
+            rev=_num(data.get("position")),
+            pwm=data.get("pwm"),
+            mode=data.get("mode"),
+            ir=None if ir is None else bool(ir),
+            fault=int(data.get("fault") or 0),
+            live_t=_keep_live(self._belt.live_t, retained, t_rx),
+        )
+
+    def _belt_event(self, data, t_rx):
+        """ARRIVED / FEED_DONE / FAULT. Queued as an Event, so it is seen exactly once."""
+        self._events.append(Event(
+            source="belt",
+            name=str(data.get("name", "?")),
+            args=list(data.get("args") or []),
+            t=t_rx,
+        ))
+
+    def _cycle(self, data, t_rx):
+        """One finished arm cycle. args = [secs, cycle number, notes, drop bin]; queued as an Event, seen exactly once."""
+        self._events.append(Event(
+            source="cycle",
+            name=str(data.get("result", "?")),
+            args=[_num(data.get("secs")), int(data.get("n") or 0), str(data.get("notes") or ""), data.get("drop")],
+            t=t_rx,
+        ))
+
+    def _camera(self, data, retained, t_rx):
+        """Snapshot of cubes. The cube list is REPLACED, never merged."""
+        # Axis and direction come from the camera. Defaults match the camera's own defaults.
+        axis = "v" if data.get("axis") == "v" else "u"
+        sign = -1 if int(data.get("dir", 1)) < 0 else 1
+        cubes = []
+        for tr in data.get("tracks") or []:
+            if tr.get("id") is None or tr.get("u") is None or tr.get("v") is None:
+                continue
+            u, v = float(tr["u"]), float(tr["v"])
+            vu = _num(tr.get("vu")) or 0.0
+            vv = _num(tr.get("vv")) or 0.0
+            # "along" is the belt axis. Sign-corrected so larger = further downstream.
+            along, across = (u, v) if axis == "u" else (v, u)
+            along_v = vu if axis == "u" else vv
+            cubes.append(CubeObs(
+                id=int(tr["id"]),
+                color=str(tr.get("color", "?")).lower(),
+                along_px=along * sign,
+                across_px=across,
+                along_vel_px_s=along_v * sign,
+                dist_m=_num(tr.get("dist_m")),
+                w_px=_num(tr.get("w")),
+                h_px=_num(tr.get("h")),
+                hits=int(tr.get("hits") or 0),
+            ))
+        self._cubes = cubes
+        self._cam_live_t = _keep_live(self._cam_live_t, retained, t_rx)
+        if not retained:
+            self._cam_seq += 1                       # one more LIVE snapshot (retained copies are not new data)
+
+    # ----- snapshot -----
+
+    def _snapshot(self, now) -> WorldState:
+        """Build the WorldState for this tick. Events are handed over once and then cleared."""
+        events, self._events = self._events, []
+        return WorldState(
+            t=now,
+            connected=self._connected,
+            joints=dict(self._joints),
+            joints_fresh=len(self._joints) == 6 and _fresh(self._joints_t, now, STALE_S["arm"]),
+            arm=self._arm,
+            arm_fresh=_fresh(self._arm.live_t, now, STALE_S["arm"]),
+            gripper=self._gripper_last,
+            belt=self._belt,
+            belt_fresh=_fresh(self._belt.live_t, now, STALE_S["belt"]),
+            cubes=list(self._cubes),
+            camera_fresh=_fresh(self._cam_live_t, now, STALE_S["camera"]),
+            cam_seq=self._cam_seq,
+            events=events,
+            dropped=self.dropped,
+            bad_messages=self.bad_messages,
+        )
+
+    def shutdown(self):
+        """Clean disconnect. Call from node.py on exit."""
+        self._client.loop_stop()
+        self._client.disconnect()

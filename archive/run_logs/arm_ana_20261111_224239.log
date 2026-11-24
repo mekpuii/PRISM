@@ -1,0 +1,10 @@
+[arm-analyzer] up. broker localhost:1883, db arm_analyzer.db, thresholds built-in defaults (run --write-thresholds or --calibrate to make the file). Ctrl+C to stop.
+[arm-analyzer] connected to broker: Success
+[22:42:52] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:43:02] state=NO_DATA  broker=up  arm/telemetry=none yet  cycles_ok=0  levels=all OK
+[22:43:08] NO_DATA    -> IDLE        (at home, gripper holding)
+[22:43:09] CONDITION J3 current 13 mA in IDLE: OK -> WARN (held 0.5 s, limit 13)
+[22:43:12] state=IDLE  broker=up  arm/telemetry=0.0 s ago  cycles_ok=0  levels=J3.current=WARN
+
+[arm-analyzer] stopping
+[arm-analyzer] lost the broker

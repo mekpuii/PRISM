@@ -1,0 +1,3 @@
+set,cycle_in_set,cycle_total,start,seconds,result,drop,travel_counts,feed_s,transport_s,grip_s,carry_s,notes
+1,1,1,2026-10-23T15:34:13,21.0,TIMEOUT_TRANSPORT,,,0.9,20.1,0,0,block did not reach the IR within 20 s
+1,2,2,2026-10-23T15:34:35,18.0,OK,down,7479,0.8,6.3,2.6,4.0,

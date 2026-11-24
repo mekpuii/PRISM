@@ -1,0 +1,78 @@
+OpenCV 5.0.0 index 0 2026-11-11 12:24:47
+DSHOW ขอ 1280x720 MJPG (fourcc_first) -> ได้ 1280x720 fourcc ได้ 'YUY2'     fps จริง  10.0
+DSHOW ขอ 1280x720 MJPG (size_first  ) -> ได้ 1280x720 fourcc ได้ 'YUY2'     fps จริง  10.0
+DSHOW ขอ 1280x720 YUY2 (fourcc_first) -> ได้ 1280x720 fourcc ตรง            fps จริง  10.0
+DSHOW ขอ 1280x720 YUY2 (size_first  ) -> ได้ 1280x720 fourcc ตรง            fps จริง  10.0
+DSHOW ขอ 1280x720 NV12 (fourcc_first) -> ได้ 1280x720 fourcc ได้ 'YUY2'     fps จริง  10.0
+DSHOW ขอ 1280x720 NV12 (size_first  ) -> ได้ 1280x720 fourcc ได้ 'YUY2'     fps จริง  10.0
+DSHOW ขอ 1280x800 MJPG (fourcc_first) -> ได้ 1280x800 fourcc ได้ 'YUY2'     fps จริง  10.1
+DSHOW ขอ 1280x800 MJPG (size_first  ) -> ได้ 1280x800 fourcc ได้ 'YUY2'     fps จริง  10.1
+DSHOW ขอ 1280x800 YUY2 (fourcc_first) -> ได้ 1280x800 fourcc ตรง            fps จริง   8.7
+DSHOW ขอ 1280x800 YUY2 (size_first  ) -> ได้ 1280x800 fourcc ตรง            fps จริง  10.0
+DSHOW ขอ 1280x800 NV12 (fourcc_first) -> ได้ 1280x800 fourcc ได้ 'YUY2'     fps จริง  10.0
+DSHOW ขอ 1280x800 NV12 (size_first  ) -> ได้ 1280x800 fourcc ได้ 'YUY2'     fps จริง  10.0
+DSHOW ขอ 640x480 MJPG (fourcc_first) -> ได้ 640x480 fourcc ได้ 'YUY2'     fps จริง  30.2
+DSHOW ขอ 640x480 MJPG (size_first  ) -> ได้ 640x480 fourcc ได้ 'YUY2'     fps จริง  30.2
+DSHOW ขอ 640x480 YUY2 (fourcc_first) -> ได้ 640x480 fourcc ตรง            fps จริง  30.3
+DSHOW ขอ 640x480 YUY2 (size_first  ) -> ได้ 640x480 fourcc ตรง            fps จริง  30.3
+DSHOW ขอ 640x480 NV12 (fourcc_first) -> ได้ 640x480 fourcc ได้ 'YUY2'     fps จริง  30.3
+DSHOW ขอ 640x480 NV12 (size_first  ) -> ได้ 640x480 fourcc ได้ 'YUY2'     fps จริง  30.0
+DSHOW ขอ 640x400 MJPG (fourcc_first) -> ได้ 640x400 fourcc ได้ 'YUY2'     fps จริง  29.9
+DSHOW ขอ 640x400 MJPG (size_first  ) -> ได้ 640x400 fourcc ได้ 'YUY2'     fps จริง  29.9
+DSHOW ขอ 640x400 YUY2 (fourcc_first) -> ได้ 640x400 fourcc ตรง            fps จริง  26.0
+DSHOW ขอ 640x400 YUY2 (size_first  ) -> ได้ 640x400 fourcc ตรง            fps จริง  29.9
+DSHOW ขอ 640x400 NV12 (fourcc_first) -> ได้ 640x400 fourcc ได้ 'YUY2'     fps จริง  27.3
+DSHOW ขอ 640x400 NV12 (size_first  ) -> ได้ 640x400 fourcc ได้ 'YUY2'     fps จริง  29.9
+MSMF  ขอ 1280x720 MJPG (fourcc_first) -> ได้ 1280x720 fourcc ได้ '\x16\x00\x00\x00' fps จริง 115.1
+MSMF  ขอ 1280x720 MJPG (size_first  ) -> ได้ 1280x720 fourcc ได้ '\x16\x00\x00\x00' fps จริง 115.2
+MSMF  ขอ 1280x720 YUY2 (fourcc_first) -> ได้ 1280x720 fourcc ได้ '\x16\x00\x00\x00' fps จริง 115.3
+MSMF  ขอ 1280x720 YUY2 (size_first  ) -> ได้ 1280x720 fourcc ได้ '\x16\x00\x00\x00' fps จริง 115.9
+MSMF  ขอ 1280x720 NV12 (fourcc_first) -> ได้ 1280x720 fourcc ได้ '\x16\x00\x00\x00' fps จริง 115.7
+MSMF  ขอ 1280x720 NV12 (size_first  ) -> ได้ 1280x720 fourcc ได้ '\x16\x00\x00\x00' fps จริง 113.1
+MSMF  ขอ 1280x800 MJPG (fourcc_first) -> ได้ 1280x800 fourcc ได้ '\x16\x00\x00\x00' fps จริง 115.1
+MSMF  ขอ 1280x800 MJPG (size_first  ) -> ได้ 1280x800 fourcc ได้ '\x16\x00\x00\x00' fps จริง 115.0
+MSMF  ขอ 1280x800 YUY2 (fourcc_first) -> ได้ 1280x800 fourcc ได้ '\x16\x00\x00\x00' fps จริง 114.9
+MSMF  ขอ 1280x800 YUY2 (size_first  ) -> ได้ 1280x800 fourcc ได้ '\x16\x00\x00\x00' fps จริง 113.0
+MSMF  ขอ 1280x800 NV12 (fourcc_first) -> ได้ 1280x800 fourcc ได้ '\x16\x00\x00\x00' fps จริง 114.9
+MSMF  ขอ 1280x800 NV12 (size_first  ) -> ได้ 1280x800 fourcc ได้ '\x16\x00\x00\x00' fps จริง 111.1
+MSMF  ขอ 640x480 MJPG (fourcc_first) -> ได้ 640x480 fourcc ได้ '\x16\x00\x00\x00' fps จริง  31.5
+MSMF  ขอ 640x480 MJPG (size_first  ) -> ได้ 640x480 fourcc ได้ '\x16\x00\x00\x00' fps จริง 119.7
+MSMF  ขอ 640x480 YUY2 (fourcc_first) -> ได้ 640x480 fourcc ได้ '\x16\x00\x00\x00' fps จริง 118.9
+MSMF  ขอ 640x480 YUY2 (size_first  ) -> ได้ 640x480 fourcc ได้ '\x16\x00\x00\x00' fps จริง 119.9
+MSMF  ขอ 640x480 NV12 (fourcc_first) -> ได้ 640x480 fourcc ได้ '\x16\x00\x00\x00' fps จริง 119.9
+MSMF  ขอ 640x480 NV12 (size_first  ) -> ได้ 640x480 fourcc ได้ '\x16\x00\x00\x00' fps จริง 115.9
+MSMF  ขอ 640x400 MJPG (fourcc_first) -> ได้ 640x400 fourcc ได้ '\x16\x00\x00\x00' fps จริง  29.9
+MSMF  ขอ 640x400 MJPG (size_first  ) -> ได้ 640x400 fourcc ได้ '\x16\x00\x00\x00' fps จริง  29.9
+MSMF  ขอ 640x400 YUY2 (fourcc_first) -> ได้ 640x400 fourcc ได้ '\x16\x00\x00\x00' fps จริง  29.9
+MSMF  ขอ 640x400 YUY2 (size_first  ) -> ได้ 640x400 fourcc ได้ '\x16\x00\x00\x00' fps จริง  29.9
+MSMF  ขอ 640x400 NV12 (fourcc_first) -> ได้ 640x400 fourcc ได้ '\x16\x00\x00\x00' fps จริง  30.0
+MSMF  ขอ 640x400 NV12 (size_first  ) -> ได้ 640x400 fourcc ได้ '\x16\x00\x00\x00' fps จริง  29.9
+
+=== 5 อันดับ fps สูงสุด ===
+119.9 fps  MSMF 640x480 ขอ YUY2 (size_first) ได้ (640, 480, '\x16\x00\x00\x00')
+119.9 fps  MSMF 640x480 ขอ NV12 (fourcc_first) ได้ (640, 480, '\x16\x00\x00\x00')
+119.7 fps  MSMF 640x480 ขอ MJPG (size_first) ได้ (640, 480, '\x16\x00\x00\x00')
+118.9 fps  MSMF 640x480 ขอ YUY2 (fourcc_first) ได้ (640, 480, '\x16\x00\x00\x00')
+115.9 fps  MSMF 640x480 ขอ NV12 (size_first) ได้ (640, 480, '\x16\x00\x00\x00')
+
+=== ทดสอบ exposure ในชุดที่เร็วสุด: MSMF (640, 480) YUY2 ===
+auto_exposure=0.25:
+   exp  -3 (อ่านกลับ   -6.0) สว่าง 252.7 fps 26.8
+   exp  -5 (อ่านกลับ   -6.0) สว่าง 240.1 fps 108.3
+   exp  -7 (อ่านกลับ   -6.0) สว่าง 150.7 fps 120.3
+   exp  -9 (อ่านกลับ   -6.0) สว่าง  55.2 fps 120.3
+   exp -11 (อ่านกลับ   -6.0) สว่าง   6.6 fps 120.3
+auto_exposure=1:
+   exp  -3 (อ่านกลับ   -6.0) สว่าง 253.0 fps 24.6
+   exp  -5 (อ่านกลับ   -6.0) สว่าง 241.9 fps 108.2
+   exp  -7 (อ่านกลับ   -6.0) สว่าง 137.5 fps 120.4
+   exp  -9 (อ่านกลับ   -6.0) สว่าง  39.9 fps 120.3
+   exp -11 (อ่านกลับ   -6.0) สว่าง   2.5 fps 120.0
+auto_exposure=0.75:
+   exp  -3 (อ่านกลับ   -6.0) สว่าง 252.4 fps 26.8
+   exp  -5 (อ่านกลับ   -6.0) สว่าง 237.3 fps 102.5
+   exp  -7 (อ่านกลับ   -6.0) สว่าง 126.8 fps 120.4
+   exp  -9 (อ่านกลับ   -6.0) สว่าง  39.1 fps 120.1
+   exp -11 (อ่านกลับ   -6.0) สว่าง   2.6 fps 120.3
+
+ถ้าสว่างเปลี่ยนตามค่า exp = ตั้ง exposure ได้ (เลือกค่าที่สว่างเฉลี่ย ~100-140) | ถ้าเท่ากันทุกค่า = driver ไม่รับ

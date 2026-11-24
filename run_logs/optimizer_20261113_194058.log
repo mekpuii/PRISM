@@ -1,0 +1,398 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM/orchestrator/logs/orch_20261113_194109.jsonl
+[plan 1] OFF    22 rpm / arm 1.75  - autoen ready
+[plan 2] RUN    22 rpm / arm 1.75  - autoen running
+[plan 3] RUN    22 rpm / arm 1.75  - autoen running
+[plan 4] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 5] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 6] RUN    22 rpm / arm 1.75  action=verdict:1:nudge  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 7] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 469 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 8] RUN    22 rpm / arm 1.75  action=verdict:1:fed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 9] RUN    22 rpm / arm 1.75  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 10] RUN    22 rpm / arm 1.75  action=feed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 11] RUN    22 rpm / arm 1.75  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 12] RUN    22 rpm / arm 1.75  action=verdict:2:fed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 13] RUN    22 rpm / arm 1.75  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 14] RUN    22 rpm / arm 1.75  action=feed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 15] RUN    22 rpm / arm 1.75  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 16] RUN    22 rpm / arm 1.75  action=verdict:3:fed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 17] RUN    22 rpm / arm 1.75  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 18] RUN    22 rpm / arm 1.75  action=feed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 19] RUN    22 rpm / arm 1.75  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 20] RUN    22 rpm / arm 1.75  action=verdict:4:fed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 21] RUN    22 rpm / arm 1.75  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 22] RUN    22 rpm / arm 1.75  action=feed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 23] RUN    22 rpm / arm 1.75  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 24] RUN    22 rpm / arm 1.75  action=verdict:5:fed  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 25] RUN    22 rpm / arm 1.75  - feed 1: the servo pushed but the camera did not see a cube - the camera has not proven it sees every cube at the feeder yet, so I count it as delivered and let the belt carry it (if nothing comes, the ride tells me)
+[plan 26] RUN    22 rpm / arm 1.75  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 27] RUN    22 rpm / arm 1.75  action=feed  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 28] RUN    22 rpm / arm 1.75  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 29] RUN    22 rpm / arm 1.75  action=verdict:6:fed  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 30] RUN    22 rpm / arm 1.75  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 31] RUN    22 rpm / arm 1.75  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 32] RUN    22 rpm / arm 1.75  action=feed  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 33] RUN    22 rpm / arm 1.75  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 34] RUN    22 rpm / arm 1.75  action=verdict:7:fed  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 35] RUN    22 rpm / arm 1.75  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 36] RUN    22 rpm / arm 1.75  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 37] RUN    22 rpm / arm 1.75  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 38] RUN    22 rpm / arm 1.75  action=feed  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 39] RUN    22 rpm / arm 1.75  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 40] RUN    22 rpm / arm 1.75  action=verdict:8:fed  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 41] RUN    22 rpm / arm 1.75  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 42] RUN    22 rpm / arm 1.75  action=feed  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 43] RUN    22 rpm / arm 1.75  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 44] RUN    22 rpm / arm 1.75  action=verdict:9:fed  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 45] RUN    22 rpm / arm 1.75  - slip: cubes move at 33% of the belt speed (median of 3 cycles): belt slipping or a cube dragging on the rail
+[plan 46] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 47] RUN    22 rpm / arm 1.75  action=feed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 48] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 49] RUN    22 rpm / arm 1.75  action=verdict:10:fed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 50] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 51] RUN    22 rpm / arm 1.75  action=feed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 52] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 53] RUN    22 rpm / arm 1.75  action=verdict:11:fed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 54] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 55] RUN    22 rpm / arm 1.75  action=feed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 56] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 57] RUN    22 rpm / arm 1.75  action=verdict:12:fed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 58] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 59] RUN    22 rpm / arm 1.75  action=feed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 60] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 61] RUN    22 rpm / arm 1.75  action=verdict:13:fed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 62] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 63] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 64] RUN    22 rpm / arm 1.75  action=feed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 65] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 66] RUN    22 rpm / arm 1.75  action=verdict:14:fed  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 67] RUN    22 rpm / arm 1.75  - 3 cubes waiting on the belt: rush (fastest safe setting)
+[plan 68] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 69] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 70] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 71] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 72] RUN    22 rpm / arm 1.75  action=verdict:15:fed  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 73] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 74] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 75] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 76] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 77] RUN    22 rpm / arm 1.75  action=verdict:16:fed  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 78] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 79] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 80] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 81] RUN    22 rpm / arm 1.75  action=verdict:17:fed  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 82] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 83] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 84] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 85] RUN    22 rpm / arm 1.75  action=verdict:18:fed  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 86] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 87] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 88] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 89] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 90] RUN    22 rpm / arm 1.75  action=verdict:19:fed  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 91] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 92] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 93] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 94] RUN    22 rpm / arm 1.75  action=verdict:20:fed  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 95] RUN    22 rpm / arm 1.75  - experiment: late 1.25 -> 1.6 (x its ride before a cube counts as not coming) for 6 picks; to beat: 12.4 s per pick
+[plan 96] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 97] RUN    22 rpm / arm 1.75  action=feed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 98] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 99] RUN    22 rpm / arm 1.75  action=verdict:21:fed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 100] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 101] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 102] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 103] RUN    22 rpm / arm 1.75  action=feed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 104] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 105] RUN    22 rpm / arm 1.75  action=verdict:22:fed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 106] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 107] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 108] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 109] RUN    22 rpm / arm 1.75  action=feed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 110] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 111] RUN    22 rpm / arm 1.75  action=verdict:23:fed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 112] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 113] RUN    22 rpm / arm 1.75  action=feed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 114] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 115] RUN    22 rpm / arm 1.75  action=verdict:24:fed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 116] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 117] RUN    22 rpm / arm 1.75  action=feed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 118] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 119] RUN    22 rpm / arm 1.75  action=verdict:25:fed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 120] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 121] RUN    22 rpm / arm 1.75  action=feed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 122] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 123] RUN    22 rpm / arm 1.75  action=verdict:26:fed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 124] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 125] RUN    22 rpm / arm 1.75  action=feed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 126] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 127] RUN    22 rpm / arm 1.75  action=verdict:27:fed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 128] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 129] RUN    22 rpm / arm 1.75  action=feed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 130] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 131] RUN    22 rpm / arm 1.75  action=verdict:28:fed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 132] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 133] RUN    22 rpm / arm 1.75  action=feed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 134] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 135] RUN    22 rpm / arm 1.75  action=verdict:29:fed  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 136] RUN    22 rpm / arm 1.75  - kept: late 1.25 -> 1.6: 11.6 s per pick vs 12.4 s (7 % better, 0 failed)
+[plan 137] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 138] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 139] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 140] RUN    22 rpm / arm 1.75  action=verdict:30:fed  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 141] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 142] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 143] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 144] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 145] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 146] RUN    22 rpm / arm 1.75  action=verdict:31:fed  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 147] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 148] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 149] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 150] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 151] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 152] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 153] RUN    22 rpm / arm 1.75  action=verdict:32:fed  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 154] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 155] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 156] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 157] RUN    22 rpm / arm 1.75  action=verdict:33:fed  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 158] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 159] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 160] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 161] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 162] RUN    22 rpm / arm 1.75  action=feed  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 163] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 164] RUN    22 rpm / arm 1.75  action=verdict:34:fed  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 165] RUN    22 rpm / arm 1.75  - experiment: late 1.6 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.1 s per pick
+[plan 166] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 167] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 168] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 169] RUN    22 rpm / arm 1.75  action=verdict:35:fed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 170] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 171] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 172] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 173] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 174] RUN    22 rpm / arm 1.75  action=verdict:36:fed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 175] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 176] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 177] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 178] RUN    22 rpm / arm 1.75  action=verdict:37:fed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 179] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 180] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 181] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 182] RUN    22 rpm / arm 1.75  action=verdict:38:fed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 183] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 184] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 185] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 186] RUN    22 rpm / arm 1.75  action=verdict:39:fed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 187] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 188] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 189] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 190] RUN    22 rpm / arm 1.75  action=verdict:40:fed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 191] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 192] RUN    22 rpm / arm 1.75  action=feed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 193] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 194] RUN    22 rpm / arm 1.75  action=verdict:41:fed  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 195] RUN    22 rpm / arm 1.75  - back to late 1.6: 1.25 gave 11.2 s per pick vs 11.1 s - not tried again for 50 picks
+[plan 196] RUN    22 rpm / arm 1.75  - experiment: gap_mm 60.0 -> 80.0 (mm of free belt between two cubes) for 6 picks; to beat: 10.4 s per pick
+[plan 197] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 198] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 199] RUN    22 rpm / arm 1.75  action=verdict:42:fed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 200] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 201] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 202] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 203] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 204] RUN    22 rpm / arm 1.75  action=verdict:43:fed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 205] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 206] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 207] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 208] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 209] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 210] RUN    22 rpm / arm 1.75  action=verdict:44:fed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 211] RUN    22 rpm / arm 1.75  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 80 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 212] RUN    22 rpm / arm 1.75  - back to gap_mm 60.0: 80.0 gave 11.7 s per pick vs 10.4 s - not tried again for 50 picks
+[plan 213] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 214] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 215] RUN    22 rpm / arm 1.75  action=verdict:45:fed  - flow: I keep up to 4 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 216] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 217] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 218] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 219] RUN    22 rpm / arm 1.75  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 220] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 221] RUN    22 rpm / arm 1.75  action=verdict:46:nudge  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 222] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 223] RUN    22 rpm / arm 1.75  action=verdict:46:empty  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 224] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 225] RUN    22 rpm / arm 1.75  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 226] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 227] RUN    22 rpm / arm 1.75  action=verdict:47:nudge  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 228] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 229] RUN    22 rpm / arm 1.75  action=verdict:47:empty  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 230] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 231] RUN    22 rpm / arm 1.75  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 232] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 233] RUN    22 rpm / arm 1.75  action=verdict:48:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 234] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 235] RUN    22 rpm / arm 1.75  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 236] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 237] RUN    22 rpm / arm 1.75  action=verdict:49:nudge  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 238] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 239] RUN    22 rpm / arm 1.75  action=verdict:49:empty  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 240] RUN    22 rpm / arm 1.75  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 241] RUN    22 rpm / arm 1.75  action=flow_drop_oldest  - feed 48: its block should have reached the IR after 7.5 s of belt and has not (160% of the ride): nothing came out, feeding again
+[plan 242] RUN    22 rpm / arm 1.75  - feed 48: its block should have reached the IR after 7.5 s of belt and has not (160% of the ride): nothing came out, feeding again
+[plan 243] RUN    22 rpm / arm 1.75  action=feed  - feed 48: its block should have reached the IR after 7.5 s of belt and has not (160% of the ride): nothing came out, feeding again
+[plan 244] RUN    22 rpm / arm 1.75  - feed 48: its block should have reached the IR after 7.5 s of belt and has not (160% of the ride): nothing came out, feeding again
+[plan 245] RUN    22 rpm / arm 1.75  action=verdict:50:nudge  - feed 48: its block should have reached the IR after 7.5 s of belt and has not (160% of the ride): nothing came out, feeding again
+[plan 246] RUN    22 rpm / arm 1.75  - feed 48: its block should have reached the IR after 7.5 s of belt and has not (160% of the ride): nothing came out, feeding again
+[plan 247] RUN    22 rpm / arm 1.75  action=verdict:50:empty  - feed 48: its block should have reached the IR after 7.5 s of belt and has not (160% of the ride): nothing came out, feeding again
+[plan 248] IDLE   22 rpm / arm 1.75  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 48 pushed during GRIP: nothing came (given up (optimizer))
+    I tried / saw:  feed for cycle 53: 12 V dip 76 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 50: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 50 during TRANSPORT: servo moved (76 mV), camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  cycle 53: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 249] IDLE   22 rpm / arm 1.75  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 250] IDLE   22 rpm / arm 1.75  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 53: 12 V dip 76 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 50: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 50 during TRANSPORT: servo moved (76 mV), camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  cycle 53: NO_BLOCK
+    I tried / saw:  cycle 54: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 251] IDLE   22 rpm / arm 1.75  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 252] RUN    22 rpm / arm 1.75  action=resume  - probe: try one feed after 60 s idle
+[plan 253] RUN    22 rpm / arm 1.75  - probe: try one feed after 60 s idle
+[plan 254] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 255] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 256] RUN    22 rpm / arm 1.75  action=verdict:51:nudge  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 257] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 258] RUN    22 rpm / arm 1.75  action=verdict:51:empty  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 259] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 260] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 261] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 262] RUN    22 rpm / arm 1.75  action=verdict:52:nudge  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 263] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 264] RUN    22 rpm / arm 1.75  action=verdict:52:empty  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 265] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 266] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 267] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[observe] lost the broker: all feeds will go stale
+[observe] connected to broker: Success
+[plan 268] RUN    22 rpm / arm 1.75  action=verdict:53:nudge  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 269] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 270] RUN    22 rpm / arm 1.75  action=verdict:53:empty  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 271] IDLE   22 rpm / arm 1.75  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 52 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 55: 12 V dip 95 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 53: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 53 during TRANSPORT: servo moved (95 mV), camera: no new block even after a nudge, feeder IR empty->?->empty => EMPTY
+    I tried / saw:  cycle 55: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 272] IDLE   22 rpm / arm 1.75  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 273] IDLE   22 rpm / arm 1.75  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 55: 12 V dip 95 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 53: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 53 during TRANSPORT: servo moved (95 mV), camera: no new block even after a nudge, feeder IR empty->?->empty => EMPTY
+    I tried / saw:  cycle 55: NO_BLOCK
+    I tried / saw:  cycle 56: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 274] IDLE   22 rpm / arm 1.75  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 275] RUN    22 rpm / arm 1.75  action=resume  - probe: try one feed after 383 s idle
+[plan 276] RUN    22 rpm / arm 1.75  - probe: try one feed after 383 s idle
+[plan 277] RUN    22 rpm / arm 1.75  action=feed  - probe: try one feed after 383 s idle
+[plan 278] RUN    22 rpm / arm 1.75  - probe: try one feed after 383 s idle
+[plan 279] RUN    22 rpm / arm 1.75  action=verdict:54:fed  - probe: try one feed after 383 s idle
+[plan 280] RUN    22 rpm / arm 1.75  - probe: try one feed after 383 s idle
+[plan 281] RUN    22 rpm / arm 1.75  action=feed  - probe: try one feed after 383 s idle
+[plan 282] RUN    22 rpm / arm 1.75  - probe: try one feed after 383 s idle
+[plan 283] RUN    22 rpm / arm 1.75  action=verdict:55:nudge  - probe: try one feed after 383 s idle
+[plan 284] RUN    22 rpm / arm 1.75  - probe: try one feed after 383 s idle
+[plan 285] RUN    22 rpm / arm 1.75  action=verdict:55:empty  - probe: try one feed after 383 s idle
+[plan 286] RUN    22 rpm / arm 1.75  - probe: try one feed after 383 s idle
+[plan 287] RUN    22 rpm / arm 1.75  action=feed  - probe: try one feed after 383 s idle
+[plan 288] RUN    22 rpm / arm 1.75  - probe: try one feed after 383 s idle
+[plan 289] RUN    22 rpm / arm 1.75  action=verdict:56:nudge  - probe: try one feed after 383 s idle
+[plan 290] RUN    22 rpm / arm 1.75  - probe: try one feed after 383 s idle
+[plan 291] RUN    22 rpm / arm 1.75  action=verdict:56:empty  - probe: try one feed after 383 s idle
+[plan 292] RUN    22 rpm / arm 1.75  - probe: try one feed after 383 s idle
+[plan 293] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 4 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 294] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 295] RUN    22 rpm / arm 1.75  action=verdict:57:nudge  - flow: I keep up to 4 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 296] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 297] RUN    22 rpm / arm 1.75  action=verdict:57:empty  - flow: I keep up to 4 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 298] RUN    22 rpm / arm 1.75  - flow: I keep up to 4 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 299] IDLE   22 rpm / arm 1.75  action=idle  - feeder empty: the last 3 feeds brought nothing
+[story] FEEDER EMPTY
+    I tried / saw:  feed 56 pushed during RELEASE: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 58: 12 V dip 100 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 57: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 57 during TRANSPORT: servo moved (100 mV), camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  feed 57 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    so:             3 feeds in a row brought no block to the IR (feed 55 during GRIP, feed 56 during RELEASE, feed 57 during TRANSPORT)  ->  the feeder has no cubes left (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 300] IDLE   22 rpm / arm 1.75  - feeder empty: the last 3 feeds brought nothing
+[plan 301] IDLE   22 rpm / arm 1.75  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 58: 12 V dip 100 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 57: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 57 during TRANSPORT: servo moved (100 mV), camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  feed 57 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  cycle 58: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 302] IDLE   22 rpm / arm 1.75  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 303] RUN    22 rpm / arm 1.75  action=resume  - probe: try one feed after 60 s idle
+[plan 304] RUN    22 rpm / arm 1.75  - probe: try one feed after 60 s idle
+[plan 305] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 306] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 307] RUN    22 rpm / arm 1.75  action=verdict:58:nudge  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 308] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 309] RUN    22 rpm / arm 1.75  action=verdict:58:empty  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 310] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 311] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 312] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 313] RUN    22 rpm / arm 1.75  action=verdict:59:nudge  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 314] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 315] RUN    22 rpm / arm 1.75  action=verdict:59:empty  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 316] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 317] RUN    22 rpm / arm 1.75  action=feed  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 318] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 319] RUN    22 rpm / arm 1.75  action=verdict:60:nudge  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 320] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 321] RUN    22 rpm / arm 1.75  action=verdict:60:empty  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 322] RUN    22 rpm / arm 1.75  - flow: I keep up to 1 cube on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 323] IDLE   22 rpm / arm 1.75  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed 59 pushed during TRANSPORT: nothing came (nothing came out (optimizer: servo / camera))
+    I tried / saw:  feed for cycle 59: 12 V dip 93 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 60: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 60 during TRANSPORT: servo moved (93 mV), camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  cycle 59: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 324] IDLE   22 rpm / arm 1.75  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 325] IDLE   22 rpm / arm 1.75  action=idle  - feeder empty: no cube came after FEED (fed again, still nothing)
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 59: 12 V dip 93 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 60: servo moved, camera saw no new block: nudging the belt 1 s
+    I tried / saw:  feed 60 during TRANSPORT: servo moved (93 mV), camera: no new block even after a nudge, feeder IR empty => EMPTY
+    I tried / saw:  cycle 59: NO_BLOCK
+    I tried / saw:  cycle 60: NO_BLOCK
+    so:             I fed, nothing came; I fed again at once, still nothing  ->  there are no cubes left in the feeder (or it is jammed)
+    next:           I pause at home with the belt braked and try one feed by myself now and then; refill and I carry on
+[plan 326] IDLE   22 rpm / arm 1.75  - feeder empty: no cube came after FEED (fed again, still nothing)
+[plan 327] OFF    22 rpm / arm 1.75  - autoen stopped
+[plan 328] OFF    22 rpm / arm 1.75  - autoen not reachable
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

@@ -1,0 +1,115 @@
+# test_forecast.py - tests for forecast.py and the optimizer's auto-resume. No robot, no broker, no autoen.
+# Run (orch-env, from orchestrator/):  python3 test/test_forecast.py     Expected last line: "all forecast tests passed"
+import os
+import sys
+import tempfile
+from datetime import datetime
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import forecast as F                                               # noqa: E402
+import optimize as O                                               # noqa: E402
+from test_opt import cyc, pred, seen_cycles, state, view           # noqa: E402
+
+TMP = tempfile.mkdtemp(prefix="prism_forecast_")
+MON_9 = datetime(2026, 10, 26, 9, 0).timestamp()                   # a Monday, 09:00
+MON_3 = datetime(2026, 10, 26, 3, 0).timestamp()                   # the same Monday, 03:00 (night)
+
+
+class Clock:
+    def __init__(self, t):
+        self.t = t
+
+    def __call__(self):
+        return self.t
+
+
+def main():
+    # 1. No history: the prior (~30 refills per idle hour) -> probe after ~83 s; a blind camera waits 5 min.
+    clk = Clock(MON_9)
+    f = F.Forecast(path=os.path.join(TMP, "a.json"), clock=clk)
+    d = f.probe_delay(0, camera_trusted=True)
+    assert 60 < d < 100, d
+    assert f.probe_delay(0, camera_trusted=False) == F.MIN_DELAY_BLIND_S
+    print(f"prior:      no history -> first probe after {d:.0f} s (camera off: {F.MIN_DELAY_BLIND_S:.0f} s)   OK")
+
+    # 2. Backoff: a long idle period makes probes rare, never beyond 30 min.
+    assert f.probe_delay(1200) >= 600 and f.probe_delay(10 ** 6) == F.MAX_DELAY_S
+    print(f"backoff:    after 20 min idle -> {f.probe_delay(1200):.0f} s; cap {F.MAX_DELAY_S:.0f} s   OK")
+
+    # 3. Learning: busy mornings (refill every ~40 s), dead nights (3 h idle, no refill) -> different delays.
+    for _ in range(40):
+        f.idle_started(); clk.t += 40; f.idle_ended(refill=True); clk.t += 120
+    clk.t = MON_3
+    f.idle_started(); clk.t += 3 * 3600; f.idle_ended(refill=False)
+    clk.t = MON_9 + 7 * 24 * 3600 + 600                            # next Monday 09:10
+    busy = f.probe_delay(0)
+    clk.t = MON_3 + 7 * 24 * 3600 + 600                            # next Monday 03:10
+    night = f.probe_delay(0)
+    assert busy < 90 and night > 4 * busy, (busy, night)         # little data: shrunk toward the global rate
+    print(f"learning:   Monday 09:xx -> probe after {busy:.0f} s, Monday 03:xx -> {night:.0f} s   OK")
+
+    # 4. Persistence: a new Forecast on the same file knows the same history.
+    g = F.Forecast(path=os.path.join(TMP, "a.json"), clock=clk)
+    assert abs(g.probe_delay(0) - night) < 1e-6 and len(g.gaps) == 41, (g.probe_delay(0), len(g.gaps))
+    print(f"persist:    reloaded {len(g.gaps)} idle periods from forecast_state.json   OK")
+
+    # 5. Optimizer + forecast (camera trusted): IDLE -> probe at the forecast delay -> empty (NO_BLOCK) -> IDLE, longer delay
+    #    -> probe again -> a cube -> RUN, and the idle period is recorded as ONE period ending in a refill.
+    clk = Clock(MON_9)
+    fc = F.Forecast(path=os.path.join(TMP, "b.json"), clock=clk)
+    opt = O.Optimize(forecast=fc, auto_resume=True)
+    opt.step(state(0), pred(0), view(0))
+    t = seen_cycles(opt, 0.0, 1, 5)                                # camera trusted (5/5)
+    p = opt.step(state(t + 25), pred(t + 25), view(t + 25, cycles=[cyc(6, "NO_BLOCK")]))
+    assert p.mode == "IDLE" and p.action == "idle", p
+    first = fc.probe_delay(0, camera_trusted=True)
+    t += 25
+    p = opt.step(state(t + 1), pred(t + 1), view(t + 1, paused=True, status="paused"))
+    assert p.action is None and abs(p.score["next_probe_s"] - (first - 1)) <= 1, p.score
+    t += first
+    clk.t += first
+    p = opt.step(state(t), pred(t), view(t, paused=True, status="paused"))
+    assert p.mode == "RUN" and p.action == "resume" and "probe" in p.reason, p
+    t += 26
+    clk.t += 26
+    p = opt.step(state(t), pred(t), view(t, cycles=[cyc(7, "NO_BLOCK")]))
+    assert p.mode == "IDLE" and p.action == "idle", p
+    p = opt.step(state(t + 1), pred(t + 1), view(t + 1, paused=True, status="paused"))
+    assert p.score["next_probe_s"] >= first - 2, p.score            # backoff: not sooner than before
+    step = opt._probe_at - t                                       # exact due time (the plan shows it rounded)
+    t += step
+    clk.t += step
+    p = opt.step(state(t), pred(t), view(t, paused=True, status="paused"))
+    assert p.action == "resume", p
+    t += 19
+    clk.t += 19
+    p = opt.step(state(t), pred(t), view(t, cycles=[cyc(8)]))
+    assert p.mode == "RUN" and fc._idle_start is None, p
+    assert len(fc.gaps) == 1 and fc.gaps[0]["refill"] and fc.gaps[0]["secs"] > first, fc.gaps
+    assert opt.configs[(20.0, 1.5)]["n"] == 6, "the empty probes must not count against the settings"
+    print(f"auto:       IDLE -> probe {first:.0f} s -> empty -> IDLE -> probe -> cube -> RUN; one idle period "
+          f"of {fc.gaps[0]['secs']:.0f} s with a refill   OK")
+
+    # 6. ALERT never auto-resumes, and it closes the idle period as cut off (no refill).
+    clk = Clock(MON_9)
+    fc = F.Forecast(path=os.path.join(TMP, "c.json"), clock=clk)
+    opt = O.Optimize(forecast=fc, auto_resume=True)
+    opt.step(state(0), pred(0), view(0))
+    t = seen_cycles(opt, 0.0, 1, 5)
+    opt.step(state(t + 25), pred(t + 25), view(t + 25, cycles=[cyc(6, "NO_BLOCK")]))
+    p = opt.step(state(t + 400), pred(t + 400), view(t + 400, paused=True, status="paused"))
+    assert p.action == "resume", p                                  # probe
+    p = opt.step(state(t + 420), pred(t + 420), view(t + 420, cycles=[cyc(7, "GRIP_FAILED")]))
+    assert p.mode == "ALERT" and p.action == "pause", p
+    p = opt.step(state(t + 5000), pred(t + 5000), view(t + 5000, paused=True, status="paused"))
+    assert p.mode == "ALERT" and p.action is None, p
+    assert len(fc.gaps) == 1 and not fc.gaps[0]["refill"], fc.gaps
+    print("alert:      a grip miss after a probe -> ALERT, no auto-resume, idle period closed without refill   OK")
+
+    print("\nall forecast tests passed")
+
+
+if __name__ == "__main__":
+    main()

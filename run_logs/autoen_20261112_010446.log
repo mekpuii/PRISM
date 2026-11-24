@@ -1,0 +1,17 @@
+gripper calibration /home/mekkhram/Desktop/PRISM/autoencoder/gripper_cal.json (2026-10-25T18:20:00): open_pos=2492, grip_fast_to_pos=2323, grip_contact_min_deg=150.0, grip_contact_max_deg=181.8, grip_pos=2012
+Mega port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+boot banner seen: True
+[mqtt] arm connected to localhost:1883: Success
+[mqtt] belt connected to localhost:1883: Success
+live page: http://127.0.0.1:8781  - set the parameters there and press Start
+files: riff_logs/autoen_raw_20261112_010453.csv
+       riff_logs/autoen_sets_20261112_010453.csv
+       riff_logs/autoen_cycles_20261112_010453.csv
+       riff_logs/autoen_thresholds_20261112_010453.csv
+settings changed from the web page: {'rpm': 6.7, 'arm_speed': 1.0, 'carry_speed': 1.0, 'arrive_timeout': 20.0}
+settings changed from the web page: {'rpm': 20.0, 'arm_speed': 1.5, 'carry_speed': 1.5, 'arrive_timeout': 25.0, 'max_fails': 8, 'sets': 1000, 'cycles_per_set': 1000}
+STOPPED: TimeoutError: arm did not finish 'home at start' within 40s (error ticks: {1: 19, 2: -456, 3: 913, 4: -2293, 5: -48})
+Set 1 (01:04:54-01:05:42): J1: temp max 33C, current avg 0 / peak 6 mA; J2: temp max 33C, current avg 0 / peak 6 mA; J3: temp max 33C, current avg 0 / peak 32 mA; J4: temp max 34C, current avg 0 / peak 0 mA; J5: temp max 35C, current avg 0 / peak 0 mA; J6: temp max 34C, current avg 4 / peak 6 mA; Belt: temp max 24C, current avg 3 / peak 4 mA; ARM TOTAL: servo volt min 12.1 V, summed current avg 4 / peak 32 mA
+[mqtt] arm lost the broker
+[mqtt] belt lost the broker
+error: TimeoutError: arm did not finish 'home at start' within 40s (error ticks: {1: 19, 2: -456, 3: 913, 4: -2293, 5: -48})  (unparsable RX lines: 0)

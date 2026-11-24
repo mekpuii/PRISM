@@ -1,0 +1,2 @@
+run,start,minutes,cubes_ok,cycles,s_per_cube_median,energy_j,j_per_cube,arm_w,belt_w,servo_temp_max_c,belt_temp_max_c,rail_min_v,pi_temp_max_c,pi_cpu_avg_pct,emergency_grips,warnings
+20261113_162012,2026-11-13 16:20:17,39.9,199,200,11.4,1804,9.1,0.75,0.0,42.0,27.5,,,,0,0

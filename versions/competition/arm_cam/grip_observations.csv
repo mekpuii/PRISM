@@ -1,0 +1,5 @@
+time,event,n,u,v,long_px,short_px,angle_img,gray,tone,still_before,lift_after_s,held_s,eq_px,cam_to_block_top_mm,note
+20261111_233359,rejected,,760.7,293.2,259.2,192.4,169.7,233.0,white,True,0.08,,223.3,143.6,ปลาย jaw อยู่สูงกว่าผิวบล็อก 93 mm (> 15) หนีบไม่ถึง
+20261111_233400,release,0,,,,,,,,,,0.74,,,
+20261112_000158,rejected,,388.8,605.6,120.2,118.9,108.4,220.0,white,False,0.2,,119.5,268.2,ปลาย jaw อยู่สูงกว่าผิวบล็อก 218 mm (> 15) หนีบไม่ถึง
+20261112_000159,release,0,,,,,,,,,,1.21,,,

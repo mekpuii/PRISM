@@ -1,0 +1,198 @@
+[observe] connected to broker: Success
+orchestrator LIVE  objective=efficiency  log=/home/mekkhram/Desktop/PRISM_dupi/orchestrator/logs/orch_20261112_210503.jsonl
+[plan 1] OFF    20 rpm / arm 1.5  - autoen not reachable
+[plan 2] OFF    20 rpm / arm 1.5  - autoen ready
+[plan 3] RUN    20 rpm / arm 1.5  - autoen running
+[plan 4] RUN    20 rpm / arm 1.5  - light on the belt: dark (V 63.0, normal 75; 31.09 % too dark, 0.0 % burnt out): camera not used for decisions
+[plan 5] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 6] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 7] RUN    20 rpm / arm 1.5  action=verdict:1:fed  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 8] RUN    20 rpm / arm 1.5  - flow: I keep up to 4 cubes on the belt - 468 mm from the feeder to the IR, 40 mm per cube + 60 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 9] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+[plan 10] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 11] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 12] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 13] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 14] RUN    20 rpm / arm 1.5  action=verdict:2:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 15] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 16] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 17] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 18] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 19] RUN    20 rpm / arm 1.5  action=verdict:3:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 20] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 21] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 22] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 23] RUN    20 rpm / arm 1.5  action=verdict:4:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 24] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 25] RUN    20 rpm / arm 1.5  action=feed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 26] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 27] RUN    20 rpm / arm 1.5  action=verdict:5:fed  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 28] RUN    20 rpm / arm 1.5  - feeder IR says empty (right 0/3 times so far): the next feed checks it
+[plan 29] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 14 mV: I don't use the dip check until I see clear pushes again
+[plan 30] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 14 mV: I don't use the dip check until I see clear pushes again
+[plan 31] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 14 mV: I don't use the dip check until I see clear pushes again
+[plan 32] RUN    20 rpm / arm 1.5  action=verdict:6:fed  - the feeder pushed after all although the 12 V rail dipped only 14 mV: I don't use the dip check until I see clear pushes again
+[plan 33] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 14 mV: I don't use the dip check until I see clear pushes again
+[plan 34] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 35] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 36] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 37] RUN    20 rpm / arm 1.5  action=verdict:7:fed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 38] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 39] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 40] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 41] RUN    20 rpm / arm 1.5  action=verdict:8:fed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 42] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 43] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 44] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 45] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 46] RUN    20 rpm / arm 1.5  action=verdict:9:fed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 47] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 48] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 49] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 50] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 51] RUN    20 rpm / arm 1.5  action=verdict:10:fed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 52] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 53] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 54] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 55] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 56] RUN    20 rpm / arm 1.5  action=verdict:11:fed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 57] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 58] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 59] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 60] RUN    20 rpm / arm 1.5  action=verdict:12:fed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 61] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 62] RUN    20 rpm / arm 1.5  action=feed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 63] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 64] RUN    20 rpm / arm 1.5  action=verdict:13:fed  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 65] RUN    20 rpm / arm 1.5  - the feeder pushed after all although the 12 V rail dipped only 46 mV: I don't use the dip check until I see clear pushes again
+[plan 66] RUN    20 rpm / arm 1.5  - slip: cubes move at 32% of the belt speed (median of 5 cycles): belt slipping or a cube dragging on the rail
+[plan 67] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 68] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 69] RUN    20 rpm / arm 1.5  action=verdict:14:fed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 70] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 71] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 72] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 73] RUN    20 rpm / arm 1.5  action=verdict:15:fed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 74] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 75] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 76] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 77] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 78] RUN    20 rpm / arm 1.5  action=verdict:16:fed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 79] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 80] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 81] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 82] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 83] RUN    20 rpm / arm 1.5  action=verdict:17:fed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 84] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 85] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 86] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 87] RUN    20 rpm / arm 1.5  action=verdict:18:fed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 88] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 89] RUN    20 rpm / arm 1.5  action=feed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 90] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 91] RUN    20 rpm / arm 1.5  action=verdict:19:fed  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 92] RUN    20 rpm / arm 1.5  - flow: I keep up to 3 cubes on the belt - 464 mm from the feeder to the IR, 40 mm per cube + 100 mm gap; they wait in a line, so after each pick the next one is one gap away
+[plan 93] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 94] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 95] RUN    20 rpm / arm 1.5  action=feed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 96] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 97] RUN    20 rpm / arm 1.5  action=verdict:20:fed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 98] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 99] RUN    20 rpm / arm 1.5  action=feed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 100] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 101] RUN    20 rpm / arm 1.5  action=verdict:21:fed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 102] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 103] RUN    20 rpm / arm 1.5  action=feed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 104] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 105] RUN    20 rpm / arm 1.5  action=verdict:22:fed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 106] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 107] RUN    20 rpm / arm 1.5  action=feed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 108] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 109] RUN    20 rpm / arm 1.5  action=verdict:23:fed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 110] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 111] RUN    20 rpm / arm 1.5  action=feed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 112] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 113] RUN    20 rpm / arm 1.5  action=verdict:24:fed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 114] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 115] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 116] RUN    20 rpm / arm 1.5  action=feed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 117] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 118] RUN    20 rpm / arm 1.5  action=verdict:25:fed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 119] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 120] RUN    20 rpm / arm 1.5  action=feed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 121] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 122] RUN    20 rpm / arm 1.5  action=verdict:26:fed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 123] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 124] RUN    20 rpm / arm 1.5  action=feed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 125] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 126] RUN    20 rpm / arm 1.5  action=verdict:27:fed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 127] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 128] RUN    20 rpm / arm 1.5  action=feed  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 129] RUN    20 rpm / arm 1.5  - kept: gap_mm 60.0 -> 100.0: 12.0 s per pick vs 13.1 s (8 % better, 0 failed)
+[plan 130] IDLE   20 rpm / arm 1.5  action=stop_feed  - feeder empty: the feeder IR sees no cube and the push drew no current (14 mV). I carry on by myself as soon as cubes are loaded
+[story] FEEDER EMPTY
+    I tried / saw:  feed for cycle 26: 12 V dip 35 mV (the servo moved), feeder IR empty
+    I tried / saw:  feed 27 during GRIP: servo moved (35 mV), camera: new block at 95 px after 0.3 s, feeder IR empty => FED
+    I tried / saw:  cycle 25: OK (11.1 s)
+    I tried / saw:  feed 26 pushed during GRIP: delivered
+    I tried / saw:  feed for cycle 27: 12 V dip 14 mV (no current: the servo did not move), feeder IR empty
+    so:             the feeder IR sees no cube, and the push drew no current  ->  there is nothing to push: not a fault
+    next:           I wait. When the feeder IR sees cubes for 5 s I start again by myself
+[plan 131] IDLE   20 rpm / arm 1.5  action=verdict:28:fed  - feeder empty: the feeder IR sees no cube and the push drew no current (14 mV). I carry on by myself as soon as cubes are loaded
+[plan 132] IDLE   20 rpm / arm 1.5  - feeder empty: the feeder IR sees no cube and the push drew no current (14 mV). I carry on by myself as soon as cubes are loaded
+[plan 133] RUN    20 rpm / arm 1.5  action=resume  - feeder retry 1 (cubes loaded): one feed to see if it delivers again
+[plan 134] RUN    20 rpm / arm 1.5  - feeder retry 1 (cubes loaded): one feed to see if it delivers again
+[plan 135] RUN    20 rpm / arm 1.5  - a cube arrived: the feeder works again, carrying on by myself
+[story] SOLVED: CUBES ARRIVE AGAIN
+    I tried / saw:  feed 27 pushed during GRIP: nothing came (given up (optimizer))
+    I tried / saw:  1 cube(s) reached the IR that no confirmed push had brought: the camera missed them at the exit - I trust the servo over the camera for now
+    I tried / saw:  cycle 26: OK (10.7 s)
+    I tried / saw:  retry 1: cubes loaded
+    I tried / saw:  cycle 27: OK (10.6 s)
+    so:             cycle 27 picked its cube  ->  the feeder delivers again
+    next:           carrying on by myself, no Resume needed
+[plan 136] RUN    20 rpm / arm 1.5  action=feed  - a cube arrived: the feeder works again, carrying on by myself
+[plan 137] RUN    20 rpm / arm 1.5  - a cube arrived: the feeder works again, carrying on by myself
+[plan 138] RUN    20 rpm / arm 1.5  action=verdict:29:fed  - a cube arrived: the feeder works again, carrying on by myself
+[plan 139] RUN    20 rpm / arm 1.5  - a cube arrived: the feeder works again, carrying on by myself
+[plan 140] RUN    20 rpm / arm 1.5  action=feed  - a cube arrived: the feeder works again, carrying on by myself
+[plan 141] RUN    20 rpm / arm 1.5  - a cube arrived: the feeder works again, carrying on by myself
+[plan 142] RUN    20 rpm / arm 1.5  action=verdict:30:nudge  - a cube arrived: the feeder works again, carrying on by myself
+[plan 143] RUN    20 rpm / arm 1.5  - a cube arrived: the feeder works again, carrying on by myself
+[plan 144] RUN    20 rpm / arm 1.5  action=verdict:30:empty  - a cube arrived: the feeder works again, carrying on by myself
+[plan 145] RUN    20 rpm / arm 1.5  - a cube arrived: the feeder works again, carrying on by myself
+[plan 146] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.2 s per pick
+[plan 147] RUN    20 rpm / arm 1.5  action=feed  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.2 s per pick
+[plan 148] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.2 s per pick
+[plan 149] RUN    20 rpm / arm 1.5  action=verdict:31:fed  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.2 s per pick
+[plan 150] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.2 s per pick
+[plan 151] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.2 s per pick
+[plan 152] RUN    20 rpm / arm 1.5  action=feed  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.2 s per pick
+[plan 153] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.2 s per pick
+[plan 154] RUN    20 rpm / arm 1.5  action=verdict:32:fed  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.2 s per pick
+[plan 155] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.2 s per pick
+[plan 156] RUN    20 rpm / arm 1.5  - experiment: late 1.35 -> 1.25 (x its ride before a cube counts as not coming) for 6 picks; to beat: 11.2 s per pick
+[plan 157] MANUAL 20 rpm / arm 1.5  - autoen is paused and the pause did not come from me (Pause on the autoen page or the dashboard?): I only watch until it is resumed
+[story] PAUSED BY SOMEONE ELSE
+    I tried / saw:  feed 31 pushed during TRANSPORT: delivered
+    I tried / saw:  feed for cycle 31: 12 V dip 24 mV (unclear), feeder IR sees cubes
+    I tried / saw:  feed 32 during GRIP: servo unclear (24 mV), camera: new block at 93 px after 0.2 s, feeder IR cubes => FED
+    I tried / saw:  1 cube(s) reached the IR that no confirmed push had brought: the camera missed them at the exit - I trust the servo over the camera for now
+    I tried / saw:  cycle 30: OK (24.4 s)
+    so:             autoen reports a pause that I did not ask for  ->  someone pressed Pause (or a program paused it): I must not fight that
+    next:           I only watch. Resume on the autoen page / dashboard and I take over again
+[plan 158] RUN    20 rpm / arm 1.5  - autoen running
+[plan 159] MANUAL 20 rpm / arm 1.5  - autoen is paused and the pause did not come from me (Pause on the autoen page or the dashboard?): I only watch until it is resumed
+[story] PAUSED BY SOMEONE ELSE
+    I tried / saw:  feed 31 pushed during TRANSPORT: delivered
+    I tried / saw:  feed for cycle 31: 12 V dip 24 mV (unclear), feeder IR sees cubes
+    I tried / saw:  feed 32 during GRIP: servo unclear (24 mV), camera: new block at 93 px after 0.2 s, feeder IR cubes => FED
+    I tried / saw:  1 cube(s) reached the IR that no confirmed push had brought: the camera missed them at the exit - I trust the servo over the camera for now
+    I tried / saw:  cycle 30: OK (24.4 s)
+    so:             autoen reports a pause that I did not ask for  ->  someone pressed Pause (or a program paused it): I must not fight that
+    next:           I only watch. Resume on the autoen page / dashboard and I take over again
+[plan 160] RUN    20 rpm / arm 1.5  - autoen running
+[plan 161] RUN    20 rpm / arm 1.5  - light on the belt: dark (V 81.0, normal 88; 32.22 % too dark, 0.0 % burnt out): camera not used for decisions
+[plan 162] RUN    20 rpm / arm 1.5  - light on the belt ok again: camera back in use
+stopping: autoen is left as it is
+[observe] lost the broker: all feeds will go stale

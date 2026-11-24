@@ -1,0 +1,158 @@
+# arm_cam: SO101 arm + OV9281 wrist camera on the Pi
+
+Mostly standalone. **One part is connected to PRISM (2026-11-12): the emergency grip.** autoen starts
+`rescue_eye.py` (this folder, `~/armcam-env`) with every run. When a grip misses and the cube is still at the pick IR,
+autoen asks it where the cube is and moves the arm itself (autoen keeps the Mega port). `rescue_eye.py` uses
+`follow_block.py`'s maths, `follow_target.json` (jaw target) and `follow_grip.json` (taught grip) - change those here
+and the emergency grip changes too. Its log: `autoencoder/riff_logs/rescue_eye.log`.
+Test it without the arm (camera only): `./pi.sh rescue_eye` and type `{"cmd":"hello"}`, `{"cmd":"start"}`,
+`{"cmd":"step"}` - or `--fake` for no camera.
+
+## Start here
+
+```
+cd ~/Desktop/PRISM/arm_cam
+./pi.sh <script> [options]
+```
+
+`./pi.sh` runs a script with the right Python (`~/armcam-env`, libraries in `requirements.txt`). Write the script name with or without `.py`.
+
+**Before any arm command:**
+
+1. Stop PRISM: `~/Desktop/PRISM/stop_cell.sh`. The Mega port has one owner. Arm scripts refuse to start while it is busy.
+2. Plug in the OV9281 wrist camera.
+3. Keep hands clear of the arm.
+
+Legend for the tables:
+
+| Mark | Meaning |
+|---|---|
+| READ | Reads only. Nothing moves. |
+| CAM | Camera only. The Mega is not opened. |
+| LIMP | Turns torque off so you can move the arm by hand. **Support the arm.** |
+| MOVE | The arm moves. |
+
+Every script that opens the Mega port resets the Mega, also the READ ones.
+
+---
+
+## 1. Check the system
+
+| Command | Mark | What it does |
+|---|---|---|
+| `./pi.sh` | READ | Shows the Mega port and cameras the Pi sees, and who is using them. Opens nothing. |
+| `./pi.sh doctor --no-arm` | CAM | Checks Python, calibration files, IK and the camera. Does not open the Mega. |
+| `./pi.sh doctor` | READ | The same, plus the arm: every joint inside its safe range. |
+| `./pi.sh doctor --no-cam` | READ | Skips the camera check. |
+| `./pi.sh check_arm` | READ | Prints the tick of each joint against its safe limits. |
+| `./pi.sh servo_health` | READ | Temperature, voltage and current of every servo (about 8 s). |
+| `./pi.sh servo_health --retorque 4` | LIMP | Turns the torque of joint 4 off and on again. That joint goes limp for a moment. |
+
+## 2. Camera
+
+| Command | Mark | What it does |
+|---|---|---|
+| `./pi.sh block_cam` | CAM | Live block detection with the wrist camera. `Esc` quit, `s` save, `d` mask. |
+| `./pi.sh block_cam --cam /dev/video2` | CAM | The same with a camera you name. |
+| `./pi.sh block_cam --image frame.png` | CAM | Detects on a saved picture. |
+| `./pi.sh detect_block` | CAM | Live detection in mm (needs the arm at the scan pose). `b` background, `n` no background, `Esc` quit. |
+| `./pi.sh detect_block --nogui` | CAM | The same, prints numbers only. |
+| `./pi.sh measure_distance` | CAM | Distance from the lens to the block, live. |
+| `./pi.sh measure_distance --calib 200` | CAM | Calibrates the focal length with the block 200 mm from the lens. |
+| `./pi.sh test_camera --scan` | CAM | Lists the camera indexes that open. |
+| `./pi.sh test_camera --index 0` | CAM | Opens one camera: real fps and a preview. Options: `--w --h --fps --fourcc --nogui`. |
+| `./pi.sh camera_report` | CAM | Tests every camera, writes `camera_report.txt`. No window. |
+| `./pi.sh camera_modes 0` | CAM | Tries every resolution, format and exposure on camera 0, writes `camera_modes.txt` (about 3 min). |
+| `./pi.sh grip_observe` | CAM | Watches a grip through the camera while another program drives the arm. Options: `--nogui`, `--trace`. |
+
+## 3. Get the arm ready
+
+| Command | Mark | What it does |
+|---|---|---|
+| `./pi.sh wake_from_rest` | MOVE | Brings the arm out of PRISM's rest pose into the safe range. |
+| `./pi.sh go_scan` | MOVE | Drives slowly to the scan pose. Asks before it moves. |
+| `./pi.sh read_joints` | LIMP | Releases joints 1-5 and prints ticks and jaw-tip position while you move the arm. `Ctrl+C` holds the pose. |
+| `./pi.sh test_gripper` | MOVE | Moves the gripper only, in small slow steps. |
+| `./pi.sh ik_test 180 0` | READ | Prints the IK result for x=180 y=0 mm. Does not open the Mega. |
+| `./pi.sh ik_test 180 50 --z 40 --yaw 30 --go` | MOVE | Sends the arm to that point. Asks first. |
+
+## 4. Pick a block
+
+Main program on this setup: `follow_block`.
+
+| Command | Mark | What it does |
+|---|---|---|
+| `./pi.sh follow_block --dry` | CAM | Tracks the block and prints what it would send. No arm commands. |
+| `./pi.sh follow_block` | MOVE | The arm follows the moving block to keep it centred in the picture. |
+| `./pi.sh follow_block --grab` | MOVE | Follows, and when the block is centred and still, goes down and grips. |
+| `./pi.sh follow_block --grab --slow` | MOVE | The same, slower. Use this for the first try. |
+| `./pi.sh visual_grab --teach` | LIMP | Teaches the grip point once. Joints 1-5 go limp. |
+| `./pi.sh visual_grab --dry` | CAM | Shows detection, target and the still-timer. No motion. |
+| `./pi.sh visual_grab` | MOVE | Follows, then waits for `g` before it goes down to grip. |
+| `./pi.sh visual_grab --auto` | MOVE | The same without the `g` key. |
+| `./pi.sh pick_block --dry-run` | MOVE | Goes to the scan pose, detects, prints the plan. Does not go down. |
+| `./pi.sh pick_block --no-arm --dry-run` | CAM | Camera and IK only. |
+| `./pi.sh pick_block` | MOVE | Picks a still block and puts it back. Asks first. |
+| `./pi.sh pick_block --loop --yes --place` | MOVE | Loop: see a block, pick it, put it at the place pose. |
+| `./pi.sh pick_moving --measure` | MOVE | Measures block speed and direction (arm only goes to the scan pose). |
+| `./pi.sh pick_moving --dry` | MOVE | Rehearsal: closes the jaw in the air at the right moment. |
+| `./pi.sh pick_moving` | MOVE | Picks a block while the belt runs. Options: `--place`, `--loop`. |
+| `./pi.sh repeat_test 20` | MOVE | Picks and returns the block 20 times, writes `repeat_log.csv`. |
+
+More `follow_block` options: `--hold S` (seconds still before the grab), `--deeper MM`, `--pan-only`, `--no-return`,
+`--target-u PX`, `--target-v PX`, `--record file.mp4`, `--vision-strict`, `--yes`.
+More `visual_grab` options: `--slow`, `--deeper MM`, `--hold S` (0 = grab on `SPACE` only).
+More `pick_block` options: `--keep` (hold the block), `--save-debug` (writes `debug.png`).
+
+## 5. Calibrate and teach
+
+Do these only when something changed (arm base, camera mount, scan pose, light). Order as in `STEPS.md`.
+
+| Command | Mark | What it does | Writes |
+|---|---|---|---|
+| `./pi.sh calib_zero` | LIMP | Measures the tick of each joint at the L pose and its direction. `--zero` = L pose only. | `calib.json` |
+| `./pi.sh teach_scan` | LIMP | You place the arm where the camera sees the pick zone, press `s`. | `SCAN_POSE` |
+| `./pi.sh set_roi` | MOVE | Drag a box that cuts the jaw out of the picture. `--no-arm` = does not move. | `DETECT_ROI` |
+| `./pi.sh calib_touch 6` | MOVE + LIMP | Pixel-to-mm: goes to the scan pose, then you place the block at 6 spots and touch each with the jaw tip. `--fresh` = start over. | `homography.npy` |
+| `./pi.sh calib_jog` | MOVE | Pixel-to-mm by moving the arm ±15 mm instead of the block. `--step 20` = larger step. | `homography.npy` |
+| `./pi.sh calib_homography --move` | MOVE | Pixel-to-mm from marked points, after going to the scan pose. | `homography.npy` |
+| `./pi.sh calib_intrinsics` | CAM | Lens distortion with a checkerboard. | `intrinsics.npz` |
+| `./pi.sh calib_focal` | CAM | Focal length with the block and a ruler. | `cam_focal.json` |
+| `./pi.sh calib_limits` | LIMP | Measures the real range of joints 1-5 and proposes limits. | `limits_proposal.txt` |
+| `./pi.sh apply_limits` | READ | Saves the measured limits. `--revert` = back to the old ones. No Mega. | `calib.json` |
+| `./pi.sh teach_place` | LIMP | Teaches the pose where the block is dropped. | `PLACE_POSE` |
+| `./pi.sh teach_rail` | LIMP | Teaches the belt guide rail (touch 3 points). `--clear` = forget it. | `RAIL` |
+| `./pi.sh grip_learn` | MOVE | Learns the grip height and the gripper tick with a real block. | `calib.json` |
+| `./pi.sh grip_height_learn` | MOVE | Learns the grip height by stepping down. Options: `--step 2 --max-down 30`. | `follow_grip.json` |
+
+---
+
+## Settings
+
+| What | Where |
+|---|---|
+| All settings | `config.py` |
+| Measured values (override `config.py`) | `calib.json` |
+| Name the Mega port yourself | `SO101_PORT=/dev/ttyUSB0 ./pi.sh ...` |
+| Name the camera yourself | `SO101_CAM=/dev/video2 ./pi.sh ...` |
+| Use another Python | `SO101_PY=/path/to/python ./pi.sh ...` |
+
+## If something fails
+
+| Message | Do this |
+|---|---|
+| `wrist camera was not found` | Plug in the OV9281, then `./pi.sh`. If it is listed under another name: `SO101_CAM=/dev/videoN`. |
+| `the Mega port ... is in use by another program` | `~/Desktop/PRISM/stop_cell.sh`, then run again. |
+| A joint is outside its range | `./pi.sh wake_from_rest` |
+| The arm is not at the scan pose | `./pi.sh go_scan` |
+| Picture too bright, or slow | `./pi.sh camera_modes`, then `CAM_EXPOSURE_VAL` / `CAM_FPS` in `config.py`. |
+| The program died without a message | Look at `crash_log.txt` and `crash_native.txt`. |
+
+## More reading
+
+| File | About |
+|---|---|
+| `STEPS.md`, `GUIDE.html` | The full calibration order, with pictures (Thai). |
+| `HANDOFF.md` | Wiring, Mega protocol, the `Picker` class for joining PRISM later (Thai). |
+| `MOVING.md` | Picking while the belt runs (Thai). |
+| `../docs/SO101_PICK_PI.md` | What was changed for the Pi, and what is not tested yet. |

@@ -1,0 +1,26 @@
+{
+ "run_id": "base_20261025_144520",
+ "kind": "base",
+ "start": "2026-10-25T14:45:20",
+ "end": "2026-10-25T14:45:20",
+ "status": "error",
+ "rpm_units": "output_rpm_cpr11880",
+ "operator_note": "",
+ "cube_set": "none",
+ "autoen": {
+  "path": "/home/mekkhram/Desktop/PRISM/autoencoder/auto_en_new.py",
+  "sha256": "c36f331c3e18ab54ca1f1311852f420b1553773c69ffb2e28712de6a280eedbf",
+  "mtime": "2026-10-25T13:19:18"
+ },
+ "experiment_sha256": "f1832e33bb6f36d1e8d62125c80e8956155daf864402c4302e370057af053af5",
+ "config_snapshots": [],
+ "tasks": [],
+ "blocks": [],
+ "baseline": {
+  "kind": "rest",
+  "seconds": 60.0,
+  "settle_s": 3.0,
+  "torque_off": false
+ },
+ "error": "autoen API not reachable at http://127.0.0.1:8781 (<urlopen error [Errno 111] Connection refused>)"
+}

@@ -1,0 +1,2 @@
+device,metric,unit,n,min,mean,std,p50,p95,p99,max,mean_plus_3sd
+J1,temp,C,3996,33,34.0,0.12,34,34,34,36,34.37

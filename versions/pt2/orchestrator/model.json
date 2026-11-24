@@ -1,0 +1,168 @@
+{
+ "fitted_at": "2026-10-25T23:35:12",
+ "runs": [
+  "exp_20261025_005038_opt_grid_v1.jsonl",
+  "exp_20261025_232408_vision_check_v1.jsonl"
+ ],
+ "n_cycles": 264,
+ "time_model": {
+  "a": 8.695,
+  "b": 2.867,
+  "c": 158.914,
+  "n": 259,
+  "r2": 0.885,
+  "rmse_s": 1.62
+ },
+ "configs": [
+  {
+   "rpm": 8.0,
+   "arm_speed": 1.0,
+   "carry_speed": 1.0,
+   "n": 20,
+   "ok": 20,
+   "p": 1.0,
+   "p_low": 0.881,
+   "secs_mean": 31.54,
+   "fails": {}
+  },
+  {
+   "rpm": 8.0,
+   "arm_speed": 1.5,
+   "carry_speed": 1.5,
+   "n": 20,
+   "ok": 20,
+   "p": 1.0,
+   "p_low": 0.881,
+   "secs_mean": 30.53,
+   "fails": {}
+  },
+  {
+   "rpm": 8.0,
+   "arm_speed": 2.0,
+   "carry_speed": 2.0,
+   "n": 20,
+   "ok": 20,
+   "p": 1.0,
+   "p_low": 0.881,
+   "secs_mean": 30.07,
+   "fails": {}
+  },
+  {
+   "rpm": 11.1,
+   "arm_speed": 1.0,
+   "carry_speed": 1.0,
+   "n": 20,
+   "ok": 19,
+   "p": 0.95,
+   "p_low": 0.804,
+   "secs_mean": 25.75,
+   "fails": {
+    "TIMEOUT_TRANSPORT": 1
+   }
+  },
+  {
+   "rpm": 11.1,
+   "arm_speed": 1.5,
+   "carry_speed": 1.5,
+   "n": 20,
+   "ok": 19,
+   "p": 0.95,
+   "p_low": 0.804,
+   "secs_mean": 24.89,
+   "fails": {
+    "TIMEOUT_TRANSPORT": 1
+   }
+  },
+  {
+   "rpm": 11.1,
+   "arm_speed": 2.0,
+   "carry_speed": 2.0,
+   "n": 20,
+   "ok": 20,
+   "p": 1.0,
+   "p_low": 0.881,
+   "secs_mean": 24.25,
+   "fails": {}
+  },
+  {
+   "rpm": 15.0,
+   "arm_speed": 1.0,
+   "carry_speed": 1.0,
+   "n": 20,
+   "ok": 20,
+   "p": 1.0,
+   "p_low": 0.881,
+   "secs_mean": 22.24,
+   "fails": {}
+  },
+  {
+   "rpm": 15.0,
+   "arm_speed": 1.5,
+   "carry_speed": 1.5,
+   "n": 32,
+   "ok": 32,
+   "p": 1.0,
+   "p_low": 0.922,
+   "secs_mean": 21.21,
+   "fails": {}
+  },
+  {
+   "rpm": 15.0,
+   "arm_speed": 2.0,
+   "carry_speed": 2.0,
+   "n": 20,
+   "ok": 19,
+   "p": 0.95,
+   "p_low": 0.804,
+   "secs_mean": 20.32,
+   "fails": {
+    "TIMEOUT_TRANSPORT": 1
+   }
+  },
+  {
+   "rpm": 20.0,
+   "arm_speed": 1.0,
+   "carry_speed": 1.0,
+   "n": 20,
+   "ok": 20,
+   "p": 1.0,
+   "p_low": 0.881,
+   "secs_mean": 19.55,
+   "fails": {}
+  },
+  {
+   "rpm": 20.0,
+   "arm_speed": 1.5,
+   "carry_speed": 1.5,
+   "n": 32,
+   "ok": 32,
+   "p": 1.0,
+   "p_low": 0.922,
+   "secs_mean": 18.31,
+   "fails": {}
+  },
+  {
+   "rpm": 20.0,
+   "arm_speed": 2.0,
+   "carry_speed": 2.0,
+   "n": 20,
+   "ok": 18,
+   "p": 0.9,
+   "p_low": 0.738,
+   "secs_mean": 18.89,
+   "fails": {
+    "TIMEOUT_TRANSPORT": 2
+   }
+  }
+ ],
+ "range": {
+  "rpm": [
+   8.0,
+   20.0
+  ],
+  "arm_speed": [
+   1.0,
+   2.0
+  ]
+ }
+}

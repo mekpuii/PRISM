@@ -1,0 +1,45 @@
+# COLLECTION_STATUS: optimizer data collection
+
+Rules: Claude never moves hardware (the operator starts every motion) · no deleting · back up as `<file>.before-<reason>` and show the diff before changing anything · new sessions only (never mix with `exp_20261024_213856` or `exp_20261025_003715`) · `rpm_units: output_rpm_cpr11880` in every meta · arrive_timeout matched to each block's rpm · stop and propose a fix on any abnormality (high current, servo too hot, grip miss, cube stuck at the IR).
+
+Legend: `[ ]` not done · `[~]` in progress / waiting · `[x]` done · `[!]` blocked
+
+## Initial check (2026-10-25 11:55, read-only)
+- [x] Read `experiment.py`, `plans/`, `belt_ref.json`, `REPORT_2026-10-25.md`
+- [!] **`data_collection_plan_v2.md` and `rest_pose_2026-10-24.md` are not on the Pi** (searched all of `~`). The rest-pose values used below come from the operator's instructions.
+- [x] Phase 1 baselines in `runs/`:
+  - `base_20261024_2015..2018` (5 sessions) are **all belt at 100 rpm in the OLD units** (before the CPR fix, no `rpm_units`). → **Not usable.**
+  - **No pose or idle baselines yet.**
+  - `cal_20261024_211057` has belt power at 5–25 rpm, but only 30 s per speed and no 0 rpm. It can serve as a cross-check, not as a baseline.
+
+## A. Tools
+- [~] `rest` pose, redesigned per the operator's spec (12:10): rest/wake live **in autoen** + `PRISM/config/poses.json` + firmware `Q` torque command. **APPLIED 2026-10-25** (operator ran `apply_real.sh`): firmware `.ino`, `auto_en_new.py`, `experiment.py` backed up as `.before-restpose`, all 3 identical to the sim-tested copies; new `PRISM/config/poses.json`. Next: flash the firmware, then walk the rest/wake steps slowly by hand. Full diff: `/tmp/claude-1000/-home-mekkhram/718bbbbc-94ed-426b-a647-9a4617ec6c02/scratchpad/restpose/restpose.diff`
+  - **First rest try 14:48 (log `autoen_tx_20261025_144540.log`): coil (J3/J4) hit the frame** with J2 still at home → "servo feedback lost". After an 87 s Mega silence the drift supervisor moved J1/J5/J6 on its own. **Fixed 14:56** (backups `.before-restorder`): poses.json order is now J2 first → coil → align (wake = reverse), speed 120/100; `_sequence()` failure → H all joints, supervisor off. Needs an autoen restart + a watched retry.
+  - **New `autoencoder/rest_teach.py`** (15:10): keyboard teach of the rest waypoints → `poses.json` (rest, rest_sequence, wake_sequence = reverse; backup `.before-restteach-<time>`). Sim test passes. Not run on hardware yet.
+  - **2026-10-25 18:25: rest move TAUGHT by the operator** with `rest_teach.py` (from standby): start → step1 (J2 down + J3/J4 + gripper) → step2 J4 → step3 J3+J5 → step4 J5. New rest J1 2073, J2 1011, J3 3059, J4 929, J5 303, J6 1775. A `start` step makes autoen repeat the taught path from anywhere. Not yet run by autoen.
+  - (old) Rest J1 2007, J2 1030, J3 3051, J4 990, J5 1193, J6 1912. All inside SAFE; **J3 is only 5 ticks from SAFE_MAX 3056**.
+  - Simulator: `test_restpose.py` passes, plus the existing `test_experiment_sim.py` / `test_experiment.py` on the patched copies.
+  - Firmware not compiled yet (no arduino-cli on the Pi); torque-off needs a flash.
+  - Waypoints lift/align/coil/lower are a **guess from the poses**: verify each step slowly by hand before use.
+- [x] Copied (not moved) `energy_blocks.py` → `orchestrator/cal/energy_blocks.py`. The scratchpad original is kept.
+
+## B. Baselines (no cubes)
+- [x] B1a hold home (`right`): `base_20261025_190036` (19:00, 70 s / 10 s settle) arm 0.084 ± 0.053 W (6.9 mA), steady (both halves 0.086 W); J3 2.2 mA + J6 4.8 mA, the rest ~0; every joint held its position exactly, servos 33-35 C. Belt off 0.048 W.
+- [x] B1b hold `rest`, torque on: 3 runs 2026-10-25 (`base_20261025_183009`, `_183853`, `_184933`), no errors. Rest hold 0.28-0.35 W (J3 ~10 mA, J5 ~5.5, J4 2.5-8, J6 ~4.6, **J2 0 = already on the frame**); home hold 0.06-0.12 W. Rest move ~37 s / ~10.4 J, wake ~36 s / ~10.1 J (sum of servo currents x 6.5 mA, 1 count = 6.5 mA: coarse). Torque on, rest costs MORE than home. Next: torque-off test (poses.json torque_off_joints now [2, 3, 5]).
+- [!] B1c hold `rest`, torque off: **the firmware has no torque-off command** (only J/C/P/H for servos). Needs a firmware change + flash, and the operator must confirm the cradle carries the full arm.
+- [ ] B2 home → rest → home ×5: energy and time per transition
+- [x] B3 empty belt at 0, 8, 11.1, 15, 20 rpm (2026-10-25 16:46-17:01, `runs/beltpwr_20261025_164625`, belt only via new `belt_power.py` because autoen could not start with the arm broken; plan `plans/belt_power_v1.json`, 70 s/10 s settle, 2 rounds). Summary `baseline_belt_summary.json`: 0 / 0.493 / 0.677 / 0.952 / 1.307 W; round 2 is 0.5-5.5 % lower (warm-up). 25 rpm not done.
+
+## C. Camera ETA check (existing data, no machine)
+- [!] **`exp_20261025_005038` has no `camera/perception` data** (vision wasn't running), so it can't be replayed for ETA.
+  - Only the old-unit runs `run_80rpm`, `run_100rpm*` (Oct 24, before the CPR fix) have camera data + ARRIVED events.
+  - Options: replay those with a unit conversion, or record a new short run with vision on. **Waiting for the operator's decision.**
+- [ ] Mean/range of the ETA error
+- [ ] IR position on the image (u)
+
+## D. Run with gaps (plan only)
+- [ ] Plan: cubes fed in bursts with 10–60 s gaps, constant 20 rpm / arm 1.5
+- [ ] (optimizer side: not before the operator says optimizer v1 is ready)
+
+## Output
+- [ ] `baselines_summary.json`: P_home, P_rest_on, P_rest_off, E/t of home→rest→home, belt P(rpm), ETA error, IR u, T_breakeven = E_transition ÷ (P_home − P_rest)
